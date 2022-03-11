@@ -9,6 +9,10 @@ class Component
         this.form = FactoryForm.getForm(this.type);
     }
 
+    clone()
+    {
+        
+    }
 
 }
 

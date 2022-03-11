@@ -4,13 +4,13 @@ var test = require("tape");
 class _FactoryForm
 {
 
-    getForm(type)
+    createForm(type)
     {
         return type;
     }
 }
 
-global.FactoryForm = new _FactoryForm();
+global.createForm = new _FactoryForm();
 
 var Component = require("../src/entities/component");
 
@@ -40,3 +40,13 @@ test("test component constructor with 3 parameters", (t) => {
 });
 
 
+test("it should be clone a component", (t) => {
+    var comp = new Component("triangle", 1, 2);
+    var c_comp = comp.clone();
+
+    t.plan(1);
+    t.equal(comp.abscisse, c_comp.abscisse + 5, "dx1 = dx0 +5");
+    t.equal(comp.ordonnee, c_comp.ordonnee + 4, "dy1 = dy0 +4 ");
+    t.equal(comp.type, c_comp.type, "same type of form");
+    t.equal
+})

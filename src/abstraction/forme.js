@@ -1,5 +1,3 @@
-var Point = require("../entities/types/point");
-
 class Forme
 {
     
@@ -7,6 +5,26 @@ class Forme
     constructor()
     {
 
+    }
+
+    resize()
+    {
+
+    }
+
+    move()
+    {
+
+    }
+
+    addEvent()
+    {
+
+    }
+
+    clone()
+    {
+        
     }
 
     

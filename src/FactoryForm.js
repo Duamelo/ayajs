@@ -1,26 +1,9 @@
 class FactoryForm
 {
-    static getForm( )
-    {
-
-    }
-
-    resize()
-    {
-
-    }
-
-    move()
-    {
-
-    }
-
-    addEvent()
+    static createForm( )
     {
 
     }
 }
 
 global.FactoryForm = FactoryForm;
-
-module.exports = FactoryForm;

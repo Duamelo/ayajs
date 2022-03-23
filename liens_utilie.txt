@@ -24,3 +24,7 @@ https://www.sourcecodeexamples.net/2020/09/c-factory-method-pattern-example.html
 
 
 https://refactoring.guru/design-patterns/prototype
+
+
+
+https://learntutorials.net/fr/node-js/topic/5934/node-js-avec-es6

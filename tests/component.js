@@ -10,7 +10,7 @@ class _FactoryForm
     }
 }
 
-global.createForm = new _FactoryForm();
+global.FactoryForm = new _FactoryForm();
 
 var Component = require("../src/entities/component");
 
@@ -41,12 +41,14 @@ test("test component constructor with 3 parameters", (t) => {
 
 
 test("it should be clone a component", (t) => {
-    var comp = new Component("triangle", 1, 2);
+    var comp = new Component("triangle", 1, 2, 5);
     var c_comp = comp.clone();
 
-    t.plan(1);
-    t.equal(comp.abscisse, c_comp.abscisse + 5, "dx1 = dx0 +5");
-    t.equal(comp.ordonnee, c_comp.ordonnee + 4, "dy1 = dy0 +4 ");
+    t.plan(5);
+    t.assert(c_comp instanceof Object,  true, "clone component is an objet before");
+    t.equal(c_comp.abscisse, 6 ,"dx1 = dx0 +5");
+    t.equal(c_comp.ordonnee, 6, "dy1 = dy0 +4");
     t.equal(comp.type, c_comp.type, "same type of form");
-    t.equal
-})
+    t.equal(comp.id, c_comp.id, "different id");
+    t.end();
+});

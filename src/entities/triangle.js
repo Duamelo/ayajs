@@ -1,13 +1,12 @@
-class Triangle {
-  constructor(dimension = 0) {
-    this.dim = dimension;
+const Forme = require("../abstraction/forme");
+
+class Triangle extends Forme {
+  constructor(p1, p2, p3) {
+    super();
+    this.point_1 = p1;
+    this.point_2 = p2;
+    this.point_3 = p3;
   }
 }
 
-class Test {
-  constructor(dimension = 0) {
-    this.dim = dimension;
-  }
-}
-
-module.exports = { Triangle, Test };
+module.exports = Triangle;

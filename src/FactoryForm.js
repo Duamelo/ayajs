@@ -1,8 +1,8 @@
 class FactoryForm
 {
-    static createForm( )
+    static createForm( type)
     {
-
+        return type;
     }
 }
 

@@ -13,7 +13,7 @@
   ],
   "author": "emack",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "tape": "^5.5.2"
   },
   "devDependencies": {

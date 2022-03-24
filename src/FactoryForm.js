@@ -1,9 +1,16 @@
+/**
+ * @class FactoryForm
+ * @param {string} type
+ */
+
 class FactoryForm
 {
-    static createForm( type)
+
+
+    static createForm(type)
     {
         return type;
     }
 }
 
-global.FactoryForm = FactoryForm;
+module.exports = FactoryForm;

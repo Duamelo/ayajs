@@ -14,8 +14,7 @@
   "author": "emack",
   "license": "ISC",
   "dependencies": {
-    "tape": "^5.5.2"
-  },
-  "devDependencies": {
+    "tape": "^5.5.2",
+    "uuid": "^8.3.2"
   }
 }

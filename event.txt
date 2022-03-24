@@ -1,0 +1,8 @@
+wheel
+selectstart
+selectionchange
+select
+onvisibilitychange
+keydown
+keyup
+document: paste

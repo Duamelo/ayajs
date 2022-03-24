@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+   },
   "keywords": [
     "tape",
     "js",
@@ -13,7 +13,8 @@
   ],
   "author": "emack",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
+    "tap-spec": "^2.2.2",
     "tape": "^5.5.2"
   }
 }

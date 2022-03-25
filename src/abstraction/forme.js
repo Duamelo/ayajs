@@ -1,34 +1,24 @@
-class Forme
+/**
+ * @abstract @class Form
+ * 
+ *  
+ */
+
+class Form
 {
-    
 
-    constructor()
-    {
 
-    }
 
-    resize()
-    {
+    resize()  {    }
 
-    }
+    move()    {    }
 
-    move()
-    {
+    addEvent(){    }
 
-    }
-
-    addEvent()
-    {
-
-    }
-
-    clone()
-    {
-        
-    }
+    clone()   {    }
 
     
 }
 
 
-module.exports = Forme;
+module.exports = Form;

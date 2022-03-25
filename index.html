@@ -7,10 +7,76 @@
     <meta name="viewport" content="width=
     , initial-scale=1.0">
     <title>Document</title>
+    <script src="./tests/test_app.js"></script>
+
 </head>
 
 <body>
-    <script src="testy.js"></script>
+   <script>
+
+     svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+     function focuscb(e){
+
+        var elt = document.getElementById(e.target.id);
+        elt.setAttribute("cx", 50);
+        // elt.setAttributeNS(null, "cursorX", 50);
+        console.log(e);
+    
+     }
+ 
+
+     function mousedowncb(e){
+       console.log("mousedown");
+         var elt = document.getElementById(e.target.id);
+        elt.isDrawing = true;
+        elt.cursorX = e.ClientX;
+        elt.cursorY = e.ClientY;
+        
+         console.log(elt);
+     }
+
+     function mousemovecb(e){
+
+        console.log("mouve");
+        var elt = document.getElementById(e.target.id);
+
+         if ( elt.isDrawing == true){
+            
+            elt.x = elt.x +  e.ClientX - elt.cursorX;
+            elt.y = elt.y + e.ClientY - elt.cursorY;
+            console.log(elt.cursorX);
+            
+         }
+     }
+
+     function mouseupcb(e){
+
+        console.log("up");
+        var elt = document.getElementById(e.target.id);
+
+        elt.isDrawing = false;
+        console.log(elt)
+     }
+       var comp = new Component("circle", [{ev: "focus", cb: focuscb}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
+       var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
+       var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
+       var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
+
+       
+       
+
+
+ 
+    document.body.append(svg);
+        
+
+   </script>
+
+    <svg id="4">
+
+    </svg>
+
+    
 </body>
 
 </html>

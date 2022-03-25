@@ -38,6 +38,7 @@ class Point
         this.y -= point.y;
     }
 
+    // pas utile
     putScale(sc)
     {
         this.x *= sc;

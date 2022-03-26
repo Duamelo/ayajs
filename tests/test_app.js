@@ -40,19 +40,9 @@ class Component
     }
 
     
-    clone = ()=>
-    {
-        return new Component(this.type, this.x + 5, this.y + 4);
+    clone = ()=>{
+       
     }
-
-    render()
-    {
-
-    }
-
-
-
-
 }
 
 
@@ -65,12 +55,6 @@ class Circle
         this.r = r;
         this.uuid = uuid;
         this.events = events;
-        
-        
-    }
-
-    addEvent(ev, cb){
-        this.event += ".addEventListener("+ ev + "," + cb + ")"; 
 
     }
     
@@ -103,9 +87,8 @@ class _FactoryForm
     {
         return new Circle(uuid, param.x, param.y, param.r, events);
     }
-
-   
 }
+
 
 FactoryForm = new _FactoryForm();
 

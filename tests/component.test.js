@@ -1,55 +1,96 @@
+
 var test = require("tape");
 var Component = require("../src/component");
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-var  dom = new JSDOM(`<!DOCTYPE html>`);
-dom = dom.window;
-
-/**
- * 
- */
 var form_addEvent = 0;
 var form_draw = 0;
 
 
-class Circle
-{
-    constructor(uuid, x, y, r){
-        this.x = x;
-        this.y = y;
-        this.r = r;
-        this.uuid = uuid;
-        
-    }
 
-    addEvent(ev, cb){
-        
-        form_addEvent++;
-        
-    }
-    
-    draw(){
-        form_draw++;
-        return `<circle id=${uuid} cx=${x} cy=${y} r=${r}/>`;
-    }
-}
+/**
+ * HUB FactoryForm Class
+ */
 
-class _FactoryForm
-{
+class _FactoryForm{
 
-    createForm(uuid, type, param)
+    createForm(uuid, type, param, events)
     {
-        return new Circle(uuid,0,0, 5);
+        return new Circle(uuid, param.x, param.y, param.r, events);
     }
-
-   
 }
-
 global.FactoryForm = new _FactoryForm();
 
 
+/**
+ * HUB Circle Class
+ */
+
+class Circle{
+
+    constructor(uuid, x, y, r, events){
+        this.uuid = uuid;
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.events = events;
+        
+    }
+
+    draw(){
+        form_draw++;
+    }
+}
+
+/**
+ * HUB Register Class
+ */
+
+global.store = {};
+
+class _Register{
+    
+    constructor(){
+        
+    }
+
+    add(uuid, component) {
+    
+        store[uuid] = component;
+
+        return {
+            id: uuid,
+            Component: component,
+            store: store
+        }
+    }
+
+    find(uuid){
+        return store[uuid];
+    }
+
+    update(uuid, params){
+
+        var cp = store[uuid];
+        cp.params.x = params.x;
+        cp.params.y = params.y;
+        cp.params.r = params.r;
+        
+        cp.form.x = params.x;
+        cp.form.y = params.y;
+        cp.form.r = params.r;
+        
+       // console.log(cp);
+
+    }
+}
+
+global.Register = new  _Register();
+
+
+
+/**
+ * Test
+ */
 
 test("component should have a unique id", (t)=> {
     var comp1 = new Component("rectangle");
@@ -57,15 +98,14 @@ test("component should have a unique id", (t)=> {
 
     t.notEqual(comp1.uuid, comp2.uuid, "uuid does not matching");
     t.end();
-})
+});
 
 
 test("test component constructor with 1 parametre", (t)=> {
     
     var comp = new Component("circle");
 
-    t.equal(comp.x, 0, "abscisse should be 0");
-    t.equal(comp.y, 0, "ordonne should be 0");
+    t.equal(Object.keys(comp.params).length, 0);
     t.equal(comp.form instanceof Circle, true);
     t.equal(comp.events.length, 0);
     t.end();
@@ -73,44 +113,21 @@ test("test component constructor with 1 parametre", (t)=> {
 
 test("test component constructor with 3 parameters", (t) => {
     
-    var comp1 = new Component("circle", [], 1, 5);
+    var comp1 = new Component("circle", [], {x: 1, y: 5, r: 9});
 
 
-    t.equal(comp1.x, 1, "abscisse should be 1");
-    t.equal(comp1.y, 5, "ordonnee should be 5");
+    t.equal(comp1.params.x, 1);
+    t.equal(comp1.params.y, 5);
+    t.equal(comp1.params.r, 9);
     t.equal( comp1.form instanceof Object, true);
     t.equal(comp1.events.length, 0);
     t.end();
 });"form of component should be different of null"
 
-/*
-test("it should be clone a component", (t) => {
-    var comp = new Component("circle",[{ev: "drag", cb: null}, {ev: "drag", cb: null}], 1, 2);
-    var c_comp = comp.clone();
-
-    t.plan(5);
-    t.assert(c_comp instanceof Object,  true, "clone component is an objet before");
-    t.equal(c_comp.x, 6 ,"dx1 = dx0 +5");
-    t.equal(c_comp.y, 6, "dy1 = dy0 +4");
-   // t.equal(c_comp.form, comp.form)
-    t.equal(c_comp.type, comp.type, "same type of form");
-    t.notEqual(c_comp.uuid, comp.uuid, "different id");
-    t.end();
-});
-
-*/
-test("addEvent from form must be called when Events  ", (t) => {
-    form_addEvent = 0;
-    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}]);
-   
-    
-    t.equal(form_addEvent, 2);
-    t.end();
-});
 
 test(" Event list must be built when events", (t) => {
     form_addEvent = 0;
-    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}] );
+    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], {x: 3, y: 5, r: 14} );
     
     
     t.equal(comp.events.length, 2);
@@ -119,8 +136,48 @@ test(" Event list must be built when events", (t) => {
 
 test("draw the associate form", (t) => {
     form_draw = 0;
-    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], 2, 3);
+    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], {x: 3, y: 5, r: 14});
     
     t.equal(form_draw, 1);
+    t.end();
+});
+
+test("component must be added to register class when we create it", (t) => {
+    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], {x: 3, y: 5, r: 14});
+
+    t.equal(comp.register.id, comp.uuid);
+    t.equal(comp.register.Component, comp);
+    t.end();
+});
+
+
+test("check store when we register a component", (t) => {
+    store = {};
+    //var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], {x: 3, y: 5, r: 14});
+    var comp1 = new Component("circle", [], {x: 10, y: 15, r: 60});
+    var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
+
+    t.equal(Object.keys(store).length, 2);
+    t.end();
+});
+
+
+test("find component by uuid", (t) => {
+    var comp1 = new Component("circle", [], {x: 10, y: 15, r: 60});
+
+    var cp = Register.find(comp1.uuid);
+
+    t.deepEqual(cp, comp1);
+    t.end();
+});
+
+test("update component by uuid", (t) => {
+    var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
+
+    Register.update(comp3.uuid, {x: 200, y: 200, r: 200});
+
+    t.equal(comp3.params.x, 200);
+    t.equal(comp3.params.y, 200);
+    t.equal(comp3.params.r, 200);
     t.end();
 });

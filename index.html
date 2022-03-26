@@ -19,9 +19,7 @@
 
         var elt = document.getElementById(e.target.id);
         elt.setAttribute("cx", 50);
-        // elt.setAttributeNS(null, "cursorX", 50);
         console.log(e);
-    
      }
  
 
@@ -31,8 +29,7 @@
         elt.isDrawing = true;
         elt.cursorX = e.ClientX;
         elt.cursorY = e.ClientY;
-        
-         console.log(elt);
+        console.log(elt);
      }
 
      function mousemovecb(e){
@@ -45,7 +42,6 @@
             elt.x = elt.x +  e.ClientX - elt.cursorX;
             elt.y = elt.y + e.ClientY - elt.cursorY;
             console.log(elt.cursorX);
-            
          }
      }
 
@@ -53,29 +49,17 @@
 
         console.log("up");
         var elt = document.getElementById(e.target.id);
-
         elt.isDrawing = false;
         console.log(elt)
      }
-       var comp = new Component("circle", [{ev: "focus", cb: focuscb}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
+       var comp = new Component("circle", [{ev: "focus", cb: ()=>focuscb()}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
        var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
        var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
        var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
 
-       
-       
-
-
- 
-    document.body.append(svg);
-        
+       document.body.append(svg);
 
    </script>
-
-    <svg id="4">
-
-    </svg>
-
     
 </body>
 

@@ -1,15 +1,21 @@
 /**
  * @class FactoryForm
- * @param {string} type
  */
 
 class FactoryForm
 {
+   /**
+    * 
+    * @param {string} uuid 
+    * @param {string} type 
+    * @param {object} param 
+    * @param {array} events 
+    * @returns form
+    */
 
-
-    static createForm(type)
+    createForm(uuid, type, param, events)
     {
-        return type;
+        return new Circle(uuid, param.x, param.y, param.r, events);
     }
 }
 

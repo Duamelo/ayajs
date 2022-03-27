@@ -2,7 +2,6 @@
 var test = require("tape");
 var Component = require("../src/component");
 
-var form_addEvent = 0;
 var form_draw = 0;
 
 
@@ -33,7 +32,6 @@ class Circle{
         this.y = y;
         this.r = r;
         this.events = events;
-        
     }
 
     draw(){
@@ -49,9 +47,7 @@ global.store = {};
 
 class _Register{
     
-    constructor(){
-        
-    }
+    constructor() {}
 
     add(uuid, component) {
     
@@ -71,20 +67,34 @@ class _Register{
     update(uuid, params){
 
         var cp = store[uuid];
+
         cp.params.x = params.x;
         cp.params.y = params.y;
         cp.params.r = params.r;
-        
+
         cp.form.x = params.x;
         cp.form.y = params.y;
         cp.form.r = params.r;
-        
-       // console.log(cp);
+    }
 
+    clear(uuid){
+        delete store[uuid];
     }
 }
 
 global.Register = new  _Register();
+
+
+
+class _Events
+{
+    constructor(){
+
+
+    }
+}
+
+global.Events = _Events;
 
 
 
@@ -171,6 +181,7 @@ test("find component by uuid", (t) => {
     t.end();
 });
 
+
 test("update component by uuid", (t) => {
     var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
 
@@ -181,3 +192,15 @@ test("update component by uuid", (t) => {
     t.equal(comp3.params.r, 200);
     t.end();
 });
+
+
+test("delete a registered component", (t) => {
+    var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
+    
+    Register.clear(comp3.uuid);
+    var cp = Register.find(comp3.uuid);
+
+    t.equal(cp, undefined);
+    t.end();
+});
+

@@ -10,7 +10,7 @@ const Circle = require("../src/entities/circle");
 class _uuid
 {
 
-    constructor()
+    constructRegisteror()
     {
 
     }

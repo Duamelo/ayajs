@@ -61,22 +61,22 @@ class Circle
     draw(svgs){
         var ns="http://www.w3.org/2000/svg";
 
-        var newElem = document.createElementNS(ns,"circle");
+        var circle = document.createElementNS(ns,"circle");
     
-        newElem.setAttribute("cx", this.x);
+        circle.setAttribute("cx", this.x);
     
-        newElem.setAttribute("cy",this.y);
+        circle.setAttribute("cy",this.y);
     
-        newElem.setAttribute("r", this.r);
+        circle.setAttribute("r", this.r);
 
-        newElem.setAttribute("id", this.uuid);
+        circle.setAttribute("id", this.uuid);
     
       //  console.log("draw");
         this.events.map( (e)=>{
-            newElem.addEventListener(e.ev, e.cb);
+            circle.addEventListener(e.ev, e.cb);
         });
         //var elt = `<circle id=${this.uuid} cx=${this.x} cy=${this.y} r=${this.r}/>`;
-        svgs.appendChild(newElem);
+        svgs.appendChild(circle);
     }
 }
 

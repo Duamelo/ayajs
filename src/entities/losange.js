@@ -21,6 +21,3 @@ class Losange extends Forme{
 }
 
 module.export =  Losange ;
-
-
-module.export =  Losange ;

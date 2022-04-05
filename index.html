@@ -4,11 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=
-    , initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1.0">
     <title>Document</title>
     <script src="./tests/test_app.js"></script>
-
+   <style>
+      .static {
+      cursor: not-allowed;
+      }
+      .draggable {
+         cursor: move;
+      }
+   </style>
 </head>
 
 <body>
@@ -53,12 +59,20 @@
         elt.isDrawing = false;
         console.log(elt)
      }
-       var comp = new Component("circle", [{ev: "focus", cb: ()=>focuscb()}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
-       var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
-       var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
-       var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
+      //  var comp = new Component("circle", [{ev: "focus", cb: ()=>focuscb()}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
+      //  var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
+      //  var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
+      //  var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
+      var comp4 = new Component("rectangle", [{ev: "focus", cb: focuscb}], {width:100,height:50,_X:50,_Y:50});
+      let rect = comp4.form.rect;
 
-       document.body.append(svg);
+
+      
+      
+      rect.addEventListener('click',function(evt){
+         NativeEvents.move(evt);
+      })
+      document.body.append(svg);
 
    </script>
     

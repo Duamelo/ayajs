@@ -1,4 +1,4 @@
-var store = {}
+    var store = {}
 
 class Register
 {

@@ -2,110 +2,80 @@
 <html lang="en">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width
-    , initial-scale=1.0">
-   <title>Document</title>
-   <script src="./tests/test_app.js"></script>
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0">
+    <title>Document</title>
+    <script src="./tests/test_app.js"></script>
+   <style>
+      .static {
+      cursor: not-allowed;
+      }
+      .draggable {
+         cursor: move;
+      }
+   </style>
 </head>
 
 <body>
    <script>
-      svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
-      function focuscb(e) {
+     svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+     function focuscb(e){
 
+        var elt = document.getElementById(e.target.id);
+        elt.setAttribute("cx", 50);
+        elt.
+        console.log(e);
+     }
+ 
+
+     function mousedowncb(e){
+       console.log("mousedown");
          var elt = document.getElementById(e.target.id);
-         elt.setAttribute("cx", 50);
-         elt.
-         console.log(e);
-      }
+        elt.isDrawing = true;
+        elt.cursorX = e.ClientX;
+        elt.cursorY = e.ClientY;
+        console.log(elt);
+     }
 
+     function mousemovecb(e){
 
-      function mousedowncb(e) {
-         console.log("mousedown");
-         var elt = document.getElementById(e.target.id);
-         elt.isDrawing = true;
-         elt.cursorX = e.ClientX;
-         elt.cursorY = e.ClientY;
-         console.log(elt);
-      }
+        console.log("mouve");
+        var elt = document.getElementById(e.target.id);
 
-      function mousemovecb(e) {
-
-         console.log("mouve");
-         var elt = document.getElementById(e.target.id);
-
-         if (elt.isDrawing == true) {
-
-            elt.x = elt.x + e.ClientX - elt.cursorX;
+         if ( elt.isDrawing == true){
+            
+            elt.x = elt.x +  e.ClientX - elt.cursorX;
             elt.y = elt.y + e.ClientY - elt.cursorY;
             console.log(elt.cursorX);
          }
-      }
+     }
 
-      function mouseupcb(e) {
+     function mouseupcb(e){
 
-         console.log("up");
-         var elt = document.getElementById(e.target.id);
-         elt.isDrawing = false;
-         console.log(elt)
-      }
+        console.log("up");
+        var elt = document.getElementById(e.target.id);
+        elt.isDrawing = false;
+        console.log(elt)
+     }
       //  var comp = new Component("circle", [{ev: "focus", cb: ()=>focuscb()}, {ev: "mousedown", cb: mousedowncb}, {ev: "mousemove", cb: mousemovecb}, {ev: "mouseup", cb: mouseupcb}], 12, 16, 5);
       //  var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
       //  var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
       //  var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
-      // var comp4 = new Component("rectangle", [{
-      //    ev: "focus",
-      //    cb: focuscb
-      // }], {
-      //    width: 100,
-      //    height: 200,
-      //    _X: 50,
-      //    _Y: 50
-      // });
+      var comp4 = new Component("rectangle", [{ev: "focus", cb: focuscb}], {width:100,height:50,_X:50,_Y:50});
+      let rect = comp4.form.rect;
 
 
-      // const testy = {
-      //    M: {
-      //       x: "test",
-      //       y: 12,
-      //    },
-      //    l1: {
-      //       x: "test",
-      //       y: 12,
-      //    },
-      //    l2: {
-      //       x: "test",
-      //       y: 12,
-      //    },
-      // };
-
-      // M 150 25 l -50 100 l 50 0 z
-
-      var comp5 = new Component("triangle", [{
-         ev: "focus",
-         cb: focuscb
-      }], {
-         M: {
-            x: 150,
-            y: 25,
-         },
-         l1: {
-            x: -50,
-            y: 100,
-         },
-         l2: {
-            x: 50,
-            y: 0,
-         },
-      });
-
+      
+      
+      rect.addEventListener('click',function(evt){
+         NativeEvents.move(evt);
+      })
       document.body.append(svg);
-   </script>
 
+   </script>
+    
 </body>
 
 </html>

@@ -3,8 +3,6 @@ const Events = require("../src/events");
 
 
 
-
-
 test("empty nativeEvent before adding event", (t) => {
     var ev = new Events();
 

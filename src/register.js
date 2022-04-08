@@ -1,41 +1,26 @@
-var store = {}
+var store = {};
 
 class Register
 {
-    constructor() {}
-
-    add(uuid, component) {
-    
-        store[uuid] = component;
-
-        return {
-            id: uuid,
-            Component: component,
-            store: store
-        }
+    static add(object) {
+        store[object.uuid] = object;
     }
 
-    find(uuid){
+    static find(uuid){
         return store[uuid];
     }
 
-    update(uuid, params){
-
-        var cp = store[uuid];
-
-        cp.params.x = params.x;
-        cp.params.y = params.y;
-        cp.params.r = params.r;
-
-        cp.form.x = params.x;
-        cp.form.y = params.y;
-        cp.form.r = params.r;
-    }
-
-    clear(uuid){
+    static clear(uuid){
         delete store[uuid];
     }
 }
 
-module.exports = Register;
+module.exports =  Register;
 
+// rnvoyer la liste des liens à bouger
+
+// comparer comp_actuel et source_liaison/dest_liaison
+
+// mettre le mousedown sur les points de conect
+
+// dans comp

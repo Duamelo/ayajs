@@ -1,26 +1,9 @@
 var test = require("tape");
 const Link = require("../src/entities/link");
+const uuid = require("../src/maths/uuid");
+const Register = require("../src/register");
 
-var draw_link = 0;
-
-
-/**
- * HUB uuid class
- */
- class _uuid
- {
- 
-     constructor() {}
- 
-     generate()
-     {
-         return Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15);
-     }
- }
-global.Uuid = _uuid;
-
-
+// retour de l'instanciation de line dans link
 /**
  * HUB Component class
  */
@@ -34,79 +17,72 @@ class _Comp
      */
     constructor( type, events = [],  params = {})
     {
-        this.uuid = new Uuid().generate();
+        this.uuid = uuid.generate();
     }
 }
 
 global.Comp = _Comp;
 
 
-class _BezierCurve
-{
-    constructor() {}
 
-    draw(){
-        draw_link++;
-    }
-}
-global.BezierCurve = new _BezierCurve();
+test("Link with only source parameter", (t) => {
+
+    var cp = new Comp();
+    var lk = new Link(cp);
+
+    t.equal(lk.source, cp);
+    t.equal(lk.destination, undefined);
+    t.end();
+
+});
 
 
-
-test("add a link between two components", (t) => {
+test("source and destination should be there", (t) => {
     var cp1 = new Comp();
     var cp2 = new Comp();
 
-    var lk = new Link();
-    
-    lk.add(cp1.uuid+cp2.uuid, cp1, cp2);
+    var lk = new Link(cp1, cp2);
 
-    var st = lk.find(cp1.uuid+cp2.uuid);
-
-    t.equal(st.src, cp1);
-    t.equal(st.dest, cp2);
+    t.equal(lk.source, cp1);
+    t.equal(lk.destination, cp2);
     t.end();
 });
 
-test("add multiple links between two components", (t) => {
+
+test("should have a unique id", (t) => {
     var cp1 = new Comp();
     var cp2 = new Comp();
 
-    var cp3 = new Comp();
-    var cp4 = new Comp();
+    var lk = new Link(cp1, cp2);
 
-    var lk = new Link();
-
-
-    lk.add(cp1.uuid+cp2.uuid, cp1, cp2);
-    lk.add(cp3.uuid+cp4.uuid, cp3, cp4);
-
-    var st = lk.find(cp1.uuid+cp2.uuid);
-    var rs = lk.find(cp3.uuid+cp4.uuid);
-
-    t.equal(st.src, cp1);
-    t.equal(st.dest, cp2);
-
-    t.equal(rs.src, cp3);
-    t.equal(rs.dest, cp4);
+    t.notEqual(lk.uuid, undefined);
     t.end();
 });
 
-test("draw link", (t) => {
-    
-    draw_link = 0;
 
+
+
+test("register link between two components", (t) => {
     var cp1 = new Comp();
     var cp2 = new Comp();
 
-    var lk = new Link();
+    var lk = new Link(cp1, cp2);
+
+    t.equal(Register.find(lk.uuid), lk);
+    t.end();
+});
 
 
-    lk.add(cp1.uuid+cp2.uuid, cp1, cp2);
 
-    lk.draw(lk.find(cp1.uuid+cp2.uuid));
+test("flip line when drawn", (t) => {
+    var cp1 = new Comp();
+    var cp2 = new Comp();
 
-    t.equal(draw_link, 1);
+    var link = {};
+    
+    var lk = new Link(cp1, cp2, 'graphic', link);
+
+    t.equal(lk.link, link);
     t.end();
 });
 
@@ -115,19 +91,10 @@ test("delete a link", (t) => {
     var cp1 = new Comp();
     var cp2 = new Comp();
 
-    var lk = new Link();
+    var lk = new Link(cp1, cp2);
 
+    Register.clear(lk.uuid);
 
-    lk.add(cp1.uuid+cp2.uuid, cp1, cp2);
-
-    var l = lk.find(cp1.uuid+cp2.uuid);
-    t.equal(l.src, cp1);
-
-    lk.destroy(cp1.uuid+cp2.uuid);
-
-    var l = lk.find(cp1.uuid+cp2.uuid);
-    
-    t.equal(l, undefined);
-
+    t.equal(Register.find(lk.uuid), undefined);
     t.end();
 });

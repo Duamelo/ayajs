@@ -1,3 +1,7 @@
+/**
+ * @class Circle
+ */
+
 class Circle
 {
     /**
@@ -16,6 +20,11 @@ class Circle
         this.r = r;
         this.events = events;
     }
+    
+    /**
+     * 
+     * @param {DOMElement} svgs 
+     */
     
     draw(svgs){
         var ns="http://www.w3.org/2000/svg";

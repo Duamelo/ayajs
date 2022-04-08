@@ -9,6 +9,12 @@ class Events{
         this.nativeEvents = new Array();
     }
 
+    /**
+     * 
+     * @param {SVGElement} target 
+     * @param {DOMEvent} event 
+     * @param {function} callback 
+     */
     add(target, event, callback){
         this.nativeEvents.push([target, event, callback, false]);
     }

@@ -2,13 +2,7 @@ var svg = 1;
 
 class uuid
 {
-
-    constructor()
-    {
-
-    }
-
-    generate()
+    static generate()
     {
         return Math.random().toString(36).substring(2, 15) +
         Math.random().toString(36).substring(2, 15);
@@ -24,7 +18,7 @@ class Component
     //constructor( type, events = [],  x = 0, y = 0, r = 0)
     constructor( type, events = [],  props)
     {
-        this.uuid = new uuid().generate();
+        this.uuid = uuid.generate();
         this.type = type;
         this.props = props;
         // this.x = x;
@@ -105,7 +99,10 @@ class Rectangle {
         this.rect.setAttributeNS(null, 'y', this.posInit.y);
         this.rect.setAttributeNS(null, 'height', this.height);
         this.rect.setAttributeNS(null, 'width',this.width);
-        this.rect.classList.add("draggable");      
+        this.rect.classList.add("draggable");
+        this.rect.addEventListener('click',function(evt){
+            NativeEvents.move(evt);
+         })
         svgs.appendChild(this.rect);
     }
 
@@ -115,6 +112,44 @@ class Rectangle {
 
 }
 
+
+class Line 
+{
+    constructor(uuid, x=0, y=0, events){
+        
+        this.x = x;
+        this.y = y;
+        this.uuid = uuid;
+       
+        this.events = events;
+        
+      
+
+    }
+
+    draw(svgs){
+
+        const ns = "http://www.w3.org/2000/svg";
+        this.path = document.createElementNS(ns,'path');
+
+
+        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.x  + "," + this.y;
+
+
+        this.path.setAttribute("id", this.uuid);
+        this.path.setAttribute("d", p);
+        this.path.setAttribute("stroke", "indianred");
+       
+        svgs.appendChild(this.path);
+    }
+
+    redraw(x, y){
+        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + x  + "," + y;
+        //var path = document.getElementById(`${this.uuid}`);
+        this.path.setAttribute("d", p);
+    }
+}
+
 class _FactoryForm
 {
 
@@ -122,15 +157,17 @@ class _FactoryForm
     {
         if(type == "circle")
             return new Circle(uuid, props.x, props.y, props.r, events);
-        if(type == "rectangle")
+        else if(type == "rectangle")
             return new Rectangle(uuid, props.width, props.height, props._X,props._Y, events);
+        else if(type == "line")
+        return new Line(uuid, props.x, props.y, events);
     }
 }
 
 
 FactoryForm = new _FactoryForm();
 
-
+/*
 class NativeEvents{
     
     static move(evt){
@@ -140,7 +177,7 @@ class NativeEvents{
 
 
         target.addEventListener("mousedown",startMove);
-        target.addEventListener("mousemove",move);
+        target.addEventListener("mousemove",fctmove);
         target.addEventListener("mouseup",endMove);
         target.addEventListener("mouseleave",endMove);
 
@@ -172,7 +209,7 @@ class NativeEvents{
             }
         }
 
-        function move(evt) {
+        function fctmove(evt) {
             
 
             if(selectedElement){
@@ -210,6 +247,6 @@ class NativeEvents{
 
 }
 
-
+*/
 
 

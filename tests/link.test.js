@@ -80,7 +80,7 @@ test("flip line when drawn", (t) => {
 
     var link = {};
     
-    var lk = new Link(cp1, cp2, 'graphic', link);
+    var lk = new Link(cp1, cp2, link);
 
     t.equal(lk.link, link);
     t.end();
@@ -98,3 +98,25 @@ test("delete a link", (t) => {
     t.equal(Register.find(lk.uuid), undefined);
     t.end();
 });
+
+
+test("return the list of links in which a component participates", (t) => {
+    var cp1 = new Comp();
+    var cp2 = new Comp();
+    var cp3 = new Comp();
+    var cp4 = new Comp();
+    var cp5 = new Comp();
+    var cp6 = new Comp();
+
+    var lk = new Link(cp1, cp2);
+    var lk = new Link(cp1, cp3);
+    var lk = new Link(cp1, cp4);
+    var lk = new Link(cp1, cp5);
+    var lk = new Link(cp1, cp6);
+
+    var rs = Register.getAllLinksByComponent(cp1);
+
+    t.equal(rs.length, 5);
+    t.end();
+});
+    

@@ -1,15 +1,45 @@
-const Triangle = require("../src/entities/triangle_equilateral.js");
-const Point = require("../src/entities/types/point.js");
+var test = require('tape');
+const Triangle = require('../src/entities/triangle');
+const uuid = require('../src/maths/uuid');
 
-const test = require("tape");
-test("have 3 parameters of type point to have necessary information for triangle creation", (t) => {
-  const p1 = new Point(11, 2);
-  const p2 = new Point(12, 6);
-  const p3 = new Point(4, 9);
 
-  const triangle = new Triangle(p1, p2, p3);
-  t.equal(triangle.point_1 instanceof Point, true);
-  t.equal(triangle.point_2 instanceof Point, true);
-  t.equal(triangle.point_3 instanceof Point, true);
+test("uuid exist", (t) => {
+  var tr = new Triangle(uuid.generate());
+
+  t.notEqual(tr.uuid, undefined);
+  t.end();
+});
+
+
+test("class triangle instanciation without parameters", (t) => {
+  var tr = new Triangle(uuid.generate());
+
+  t.equal(tr.x1, 0);
+  t.equal(tr.y1, 0);
+  t.equal(tr.x2, 5);
+  t.equal(tr.y2, 5);
+  t.equal(tr.x3, 10);
+  t.equal(tr.y3, 10);
+  t.equal(tr.events.length, 0);
+  t.end();
+});
+
+test("class triangle instanciation with parameters", (t) => {
+  var tr = new Triangle(uuid.generate(), 12,12,20,20,50,50, [{ev: null, cb: null}]);
+
+  t.equal(tr.x1, 12);
+  t.equal(tr.y1, 12);
+  t.equal(tr.x2, 20);
+  t.equal(tr.y2, 20);
+  t.equal(tr.x3, 50);
+  t.equal(tr.y3, 50);
+  t.equal(tr.events.length, 1);
+  t.end();
+});
+
+test("path variable exist", (t) => {
+  var tr = new Triangle(uuid.generate(), 12,12,20,20,50,50);
+
+  t.equal(tr.path, "");
   t.end();
 });

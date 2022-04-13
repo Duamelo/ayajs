@@ -3,7 +3,15 @@ const Circle = require("../src/entities/circle");
 const uuid = require("../src/maths/uuid");
 
 
-test("class circle instanciation", (t) => {
+
+test("uuid exist", (t) => {
+    var c = new Circle(uuid.generate());
+    
+    t.notEqual(c.uuid, undefined)
+    t.end();
+});
+
+test("class circle instanciation without parameters", (t) => {
     var c = new Circle(uuid.generate());
 
     t.equal(c.x, 0);
@@ -21,3 +29,9 @@ test("class circle instanciation with specific parameters", (t) => {
     t.end();
 });
 
+test("circle exist", (t) => {
+    var c = new Circle(uuid.generate(), 2, 3, 6);
+
+    t.equal(c.circle, "");
+    t.end();
+});

@@ -90,15 +90,6 @@ test("draw the associate form", (t) => {
     t.end();
 });
 
-/*
-test("component must be added to register class when we create it", (t) => {
-    var comp = new Component("circle", [{ev: "drag", cb: null}, {ev: "drag", cb: null}], {x: 3, y: 5, r: 14});
-
-    t.equal(comp.register.id, comp.uuid);
-    t.equal(comp.register.Component, comp);
-    t.end();
-});
-*/
 
 test("check store when we register a component", (t) => {
     var comp1 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
@@ -107,19 +98,6 @@ test("check store when we register a component", (t) => {
     t.end();
 });
 
-
-/*
-test("update component by uuid", (t) => {
-    var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
-
-    new Register().update(comp3.uuid, {x: 200, y: 200, r: 200});
-
-    t.equal(comp3.params.x, 200);
-    t.equal(comp3.params.y, 200);
-    t.equal(comp3.params.r, 200);
-    t.end();
-});
-*/
 
 test("delete a registered component", (t) => {
     var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});

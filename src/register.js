@@ -13,14 +13,18 @@ class Register
     static clear(uuid){
         delete store[uuid];
     }
+    
+    static getAllLinksByComponent(component){
+        var result = [];
+        Object.keys(store).map((id) => {
+            var obj = Register.find(id);
+            if(obj.type == undefined){
+                if((component == obj.source)  || (component == obj.destination))
+                    result.push(obj);
+            }
+        });
+        return result;
+    }
 }
 
 module.exports =  Register;
-
-// rnvoyer la liste des liens à bouger
-
-// comparer comp_actuel et source_liaison/dest_liaison
-
-// mettre le mousedown sur les points de conect
-
-// dans comp

@@ -1,8 +1,10 @@
+var Form = require("../abstraction/forme.js");
+
 /**
  * @class Circle
  */
 
-class Circle
+class Circle extends Form
 {
     /**
      * 
@@ -14,11 +16,13 @@ class Circle
      */
 
     constructor(uuid, x = 0, y = 0, r = 5, events = []){
+        super();
         this.uuid = uuid;
         this.x = x;
         this.y = y;
         this.r = r;
         this.events = events;
+        this.circle = "";
     }
     
     /**
@@ -29,20 +33,17 @@ class Circle
     draw(svgs){
         var ns="http://www.w3.org/2000/svg";
     
-        var circle = document.createElementNS(ns,"circle");
+        this.circle = document.createElementNS(ns,"circle");
     
-        circle.setAttribute("cx", this.x);
+        this.circle.setAttribute("cx", this.x);
     
-        circle.setAttribute("cy",this.y);
+        this.circle.setAttribute("cy",this.y);
     
-        circle.setAttribute("r", this.r);
+        this.circle.setAttribute("r", this.r);
     
-        circle.setAttribute("id", this.uuid);
+        this.circle.setAttribute("id", this.uuid);
 
-        this.events.map( (e)=>{
-            circle.addEventListener(e.ev, e.cb);
-        });
-        svgs.appendChild(circle);
+        svgs.appendChild(this.circle);
     }
 }
 

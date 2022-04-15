@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0">
     <title>Document</title>
-    <script src="./tests/test_app.js"></script>
+    <!-- <script src="./tests/test_app.js"></script> -->
+    <script src="./build/aya.js"></script>
+
    <style>
       .static {
       cursor: not-allowed;
@@ -19,71 +21,23 @@
 
 <body>
    <script>
-
-     svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-     svg.setAttribute("width", 900);
-     svg.setAttribute("height", 900);
-     svg.setAttribute("id", "svg");
-     var isDrawing = false;
-      var line = 1;
-
-     // svg.addEventListener("mousedown", mousedowncb);
-     //svg.addEventListener("mousemove", mousemovecb);
-     //svg.addEventListener("mouseup", mouseupcb);
-    
-
-     var domSvg = document.getElementById("svg");
-     
-   //  var rect = domSvg.getBoundingClientRect();
+   var svg;
+      console.log(aya);
+   svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+   svg.setAttribute("width", 900);
+   svg.setAttribute("height", 900);
+   svg.setAttribute("id", "svg");
 
 
-     
-     function focuscb(e){down
-
-        var elt = document.getElementById(e.target.id);
-        elt.setAttribute("cx", 50);
-        console.log(e);
-     }
-
-     function mousedowncb(e){
-      console.log("down");
-
-      // var id = uuid.generate();
-      // line = new Line(id, e.clientX, e.clientY, []);
-      // line.draw(svg);
-      // isDrawing = true;
+   svg.addEventListener("mousemove", aya.events.mouseMoveCb);
+   svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
 
-      // console.log(line);
-     }
+   var domSvg = document.getElementById("svg");
 
-     function mousemovecb(e){
 
-      console.log("mouve");
-
-     if (isDrawing == true)
-         line.redraw(e.clientX, e.clientY);
-         console.log(line);
-     }
-
-     function mouseupcb(e){
-
-        console.log("up");
-
-        isDrawing = false;
-        line = null
-        console.log(e);
-     }
-      //   var comp = new Component("circle", [/*{ev: "focus", cb: ()=>focuscb()},*/ {ev: "mousedown", cb: mousedowncb} ,/* {ev: "mousemove", cb: mousemovecb} ,*/ {ev: "mouseup", cb: mouseupcb}], {x:152, y:146, r:50});
-      //   var comp = new Component("circle", [/*{ev: "focus", cb: ()=>focuscb()},*/ {ev: "mousedown", cb: mousedowncb} ,/* {ev: "mousemove", cb: mousemovecb} ,*/ {ev: "mouseup", cb: mouseupcb}], {x:500, y:146, r:50});
-      //  var comp1 = new Component("circle", [{ev: "focus", cb: focuscb}], 52, 46, 5);
-      //  var comp2 = new Component("circle", [{ev: "focus", cb: focuscb}], 92, 96, 5);
-      //  var comp3 = new Component("circle", [{ev: "focus", cb: focuscb}], 32, 6, 5);
-       var comp4 = new Component("rectangle", /*[{ev: "focus", cb: focuscb}],*/ [],  { x:550,y:250, width:100,height:100,});
-      
-      //var comp5 = new Component("triangle", [{ev: "focus", cb: focuscb}], {x1: 240, y1: 40, x2: 350, y2: 100, x3: 300, y3: 280});
-      document.body.append(svg);
-
+   var comp4 = new aya.Component("rectangle", [], { x:550,y:250, width:100,height:100});
+   document.body.append(svg);
    </script>
     
 </body>

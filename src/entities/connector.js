@@ -1,12 +1,17 @@
+import {Point } from "../maths/point.js";
 class Connector
 {
-    static create(){
+    static create(type, uuid){
         var cp = [];
 
-        for(var i = 0; i < 8; i++){
-            cp.push({uuid: uuid, x:0, y:0, r:5});
+        if(type == 'rectangle'){
+           for(var i = 0; i < 8; i++){
+               cp.push(new Point(uuid, 0, 0, 5));
+           }
         }
         return cp;
     }
 }
-module.exports = Connector;
+
+
+export {Connector};

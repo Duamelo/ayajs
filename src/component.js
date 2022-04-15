@@ -1,7 +1,6 @@
-//const FactoryForm = require("./factoryForm");
-const uuid = require("./maths/uuid");
-const Register = require("./register");
-
+import {_Register } from "./register.js";
+import {_uuid} from "./maths/uuid.js";
+import {FactoryForm} from "./factoryForm.js";
 
 class Component
 {
@@ -11,19 +10,16 @@ class Component
      * @param {array} events 
      * @param {object} params 
      */
-    constructor( type, events = [],  params = {})
+    constructor( type, events = [],  props)
     {
-        this.uuid = uuid.generate();
+        this.uuid = _uuid.generate();
         this.type = type;
-       // this.params = params
-        this.events = events;
-        this.form = FactoryForm.createForm(this.uuid, this.type, /*this.params*/ params, events);
-        Register.add(this);
+        this.form = FactoryForm.createForm(this.uuid, type, props, events);
+        _Register.add(this);
         this.form.draw(svg);
     }
-
-    
 }
 
-module.exports = Component;
+export {Component};
+
 

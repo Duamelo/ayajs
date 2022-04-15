@@ -1,4 +1,3 @@
-var Form = require("../abstraction/forme.js");
 
 /**
  * @class Triangle class
@@ -18,7 +17,6 @@ class Triangle extends Form
    * @param {array of object} events 
    */
   constructor(uuid, x1 = 0, y1 = 0, x2 = 5 , y2 = 5 , x3 = 10 , y3 = 10, events = []){
-    super();
     this.uuid = uuid;
 
     this.x1 = x1;
@@ -51,4 +49,3 @@ class Triangle extends Form
     svgs.appendChild(this.path);
     }
 }
-module.exports = Triangle;

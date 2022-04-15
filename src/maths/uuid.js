@@ -1,4 +1,4 @@
-class uuid
+class _uuid
 {
 
     static generate()
@@ -8,4 +8,4 @@ class uuid
     }
 }
 
-module.exports = uuid ;
+export {_uuid};

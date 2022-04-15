@@ -1,5 +1,5 @@
-const uuid = require("../maths/uuid");
-const Register = require("../register");
+import { _uuid } from "../maths/uuid.js";
+import {_Register } from "../register.js"
 
 /**
  * @class Link 
@@ -9,11 +9,12 @@ class Link
 {
     constructor(source, destination, link = undefined) 
     {
-       this.uuid = uuid.generate();
+       this.uuid = _uuid.generate();
        this.source = source;
        this.destination = destination;
        this.link = link;
-       Register.add(this);
+       _Register.add(this);
     }
 }
-module.exports = Link;
+
+export {Link}

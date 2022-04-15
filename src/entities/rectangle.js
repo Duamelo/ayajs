@@ -1,12 +1,10 @@
-const uuid = require("../maths/uuid");
-var Form = require("../abstraction/forme.js");
-
+import {Connector} from "./connector.js";
+import {events} from "../events.js";
 /**
  * Rectangle class
  */
 
-class Rectangle extends Form
-{
+class Rectangle {
 
     /**
      * 
@@ -19,7 +17,7 @@ class Rectangle extends Form
      */
     
     constructor(uuid, x= 0, y = 0, width = 10, height = 10, events = []){
-        super();
+        
         this.uuid = uuid;
 
         this.x = x;
@@ -29,36 +27,39 @@ class Rectangle extends Form
         this.height = height;
       
         this.events = events;
-        this.rect = "";
+        this.c_svg = "";
         
         this.c_points = Connector.create('rectangle', uuid);
-        this.connectorUpdating();
+        this.createConnector();
     }
+
 
     draw(svgs){
 
         const svgns = "http://www.w3.org/2000/svg";
-        this.rect = document.createElementNS(svgns,'rect');
+        this.c_svg = document.createElementNS(svgns,'rect');
 
-        this.rect.setAttributeNS(null, 'x', this.x);
-        this.rect.setAttributeNS(null, 'y', this.y);
-        this.rect.setAttributeNS(null, 'height', this.height);
-        this.rect.setAttributeNS(null, 'width',this.width);
-        this.rect.setAttributeNS(null, 'stroke', 'black');
-        this.rect.setAttributeNS(null, 'stroke-width', '3px');
-        this.rect.setAttributeNS(null, 'fill', 'cornsilk');
+        this.c_svg.setAttributeNS(null, 'x', this.x);
+        this.c_svg.setAttributeNS(null, 'y', this.y);
+        this.c_svg.setAttributeNS(null, 'id', this.uuid);
+        this.c_svg.setAttributeNS(null, 'height', this.height);
+        this.c_svg.setAttributeNS(null, 'width',this.width);
+        this.c_svg.setAttributeNS(null, 'stroke', 'black');
+        this.c_svg.setAttributeNS(null, 'stroke-width', '3px');
+        this.c_svg.setAttributeNS(null, 'fill', 'cornsilk');
 
 
-        
-        svgs.appendChild(this.rect);
+        svgs.appendChild(this.c_svg);
 
         this.c_points.map( (point) => {
             point.draw(svgs);
         });
 
-    }
+        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+        this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+     }
 
-    connectorUpdating(){
+    createConnector(){
         this.c_points[0].x =  this.x;
         this.c_points[0].y =  this.y;
         this.c_points[0].r =  5;
@@ -91,6 +92,19 @@ class Rectangle extends Form
         this.c_points[7].y =  this.y + this.height/2;
         this.c_points[7].r =  5;
     }
+
+
+    redraw(x,y){
+        
+        this.x += x;
+        this.y += y;
+
+      this.c_svg.setAttribute("x", this.x);
+      this.c_svg.setAttribute("y", this.y);
+      this.c_points.map((p)=>{
+          p.redraw(x,y);
+      })
+    }
 }
 
-module.exports = Rectangle;
+export {Rectangle};

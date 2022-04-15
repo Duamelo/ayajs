@@ -1,6 +1,5 @@
 var store = {};
-
-class Register
+class _Register
 {
     static add(object) {
         store[object.uuid] = object;
@@ -17,7 +16,7 @@ class Register
     static getAllLinksByComponent(component){
         var result = [];
         Object.keys(store).map((id) => {
-            var obj = Register.find(id);
+            var obj = _Register.find(id);
             if(obj.type == undefined){
                 if((component == obj.source)  || (component == obj.destination))
                     result.push(obj);
@@ -27,4 +26,4 @@ class Register
     }
 }
 
-module.exports =  Register;
+export {_Register}

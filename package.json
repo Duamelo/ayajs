@@ -1,0 +1,21 @@
+{
+  "name": "ayajs",
+  "version": "1.0.0",
+  "description": "librairie javascript de création de forme géométrique",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tape",
+    "js",
+    "node"
+  ],
+  "author": "emack",
+  "license": "ISC",
+  "dependencies": {
+    "jsdom": "^19.0.0",
+    "tape": "^5.5.2",
+    "uuid": "^8.3.2"
+  }
+}

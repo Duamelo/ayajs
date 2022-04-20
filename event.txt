@@ -1,0 +1,16 @@
+wheel
+selectstart
+selectionchange
+select
+onvisibilitychange
+keydown
+keyup
+document: paste
+
+
+
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+var  dom = new JSDOM(`<!DOCTYPE html>`);
+dom = dom.window;

@@ -1,6 +1,6 @@
 var test = require("tape");
 const Link = require("../src/entities/link");
-const uuid = require("../src/maths/uuid");
+const uuid = require("../src/entities/uuid");
 const Register = require("../src/register");
 
 // retour de l'instanciation de line dans link

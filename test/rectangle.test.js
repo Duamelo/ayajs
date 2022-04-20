@@ -1,6 +1,6 @@
 var test = require("tape");
 const Rectangle = require("../src/entities/rectangle");
-const uuid = require("../src/maths/uuid");
+const uuid = require("../src/entities/uuid");
 
 
 class Connector

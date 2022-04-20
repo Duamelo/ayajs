@@ -1,6 +1,6 @@
 var test = require('tape');
 const Line = require('../src/entities/line');
-const uuid = require('../src/maths/uuid');
+const uuid = require('../src/entities/uuid');
 
 
 

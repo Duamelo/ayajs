@@ -4,11 +4,10 @@
   "description": "librairie javascript de création de forme géométrique",
   "main": "build/aya.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tap",
     "start": "rollup -c rollup.dev.js",
-		"build": "rollup -c && npm run uglify",
+    "build": "rollup -c && npm run uglify",
     "uglify": "uglifyjs --compress --mangle --output build/aya.min.js -- build/aya.js"
-
   },
   "keywords": [
     "tape",
@@ -17,8 +16,7 @@
   ],
   "author": "emack",
   "license": "ISC",
-  "dependencies": {
-    "jsdom": "^19.0.0",
-    "tape": "^5.5.2"
+  "devDependencies": {
+    "tap": "^16.0.1"
   }
 }

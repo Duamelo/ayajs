@@ -1,5 +1,5 @@
 var test = require('tape');
-var uuid = require('../uuid');
+var uuid = require('../src/entities/uuid');
 
 
 test("should generate a unique uuid", (t)=> {

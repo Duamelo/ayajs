@@ -1,4 +1,4 @@
-import { _uuid } from "../maths/uuid.js";
+import { _uuid } from "./uuid.js";
 import {_Register } from "../register.js"
 
 /**
@@ -7,12 +7,12 @@ import {_Register } from "../register.js"
 
 class Link
 {
-    constructor(source, destination, link = undefined) 
+    constructor(source, destination, line = undefined) 
     {
        this.uuid = _uuid.generate();
        this.source = source;
        this.destination = destination;
-       this.link = link;
+       this.line = line;
        _Register.add(this);
     }
 }

@@ -1,6 +1,6 @@
 var test = require("tape");
 var FactoryForm = require("../src/factoryForm");
-const uuid = require("../src/maths/uuid");
+const uuid = require("../src/entities/uuid");
 
  
 /**

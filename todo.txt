@@ -1,5 +1,0 @@
-OK 1- dessiner les points de connexions sur les formes
-plus tard 2- faire apparaître un box au pourtour de la forme sur l'évènement click
-3-bouger une forme
-4- redimensionner une forme
-5- 

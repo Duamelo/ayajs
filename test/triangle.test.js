@@ -1,6 +1,6 @@
 var test = require('tape');
 const Triangle = require('../src/entities/triangle');
-const uuid = require('../src/maths/uuid');
+const uuid = require('../src/entities/uuid');
 
 
 test("uuid exist", (t) => {

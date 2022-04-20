@@ -1,5 +1,5 @@
 import {_Register } from "./register.js";
-import {_uuid} from "./maths/uuid.js";
+import {_uuid} from "./entities/uuid.js";
 import {FactoryForm} from "./factoryForm.js";
 
 class Component

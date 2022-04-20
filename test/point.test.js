@@ -1,5 +1,5 @@
 var test = require("tape");
-const Point = require("../point");
+const Point = require("../src/entities/point.js");
 
 
 

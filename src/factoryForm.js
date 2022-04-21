@@ -1,6 +1,12 @@
+
 /**
  * @class FactoryForm
  */
+
+import { Circle } from "./entities/circle.js";
+import { Rectangle } from "./entities/rectangle.js";
+import { Line } from "./entities/line.js";
+import { Triangle } from "./entities/triangle.js";
 
 class FactoryForm
 {
@@ -8,15 +14,22 @@ class FactoryForm
     * 
     * @param {string} uuid 
     * @param {string} type 
-    * @param {object} param 
+    * @param {object} props 
     * @param {array} events 
     * @returns form
     */
 
-    createForm(uuid, type, param, events)
+   static createForm(uuid, type, props, events)
     {
-        return new Circle(uuid, param.x, param.y, param.r, events);
+        if(type == "circle")
+            return new Circle(uuid, props.x, props.y, props.r, events);
+        else if(type == "rectangle")
+            return new Rectangle(uuid, props.x, props.y, props.width, props.height, events);
+        else if(type == "line")
+            return new Line(uuid, props.x, props.y, events);
+        else if(type == "triangle")
+             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
     }
 }
 
-module.exports = FactoryForm;
+export {FactoryForm};

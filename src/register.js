@@ -1,41 +1,29 @@
-    var store = {}
-
-class Register
+var store = {};
+class _Register
 {
-    constructor() {}
-
-    add(uuid, component) {
-    
-        store[uuid] = component;
-
-        return {
-            id: uuid,
-            Component: component,
-            store: store
-        }
+    static add(object) {
+        store[object.uuid] = object;
     }
 
-    find(uuid){
+    static find(uuid){
         return store[uuid];
     }
 
-    update(uuid, params){
-
-        var cp = store[uuid];
-
-        cp.params.x = params.x;
-        cp.params.y = params.y;
-        cp.params.r = params.r;
-
-        cp.form.x = params.x;
-        cp.form.y = params.y;
-        cp.form.r = params.r;
-    }
-
-    clear(uuid){
+    static clear(uuid){
         delete store[uuid];
+    }
+    
+    static getAllLinksByComponent(component){
+        var result = [];
+        Object.keys(store).map((id) => {
+            var obj = _Register.find(id);
+            if(obj.type == undefined){
+                if((component == obj.source)  || (component == obj.destination))
+                    result.push(obj);
+            }
+        });
+        return result;
     }
 }
 
-module.exports = Register;
-
+export {_Register}

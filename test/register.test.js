@@ -1,22 +1,6 @@
 var test = require("tape");
+const uuid = require("../src/entities/uuid");
 const Register = require("../src/register");
-
-
-/**
- * HUB uuid class
- */
-class _uuid
- {
- 
-     constructor() {}
- 
-     generate()
-     {
-         return Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15);
-     }
- }
-global.Uuid = _uuid;
 
 
  /**
@@ -65,13 +49,12 @@ class _Comp
 {
     constructor( type, events = [],  params = {})
     {
-        this.uuid = new Uuid().generate();
+        this.uuid = uuid.generate();
         this.type = type;
-        this.params = params
         this.events = events;
-        this.form = FactoryForm.createForm(this.uuid, this.type, this.params, events);
+        this.form = FactoryForm.createForm(this.uuid, this.type, params, events);
         this.form.draw();
-        this.register = new Register().add(this.uuid, this);
+        this.register =  Register.add(this);
     }
 }
 global.Comp = _Comp;
@@ -83,21 +66,9 @@ global.Comp = _Comp;
 test("find component by uuid", (t) => {
     var comp1 = new Comp("circle", [], {x: 10, y: 15, r: 60});
 
-    var cp = new Register().find(comp1.uuid);
+    var cp = Register.find(comp1.uuid);
 
     t.deepEqual(cp, comp1);
-    t.end();
-});
-
-
-test("update component by uuid", (t) => {
-    var comp3 = new Comp("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
-
-    new Register().update(comp3.uuid, {x: 200, y: 200, r: 200});
-
-    t.equal(comp3.params.x, 200);
-    t.equal(comp3.params.y, 200);
-    t.equal(comp3.params.r, 200);
     t.end();
 });
 
@@ -105,8 +76,8 @@ test("update component by uuid", (t) => {
 test("delete a registered component", (t) => {
     var comp3 = new Comp("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
     
-    new Register().clear(comp3.uuid);
-    var cp = new Register().find(comp3.uuid);
+    Register.clear(comp3.uuid);
+    var cp = Register.find(comp3.uuid);
 
     t.equal(cp, undefined);
     t.end();

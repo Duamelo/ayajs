@@ -1,0 +1,12 @@
+.svg{
+    width: 100%;
+    height: auto;
+}
+
+.vertex {
+    visibility: hidden;
+}
+
+.vertex_hover{
+    visibility: visible;
+}

@@ -1,12 +1,13 @@
+import  {Circle}  from "./entities/circle.js";
+import  {Rectangle}  from "./entities/rectangle.js";
+import  {Line}  from "./entities/line.js";
+import  {Triangle}  from "./entities/triangle.js";
+
 
 /**
  * @class FactoryForm
  */
 
-import { Circle } from "./entities/circle.js";
-import { Rectangle } from "./entities/rectangle.js";
-import { Line } from "./entities/line.js";
-import { Triangle } from "./entities/triangle.js";
 
 class FactoryForm
 {
@@ -19,7 +20,7 @@ class FactoryForm
     * @returns form
     */
 
-   static createForm(uuid, type, props, events)
+   static createForm(uuid, type, props = {}, events)
     {
         if(type == "circle")
             return new Circle(uuid, props.x, props.y, props.r, events);

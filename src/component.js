@@ -1,4 +1,4 @@
-import {_Register } from "./register.js";
+import {_Register}  from "./register.js";
 import {_uuid} from "./entities/uuid.js";
 import {FactoryForm} from "./factoryForm.js";
 
@@ -20,6 +20,6 @@ class Component
     }
 }
 
-export {Component};
+export  {Component};
 
 

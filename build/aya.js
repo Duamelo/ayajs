@@ -253,18 +253,18 @@
 	            dy = e.offsetY;
 
 	            source.form.resize(pos, deltaX, deltaY);
-	            var links = _Register.getAllLinksByComponent(source);
-	            links.map( (lk) => {
-	              if(source == lk.source){
-	                lk.line.x += deltaX;
-	                lk.line.y += deltaY;
-	              }
-	              else {
-	                lk.line.dest_x += deltaX;
-	                lk.line.dest_y += deltaY;
-	              }
-	              lk.line.redraw();
-	            });
+	            // var links = _Register.getAllLinksByComponent(source);
+	            // links.map( (lk) => {
+	            //   if(source == lk.source){
+	            //     lk.line.x += deltaX;
+	            //     lk.line.y += deltaY;
+	            //   }
+	            //   else{
+	            //     lk.line.dest_x += deltaX;
+	            //     lk.line.dest_y += deltaY;
+	            //   }
+	            //   lk.line.redraw();
+	            // })
 	            source.form.redraw();
 
 	        }
@@ -748,6 +748,11 @@
 	  }
 	}
 
+	/**
+	 * @class FactoryForm
+	 */
+
+
 	class FactoryForm
 	{
 	   /**
@@ -759,7 +764,7 @@
 	    * @returns form
 	    */
 
-	   static createForm(uuid, type, props, events)
+	   static createForm(uuid, type, props = {}, events)
 	    {
 	        if(type == "circle")
 	            return new Circle(uuid, props.x, props.y, props.r, events);

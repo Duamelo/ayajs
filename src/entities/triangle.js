@@ -1,7 +1,7 @@
-import { Connector } from "./connector";
-import { events } from "../events.js";
-import { Point } from "./point";
-import { _uuid } from "./uuid.js";
+import {Connector} from "./connector.js";
+import {events} from "../events.js";
+import {Point} from "./point.js";
+import {_uuid} from "./uuid.js";
 /**
  * @class Triangle class
  */
@@ -156,4 +156,4 @@ class Triangle {
   }
 }
 
-export { Triangle };
+export {Triangle};

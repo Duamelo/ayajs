@@ -1,4 +1,5 @@
-import {Point } from "./point.js";
+import {Point}  from "./point.js";
+
 class Connector
 {
     static create(type, uuid){

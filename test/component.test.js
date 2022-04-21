@@ -1,7 +1,6 @@
-
-var test = require("tape");
-var Component = require("../src/component");
-var Register = require("../src/register");
+import test from 'tape';
+import Component from '../src/component.js';
+import _Register from '../src/register.js';
 
 var form_draw = 0;
 global.svg = 0;
@@ -70,7 +69,7 @@ test("test component constructor with 3 parameters", (t) => {
     t.equal( comp1.form instanceof Object, true);
     t.equal(comp1.events.length, 0);
     t.end();
-});"form of component should be different of null"
+});
 
 
 test(" Event list must be built when events", (t) => {
@@ -94,7 +93,7 @@ test("draw the associate form", (t) => {
 test("check store when we register a component", (t) => {
     var comp1 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
 
-    t.equal(Register.find(comp1.uuid), comp1);
+    t.equal(_Register.find(comp1.uuid), comp1);
     t.end();
 });
 
@@ -102,8 +101,8 @@ test("check store when we register a component", (t) => {
 test("delete a registered component", (t) => {
     var comp3 = new Component("circle", [{ev: "drag", cb: null}], {x: 100, y: 150, r: 640});
     
-    Register.clear(comp3.uuid);
-    var cp = Register.find(comp3.uuid);
+    _Register.clear(comp3.uuid);
+    var cp = _Register.find(comp3.uuid);
 
     t.equal(cp, undefined);
     t.end();

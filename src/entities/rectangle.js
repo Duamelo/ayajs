@@ -1,7 +1,7 @@
-import { Connector } from "./connector.js";
-import { events } from "../events.js";
-import { _uuid } from "./uuid";
-import { Point } from "./point";
+import {Connector} from "./connector.js";
+import {events} from "../events.js";
+import {_uuid} from "./uuid.js";
+
 /**
  * Rectangle class
  */
@@ -192,4 +192,4 @@ class Rectangle {
     }
   }
 
-export { Rectangle };
+export {Rectangle};

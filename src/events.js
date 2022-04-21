@@ -1,7 +1,7 @@
-import { Line } from "./entities/line.js";
-import { _Register } from "./register.js";
-import { _uuid } from "./entities/uuid.js";
-import { Link } from "./entities/link.js";
+import {Line}  from "./entities/line.js";
+import {_Register}  from "./register.js";
+import {_uuid}  from "./entities/uuid.js";
+import {Link}  from "./entities/link.js";
 
 function nativeEvents() {
   var id;
@@ -109,18 +109,18 @@ function nativeEvents() {
             dy = e.offsetY;
 
             source.form.resize(pos, deltaX, deltaY);
-            var links = _Register.getAllLinksByComponent(source);
-            links.map( (lk) => {
-              if(source == lk.source){
-                lk.line.x += deltaX;
-                lk.line.y += deltaY;
-              }
-              else{
-                lk.line.dest_x += deltaX;
-                lk.line.dest_y += deltaY;
-              }
-              lk.line.redraw();
-            })
+            // var links = _Register.getAllLinksByComponent(source);
+            // links.map( (lk) => {
+            //   if(source == lk.source){
+            //     lk.line.x += deltaX;
+            //     lk.line.y += deltaY;
+            //   }
+            //   else{
+            //     lk.line.dest_x += deltaX;
+            //     lk.line.dest_y += deltaY;
+            //   }
+            //   lk.line.redraw();
+            // })
             source.form.redraw();
 
         }
@@ -188,4 +188,4 @@ function nativeEvents() {
 
 var events = nativeEvents();
 
-export { events };
+export {events};

@@ -1,6 +1,6 @@
-import { events } from "../events.js";
-import { _Register } from "../register.js";
-import { _uuid } from "./uuid.js";
+import {events} from "../events.js";
+import {_Register} from "../register.js";
+import {_uuid} from "./uuid.js";
 /**
  *
  * @class Point
@@ -52,4 +52,4 @@ class Point {
   }
 }
 
-export { Point };
+export  {Point};

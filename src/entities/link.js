@@ -1,5 +1,5 @@
-import { _uuid } from "./uuid.js";
-import {_Register } from "../register.js"
+import  {_uuid}  from "./uuid.js";
+import {_Register}  from "../register.js"
 
 /**
  * @class Link 
@@ -17,4 +17,4 @@ class Link
     }
 }
 
-export {Link}
+export  {Link};

@@ -26,4 +26,4 @@ class _Register
     }
 }
 
-export {_Register}
+export  {_Register};

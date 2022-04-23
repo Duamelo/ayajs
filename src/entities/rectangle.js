@@ -1,6 +1,9 @@
 import {Connector} from "./connector.js";
 import {events} from "../events.js";
 import {_uuid} from "./uuid.js";
+import jsdom from "jsdom";
+const { JSDOM } = jsdom;
+var document = new JSDOM(`<!DOCTYPE html>`).window.document;
 
 /**
  * Rectangle class
@@ -31,8 +34,8 @@ class Rectangle {
 
     this.c_points = Connector.create("rectangle", uuid);
     this.vertex = Connector.create("rectangle", uuid);
-    this.createConnector();
-    this.createVertex();
+    this.drawConnector();
+    this.drawVertex();
   }
 
   draw(svgs) {
@@ -60,13 +63,11 @@ class Rectangle {
 
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-    this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-
     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
-  createVertex(){
+  drawVertex(){
 
     this.vertex[0].x = this.x;
     this.vertex[0].y = this.y; 
@@ -82,7 +83,8 @@ class Rectangle {
     this.vertex[3].x = this.x;
     this.vertex[3].y = this.y + this.height;
   }
-  createConnector() {
+
+  drawConnector() {
     this.c_points[0].x = this.x + this.width / 2;
     this.c_points[0].y = this.y;
 
@@ -96,6 +98,7 @@ class Rectangle {
     this.c_points[3].y = this.y + this.height / 2;
   }
 
+
   shift(dx, dy) {
     this.x += dx;
     this.y += dy;
@@ -107,6 +110,7 @@ class Rectangle {
       p.shift(dx, dy);
     });
   }
+
 
   redraw() {
     this.c_svg.setAttribute("x", this.x);
@@ -125,71 +129,47 @@ class Rectangle {
 
 
   resize(pos, dx, dy){
-      if(pos == 0){
-        this.shift(dx, dy);
+    if(pos == 0){
+      this.shift(dx, dy);
 
-        this.width += -dx;
-        this.height += -dy;
+      this.width += -dx;
+      this.height += -dy;
 
-        this.createVertex();
-        this.createConnector();
+      this.drawVertex();
+      this.drawConnector();
 
     }
-      else if(pos == 1){
-        this.y += dy;
+    else if(pos == 1){
+      this.y += dy;
 
-        this.width += dx;
-        this.height += -dy;
+      this.width += dx;
+      this.height += -dy;
 
-        this.c_points.map((p)=>{
-            p.shift(dx,dy);
-        });
+      this.drawVertex();
+      this.drawConnector();
 
-        this.vertex.map((p)=>{
-            p.shift(dx,dy);
-        });
+    }
+    else if(pos == 2){
+      this.width += dx;
+      this.height += dy;
 
-        this.createVertex();
-        this.createConnector();
+    
+      this.drawVertex();
+      this.drawConnector();
 
-      }
-      else if(pos == 2){
-        this.width += dx;
-        this.height += dy;
+    }
+    else if(pos == 3){
 
-        this.c_points.map((p)=>{
-            p.shift(dx,dy);
-        });
+      this.x += dx;
 
-        this.vertex.map((p)=>{
-            p.shift(dx,dy);
-        });
+      this.width += -dx;
+      this.height += dy;
 
-        this.createVertex();
-        this.createConnector();
 
-      }
-      else if(pos == 3){
-
-        this.x += dx;
-
-        this.width += -dx;
-        this.height += dy;
-
-        this.c_points.map((p)=>{
-            p.shift(dx,dy);
-        });
-
-        this.vertex.map((p)=>{
-            p.shift(dx,dy);
-        });
-
-        this.createVertex();
-        this.createConnector();
-      }
-
-      
+      this.drawVertex();
+      this.drawConnector();
     }
   }
+}
 
 export {Rectangle};

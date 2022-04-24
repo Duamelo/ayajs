@@ -12,10 +12,10 @@ function nativeEvents() {
   var line = "";
   var source;
   var lk;
+  var pos;
 
   return {
     mouseDownCb: function mousedowncb(e) {
-      var pos;
 
       dx = e.offsetX;
       dy = e.offsetY;
@@ -48,7 +48,7 @@ function nativeEvents() {
       }
     },
     mouseMoveCb: function movecb(e) {
-        var pos;
+        // var pos;
         if (state == "moving") {
             deltaX = e.offsetX - dx;
             deltaY = e.offsetY - dy;
@@ -100,7 +100,7 @@ function nativeEvents() {
             line.redraw();
         } 
         else if (state == "resizing") {
-            pos = source.form.vertex.indexOf(cp);
+            // pos = source.form.vertex.indexOf(cp);
 
             deltaX = e.offsetX - dx;
             deltaY = e.offsetY - dy;
@@ -108,21 +108,29 @@ function nativeEvents() {
             dx = e.offsetX;
             dy = e.offsetY;
 
+            // cp = source;
             source.form.resize(pos, deltaX, deltaY);
             // var links = _Register.getAllLinksByComponent(source);
-            // links.map( (lk) => {
-            //   if(source == lk.source){
-            //     lk.line.x += deltaX;
-            //     lk.line.y += deltaY;
+            // links.map(({ source, line }) => {
+            //   if (cp == source) {
+            //       cp.form.c_points.map((pnt) => {
+            //       if (pnt.x == line.x && pnt.y == line.y) {
+            //           line.x += deltaX;
+            //           line.y += deltaY;
+            //           line.redraw();
+            //       }
+            //       });
+            //   } else {
+            //       cp.form.c_points.map((pnt) => {
+            //       if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+            //           line.dest_x += deltaX;
+            //           line.dest_y += deltaY;
+            //           line.redraw();
+            //       }
+            //       });
             //   }
-            //   else{
-            //     lk.line.dest_x += deltaX;
-            //     lk.line.dest_y += deltaY;
-            //   }
-            //   lk.line.redraw();
-            // })
+            //   });
             source.form.redraw();
-
         }
     },
     mouseUpCb: function mouseupcb(e) { 

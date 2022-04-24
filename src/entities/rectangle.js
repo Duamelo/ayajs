@@ -1,9 +1,9 @@
 import {Connector} from "./connector.js";
 import {events} from "../events.js";
 import {_uuid} from "./uuid.js";
-import jsdom from "jsdom";
-const { JSDOM } = jsdom;
-var document = new JSDOM(`<!DOCTYPE html>`).window.document;
+// import jsdom from "jsdom";
+// const { JSDOM } = jsdom;
+// var document = new JSDOM(`<!DOCTYPE html>`).window.document;
 
 /**
  * Rectangle class

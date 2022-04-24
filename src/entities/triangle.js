@@ -1,7 +1,7 @@
-import {Connector} from "./connector.js";
-import {events} from "../events.js";
-import {Point} from "./point.js";
-import {_uuid} from "./uuid.js";
+import { Connector } from "./connector.js";
+import { events } from "../events.js";
+import { Point } from "./point.js";
+import { _uuid } from "./uuid.js";
 /**
  * @class Triangle class
  */
@@ -45,9 +45,9 @@ class Triangle {
 
     this.c_points = Connector.create("triangle", uuid);
     this.vertex = [
-      new Point(_uuid.generate(), this.x1, this.y1, 5),
-      new Point(_uuid.generate(), this.x2, this.y2, 5),
-      new Point(_uuid.generate(), this.x3, this.y3, 5),
+      new Point(this.uuid, this.x1, this.y1, 5),
+      new Point(this.uuid, this.x2, this.y2, 5),
+      new Point(this.uuid, this.x3, this.y3, 5),
     ];
     this.createConnector();
   }
@@ -75,7 +75,7 @@ class Triangle {
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttribute("stroke", "darkviolet");
+    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
     this.c_svg.setAttributeNS(null, "stroke-width", "2px");
     this.c_svg.setAttribute("fill", "lavenderblush");
 
@@ -147,6 +147,7 @@ class Triangle {
       " Z";
 
     this.c_svg.setAttribute("d", this.p);
+
     this.c_points.map((p) => {
       p.redraw();
     });
@@ -154,6 +155,30 @@ class Triangle {
       v.redraw();
     });
   }
+
+  resize(pos, dx, dy) {
+    //console.log(dx + "---" + dy);
+    if (pos == 0) {
+      this.x1 = dx;
+      this.y1 = dy;
+      this.vertex[0].x = dx;
+      this.vertex[0].y = dy;
+      this.createConnector();
+      //console.log(this.vertex[0].x);
+    } else if (pos == 1) {
+      this.x2 = dx;
+      this.y2 = dy;
+      this.vertex[1].x = dx;
+      this.vertex[1].y = dy;
+      this.createConnector();
+    } else if (pos == 2) {
+      this.x3 = dx;
+      this.y3 = dy;
+      this.vertex[2].x = dx;
+      this.vertex[2].y = dy;
+      this.createConnector();
+    }
+  }
 }
 
-export {Triangle};
+export { Triangle };

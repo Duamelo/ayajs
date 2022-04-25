@@ -157,11 +157,7 @@
 	  var line = "";
 	  var source;
 	  var lk;
-<<<<<<< HEAD
-	  var prev_pos;
-=======
 	  var pos;
->>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 	  return {
 	    mouseDownCb: function mousedowncb(e) {
@@ -174,22 +170,23 @@
 	      cp = _Register.find(id);
 
 	      if (id != "svg")
-	        source =
-	          cp != undefined && cp.parent != undefined
-	            ? _Register.find(cp.parent)
-	            : cp;
+	        source = cp != undefined && cp.parent != undefined ? _Register.find(cp.parent) : cp;
+
 	      console.log(cp);
 	      console.log(source);
+
 	      lk = _Register.getAllLinksByComponent(cp);
 
 	      // un component n'a pas de propriété parent
-	      if (cp != undefined && cp.parent == undefined) state = "moving";
+	      if (cp != undefined && cp.parent == undefined) 
+	          state = "moving";
 	      else {
 	        if ((pos = source.form.vertex.indexOf(cp)) >= 0) {
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
-	        } else {
+	        } 
+	        else {
 	          state = "drawing_link";
 	          id = _uuid.generate();
 	          if (cp != source) {
@@ -200,16 +197,9 @@
 	      }
 	    },
 	    mouseMoveCb: function movecb(e) {
-<<<<<<< HEAD
-	      var pos;
-=======
-	        // var pos;
-	        if (state == "moving") {
-	            deltaX = e.offsetX - dx;
-	            deltaY = e.offsetY - dy;
->>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 	      if (state == "moving") {
+	        
 	        deltaX = e.offsetX - dx;
 	        deltaY = e.offsetY - dy;
 
@@ -225,7 +215,6 @@
 	                line.redraw();
 	              }
 	            });
-<<<<<<< HEAD
 	          } else {
 	            cp.form.c_points.map((pnt) => {
 	              if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
@@ -238,7 +227,9 @@
 	        });
 	        cp.form.shift(deltaX, deltaY);
 	        cp.form.redraw();
-	      } else if (state == "drawing_link") {
+	      } 
+	      else if (state == "drawing_link") {
+
 	        source.form.vertex.map((v) => {
 	          if (v.x == line.x && v.y == line.y) {
 	            v.c_svg.classList.remove("vertex");
@@ -257,8 +248,9 @@
 	        line.dest_x = e.clientX;
 	        line.dest_y = e.clientY;
 	        line.redraw();
-	      } else if (state == "resizing") {
-	        pos = source.form.vertex.indexOf(cp);
+	      } 
+	      else if (state == "resizing") {
+
 	        if (source.type == "rectangle") {
 	          deltaX = e.offsetX - dx;
 	          deltaY = e.offsetY - dy;
@@ -268,83 +260,28 @@
 
 	          source.form.resize(pos, deltaX, deltaY);
 	          source.form.redraw();
-	        } else if (source.type == "triangle") {
-	          console.log("triangle is moving");
-
-	          if (prev_pos == 0 && pos == -1) {
-	            pos += 1;
-	          } else if (prev_pos == 1 && pos == -1) {
-	            pos += 2;
-	          } else if (prev_pos == 2 && pos == -1) {
-	            pos += 3;
-	          }
-	          console.log(pos);
-	          console.log(prev_pos);
-	          dx = e.offsetX;
-	          dy = e.offsetY;
-
-	          source.form.resize(pos, dx, dy);
-	          source.form.redraw();
-	          prev_pos = pos;
-=======
-	            cp.form.shift(deltaX, deltaY);
-	            cp.form.redraw();
-	        }
-	        else if (state == "drawing_link") {
-	          source.form.vertex.map((v) => {
-
-	            if(v.x == line.x && v.y == line.y){
-	              v.c_svg.classList.remove("vertex");
-	              v.c_svg.classList.add("vertex_hover");
-	            }
-	          });
-	  
-	          source.form.c_points.map((v) => {
-	            if(v.x == line.x && v.y == line.y){
-	              v.c_svg.style.color = "gray";
-	              v.c_svg.classList.remove("vertex");
-	              v.c_svg.classList.add("vertex_hover");
-	            }
-	          });
-	  
-	            line.dest_x = e.clientX;
-	            line.dest_y = e.clientY;
-	            line.redraw();
 	        } 
-	        else if (state == "resizing") {
-	            // pos = source.form.vertex.indexOf(cp);
+	        // else if (source.type == "triangle") {
+	        //   console.log("triangle is moving");
 
-	            deltaX = e.offsetX - dx;
-	            deltaY = e.offsetY - dy;
+	        //   if (prev_pos == 0 && pos == -1) {
+	        //     pos += 1;
+	        //   } else if (prev_pos == 1 && pos == -1) {
+	        //     pos += 2;
+	        //   } else if (prev_pos == 2 && pos == -1) {
+	        //     pos += 3;
+	        //   }
+	        //   console.log(pos);
+	        //   console.log(prev_pos);
+	        //   dx = e.offsetX;
+	        //   dy = e.offsetY;
 
-	            dx = e.offsetX;
-	            dy = e.offsetY;
-
-	            // cp = source;
-	            source.form.resize(pos, deltaX, deltaY);
-	            // var links = _Register.getAllLinksByComponent(source);
-	            // links.map(({ source, line }) => {
-	            //   if (cp == source) {
-	            //       cp.form.c_points.map((pnt) => {
-	            //       if (pnt.x == line.x && pnt.y == line.y) {
-	            //           line.x += deltaX;
-	            //           line.y += deltaY;
-	            //           line.redraw();
-	            //       }
-	            //       });
-	            //   } else {
-	            //       cp.form.c_points.map((pnt) => {
-	            //       if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	            //           line.dest_x += deltaX;
-	            //           line.dest_y += deltaY;
-	            //           line.redraw();
-	            //       }
-	            //       });
-	            //   }
-	            //   });
-	            source.form.redraw();
->>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
-	        }
+	        //   source.form.resize(pos, dx, dy);
+	        //   source.form.redraw();
+	        //   prev_pos = pos;
+	        //     cp.form.shift(deltaX, deltaY);
+	        //     cp.form.redraw();
+	        // }
 	      }
 	    },
 	    mouseUpCb: function mouseupcb(e) {
@@ -362,14 +299,15 @@
 	          // for automatic redrawing
 	          line.redraw();
 	          new Link(source, destination, line);
-	        } else if (id == "svg" || pnt.parent == undefined) {
+	        } 
+	        else if (id == "svg" || pnt.parent == undefined) {
 	          var ref = document.getElementById(line.uuid);
 	          ref.remove();
 	        }
 	      }
 	      state = "";
 	    },
-	    mouseOverCb: function mouseovercb(e) {
+	  mouseOverCb: function mouseovercb(e) {
 	      id = e.srcElement.id;
 
 	      cp = _Register.find(id);
@@ -386,24 +324,23 @@
 	          v.c_svg.classList.add("vertex_hover");
 	        });
 	      }
-	    },
-	    mouseLeaveCb: function mouseleavecb(e) {
-	      // id = e.srcElement.id;
-	      // cp = _Register.find(id);
-	      // if (cp.parent == undefined) {
-	      //   cp.form.vertex.map((v) => {
-	      //     v.c_svg.classList.add("vertex");
-	      //     v.c_svg.classList.remove("vertex_hover");
-	      //   });
-	      //   cp.form.c_points.map((v) => {
-	      //     v.c_svg.classList.add("vertex");
-	      //     v.c_svg.classList.remove("vertex_hover");
-	      //   });
-	      // }
-	    },
-	  };
+	  },
+	  mouseLeaveCb: function mouseleavecb(e) {
+	    // id = e.srcElement.id;
+	    // cp = _Register.find(id);
+	    // if (cp.parent == undefined) {
+	    //   cp.form.vertex.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    //   cp.form.c_points.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    // }
+	  }
 	}
-
+	}
 	var events = nativeEvents();
 
 	/**
@@ -476,10 +413,6 @@
 	  }
 	}
 
-	// import jsdom from "jsdom";
-	// const { JSDOM } = jsdom;
-	// var document = new JSDOM(`<!DOCTYPE html>`).window.document;
-
 	/**
 	 * Rectangle class
 	 */
@@ -542,12 +475,7 @@
 	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
 
-<<<<<<< HEAD
-	  createVertex() {
-=======
 	  drawVertex(){
-
->>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 	    this.vertex[0].x = this.x;
 	    this.vertex[0].y = this.y;
 
@@ -606,74 +534,18 @@
 	  }
 
 	  resize(pos, dx, dy) {
+
 	    if (pos == 0) {
 	      this.shift(dx, dy);
 
-<<<<<<< HEAD
-	      this.width += -dx;
-	      this.height += -dy;
-
-	      this.createVertex();
-	      this.createConnector();
-	    } else if (pos == 1) {
-	      this.y += dy;
-
-	      this.width += dx;
-	      this.height += -dy;
-
-	      this.c_points.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.vertex.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.createVertex();
-	      this.createConnector();
-	    } else if (pos == 2) {
-	      this.width += dx;
-	      this.height += dy;
-
-	      this.c_points.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.vertex.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.createVertex();
-	      this.createConnector();
-	    } else if (pos == 3) {
-	      this.x += dx;
-
-	      this.width += -dx;
-	      this.height += dy;
-
-	      this.c_points.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.vertex.map((p) => {
-	        p.shift(dx, dy);
-	      });
-
-	      this.createVertex();
-	      this.createConnector();
-=======
-	  resize(pos, dx, dy){
-	    if(pos == 0){
-	      this.shift(dx, dy);
-
 	      this.width += -dx;
 	      this.height += -dy;
 
 	      this.drawVertex();
 	      this.drawConnector();
+	    } 
+	    else if (pos == 1) {
 
-	    }
-	    else if(pos == 1){
 	      this.y += dy;
 
 	      this.width += dx;
@@ -681,28 +553,25 @@
 
 	      this.drawVertex();
 	      this.drawConnector();
+	    } 
+	    else if (pos == 2) {
 
-	    }
-	    else if(pos == 2){
 	      this.width += dx;
 	      this.height += dy;
 
-	    
 	      this.drawVertex();
 	      this.drawConnector();
-
-	    }
-	    else if(pos == 3){
+	    } 
+	    else if (pos == 3) {
 
 	      this.x += dx;
 
 	      this.width += -dx;
 	      this.height += dy;
 
-
 	      this.drawVertex();
 	      this.drawConnector();
->>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
+
 	    }
 	  }
 	}

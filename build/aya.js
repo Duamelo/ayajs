@@ -157,7 +157,11 @@
 	  var line = "";
 	  var source;
 	  var lk;
+<<<<<<< HEAD
 	  var prev_pos;
+=======
+	  var pos;
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 	  return {
 	    mouseDownCb: function mousedowncb(e) {
@@ -181,7 +185,7 @@
 	      // un component n'a pas de propriété parent
 	      if (cp != undefined && cp.parent == undefined) state = "moving";
 	      else {
-	        if ((source.form.vertex.indexOf(cp)) >= 0) {
+	        if ((pos = source.form.vertex.indexOf(cp)) >= 0) {
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
@@ -196,7 +200,14 @@
 	      }
 	    },
 	    mouseMoveCb: function movecb(e) {
+<<<<<<< HEAD
 	      var pos;
+=======
+	        // var pos;
+	        if (state == "moving") {
+	            deltaX = e.offsetX - dx;
+	            deltaY = e.offsetY - dy;
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 	      if (state == "moving") {
 	        deltaX = e.offsetX - dx;
@@ -214,6 +225,7 @@
 	                line.redraw();
 	              }
 	            });
+<<<<<<< HEAD
 	          } else {
 	            cp.form.c_points.map((pnt) => {
 	              if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
@@ -274,6 +286,64 @@
 	          source.form.resize(pos, dx, dy);
 	          source.form.redraw();
 	          prev_pos = pos;
+=======
+	            cp.form.shift(deltaX, deltaY);
+	            cp.form.redraw();
+	        }
+	        else if (state == "drawing_link") {
+	          source.form.vertex.map((v) => {
+
+	            if(v.x == line.x && v.y == line.y){
+	              v.c_svg.classList.remove("vertex");
+	              v.c_svg.classList.add("vertex_hover");
+	            }
+	          });
+	  
+	          source.form.c_points.map((v) => {
+	            if(v.x == line.x && v.y == line.y){
+	              v.c_svg.style.color = "gray";
+	              v.c_svg.classList.remove("vertex");
+	              v.c_svg.classList.add("vertex_hover");
+	            }
+	          });
+	  
+	            line.dest_x = e.clientX;
+	            line.dest_y = e.clientY;
+	            line.redraw();
+	        } 
+	        else if (state == "resizing") {
+	            // pos = source.form.vertex.indexOf(cp);
+
+	            deltaX = e.offsetX - dx;
+	            deltaY = e.offsetY - dy;
+
+	            dx = e.offsetX;
+	            dy = e.offsetY;
+
+	            // cp = source;
+	            source.form.resize(pos, deltaX, deltaY);
+	            // var links = _Register.getAllLinksByComponent(source);
+	            // links.map(({ source, line }) => {
+	            //   if (cp == source) {
+	            //       cp.form.c_points.map((pnt) => {
+	            //       if (pnt.x == line.x && pnt.y == line.y) {
+	            //           line.x += deltaX;
+	            //           line.y += deltaY;
+	            //           line.redraw();
+	            //       }
+	            //       });
+	            //   } else {
+	            //       cp.form.c_points.map((pnt) => {
+	            //       if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+	            //           line.dest_x += deltaX;
+	            //           line.dest_y += deltaY;
+	            //           line.redraw();
+	            //       }
+	            //       });
+	            //   }
+	            //   });
+	            source.form.redraw();
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 	        }
 	      }
 	    },
@@ -406,6 +476,10 @@
 	  }
 	}
 
+	// import jsdom from "jsdom";
+	// const { JSDOM } = jsdom;
+	// var document = new JSDOM(`<!DOCTYPE html>`).window.document;
+
 	/**
 	 * Rectangle class
 	 */
@@ -435,8 +509,8 @@
 
 	    this.c_points = Connector.create("rectangle", uuid);
 	    this.vertex = Connector.create("rectangle", uuid);
-	    this.createConnector();
-	    this.createVertex();
+	    this.drawConnector();
+	    this.drawVertex();
 	  }
 
 	  draw(svgs) {
@@ -464,13 +538,16 @@
 
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-	    this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-
 	    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
 	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
 
+<<<<<<< HEAD
 	  createVertex() {
+=======
+	  drawVertex(){
+
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 	    this.vertex[0].x = this.x;
 	    this.vertex[0].y = this.y;
 
@@ -483,7 +560,8 @@
 	    this.vertex[3].x = this.x;
 	    this.vertex[3].y = this.y + this.height;
 	  }
-	  createConnector() {
+
+	  drawConnector() {
 	    this.c_points[0].x = this.x + this.width / 2;
 	    this.c_points[0].y = this.y;
 
@@ -497,6 +575,7 @@
 	    this.c_points[3].y = this.y + this.height / 2;
 	  }
 
+
 	  shift(dx, dy) {
 	    this.x += dx;
 	    this.y += dy;
@@ -509,6 +588,7 @@
 	      p.shift(dx, dy);
 	    });
 	  }
+
 
 	  redraw() {
 	    this.c_svg.setAttribute("x", this.x);
@@ -529,6 +609,7 @@
 	    if (pos == 0) {
 	      this.shift(dx, dy);
 
+<<<<<<< HEAD
 	      this.width += -dx;
 	      this.height += -dy;
 
@@ -580,6 +661,48 @@
 
 	      this.createVertex();
 	      this.createConnector();
+=======
+	  resize(pos, dx, dy){
+	    if(pos == 0){
+	      this.shift(dx, dy);
+
+	      this.width += -dx;
+	      this.height += -dy;
+
+	      this.drawVertex();
+	      this.drawConnector();
+
+	    }
+	    else if(pos == 1){
+	      this.y += dy;
+
+	      this.width += dx;
+	      this.height += -dy;
+
+	      this.drawVertex();
+	      this.drawConnector();
+
+	    }
+	    else if(pos == 2){
+	      this.width += dx;
+	      this.height += dy;
+
+	    
+	      this.drawVertex();
+	      this.drawConnector();
+
+	    }
+	    else if(pos == 3){
+
+	      this.x += dx;
+
+	      this.width += -dx;
+	      this.height += dy;
+
+
+	      this.drawVertex();
+	      this.drawConnector();
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 	    }
 	  }
 	}
@@ -600,16 +723,8 @@
 	   * @param {LineTo this ordonne point} y3
 	   * @param {array of object} events
 	   */
-	  constructor(
-	    uuid,
-	    x1 = 0,
-	    y1 = 0,
-	    x2 = 5,
-	    y2 = 5,
-	    x3 = 10,
-	    y3 = 10,
-	    events = []
-	  ) {
+	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
+	  {
 	    this.uuid = uuid;
 
 	    this.x1 = x1;
@@ -631,7 +746,7 @@
 	      new Point(this.uuid, this.x2, this.y2, 5),
 	      new Point(this.uuid, this.x3, this.y3, 5),
 	    ];
-	    this.createConnector();
+	    this.drawConnector();
 	  }
 
 	  draw(svgs) {
@@ -677,7 +792,7 @@
 	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
 
-	  createConnector() {
+	  drawConnector() {
 	    this.c_points[0].x = (this.x1 + this.x2) / 2;
 	    this.c_points[0].y = (this.y1 + this.y2) / 2;
 	    this.c_points[0].r = 5;

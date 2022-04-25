@@ -6,10 +6,16 @@ import { _uuid } from "./uuid.js";
 import {Connector} from "./connector.js";
 import {events} from "../events.js";
 import {_uuid} from "./uuid.js";
+<<<<<<< HEAD
 import jsdom from "jsdom";
 const { JSDOM } = jsdom;
 var document = new JSDOM(`<!DOCTYPE html>`).window.document;
 >>>>>>> 15875a64db708e0e0281f1e1cca36e6bcf3fb261
+=======
+// import jsdom from "jsdom";
+// const { JSDOM } = jsdom;
+// var document = new JSDOM(`<!DOCTYPE html>`).window.document;
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 /**
  * Rectangle class

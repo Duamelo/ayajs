@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="./build/aya.js"></script>
-    <title>Document</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="initial-scale=1.0">
+   <link rel="stylesheet" href="style.css">
+   <script src="./build/aya.js"></script>
+   <title>Document</title>
 </head>
 
 <body>
@@ -31,24 +31,18 @@
          height: 100
       });
 
-      var rect2 = new aya.Component("rectangle", [], {
-         x: 550,
-         y: 250,
-         width: 100,
-         height: 100
-      });
       var tri = new aya.Component("triangle", [], {
          x1: 410,
          y1: 118,
+
          x2: 360,
          y2: 18,
+
          x3: 60,
          y3: 118
       });
-      var tri2 = new aya.Component("triangle", [], { x1:700,y1:169, x2:850,y2:69, x3:550, y3:169 });
 
       document.body.append(svg);
-
    </script>
 
 </body>

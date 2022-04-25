@@ -1,9 +1,21 @@
+<<<<<<< HEAD
+import { Connector } from "./connector.js";
+import { events } from "../events.js";
+import { _uuid } from "./uuid.js";
+=======
 import {Connector} from "./connector.js";
 import {events} from "../events.js";
 import {_uuid} from "./uuid.js";
+<<<<<<< HEAD
+import jsdom from "jsdom";
+const { JSDOM } = jsdom;
+var document = new JSDOM(`<!DOCTYPE html>`).window.document;
+>>>>>>> 15875a64db708e0e0281f1e1cca36e6bcf3fb261
+=======
 // import jsdom from "jsdom";
 // const { JSDOM } = jsdom;
 // var document = new JSDOM(`<!DOCTYPE html>`).window.document;
+>>>>>>> ac7c440ee3577086bf1df598f6f77c591c951943
 
 /**
  * Rectangle class
@@ -67,18 +79,20 @@ class Rectangle {
     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
+<<<<<<< HEAD
+  createVertex() {
+=======
   drawVertex(){
 
+>>>>>>> 15875a64db708e0e0281f1e1cca36e6bcf3fb261
     this.vertex[0].x = this.x;
-    this.vertex[0].y = this.y; 
-
+    this.vertex[0].y = this.y;
 
     this.vertex[1].x = this.x + this.width;
-    this.vertex[1].y = this.y; 
+    this.vertex[1].y = this.y;
 
     this.vertex[2].x = this.x + this.width;
-    this.vertex[2].y = this.y + this.height; 
-
+    this.vertex[2].y = this.y + this.height;
 
     this.vertex[3].x = this.x;
     this.vertex[3].y = this.y + this.height;
@@ -102,6 +116,7 @@ class Rectangle {
   shift(dx, dy) {
     this.x += dx;
     this.y += dy;
+
     this.c_points.map((p) => {
       p.shift(dx, dy);
     });
@@ -127,7 +142,63 @@ class Rectangle {
     });
   }
 
+  resize(pos, dx, dy) {
+    if (pos == 0) {
+      this.shift(dx, dy);
 
+<<<<<<< HEAD
+      this.width += -dx;
+      this.height += -dy;
+
+      this.createVertex();
+      this.createConnector();
+    } else if (pos == 1) {
+      this.y += dy;
+
+      this.width += dx;
+      this.height += -dy;
+
+      this.c_points.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.vertex.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.createVertex();
+      this.createConnector();
+    } else if (pos == 2) {
+      this.width += dx;
+      this.height += dy;
+
+      this.c_points.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.vertex.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.createVertex();
+      this.createConnector();
+    } else if (pos == 3) {
+      this.x += dx;
+
+      this.width += -dx;
+      this.height += dy;
+
+      this.c_points.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.vertex.map((p) => {
+        p.shift(dx, dy);
+      });
+
+      this.createVertex();
+      this.createConnector();
+=======
   resize(pos, dx, dy){
     if(pos == 0){
       this.shift(dx, dy);
@@ -168,8 +239,9 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+>>>>>>> 15875a64db708e0e0281f1e1cca36e6bcf3fb261
     }
   }
 }
 
-export {Rectangle};
+export { Rectangle };

@@ -1,53 +1,10 @@
-var test = require("tape");
-const Rectangle = require("../src/entities/rectangle");
-const uuid = require("../src/entities/uuid");
+import test from "tape";
+import {Rectangle} from "../src/entities/rectangle.js";
+import {_uuid} from "../src/entities/uuid.js";
 
-
-class Connector
-{
-    static create(type, uuid){
-        var cp = [];
-        
-        // var p0 = { x: 0, y: 0, r: 5};
-        // cp.push(p0);
-
-        // var p1 = {x: 20, y: 0, r: 5};
-        // cp.push(p1);
-        
-        // var p2 = {x: 40, y: 0, r: 5};
-        // cp.push(p2);
-
-        // var p3 = {x: 40, y: 20, r: 5};
-        // cp.push(p3);
-
-        // var p4 = {x: 40, y: 40, r: 5};
-        // cp.push(p4);
-
-        // var p5 = {x: 20, y: 40, r: 5};
-        // cp.push(p5);
-
-        // var p6 = {x: 0, y: 40, r: 5};
-        // cp.push(p6);
-
-
-        // var p7 = {x: 0, y: 20, r: 5};
-        // cp.push(p7);
-
-        for(var i = 0; i < 8; i++){
-            cp.push({uuid: uuid, x:0, y:0, r:5});
-        }
-        return cp;
-    }
-
-    static update(){
-        
-    }
-}
-
-global.Connector = Connector;
 
 test("uuid exist", (t) => {
-    var rc = new Rectangle(uuid.generate());
+    var rc = new Rectangle(_uuid.generate());
 
     t.notEqual(rc.uuid, undefined);
     t.end();
@@ -55,7 +12,7 @@ test("uuid exist", (t) => {
 
 
 test("class rectangle instanciation without parameters", (t) =>{
-    var rc = new Rectangle(uuid.generate());
+    var rc = new Rectangle(_uuid.generate());
 
     t.equal(rc.x, 0);
     t.equal(rc.y, 0);
@@ -66,7 +23,7 @@ test("class rectangle instanciation without parameters", (t) =>{
 });
 
 test("class rectangle instanciation with parameters", (t) => {
-    var rc = new Rectangle(uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
+    var rc = new Rectangle(_uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
 
     t.equal(rc.x, 14);
     t.equal(rc.y, 19);
@@ -77,16 +34,14 @@ test("class rectangle instanciation with parameters", (t) => {
 });
 
 test("rect exist", (t) => {
-    var rc = new Rectangle(uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
+    var rc = new Rectangle(_uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
 
     t.equal(rc.rect, "");
     t.end();
 });
 
-global.document = {};
-
 test("draw a connection point", (t) => {
-    var rc = new Rectangle(uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
+    var rc = new Rectangle(_uuid.generate(), 14, 19, 50, 30, [{ev: null, cb: null}]);
 
   
     t.equal(rc.c_points.length, 8)
@@ -96,7 +51,7 @@ test("draw a connection point", (t) => {
 
 
 test("check the coordinates of the connection points", (t) => {
-    var rc = new Rectangle(uuid.generate(), 0, 0, 40, 40, [{ev: null, cb: null}]);
+    var rc = new Rectangle(_uuid.generate(), 0, 0, 40, 40, [{ev: null, cb: null}]);
 
     t.equal(rc.c_points[0].x, 0);
     t.equal(rc.c_points[0].y, 0);
@@ -139,13 +94,5 @@ test("check the coordinates of the connection points", (t) => {
 
     t.equal(rc.c_points[7].uuid, rc.uuid);
     
-
     t.end();
 });
-
-
-
-
-// test("number of connectors returned according to the type of the form", (t) => {
-    
-// });

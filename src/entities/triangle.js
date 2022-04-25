@@ -18,16 +18,8 @@ class Triangle {
    * @param {LineTo this ordonne point} y3
    * @param {array of object} events
    */
-  constructor(
-    uuid,
-    x1 = 0,
-    y1 = 0,
-    x2 = 5,
-    y2 = 5,
-    x3 = 10,
-    y3 = 10,
-    events = []
-  ) {
+  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
+  {
     this.uuid = uuid;
 
     this.x1 = x1;
@@ -49,7 +41,7 @@ class Triangle {
       new Point(this.uuid, this.x2, this.y2, 5),
       new Point(this.uuid, this.x3, this.y3, 5),
     ];
-    this.createConnector();
+    this.drawConnector();
   }
 
   draw(svgs) {
@@ -95,7 +87,7 @@ class Triangle {
     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
-  createConnector() {
+  drawConnector() {
     this.c_points[0].x = (this.x1 + this.x2) / 2;
     this.c_points[0].y = (this.y1 + this.y2) / 2;
     this.c_points[0].r = 5;

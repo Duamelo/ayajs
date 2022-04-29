@@ -14,6 +14,9 @@ class Connector {
       for (var i = 0; i < 3; i++) {
         cp.push(new Point(uuid, 0, 0));
       }
+    } else if (type == "circle") {
+      cp = [];
+      cp.push(new Point(uuid, 0, 0));
     }
     return cp;
   }

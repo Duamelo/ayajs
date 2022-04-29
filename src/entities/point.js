@@ -1,6 +1,6 @@
-import {events} from "../events.js";
-import {_Register} from "../register.js";
-import {_uuid} from "./uuid.js";
+import { events } from "../events.js";
+import { _Register } from "../register.js";
+import { _uuid } from "./uuid.js";
 /**
  *
  * @class Point
@@ -29,7 +29,7 @@ class Point {
 
     this.c_svg.setAttribute("r", this.r);
 
-    this.c_svg.setAttribute("class", "vertex");
+    //this.c_svg.setAttribute("class", "vertex");
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
@@ -40,7 +40,7 @@ class Point {
   }
 
   shift(dx, dy) {
-      // console.log("dx: " + dx + " dy : " + dy);
+    // console.log("dx: " + dx + " dy : " + dy);
     this.x += dx;
     this.y += dy;
   }
@@ -52,4 +52,4 @@ class Point {
   }
 }
 
-export  {Point};
+export { Point };

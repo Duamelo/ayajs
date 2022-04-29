@@ -17,12 +17,12 @@ class Component
         this.form = FactoryForm.createForm(this.uuid, type, props, events);
         _Register.add(this);
         this.form.draw(svg);
-        // this.allChild =[];
+        this.children =[];
     }
 
-    createChild(typeChild,propsChild){
-        var child = FactoryForm.createForm(_uuid.generate(), typeChild, propsChild);
-        this.allChild.push(child);
+    createChild(type, props){
+        var child = FactoryForm.createForm(this.uuid, type, props);
+        this.children.push(child);
 
     }
     

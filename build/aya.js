@@ -227,6 +227,15 @@
 	        });
 	        cp.form.shift(deltaX, deltaY);
 	        cp.form.redraw();
+
+	        console.log(cp.form.allChild);
+	        if(cp.form.allChild){
+	          
+	          cp.form.allChild.forEach(child => {
+	          child.shift(deltaX, deltaY);
+	          child.redraw();
+	        });}
+
 	      } 
 	      else if (state == "drawing_link") {
 
@@ -791,7 +800,15 @@
 	        this.form = FactoryForm.createForm(this.uuid, type, props, events);
 	        _Register.add(this);
 	        this.form.draw(svg);
+	        this.children =[];
 	    }
+
+	    createChild(type, props){
+	        var child = FactoryForm.createForm(this.uuid, type, props);
+	        this.children.push(child);
+
+	    }
+	    
 	}
 
 	exports.Circle = Circle;

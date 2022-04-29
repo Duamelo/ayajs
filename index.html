@@ -7,7 +7,7 @@
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
    <script src="./build/aya.js"></script>
-   <title>Document</title>
+   <title>ayajs</title>
 </head>
 
 <body>
@@ -42,6 +42,19 @@
          y3: 118
       });
 
+      var rectChild_01 = new aya.Component("rectangle", [], {
+         x: 600,
+         y: 300,
+         width: 50,
+         height: 50
+      });
+
+      rect.createChild('rectangle',{
+         x: 600,
+         y: 300,
+         width: 50,
+         height: 50
+      });
       document.body.append(svg);
    </script>
 

@@ -83,6 +83,13 @@ function nativeEvents() {
         });
         cp.form.shift(deltaX, deltaY);
         cp.form.redraw();
+
+        // if(cp.form.allChild != undefined){
+        //   cp.form.allChild.forEach(child => {
+        //   child.shift(deltaX, deltaY);
+        //   child.redraw();
+        // });}
+
       } 
       else if (state == "drawing_link") {
 

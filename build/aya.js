@@ -129,7 +129,7 @@
 	            ? _Register.find(cp.parent)
 	            : cp;
 
-	      //console.log(cp);
+	      console.log(cp);
 	      // console.log("----");
 	      // console.log(source.form.p_resizer);
 	      // console.log("---");
@@ -166,28 +166,38 @@
 	        dx = e.offsetX;
 	        dy = e.offsetY;
 
-	        lk.map(({ source, line }) => {
-	          if (cp == source) {
-	            cp.form.c_points.map((pnt) => {
-	              if (pnt.x == line.x && pnt.y == line.y) {
-	                line.x += deltaX;
-	                line.y += deltaY;
-	                line.redraw();
-	              }
-	            });
-	          } else {
-	            cp.form.c_points.map((pnt) => {
-	              if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                line.dest_x += deltaX;
-	                line.dest_y += deltaY;
-	                line.redraw();
-	              }
-	            });
-	          }
-	        });
-	        cp.form.shift(deltaX, deltaY);
-	        cp.form.redraw();
-	      } else if (state == "drawing_link") {
+	        if(cp.type == "rectangle" || cp.type == "triangle") {
+	          lk.map(({ source, line }) => {
+	            if (cp == source) {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.x && pnt.y == line.y) {
+	                  line.x += deltaX;
+	                  line.y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            } else {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+	                  line.dest_x += deltaX;
+	                  line.dest_y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            }
+	          });
+	          
+	          cp.form.shift(deltaX, deltaY);
+	          cp.form.redraw();
+	        }
+	        else if(source.type == "circle") {
+	          cp.form.x += deltaX;
+	          cp.form.y += deltaY;
+	          cp.form.drawResizer();
+	          cp.form.redraw();
+	        }
+	      } 
+	      else if (state == "drawing_link") {
 	        source.form.vertex.map((v) => {
 	          if (v.x == line.x && v.y == line.y) {
 	            v.c_svg.classList.remove("vertex");
@@ -236,13 +246,11 @@
 	          prev_pos = pos;
 	        } else if (source.type == "circle") {
 	          console.log("circle is moving");
-	          console.log(source.form);
-	          if (source.form.r >= 20) {
+	          //console.log(source.form);
 	          deltaX = e.offsetX - dx;
 	          dx = e.offsetX;
 	          source.form.resize(deltaX);
 	          source.form.redraw();
-	        }
 	        }
 	      }
 	    },
@@ -419,7 +427,7 @@
 
 	    this.c_svg.setAttribute("r", this.r);
 
-	    this.c_svg.setAttribute("fill", "none");
+	    this.c_svg.setAttribute("fill", "red");
 
 	    this.c_svg.setAttribute("stroke", "yellow");
 
@@ -432,6 +440,8 @@
 	    this.p_resizer.map((p_resizer) => {
 	      p_resizer.draw(svgs);
 	    });
+
+	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 	  }
 
 	  drawResizer() {
@@ -442,9 +452,15 @@
 	  }
 
 	  resize(deltaX) {
+	      // this.r += deltaX;
+	      // this.drawResizer();
+
 	    this.r += deltaX;
+	    if(this.r <= 20)
+	      this.r = 20;
 	    this.drawResizer();
-	  }
+	    }
+	    
 
 	  redraw() {
 	    this.c_svg.setAttribute("cx", this.x);

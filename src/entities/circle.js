@@ -1,3 +1,4 @@
+import { events } from "../events.js";
 import { Connector } from "./connector.js";
 /**
  * @class Circle
@@ -41,7 +42,7 @@ class Circle {
 
     this.c_svg.setAttribute("r", this.r);
 
-    this.c_svg.setAttribute("fill", "none");
+    this.c_svg.setAttribute("fill", "red");
 
     this.c_svg.setAttribute("stroke", "yellow");
 
@@ -54,6 +55,8 @@ class Circle {
     this.p_resizer.map((p_resizer) => {
       p_resizer.draw(svgs);
     });
+
+    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
   }
 
   drawResizer() {
@@ -64,9 +67,15 @@ class Circle {
   }
 
   resize(deltaX) {
+      // this.r += deltaX;
+      // this.drawResizer();
+
     this.r += deltaX;
+    if(this.r <= 20)
+      this.r = 20;
     this.drawResizer();
-  }
+    }
+    
 
   redraw() {
     this.c_svg.setAttribute("cx", this.x);

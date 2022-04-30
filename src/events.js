@@ -2,6 +2,7 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+import { Point } from "./entities/point.js";
 
 function nativeEvents() {
   var id;
@@ -23,21 +24,26 @@ function nativeEvents() {
 
       id = e.srcElement.id;
 
+      
+
       cp = _Register.find(id);
+
+      console.log(cp);
 
       if (id != "svg")
         source = cp != undefined && cp.parent != undefined ? _Register.find(cp.parent) : cp;
 
-      console.log(cp);
+      console.log("source");
       console.log(source);
-
-      lk = _Register.getAllLinksByComponent(cp);
+      
+      if(cp.form != undefined)
+        lk = _Register.getAllLinksByComponent(cp);
 
       // un component n'a pas de propriété parent
       if (cp != undefined && cp.parent == undefined) 
           state = "moving";
       else {
-        if ((pos = source.form.vertex.indexOf(cp)) >= 0) {
+        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
           state = "resizing";
           dx = e.offsetX;
           dy = e.offsetY;
@@ -62,36 +68,40 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        lk.map(({ source, line }) => {
-          if (cp == source) {
-            cp.form.c_points.map((pnt) => {
-              if (pnt.x == line.x && pnt.y == line.y) {
-                line.x += deltaX;
-                line.y += deltaY;
-                line.redraw();
-              }
-            });
-          } else {
-            cp.form.c_points.map((pnt) => {
-              if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-                line.dest_x += deltaX;
-                line.dest_y += deltaY;
-                line.redraw();
-              }
-            });
-          }
-        });
-        cp.form.shift(deltaX, deltaY);
-        cp.form.redraw();
+        if(cp.form != undefined)
+          lk.map(({ source, line }) => {
+            if (cp == source) {
+              cp.form.c_points.map((pnt) => {
+                if (pnt.x == line.x && pnt.y == line.y) {
+                  line.x += deltaX;
+                  line.y += deltaY;
+                  line.redraw();
+                }
+              });
+            } else {
+              cp.form.c_points.map((pnt) => {
+                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+                  line.dest_x += deltaX;
+                  line.dest_y += deltaY;
+                  line.redraw();
+                }
+              });
+            }
+          });
 
-        console.log(cp.form.allChild);
-        if(cp.form.allChild){
-          
-          cp.form.children.forEach(child => {
-          child.shift(deltaX, deltaY);
-          child.redraw();
-        });}
-
+        if(cp.form != undefined && cp.form.children.length > 0){
+          cp.form.children.map( (child) => {
+            if(child instanceof Line){
+              child.shift(deltaX, deltaY);
+              child.dest_x += deltaX;
+              child.dest_y += deltaY;
+              child.redraw();
+            }
+          });
+          cp.form.shift(deltaX, deltaY);
+          cp.form.redraw();
+        }
+        
       } 
       else if (state == "drawing_link") {
 
@@ -126,27 +136,6 @@ function nativeEvents() {
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
         } 
-        // else if (source.type == "triangle") {
-        //   console.log("triangle is moving");
-
-        //   if (prev_pos == 0 && pos == -1) {
-        //     pos += 1;
-        //   } else if (prev_pos == 1 && pos == -1) {
-        //     pos += 2;
-        //   } else if (prev_pos == 2 && pos == -1) {
-        //     pos += 3;
-        //   }
-        //   console.log(pos);
-        //   console.log(prev_pos);
-        //   dx = e.offsetX;
-        //   dy = e.offsetY;
-
-        //   source.form.resize(pos, dx, dy);
-        //   source.form.redraw();
-        //   prev_pos = pos;
-        //     cp.form.shift(deltaX, deltaY);
-        //     cp.form.redraw();
-        // }
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -177,7 +166,7 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
-      if (cp.parent == undefined) {
+      if (cp instanceof Point) {
         cp.form.vertex.map((v) => {
           v.c_svg.classList.remove("vertex");
           v.c_svg.classList.add("vertex_hover");

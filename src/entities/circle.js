@@ -1,3 +1,5 @@
+import { _uuid } from "./uuid";
+
 /**
  * @class Circle
  */
@@ -14,12 +16,13 @@ class Circle
      */
 
     constructor(uuid, x = 0, y = 0, r = 5, events = []){
-        this.uuid = uuid;
+        this.uuid = _uuid.generate();
         this.x = x;
         this.y = y;
         this.r = r;
         this.events = events;
         this.c_svg = "";
+        this.cp_ref = uuid;
     }
     
     /**
@@ -41,6 +44,11 @@ class Circle
         this.c_svg.setAttribute("id", this.uuid);
 
         svgs.appendChild(this.c_svg);
+    }
+
+    shift(dx, dy){
+        this.x += dx;
+        this.y += dy;
     }
 }
 

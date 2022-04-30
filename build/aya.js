@@ -5,6 +5,7 @@
 })(this, (function (exports) { 'use strict';
 
 	var store = {};
+
 	class _Register
 	{
 	    static add(object) {
@@ -58,12 +59,13 @@
 	     */
 
 	    constructor(uuid, x = 0, y = 0, r = 5, events = []){
-	        this.uuid = uuid;
+	        this.uuid = _uuid.generate();
 	        this.x = x;
 	        this.y = y;
 	        this.r = r;
 	        this.events = events;
 	        this.c_svg = "";
+	        this.cp_ref = uuid;
 	    }
 	    
 	    /**
@@ -86,6 +88,11 @@
 
 	        svgs.appendChild(this.c_svg);
 	    }
+
+	    shift(dx, dy){
+	        this.x += dx;
+	        this.y += dy;
+	    }
 	}
 
 	/**
@@ -94,16 +101,19 @@
 
 	class Line 
 	{
-	    constructor(uuid, x=0, y=0, events){
+	    constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
 	        
+	        // this.parent = uuid;
+	        this.uuid = _uuid.generate();
 	        this.x = x;
 	        this.y = y;
-	        this.dest_x = x;
-	        this.dest_y = y;
-	        this.uuid = uuid;
+	        this.dest_x = dest_x;
+	        this.dest_y = dest_y;
 	        this.events = events;
 	        this.c_svg = "";
 	        this.p = "";
+	        _Register.add(this);
+	        
 	    }
 
 	    draw(svgs){
@@ -116,8 +126,13 @@
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", this.p);
 	        this.c_svg.setAttribute("stroke", "black");
+	        this.c_svg.setAttributeNS(null, "stroke-width", "4px");
+
 	        
 	        svgs.appendChild(this.c_svg);
+
+	        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+
 	    }
 
 	    shift(dx,dy){
@@ -167,21 +182,24 @@
 
 	      id = e.srcElement.id;
 
+	      
+
 	      cp = _Register.find(id);
+
+	      console.log(cp);
 
 	      if (id != "svg")
 	        source = cp != undefined && cp.parent != undefined ? _Register.find(cp.parent) : cp;
 
-	      console.log(cp);
-	      console.log(source);
-
+	console.log("source");
+	        console.log(source);
 	      lk = _Register.getAllLinksByComponent(cp);
 
 	      // un component n'a pas de propriété parent
 	      if (cp != undefined && cp.parent == undefined) 
 	          state = "moving";
 	      else {
-	        if ((pos = source.form.vertex.indexOf(cp)) >= 0) {
+	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
@@ -206,36 +224,40 @@
 	        dx = e.offsetX;
 	        dy = e.offsetY;
 
-	        lk.map(({ source, line }) => {
-	          if (cp == source) {
-	            cp.form.c_points.map((pnt) => {
-	              if (pnt.x == line.x && pnt.y == line.y) {
-	                line.x += deltaX;
-	                line.y += deltaY;
-	                line.redraw();
-	              }
-	            });
-	          } else {
-	            cp.form.c_points.map((pnt) => {
-	              if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                line.dest_x += deltaX;
-	                line.dest_y += deltaY;
-	                line.redraw();
-	              }
-	            });
-	          }
-	        });
-	        cp.form.shift(deltaX, deltaY);
-	        cp.form.redraw();
+	        if(cp.form != undefined)
+	          lk.map(({ source, line }) => {
+	            if (cp == source) {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.x && pnt.y == line.y) {
+	                  line.x += deltaX;
+	                  line.y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            } else {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+	                  line.dest_x += deltaX;
+	                  line.dest_y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            }
+	          });
 
-	        console.log(cp.form.allChild);
-	        if(cp.form.allChild){
-	          
-	          cp.form.allChild.forEach(child => {
-	          child.shift(deltaX, deltaY);
-	          child.redraw();
-	        });}
-
+	        if(cp.form != undefined && cp.form.children.length > 0){
+	          cp.form.children.map( (child) => {
+	            if(child instanceof Line){
+	              child.shift(deltaX, deltaY);
+	              child.dest_x += deltaX;
+	              child.dest_y += deltaY;
+	              child.redraw();
+	            }
+	          });
+	          cp.form.shift(deltaX, deltaY);
+	          cp.form.redraw();
+	        }
+	        
 	      } 
 	      else if (state == "drawing_link") {
 
@@ -270,27 +292,6 @@
 	          source.form.resize(pos, deltaX, deltaY);
 	          source.form.redraw();
 	        } 
-	        // else if (source.type == "triangle") {
-	        //   console.log("triangle is moving");
-
-	        //   if (prev_pos == 0 && pos == -1) {
-	        //     pos += 1;
-	        //   } else if (prev_pos == 1 && pos == -1) {
-	        //     pos += 2;
-	        //   } else if (prev_pos == 2 && pos == -1) {
-	        //     pos += 3;
-	        //   }
-	        //   console.log(pos);
-	        //   console.log(prev_pos);
-	        //   dx = e.offsetX;
-	        //   dy = e.offsetY;
-
-	        //   source.form.resize(pos, dx, dy);
-	        //   source.form.redraw();
-	        //   prev_pos = pos;
-	        //     cp.form.shift(deltaX, deltaY);
-	        //     cp.form.redraw();
-	        // }
 	      }
 	    },
 	    mouseUpCb: function mouseupcb(e) {
@@ -321,7 +322,7 @@
 
 	      cp = _Register.find(id);
 
-	      if (cp.parent == undefined) {
+	      if (cp instanceof Point) {
 	        cp.form.vertex.map((v) => {
 	          v.c_svg.classList.remove("vertex");
 	          v.c_svg.classList.add("vertex_hover");
@@ -360,7 +361,7 @@
 	 *
 	 */
 	class Point {
-	  constructor(uuid, x = 0, y = 0, r = 4) {
+	  constructor(uuid, x = 0, y = 0, r = 3) {
 	    this.uuid = _uuid.generate();
 	    this.parent = uuid;
 	    this.x = x;
@@ -380,7 +381,7 @@
 
 	    this.c_svg.setAttribute("r", this.r);
 
-	    this.c_svg.setAttribute("class", "vertex");
+	    // this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
@@ -391,7 +392,6 @@
 	  }
 
 	  shift(dx, dy) {
-	      // console.log("dx: " + dx + " dy : " + dy);
 	    this.x += dx;
 	    this.y += dy;
 	  }
@@ -438,6 +438,7 @@
 	   */
 
 	  constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = []) {
+
 	    this.uuid = uuid;
 
 	    this.x = x;
@@ -449,10 +450,15 @@
 	    this.events = events;
 	    this.c_svg = "";
 
-	    this.c_points = Connector.create("rectangle", uuid);
-	    this.vertex = Connector.create("rectangle", uuid);
+	    this.children = [];
+
+	    this.c_points = Connector.create("rectangle", this.uuid);
+	    this.vertex = Connector.create("rectangle", this.uuid);
+
 	    this.drawConnector();
 	    this.drawVertex();
+
+	    _Register.add(this);
 	  }
 
 	  draw(svgs) {
@@ -603,7 +609,7 @@
 	   */
 	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
 	  {
-	    this.uuid = uuid;
+	    this.uuid = _uuid.generate();
 
 	    this.x1 = x1;
 	    this.y1 = y1;
@@ -617,6 +623,8 @@
 	    this.events = events;
 	    this.c_svg = "";
 	    this.p = "";
+
+	    this.cp_ref = uuid;
 
 	    this.c_points = Connector.create("triangle", uuid);
 	    this.vertex = [
@@ -779,7 +787,7 @@
 	        else if(type == "rectangle")
 	            return new Rectangle(uuid, props.x, props.y, props.width, props.height, events);
 	        else if(type == "line")
-	            return new Line(uuid, props.x, props.y, events);
+	            return new Line(uuid, props.x, props.y, events, props.dest_x, props.dest_y);
 	        else if(type == "triangle")
 	             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
 	    }
@@ -793,22 +801,26 @@
 	     * @param {array} events 
 	     * @param {object} params 
 	     */
-	    constructor( type, events = [],  props)
+	    constructor( type, events = [],  props, children = [])
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
 	        this.form = FactoryForm.createForm(this.uuid, type, props, events);
 	        _Register.add(this);
 	        this.form.draw(svg);
-	        this.children =[];
+	        this.createChildren(children);
 	    }
 
-	    createChild(type, props){
-	        var child = FactoryForm.createForm(this.uuid, type, props);
-	        this.children.push(child);
+	    createChildren(children){
+	        
+	        if(children.length > 0)
+	            children.map((chd) => {
+	                var child = FactoryForm.createForm(this.uuid, chd.type, chd.props, chd.events);
+	                this.form.children.push(child);
+	                child.draw(svg);
+	            });
 
 	    }
-	    
 	}
 
 	exports.Circle = Circle;

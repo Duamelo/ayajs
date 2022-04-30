@@ -10,24 +10,26 @@ class Component
      * @param {array} events 
      * @param {object} params 
      */
-    constructor( type, events = [],  props)
+    constructor( type, events = [],  props, children = [])
     {
         this.uuid = _uuid.generate();
         this.type = type;
         this.form = FactoryForm.createForm(this.uuid, type, props, events);
         _Register.add(this);
         this.form.draw(svg);
-        this.children =[];
+        this.createChildren(children);
     }
 
-    createChild(type, props){
-        var child = FactoryForm.createForm(this.uuid, type, props);
-        this.children.push(child);
+    createChildren(children){
+        
+        if(children.length > 0)
+            children.map((chd) => {
+                var child = FactoryForm.createForm(this.uuid, chd.type, chd.props, chd.events);
+                this.form.children.push(child);
+                child.draw(svg);
+            });
 
     }
-    
 }
 
 export  {Component};
-
-

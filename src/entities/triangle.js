@@ -20,7 +20,7 @@ class Triangle {
    */
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
   {
-    this.uuid = uuid;
+    this.uuid = _uuid.generate();
 
     this.x1 = x1;
     this.y1 = y1;
@@ -34,6 +34,8 @@ class Triangle {
     this.events = events;
     this.c_svg = "";
     this.p = "";
+
+    this.cp_ref = uuid;
 
     this.c_points = Connector.create("triangle", uuid);
     this.vertex = [

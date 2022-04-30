@@ -1,4 +1,5 @@
 var store = {};
+
 class _Register
 {
     static add(object) {

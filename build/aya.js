@@ -44,58 +44,6 @@
 	}
 
 	/**
-	 * @class Circle
-	 */
-
-	class Circle
-	{
-	    /**
-	     * 
-	     * @param {string} uuid id
-	     * @param {number} x center abscissa
-	     * @param {number} y   center ordinate
-	     * @param {number} r radius of circle
-	     * @param {array} events   array of object events
-	     */
-
-	    constructor(uuid, x = 0, y = 0, r = 5, events = []){
-	        this.uuid = _uuid.generate();
-	        this.x = x;
-	        this.y = y;
-	        this.r = r;
-	        this.events = events;
-	        this.c_svg = "";
-	        this.cp_ref = uuid;
-	    }
-	    
-	    /**
-	     * 
-	     * @param {DOMElement} svgs 
-	     */
-	    
-	    draw(svgs){
-	        var ns="http://www.w3.org/2000/svg";
-	    
-	        this.c_svg = document.createElementNS(ns,"circle");
-	    
-	        this.c_svg.setAttribute("cx", this.x);
-	    
-	        this.c_svg.setAttribute("cy",this.y);
-	    
-	        this.c_svg.setAttribute("r", this.r);
-	    
-	        this.c_svg.setAttribute("id", this.uuid);
-
-	        svgs.appendChild(this.c_svg);
-	    }
-
-	    shift(dx, dy){
-	        this.x += dx;
-	        this.y += dy;
-	    }
-	}
-
-	/**
 	 * @class Line class
 	 */
 
@@ -163,196 +111,6 @@
 	    }
 	}
 
-	function nativeEvents() {
-	  var id;
-	  var cp;
-	  var dx, dy;
-	  var state = "";
-	  var deltaX, deltaY;
-	  var line = "";
-	  var source;
-	  var lk;
-	  var pos;
-
-	  return {
-	    mouseDownCb: function mousedowncb(e) {
-
-	      dx = e.offsetX;
-	      dy = e.offsetY;
-
-	      id = e.srcElement.id;
-
-	      
-
-	      cp = _Register.find(id);
-
-	      console.log(cp);
-
-	      if (id != "svg")
-	        source = cp != undefined && cp.parent != undefined ? _Register.find(cp.parent) : cp;
-
-	console.log("source");
-	        console.log(source);
-	      lk = _Register.getAllLinksByComponent(cp);
-
-	      // un component n'a pas de propriété parent
-	      if (cp != undefined && cp.parent == undefined) 
-	          state = "moving";
-	      else {
-	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
-	          state = "resizing";
-	          dx = e.offsetX;
-	          dy = e.offsetY;
-	        } 
-	        else {
-	          state = "drawing_link";
-	          id = _uuid.generate();
-	          if (cp != source) {
-	            line = new Line(id, cp.x, cp.y, []);
-	            line.draw(svg);
-	          }
-	        }
-	      }
-	    },
-	    mouseMoveCb: function movecb(e) {
-
-	      if (state == "moving") {
-	        
-	        deltaX = e.offsetX - dx;
-	        deltaY = e.offsetY - dy;
-
-	        dx = e.offsetX;
-	        dy = e.offsetY;
-
-	        if(cp.form != undefined)
-	          lk.map(({ source, line }) => {
-	            if (cp == source) {
-	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.x && pnt.y == line.y) {
-	                  line.x += deltaX;
-	                  line.y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            } else {
-	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                  line.dest_x += deltaX;
-	                  line.dest_y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            }
-	          });
-
-	        if(cp.form != undefined && cp.form.children.length > 0){
-	          cp.form.children.map( (child) => {
-	            if(child instanceof Line){
-	              child.shift(deltaX, deltaY);
-	              child.dest_x += deltaX;
-	              child.dest_y += deltaY;
-	              child.redraw();
-	            }
-	          });
-	          cp.form.shift(deltaX, deltaY);
-	          cp.form.redraw();
-	        }
-	        
-	      } 
-	      else if (state == "drawing_link") {
-
-	        source.form.vertex.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
-	        source.form.c_points.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.style.color = "gray";
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
-	        line.dest_x = e.clientX;
-	        line.dest_y = e.clientY;
-	        line.redraw();
-	      } 
-	      else if (state == "resizing") {
-
-	        if (source.type == "rectangle") {
-	          deltaX = e.offsetX - dx;
-	          deltaY = e.offsetY - dy;
-
-	          dx = e.offsetX;
-	          dy = e.offsetY;
-
-	          source.form.resize(pos, deltaX, deltaY);
-	          source.form.redraw();
-	        } 
-	      }
-	    },
-	    mouseUpCb: function mouseupcb(e) {
-	      var destination;
-	      if (state == "drawing_link") {
-	        id = e.srcElement.id;
-	        var pnt = _Register.find(id);
-
-	        if (pnt != undefined && pnt.parent != undefined) {
-	          destination = _Register.find(pnt.parent);
-
-	          line.dest_x = pnt.x;
-	          line.dest_y = pnt.y;
-
-	          // for automatic redrawing
-	          line.redraw();
-	          new Link(source, destination, line);
-	        } 
-	        else if (id == "svg" || pnt.parent == undefined) {
-	          var ref = document.getElementById(line.uuid);
-	          ref.remove();
-	        }
-	      }
-	      state = "";
-	    },
-	  mouseOverCb: function mouseovercb(e) {
-	      id = e.srcElement.id;
-
-	      cp = _Register.find(id);
-
-	      if (cp instanceof Point) {
-	        cp.form.vertex.map((v) => {
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
-
-	        cp.form.c_points.map((v) => {
-	          v.c_svg.style.color = "gray";
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
-	      }
-	  },
-	  mouseLeaveCb: function mouseleavecb(e) {
-	    // id = e.srcElement.id;
-	    // cp = _Register.find(id);
-	    // if (cp.parent == undefined) {
-	    //   cp.form.vertex.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    //   cp.form.c_points.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    // }
-	  }
-	}
-	}
-	var events = nativeEvents();
-
 	/**
 	 *
 	 * @class Point
@@ -363,7 +121,7 @@
 	class Point {
 	  constructor(uuid, x = 0, y = 0, r = 3) {
 	    this.uuid = _uuid.generate();
-	    this.parent = uuid;
+	    this.ref = uuid;
 	    this.x = x;
 	    this.y = y;
 	    this.r = r;
@@ -609,7 +367,7 @@
 	   */
 	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
 	  {
-	    this.uuid = _uuid.generate();
+	    this.uuid = uuid;
 
 	    this.x1 = x1;
 	    this.y1 = y1;
@@ -623,8 +381,6 @@
 	    this.events = events;
 	    this.c_svg = "";
 	    this.p = "";
-
-	    this.cp_ref = uuid;
 
 	    this.c_points = Connector.create("triangle", uuid);
 	    this.vertex = [
@@ -764,6 +520,293 @@
 	  }
 	}
 
+	function nativeEvents() {
+	  var id;
+	  var cp;
+	  var dx, dy;
+	  var state = "";
+	  var deltaX, deltaY;
+	  var line = "";
+	  var source;
+	  var lk;
+	  var pos;
+
+	  return {
+	    mouseDownCb: function mousedowncb(e) {
+
+	      dx = e.offsetX;
+	      dy = e.offsetY;
+
+	      id = e.srcElement.id;
+
+	      cp = _Register.find(id);
+
+	      if (id != "svg")
+	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
+
+	      if(cp.form != undefined)
+	        lk = _Register.getAllLinksByComponent(cp);
+
+	      // une forme différente de Point n'a pas de propriété ref
+	      if ((cp != undefined && cp.ref == undefined) ) 
+	          state = "moving";
+	      else {
+	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
+	          state = "resizing";
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+	        } 
+	        else {
+	          state = "drawing_link";
+	          id = _uuid.generate();
+	          if (cp != source) {
+	            line = new Line(id, cp.x, cp.y, []);
+	            line.draw(svg);
+	          }
+	        }
+	      }
+	    },
+	    mouseMoveCb: function movecb(e) {
+
+	      if (state == "moving") {
+	        
+	        deltaX = e.offsetX - dx;
+	        deltaY = e.offsetY - dy;
+
+	        dx = e.offsetX;
+	        dy = e.offsetY;
+
+	        if(cp.form != undefined){
+	          lk.map(({ source, line }) => {
+	            if (cp == source) {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.x && pnt.y == line.y) {
+	                  line.x += deltaX;
+	                  line.y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            } 
+	            else {
+	              cp.form.c_points.map((pnt) => {
+	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+	                  line.dest_x += deltaX;
+	                  line.dest_y += deltaY;
+	                  line.redraw();
+	                }
+	              });
+	            }
+	          });
+	        }
+	       
+
+	        if(cp.form != undefined && cp.form.children.length > 0){
+	          cp.form.children.map( (child) => {
+	            if(child instanceof Line){
+	              child.shift(deltaX, deltaY);
+	              child.dest_x += deltaX;
+	              child.dest_y += deltaY;
+	              child.redraw();
+	            }
+	            else if(child instanceof Circle){
+	              child.shift(deltaX, deltaY);
+	              child.redraw();
+	            }
+	          });
+	          
+	          cp.form.shift(deltaX, deltaY);
+	          cp.form.redraw();
+	        }
+	        // il s'agit d'une form pas d'une instance de la classe Component ou de Point
+	        if(cp.form  == undefined && cp.ref == undefined){
+
+	          if(cp instanceof Line){
+	            cp.shift(deltaX, deltaY);
+
+	            cp.dest_x += deltaX;
+	            cp.dest_y += deltaY;
+
+	            cp.redraw();
+	          }
+	          else {
+	            cp.shift(deltaX, deltaY);
+	            cp.redraw();
+	          }
+	        }
+	      } 
+	      else if (state == "drawing_link") {
+
+	        source.form.vertex.map((v) => {
+	          if (v.x == line.x && v.y == line.y) {
+	            v.c_svg.classList.remove("vertex");
+	            v.c_svg.classList.add("vertex_hover");
+	          }
+	        });
+
+	        source.form.c_points.map((v) => {
+	          if (v.x == line.x && v.y == line.y) {
+	            v.c_svg.style.color = "gray";
+	            v.c_svg.classList.remove("vertex");
+	            v.c_svg.classList.add("vertex_hover");
+	          }
+	        });
+
+	        line.dest_x = e.clientX;
+	        line.dest_y = e.clientY;
+	        line.redraw();
+	      } 
+	      else if (state == "resizing") {
+
+	        if (source.type == "rectangle") {
+	          deltaX = e.offsetX - dx;
+	          deltaY = e.offsetY - dy;
+
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+
+	          // console.log(source.form.children);
+	          // if(source.form != undefined && source.form.children.length > 0){
+	          //   source.form.children.map( (child ) => {
+	          //     if(child instanceof Line){
+	          //       child.shift(deltaX, deltaY);
+	          //       child.dest_x += deltaX;
+	          //       child.dest_y += deltaY;
+	          //       child.redraw();
+	          //     }
+	          //     else if(child instanceof Circle){
+	          //       child.shift(deltaX, deltaY);
+	          //       child.redraw();
+	          //     }
+	          //   });
+	          // }
+	          source.form.resize(pos, deltaX, deltaY);
+	          source.form.redraw();
+	        } 
+	      }
+	    },
+	    mouseUpCb: function mouseupcb(e) {
+	      var destination;
+	      if (state == "drawing_link") {
+	        id = e.srcElement.id;
+	        var pnt = _Register.find(id);
+
+	        if (pnt != undefined && pnt.ref != undefined) {
+	          destination = _Register.find(pnt.ref);
+
+	          line.dest_x = pnt.x;
+	          line.dest_y = pnt.y;
+
+	          // for automatic redrawing
+	          line.redraw();
+	          new Link(source, destination, line);
+	        } 
+	        else if (id == "svg" || pnt.ref == undefined) {
+	          var ref = document.getElementById(line.uuid);
+	          ref.remove();
+	        }
+	      }
+	      state = "";
+	    },
+	  mouseOverCb: function mouseovercb(e) {
+	      id = e.srcElement.id;
+
+	      cp = _Register.find(id);
+
+	      if (cp instanceof Point) {
+	        cp.form.vertex.map((v) => {
+	          v.c_svg.classList.remove("vertex");
+	          v.c_svg.classList.add("vertex_hover");
+	        });
+
+	        cp.form.c_points.map((v) => {
+	          v.c_svg.style.color = "gray";
+	          v.c_svg.classList.remove("vertex");
+	          v.c_svg.classList.add("vertex_hover");
+	        });
+	      }
+	  },
+	  mouseLeaveCb: function mouseleavecb(e) {
+	    // id = e.srcElement.id;
+	    // cp = _Register.find(id);
+	    // if (cp.ref == undefined) {
+	    //   cp.form.vertex.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    //   cp.form.c_points.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    // }
+	  }
+	}
+	}
+	var events = nativeEvents();
+
+	/**
+	 * @class Circle
+	 */
+
+	class Circle
+	{
+	    /**
+	     * 
+	     * @param {string} uuid id
+	     * @param {number} x center abscissa
+	     * @param {number} y   center ordinate
+	     * @param {number} r radius of circle
+	     * @param {array} events   array of object events
+	     */
+
+	    constructor(uuid, x = 0, y = 0, r = 5, events = []){
+	        this.uuid = uuid;
+	        this.x = x;
+	        this.y = y;
+	        this.r = r;
+	        this.events = events;
+	        this.c_svg = "";
+	        _Register.add(this);
+	    }
+	    
+	    /**
+	     * 
+	     * @param {DOMElement} svgs 
+	     */
+	    
+	    draw(svgs){
+	        var ns="http://www.w3.org/2000/svg";
+	    
+	        this.c_svg = document.createElementNS(ns,"circle");
+	    
+	        this.c_svg.setAttribute("cx", this.x);
+	    
+	        this.c_svg.setAttribute("cy",this.y);
+	    
+	        this.c_svg.setAttribute("r", this.r);
+
+	        this.c_svg.setAttributeNS(null, "fill", "red");
+
+	    
+	        this.c_svg.setAttribute("id", this.uuid);
+
+	        svgs.appendChild(this.c_svg);
+
+	        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+
+	    }
+
+	    shift(dx, dy){
+	        this.x += dx;
+	        this.y += dy;
+	    }
+
+	    redraw(){
+
+	        this.c_svg.setAttribute("cx", this.x);
+	        this.c_svg.setAttribute("cy",this.y);
+	    }
+	}
+
 	/**
 	 * @class FactoryForm
 	 */
@@ -812,14 +855,13 @@
 	    }
 
 	    createChildren(children){
-	        
+
 	        if(children.length > 0)
 	            children.map((chd) => {
-	                var child = FactoryForm.createForm(this.uuid, chd.type, chd.props, chd.events);
+	                var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
 	                this.form.children.push(child);
 	                child.draw(svg);
 	            });
-
 	    }
 	}
 

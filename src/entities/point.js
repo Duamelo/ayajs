@@ -11,7 +11,7 @@ import {_uuid} from "./uuid.js";
 class Point {
   constructor(uuid, x = 0, y = 0, r = 3) {
     this.uuid = _uuid.generate();
-    this.parent = uuid;
+    this.ref = uuid;
     this.x = x;
     this.y = y;
     this.r = r;

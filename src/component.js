@@ -21,14 +21,13 @@ class Component
     }
 
     createChildren(children){
-        
+
         if(children.length > 0)
             children.map((chd) => {
-                var child = FactoryForm.createForm(this.uuid, chd.type, chd.props, chd.events);
+                var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
                 this.form.children.push(child);
                 child.draw(svg);
             });
-
     }
 }
 

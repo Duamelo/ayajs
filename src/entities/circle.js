@@ -1,5 +1,6 @@
+import { _Register } from "../register";
 import { _uuid } from "./uuid";
-
+import {events} from "../events";
 /**
  * @class Circle
  */
@@ -16,13 +17,13 @@ class Circle
      */
 
     constructor(uuid, x = 0, y = 0, r = 5, events = []){
-        this.uuid = _uuid.generate();
+        this.uuid = uuid;
         this.x = x;
         this.y = y;
         this.r = r;
         this.events = events;
         this.c_svg = "";
-        this.cp_ref = uuid;
+        _Register.add(this);
     }
     
     /**
@@ -40,15 +41,27 @@ class Circle
         this.c_svg.setAttribute("cy",this.y);
     
         this.c_svg.setAttribute("r", this.r);
+
+        this.c_svg.setAttributeNS(null, "fill", "red");
+
     
         this.c_svg.setAttribute("id", this.uuid);
 
         svgs.appendChild(this.c_svg);
+
+        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+
     }
 
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
+    }
+
+    redraw(){
+
+        this.c_svg.setAttribute("cx", this.x);
+        this.c_svg.setAttribute("cy",this.y);
     }
 }
 

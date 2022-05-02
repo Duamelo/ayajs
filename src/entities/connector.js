@@ -22,7 +22,7 @@ class Connector {
     } 
     else if (type == "losange") {
       cp = [];
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < 6; i++) {
         cp.push(new Point(uuid, 0, 0));
       }
     }

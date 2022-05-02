@@ -86,6 +86,20 @@ class Losange {
      this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
+  drawVertex(){
+    this.vertex[0].x = this.x1;
+    this.vertex[0].y = this.y1;
+
+    this.vertex[1].x = this.x2;
+    this.vertex[1].y = this.y2;
+
+    this.vertex[2].x = this.x3;
+    this.vertex[2].y = this.y3;
+
+    this.vertex[3].x = this.x4;
+    this.vertex[3].y = this.y4;
+  }
+
   drawConnector() {
     this.c_points[0].x = (this.x1 + this.x2) / 2;
     this.c_points[0].y = (this.y1 + this.y2) / 2;
@@ -102,6 +116,62 @@ class Losange {
     this.c_points[3].x = (this.x4 + this.x1) / 2;
     this.c_points[3].y = (this.y4 + this.y1) / 2;
     this.c_points[3].r = 5;
+
+    this.c_points[4].x = (this.x2 + this.x4) / 2;
+    this.c_points[4].y = (this.y2 + this.y4) / 2;
+    this.c_points[4].r = 5;
+
+    this.c_points[5].x = (this.x1 + this.x3) / 2;
+    this.c_points[5].y = (this.y1 + this.y3) / 2;
+    this.c_points[5].r = 5;
+  }
+
+  resize(pos, delta) {
+      if(pos == 3) {
+        this.x4   +=  delta;
+        this.x2   -=  delta;
+        this.y1   -=  delta;
+        this.y3   +=  delta;
+        this.drawVertex();
+        this.drawConnector();
+      }
+      else if(pos == 0){
+        this.y1   +=  delta;
+        this.x2   +=  delta;
+        this.y3   -=  delta;
+        this.x4   -=  delta;
+        this.drawVertex();
+        this.drawConnector();
+      } 
+      else if(pos == 2) {
+        this.y1   -=  delta;
+        this.x2   -=  delta;
+        this.y3   +=  delta;
+        this.x4   +=  delta;
+        this.drawVertex();
+        this.drawConnector();
+      }else if(pos == 1){
+        this.x4   -=  delta;
+        this.x2   +=  delta;
+        this.y1   +=  delta;
+        this.y3   -=  delta;
+        this.drawVertex();
+        this.drawConnector();
+      }
+
+  }
+
+  redraw() {
+    this.p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+
+    this.c_svg.setAttribute("d", this.p);
+
+    this.c_points.map((p) => {
+        p.redraw();
+      });
+      this.vertex.map((v) => {
+        v.redraw();
+      });
   }
 
 }

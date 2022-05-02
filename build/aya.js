@@ -138,17 +138,17 @@
 	      lk = _Register.getAllLinksByComponent(cp);
 
 	      // un component n'a pas de propriété parent
-	      if (cp != undefined && cp.parent == undefined) state = "moving";
+	      if (cp != undefined && cp.parent == undefined)
+	        state = "moving";
 	      else {
-	        if (
-	          (source.form.vertex != undefined &&
-	            (pos = source.form.vertex.indexOf(cp)) >= 0) ||
-	          source.form.p_resizer.length >= 0
-	        ) {
+	        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
+	              ||  source.form.p_resizer.length >= 0 )
+	        {
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
-	        } else {
+	        } 
+	        else {
 	          state = "drawing_link";
 	          id = _uuid.generate();
 	          if (cp != source) {
@@ -216,7 +216,8 @@
 	        line.dest_x = e.clientX;
 	        line.dest_y = e.clientY;
 	        line.redraw();
-	      } else if (state == "resizing") {
+	      } 
+	      else if (state == "resizing") {
 	        if (source.type == "rectangle") {
 	          deltaX = e.offsetX - dx;
 	          deltaY = e.offsetY - dy;
@@ -226,7 +227,8 @@
 
 	          source.form.resize(pos, deltaX, deltaY);
 	          source.form.redraw();
-	        } else if (source.type == "triangle") {
+	        } 
+	        else if (source.type == "triangle") {
 	          console.log("triangle is moving");
 
 	          if (prev_pos == 0 && pos == -1) {
@@ -244,7 +246,8 @@
 	          source.form.resize(pos, dx, dy);
 	          source.form.redraw();
 	          prev_pos = pos;
-	        } else if (source.type == "circle") {
+	        } 
+	        else if (source.type == "circle") {
 	          console.log("circle is moving");
 	          //console.log(source.form);
 	          deltaX = e.offsetX - dx;
@@ -252,6 +255,21 @@
 	          source.form.resize(deltaX);
 	          source.form.redraw();
 	        }
+	        else if (source.type == "losange") {
+	          //console.log(pos);
+	          deltaX = e.offsetX - dx;
+	          deltaY = e.offsetY - dy;
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+	          if(pos == 0 || pos == 2) {
+	            source.form.resize(pos,deltaY);
+	          } 
+	          else if(pos == 1 || pos == 3){
+	            source.form.resize(pos,deltaX);
+	          }
+	          source.form.redraw();
+	        }
+
 	      }
 	    },
 	    mouseUpCb: function mouseupcb(e) {
@@ -282,7 +300,7 @@
 	      cp = _Register.find(id);
 
 	      if (cp.parent == undefined) {
-	        
+
 	        cp.form.vertex.map((v) => {
 	          v.c_svg.classList.remove("vertex");
 	          v.c_svg.classList.add("vertex_hover");
@@ -387,7 +405,7 @@
 	    } 
 	    else if (type == "losange") {
 	      cp = [];
-	      for (var i = 0; i < 4; i++) {
+	      for (var i = 0; i < 6; i++) {
 	        cp.push(new Point(uuid, 0, 0));
 	      }
 	    }
@@ -906,6 +924,20 @@
 	     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
 
+	  drawVertex(){
+	    this.vertex[0].x = this.x1;
+	    this.vertex[0].y = this.y1;
+
+	    this.vertex[1].x = this.x2;
+	    this.vertex[1].y = this.y2;
+
+	    this.vertex[2].x = this.x3;
+	    this.vertex[2].y = this.y3;
+
+	    this.vertex[3].x = this.x4;
+	    this.vertex[3].y = this.y4;
+	  }
+
 	  drawConnector() {
 	    this.c_points[0].x = (this.x1 + this.x2) / 2;
 	    this.c_points[0].y = (this.y1 + this.y2) / 2;
@@ -922,6 +954,62 @@
 	    this.c_points[3].x = (this.x4 + this.x1) / 2;
 	    this.c_points[3].y = (this.y4 + this.y1) / 2;
 	    this.c_points[3].r = 5;
+
+	    this.c_points[4].x = (this.x2 + this.x4) / 2;
+	    this.c_points[4].y = (this.y2 + this.y4) / 2;
+	    this.c_points[4].r = 5;
+
+	    this.c_points[5].x = (this.x1 + this.x3) / 2;
+	    this.c_points[5].y = (this.y1 + this.y3) / 2;
+	    this.c_points[5].r = 5;
+	  }
+
+	  resize(pos, delta) {
+	      if(pos == 3) {
+	        this.x4   +=  delta;
+	        this.x2   -=  delta;
+	        this.y1   -=  delta;
+	        this.y3   +=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }
+	      else if(pos == 0){
+	        this.y1   +=  delta;
+	        this.x2   +=  delta;
+	        this.y3   -=  delta;
+	        this.x4   -=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      } 
+	      else if(pos == 2) {
+	        this.y1   -=  delta;
+	        this.x2   -=  delta;
+	        this.y3   +=  delta;
+	        this.x4   +=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }else if(pos == 1){
+	        this.x4   -=  delta;
+	        this.x2   +=  delta;
+	        this.y1   +=  delta;
+	        this.y3   -=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }
+
+	  }
+
+	  redraw() {
+	    this.p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+
+	    this.c_svg.setAttribute("d", this.p);
+
+	    this.c_points.map((p) => {
+	        p.redraw();
+	      });
+	      this.vertex.map((v) => {
+	        v.redraw();
+	      });
 	  }
 
 	}

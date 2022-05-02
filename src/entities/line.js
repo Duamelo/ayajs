@@ -4,7 +4,7 @@
 
 class Line 
 {
-    constructor(uuid, x=0, y=0, events){
+    constructor(uuid, x = 0, y = 0, events){
         
         this.x = x;
         this.y = y;

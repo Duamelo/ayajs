@@ -48,7 +48,7 @@
 
 	class Line 
 	{
-	    constructor(uuid, x=0, y=0, events){
+	    constructor(uuid, x = 0, y = 0, events){
 	        
 	        this.x = x;
 	        this.y = y;
@@ -142,7 +142,7 @@
 	        state = "moving";
 	      else {
 	        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
-	              ||  source.form.p_resizer.length >= 0 )
+	              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
 	        {
 	          state = "resizing";
 	          dx = e.offsetX;
@@ -166,7 +166,7 @@
 	        dx = e.offsetX;
 	        dy = e.offsetY;
 
-	        if(cp.type == "rectangle" || cp.type == "triangle") {
+	        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
 	          lk.map(({ source, line }) => {
 	            if (cp == source) {
 	              cp.form.c_points.map((pnt) => {
@@ -198,6 +198,7 @@
 	        }
 	      } 
 	      else if (state == "drawing_link") {
+	        console.log(state);
 	        source.form.vertex.map((v) => {
 	          if (v.x == line.x && v.y == line.y) {
 	            v.c_svg.classList.remove("vertex");
@@ -755,17 +756,14 @@
 	    this.c_points[0].y = (this.y1 + this.y2) / 2;
 	    this.c_points[0].r = 5;
 
-	    // this.c_points[1].x = (this.x2 + this.x3) / 2;
-	    // this.c_points[1].y = (this.y2 + this.y3) / 2;
-	    // this.c_points[1].r = 5;
+	    this.c_points[1].x = (this.x2 + this.x3) / 2;
+	    this.c_points[1].y = (this.y2 + this.y3) / 2;
+	    this.c_points[1].r = 5;
 
-	    // this.c_points[2].x = (this.x3 + this.x4) / 2;
-	    // this.c_points[2].y = (this.y3 + this.y4) / 2;
-	    // this.c_points[2].r = 5;
+	    this.c_points[2].x = (this.x3 + this.x1) / 2;
+	    this.c_points[2].y = (this.y3 + this.y1) / 2;
+	    this.c_points[2].r = 5;
 
-	    // this.c_points[3].x = (this.x1 + this.x4) / 2;
-	    // this.c_points[3].y = (this.y1 + this.y1) / 2;
-	    // this.c_points[3].r = 5;
 	  }
 
 	  shift(dx, dy) {
@@ -1010,6 +1008,28 @@
 	      this.vertex.map((v) => {
 	        v.redraw();
 	      });
+	  }
+
+	  shift(dx, dy) {
+	    this.x1 += dx;
+	    this.y1 += dy;
+
+	    this.x2 += dx;
+	    this.y2 += dy;
+
+	    this.x3 += dx;
+	    this.y3 += dy;
+
+	    this.x4 += dx;
+	    this.y4 += dy;
+
+	    this.c_points.map((p) => {
+	      p.shift(dx, dy);
+	    });
+
+	    this.vertex.map((v) => {
+	      v.shift(dx, dy);
+	    });
 	  }
 
 	}

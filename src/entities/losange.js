@@ -174,6 +174,28 @@ class Losange {
       });
   }
 
+  shift(dx, dy) {
+    this.x1 += dx;
+    this.y1 += dy;
+
+    this.x2 += dx;
+    this.y2 += dy;
+
+    this.x3 += dx;
+    this.y3 += dy;
+
+    this.x4 += dx;
+    this.y4 += dy;
+
+    this.c_points.map((p) => {
+      p.shift(dx, dy);
+    });
+
+    this.vertex.map((v) => {
+      v.shift(dx, dy);
+    });
+  }
+
 }
 
 export { Losange };

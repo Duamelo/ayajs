@@ -44,7 +44,7 @@ function nativeEvents() {
         state = "moving";
       else {
         if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
-              ||  source.form.p_resizer.length >= 0 )
+              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
         {
           state = "resizing";
           dx = e.offsetX;
@@ -68,7 +68,7 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        if(cp.type == "rectangle" || cp.type == "triangle") {
+        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
           lk.map(({ source, line }) => {
             if (cp == source) {
               cp.form.c_points.map((pnt) => {
@@ -100,6 +100,7 @@ function nativeEvents() {
         }
       } 
       else if (state == "drawing_link") {
+        console.log(state);
         source.form.vertex.map((v) => {
           if (v.x == line.x && v.y == line.y) {
             v.c_svg.classList.remove("vertex");

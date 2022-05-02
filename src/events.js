@@ -184,6 +184,7 @@ function nativeEvents() {
       cp = _Register.find(id);
 
       if (cp.parent == undefined) {
+        
         cp.form.vertex.map((v) => {
           v.c_svg.classList.remove("vertex");
           v.c_svg.classList.add("vertex_hover");

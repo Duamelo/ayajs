@@ -13,10 +13,12 @@ class Losange {
      * @param {string} uuid
      * @param {abscissa starting point} x1
      * @param {ordonne starting point} y1
-     * @param {LineTo this abscissa point} x2
+     * @param {LineTo this abscisse point}x2
      * @param {LineTo this ordonne point} y2
-     * @param {LineTo this abscissa point} x3
+     * @param {LineTo this abscisse point}x3
      * @param {LineTo this ordonne point} y3
+     * @param {LineTo this ordonne point} x4
+     * @param {LineTo this ordonne point} y4
      * @param {array of object} events
      */
 
@@ -42,6 +44,15 @@ class Losange {
         this.vertical_diagonal_center;
 
         this.events = events;
+        
+        this.c_points = Connector.create("losange", uuid);
+        this.vertex = [
+            new Point(this.uuid, this.x1, this.y1, 5),
+            new Point(this.uuid, this.x2, this.y2, 5),
+            new Point(this.uuid, this.x3, this.y3, 5),
+            new Point(this.uuid, this.x4, this.y4, 5),
+        ];
+        this.drawConnector();
     }
 
 
@@ -61,12 +72,38 @@ class Losange {
 
     svgs.appendChild(this.c_svg);
 
+    this.c_points.map((point) => {
+        point.draw(svgs);
+      });
 
-    // this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    // this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-    // this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-    // this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+    this.vertex.map((v) => {
+        v.draw(svgs);
+      });
+    
+     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
+     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
+
+  drawConnector() {
+    this.c_points[0].x = (this.x1 + this.x2) / 2;
+    this.c_points[0].y = (this.y1 + this.y2) / 2;
+    this.c_points[0].r = 5;
+
+    this.c_points[1].x = (this.x2 + this.x3) / 2;
+    this.c_points[1].y = (this.y2 + this.y3) / 2;
+    this.c_points[1].r = 5;
+
+    this.c_points[2].x = (this.x3 + this.x4) / 2;
+    this.c_points[2].y = (this.y3 + this.y4) / 2;
+    this.c_points[2].r = 5;
+
+    this.c_points[3].x = (this.x4 + this.x1) / 2;
+    this.c_points[3].y = (this.y4 + this.y1) / 2;
+    this.c_points[3].r = 5;
+  }
+
 }
 
 export { Losange };

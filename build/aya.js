@@ -282,6 +282,7 @@
 	      cp = _Register.find(id);
 
 	      if (cp.parent == undefined) {
+	        
 	        cp.form.vertex.map((v) => {
 	          v.c_svg.classList.remove("vertex");
 	          v.c_svg.classList.add("vertex_hover");
@@ -320,7 +321,8 @@
 	 *
 	 */
 	class Point {
-	  constructor(uuid, x = 0, y = 0, r = 4) {
+	  constructor(uuid, x = 0, y = 0, r = 4) 
+	  {
 	    this.uuid = _uuid.generate();
 	    this.parent = uuid;
 	    this.x = x;
@@ -372,14 +374,22 @@
 	      for (var i = 0; i < 4; i++) {
 	        cp.push(new Point(uuid, 0, 0));
 	      }
-	    } else if (type == "triangle") {
+	    } 
+	    else if (type == "triangle") {
 	      cp = [];
 	      for (var i = 0; i < 3; i++) {
 	        cp.push(new Point(uuid, 0, 0));
 	      }
-	    } else if (type == "circle") {
+	    } 
+	    else if (type == "circle") {
 	      cp = [];
 	      cp.push(new Point(uuid, 0, 0));
+	    } 
+	    else if (type == "losange") {
+	      cp = [];
+	      for (var i = 0; i < 4; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
 	    }
 	    return cp;
 	  }
@@ -727,13 +737,17 @@
 	    this.c_points[0].y = (this.y1 + this.y2) / 2;
 	    this.c_points[0].r = 5;
 
-	    this.c_points[1].x = (this.x2 + this.x3) / 2;
-	    this.c_points[1].y = (this.y2 + this.y3) / 2;
-	    this.c_points[1].r = 5;
+	    // this.c_points[1].x = (this.x2 + this.x3) / 2;
+	    // this.c_points[1].y = (this.y2 + this.y3) / 2;
+	    // this.c_points[1].r = 5;
 
-	    this.c_points[2].x = (this.x1 + this.x3) / 2;
-	    this.c_points[2].y = (this.y1 + this.y3) / 2;
-	    this.c_points[2].r = 5;
+	    // this.c_points[2].x = (this.x3 + this.x4) / 2;
+	    // this.c_points[2].y = (this.y3 + this.y4) / 2;
+	    // this.c_points[2].r = 5;
+
+	    // this.c_points[3].x = (this.x1 + this.x4) / 2;
+	    // this.c_points[3].y = (this.y1 + this.y1) / 2;
+	    // this.c_points[3].r = 5;
 	  }
 
 	  shift(dx, dy) {
@@ -819,10 +833,12 @@
 	     * @param {string} uuid
 	     * @param {abscissa starting point} x1
 	     * @param {ordonne starting point} y1
-	     * @param {LineTo this abscissa point} x2
+	     * @param {LineTo this abscisse point}x2
 	     * @param {LineTo this ordonne point} y2
-	     * @param {LineTo this abscissa point} x3
+	     * @param {LineTo this abscisse point}x3
 	     * @param {LineTo this ordonne point} y3
+	     * @param {LineTo this ordonne point} x4
+	     * @param {LineTo this ordonne point} y4
 	     * @param {array of object} events
 	     */
 
@@ -848,6 +864,15 @@
 	        this.vertical_diagonal_center;
 
 	        this.events = events;
+	        
+	        this.c_points = Connector.create("losange", uuid);
+	        this.vertex = [
+	            new Point(this.uuid, this.x1, this.y1, 5),
+	            new Point(this.uuid, this.x2, this.y2, 5),
+	            new Point(this.uuid, this.x3, this.y3, 5),
+	            new Point(this.uuid, this.x4, this.y4, 5),
+	        ];
+	        this.drawConnector();
 	    }
 
 
@@ -867,12 +892,38 @@
 
 	    svgs.appendChild(this.c_svg);
 
+	    this.c_points.map((point) => {
+	        point.draw(svgs);
+	      });
 
-	    // this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-	    // this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-	    // this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-	    // this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+	    this.vertex.map((v) => {
+	        v.draw(svgs);
+	      });
+	    
+	     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+	     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+	     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
+	     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
+
+	  drawConnector() {
+	    this.c_points[0].x = (this.x1 + this.x2) / 2;
+	    this.c_points[0].y = (this.y1 + this.y2) / 2;
+	    this.c_points[0].r = 5;
+
+	    this.c_points[1].x = (this.x2 + this.x3) / 2;
+	    this.c_points[1].y = (this.y2 + this.y3) / 2;
+	    this.c_points[1].r = 5;
+
+	    this.c_points[2].x = (this.x3 + this.x4) / 2;
+	    this.c_points[2].y = (this.y3 + this.y4) / 2;
+	    this.c_points[2].r = 5;
+
+	    this.c_points[3].x = (this.x4 + this.x1) / 2;
+	    this.c_points[3].y = (this.y4 + this.y1) / 2;
+	    this.c_points[3].r = 5;
+	  }
+
 	}
 
 	/**

@@ -2,6 +2,7 @@ import  {Circle}  from "./entities/circle.js";
 import  {Rectangle}  from "./entities/rectangle.js";
 import  {Line}  from "./entities/line.js";
 import  {Triangle}  from "./entities/triangle.js";
+import  {Losange} from "./entities/losange.js";
 
 
 /**
@@ -29,7 +30,9 @@ class FactoryForm
         else if(type == "line")
             return new Line(uuid, props.x, props.y, events);
         else if(type == "triangle")
-             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
+            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
+        else if(type == "losange")
+            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, props.x4, props.y4, events);
     }
 }
 

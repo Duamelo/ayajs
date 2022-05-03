@@ -48,7 +48,7 @@
 
 	class Line 
 	{
-	    constructor(uuid, x=0, y=0, events){
+	    constructor(uuid, x = 0, y = 0, events){
 	        
 	        this.x = x;
 	        this.y = y;
@@ -138,17 +138,18 @@
 	      lk = _Register.getAllLinksByComponent(cp);
 
 	      // un component n'a pas de propriété parent
-	      if (cp != undefined && cp.parent == undefined) state = "moving";
+	      if (cp != undefined && cp.parent == undefined)
+	        state = "moving";
 	      else {
-	        if (
-	          (source.form.vertex != undefined &&
-	            (pos = source.form.vertex.indexOf(cp)) >= 0) ||
-	          (source.form instanceof Circle ?  source.form.p_resizer.length >= 0 : false)
-	        ) {
+	        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
+	              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
+	        {
+
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
-	        } else {
+	        } 
+	        else {
 	          state = "drawing_link";
 	          id = _uuid.generate();
 	          if (cp != source) {
@@ -166,7 +167,7 @@
 	        dx = e.offsetX;
 	        dy = e.offsetY;
 
-	        if(cp.type == "rectangle" || cp.type == "triangle") {
+	        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
 	          lk.map(({ source, line }) => {
 	            if (cp == source) {
 	              cp.form.c_points.map((pnt) => {
@@ -198,6 +199,7 @@
 	        }
 	      } 
 	      else if (state == "drawing_link") {
+	        console.log(state);
 	        source.form.vertex.map((v) => {
 	          if (v.x == line.x && v.y == line.y) {
 	            v.c_svg.classList.remove("vertex");
@@ -216,7 +218,8 @@
 	        line.dest_x = e.clientX;
 	        line.dest_y = e.clientY;
 	        line.redraw();
-	      } else if (state == "resizing") {
+	      } 
+	      else if (state == "resizing") {
 	        if (source.type == "rectangle") {
 	          deltaX = e.offsetX - dx;
 	          deltaY = e.offsetY - dy;
@@ -226,7 +229,8 @@
 
 	          source.form.resize(pos, deltaX, deltaY);
 	          source.form.redraw();
-	        } else if (source.type == "triangle") {
+	        } 
+	        else if (source.type == "triangle") {
 	          console.log("triangle is moving");
 
 	          if (prev_pos == 0 && pos == -1) {
@@ -244,7 +248,8 @@
 	          source.form.resize(pos, dx, dy);
 	          source.form.redraw();
 	          prev_pos = pos;
-	        } else if (source.type == "circle") {
+	        } 
+	        else if (source.type == "circle") {
 	          console.log("circle is moving");
 	          //console.log(source.form);
 	          deltaX = e.offsetX - dx;
@@ -252,6 +257,21 @@
 	          source.form.resize(deltaX);
 	          source.form.redraw();
 	        }
+	        else if (source.type == "losange") {
+	          //console.log(pos);
+	          deltaX = e.offsetX - dx;
+	          deltaY = e.offsetY - dy;
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+	          if(pos == 0 || pos == 2) {
+	            source.form.resize(pos,deltaY);
+	          } 
+	          else if(pos == 1 || pos == 3){
+	            source.form.resize(pos,deltaX);
+	          }
+	          source.form.redraw();
+	        }
+
 	      }
 	    },
 	    mouseUpCb: function mouseupcb(e) {
@@ -282,6 +302,7 @@
 	      cp = _Register.find(id);
 
 	      if (cp.parent == undefined) {
+
 	        cp.form.vertex.map((v) => {
 	          v.c_svg.classList.remove("vertex");
 	          v.c_svg.classList.add("vertex_hover");
@@ -320,7 +341,8 @@
 	 *
 	 */
 	class Point {
-	  constructor(uuid, x = 0, y = 0, r = 4) {
+	  constructor(uuid, x = 0, y = 0, r = 4) 
+	  {
 	    this.uuid = _uuid.generate();
 	    this.parent = uuid;
 	    this.x = x;
@@ -372,14 +394,22 @@
 	      for (var i = 0; i < 4; i++) {
 	        cp.push(new Point(uuid, 0, 0));
 	      }
-	    } else if (type == "triangle") {
+	    } 
+	    else if (type == "triangle") {
 	      cp = [];
 	      for (var i = 0; i < 3; i++) {
 	        cp.push(new Point(uuid, 0, 0));
 	      }
-	    } else if (type == "circle") {
+	    } 
+	    else if (type == "circle") {
 	      cp = [];
 	      cp.push(new Point(uuid, 0, 0));
+	    } 
+	    else if (type == "losange") {
+	      cp = [];
+	      for (var i = 0; i < 6; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
 	    }
 	    return cp;
 	  }
@@ -652,16 +682,9 @@
 	   * @param {LineTo this ordonne point} y3
 	   * @param {array of object} events
 	   */
-	  constructor(
-	    uuid,
-	    x1 = 0,
-	    y1 = 0,
-	    x2 = 5,
-	    y2 = 5,
-	    x3 = 10,
-	    y3 = 10,
-	    events = []
-	  ) {
+
+	  constructor( uuid,  x1 = 0,  y1 = 0,  x2 = 5, y2 = 5, x3 = 10, y3 = 10,  events = [] )
+	   {
 	    this.uuid = uuid;
 
 	    this.x1 = x1;
@@ -738,9 +761,10 @@
 	    this.c_points[1].y = (this.y2 + this.y3) / 2;
 	    this.c_points[1].r = 5;
 
-	    this.c_points[2].x = (this.x1 + this.x3) / 2;
-	    this.c_points[2].y = (this.y1 + this.y3) / 2;
+	    this.c_points[2].x = (this.x3 + this.x1) / 2;
+	    this.c_points[2].y = (this.y3 + this.y1) / 2;
 	    this.c_points[2].r = 5;
+
 	  }
 
 	  shift(dx, dy) {
@@ -816,6 +840,202 @@
 	}
 
 	/**
+	 * @class Losange class
+	 */
+
+
+	class Losange {
+
+	    /**
+	     * @param {string} uuid
+	     * @param {abscissa starting point} x1
+	     * @param {ordonne starting point} y1
+	     * @param {LineTo this abscisse point}x2
+	     * @param {LineTo this ordonne point} y2
+	     * @param {LineTo this abscisse point}x3
+	     * @param {LineTo this ordonne point} y3
+	     * @param {LineTo this ordonne point} x4
+	     * @param {LineTo this ordonne point} y4
+	     * @param {array of object} events
+	     */
+
+	    constructor(uuid, x1 = 200, y1 = 300, x2 = 100, y2 = 400, x3 = 200, y3 = 500, x4 = 300, y4 = 400, events = [] )
+	    {
+	        this.uuid = uuid;
+
+	        this.x1 = x1;
+	        this.y1 = y1;
+
+	        this.x2 = x2;
+	        this.y2 = y2;
+
+	        this.x3 = x3;
+	        this.y3 = y3;
+
+	        this.x4 = x4;
+	        this.y4 = y4;
+
+	        this.c_svg = "";
+	        this.p = "";
+	        this.horizontal_diagonal_center;
+	        this.vertical_diagonal_center;
+
+	        this.events = events;
+	        
+	        this.c_points = Connector.create("losange", uuid);
+	        this.vertex = [
+	            new Point(this.uuid, this.x1, this.y1, 5),
+	            new Point(this.uuid, this.x2, this.y2, 5),
+	            new Point(this.uuid, this.x3, this.y3, 5),
+	            new Point(this.uuid, this.x4, this.y4, 5),
+	        ];
+	        this.drawConnector();
+	    }
+
+
+	    
+	  draw(svgs) {
+	    const ns = "http://www.w3.org/2000/svg";
+	    this.c_svg = document.createElementNS(ns, "path");
+
+	    this.p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+	     
+
+	    this.c_svg.setAttribute("id", this.uuid);
+	    this.c_svg.setAttribute("d", this.p);
+	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
+	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
+	    this.c_svg.setAttribute("fill", "lavenderblush");
+
+	    svgs.appendChild(this.c_svg);
+
+	    this.c_points.map((point) => {
+	        point.draw(svgs);
+	      });
+
+	    this.vertex.map((v) => {
+	        v.draw(svgs);
+	      });
+	    
+	     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+	     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+	     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
+	     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+	  }
+
+	  drawVertex(){
+	    this.vertex[0].x = this.x1;
+	    this.vertex[0].y = this.y1;
+
+	    this.vertex[1].x = this.x2;
+	    this.vertex[1].y = this.y2;
+
+	    this.vertex[2].x = this.x3;
+	    this.vertex[2].y = this.y3;
+
+	    this.vertex[3].x = this.x4;
+	    this.vertex[3].y = this.y4;
+	  }
+
+	  drawConnector() {
+	    this.c_points[0].x = (this.x1 + this.x2) / 2;
+	    this.c_points[0].y = (this.y1 + this.y2) / 2;
+	    this.c_points[0].r = 5;
+
+	    this.c_points[1].x = (this.x2 + this.x3) / 2;
+	    this.c_points[1].y = (this.y2 + this.y3) / 2;
+	    this.c_points[1].r = 5;
+
+	    this.c_points[2].x = (this.x3 + this.x4) / 2;
+	    this.c_points[2].y = (this.y3 + this.y4) / 2;
+	    this.c_points[2].r = 5;
+
+	    this.c_points[3].x = (this.x4 + this.x1) / 2;
+	    this.c_points[3].y = (this.y4 + this.y1) / 2;
+	    this.c_points[3].r = 5;
+
+	    this.c_points[4].x = (this.x2 + this.x4) / 2;
+	    this.c_points[4].y = (this.y2 + this.y4) / 2;
+	    this.c_points[4].r = 5;
+
+	    this.c_points[5].x = (this.x1 + this.x3) / 2;
+	    this.c_points[5].y = (this.y1 + this.y3) / 2;
+	    this.c_points[5].r = 5;
+	  }
+
+	  resize(pos, delta) {
+	      if(pos == 3) {
+	        this.x4   +=  delta;
+	        this.x2   -=  delta;
+	        this.y1   -=  delta;
+	        this.y3   +=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }
+	      else if(pos == 0){
+	        this.y1   +=  delta;
+	        this.x2   +=  delta;
+	        this.y3   -=  delta;
+	        this.x4   -=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      } 
+	      else if(pos == 2) {
+	        this.y1   -=  delta;
+	        this.x2   -=  delta;
+	        this.y3   +=  delta;
+	        this.x4   +=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }else if(pos == 1){
+	        this.x4   -=  delta;
+	        this.x2   +=  delta;
+	        this.y1   +=  delta;
+	        this.y3   -=  delta;
+	        this.drawVertex();
+	        this.drawConnector();
+	      }
+
+	  }
+
+	  redraw() {
+	    this.p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+
+	    this.c_svg.setAttribute("d", this.p);
+
+	    this.c_points.map((p) => {
+	        p.redraw();
+	      });
+	      this.vertex.map((v) => {
+	        v.redraw();
+	      });
+	  }
+
+	  shift(dx, dy) {
+	    this.x1 += dx;
+	    this.y1 += dy;
+
+	    this.x2 += dx;
+	    this.y2 += dy;
+
+	    this.x3 += dx;
+	    this.y3 += dy;
+
+	    this.x4 += dx;
+	    this.y4 += dy;
+
+	    this.c_points.map((p) => {
+	      p.shift(dx, dy);
+	    });
+
+	    this.vertex.map((v) => {
+	      v.shift(dx, dy);
+	    });
+	  }
+
+	}
+
+	/**
 	 * @class FactoryForm
 	 */
 
@@ -840,7 +1060,9 @@
 	        else if(type == "line")
 	            return new Line(uuid, props.x, props.y, events);
 	        else if(type == "triangle")
-	             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
+	            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
+	        else if(type == "losange")
+	            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, props.x4, props.y4, events);
 	    }
 	}
 

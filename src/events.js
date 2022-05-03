@@ -41,17 +41,17 @@ function nativeEvents() {
       lk = _Register.getAllLinksByComponent(cp);
 
       // un component n'a pas de propriété parent
-      if (cp != undefined && cp.parent == undefined) state = "moving";
+      if (cp != undefined && cp.parent == undefined)
+        state = "moving";
       else {
-        if (
-          (source.form.vertex != undefined &&
-            (pos = source.form.vertex.indexOf(cp)) >= 0) ||
-          (source.form instanceof Circle ?  source.form.p_resizer.length >= 0 : false)
-        ) {
+        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
+              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
+        {
           state = "resizing";
           dx = e.offsetX;
           dy = e.offsetY;
-        } else {
+        } 
+        else {
           state = "drawing_link";
           id = _uuid.generate();
           if (cp != source) {
@@ -69,7 +69,7 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        if(cp.type == "rectangle" || cp.type == "triangle") {
+        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
           lk.map(({ source, line }) => {
             if (cp == source) {
               cp.form.c_points.map((pnt) => {
@@ -101,6 +101,7 @@ function nativeEvents() {
         }
       } 
       else if (state == "drawing_link") {
+        console.log(state);
         source.form.vertex.map((v) => {
           if (v.x == line.x && v.y == line.y) {
             v.c_svg.classList.remove("vertex");
@@ -119,7 +120,8 @@ function nativeEvents() {
         line.dest_x = e.clientX;
         line.dest_y = e.clientY;
         line.redraw();
-      } else if (state == "resizing") {
+      } 
+      else if (state == "resizing") {
         if (source.type == "rectangle") {
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
@@ -129,7 +131,8 @@ function nativeEvents() {
 
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
-        } else if (source.type == "triangle") {
+        } 
+        else if (source.type == "triangle") {
           console.log("triangle is moving");
 
           if (prev_pos == 0 && pos == -1) {
@@ -147,7 +150,8 @@ function nativeEvents() {
           source.form.resize(pos, dx, dy);
           source.form.redraw();
           prev_pos = pos;
-        } else if (source.type == "circle") {
+        } 
+        else if (source.type == "circle") {
           console.log("circle is moving");
           //console.log(source.form);
           deltaX = e.offsetX - dx;
@@ -155,6 +159,21 @@ function nativeEvents() {
           source.form.resize(deltaX);
           source.form.redraw();
         }
+        else if (source.type == "losange") {
+          //console.log(pos);
+          deltaX = e.offsetX - dx;
+          deltaY = e.offsetY - dy;
+          dx = e.offsetX;
+          dy = e.offsetY;
+          if(pos == 0 || pos == 2) {
+            source.form.resize(pos,deltaY);
+          } 
+          else if(pos == 1 || pos == 3){
+            source.form.resize(pos,deltaX);
+          }
+          source.form.redraw();
+        }
+
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -185,6 +204,7 @@ function nativeEvents() {
       cp = _Register.find(id);
 
       if (cp.parent == undefined) {
+
         cp.form.vertex.map((v) => {
           v.c_svg.classList.remove("vertex");
           v.c_svg.classList.add("vertex_hover");

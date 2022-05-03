@@ -2,6 +2,8 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+import {Circle} from "./entities/circle.js";
+
 
 function nativeEvents() {
   var id;
@@ -14,7 +16,6 @@ function nativeEvents() {
   var lk;
   var prev_pos;
   var pos;
-  var circle_lock;
 
   return {
     mouseDownCb: function mousedowncb(e) {
@@ -45,7 +46,7 @@ function nativeEvents() {
         if (
           (source.form.vertex != undefined &&
             (pos = source.form.vertex.indexOf(cp)) >= 0) ||
-          source.form.p_resizer.length >= 0
+          (source.form instanceof Circle ?  source.form.p_resizer.length >= 0 : false)
         ) {
           state = "resizing";
           dx = e.offsetX;

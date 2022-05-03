@@ -143,7 +143,7 @@
 	        if (
 	          (source.form.vertex != undefined &&
 	            (pos = source.form.vertex.indexOf(cp)) >= 0) ||
-	          source.form.p_resizer.length >= 0
+	          (source.form instanceof Circle ?  source.form.p_resizer.length >= 0 : false)
 	        ) {
 	          state = "resizing";
 	          dx = e.offsetX;

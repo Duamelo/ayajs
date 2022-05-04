@@ -62,6 +62,7 @@ class Circle
 
         this.c_svg.setAttribute("cx", this.x);
         this.c_svg.setAttribute("cy",this.y);
+        this.c_svg.setAttribute("r", this.r);
     }
 }
 

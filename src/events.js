@@ -167,6 +167,7 @@ function nativeEvents() {
           //     }
           //   });
           // }
+
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
         } 

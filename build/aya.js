@@ -316,6 +316,20 @@
 
 	      this.drawVertex();
 	      this.drawConnector();
+
+	      this.children.map((child) => {
+	        if(child instanceof Line){
+	          child.x += dx;
+	          child.y += dy;
+	          child.dest_y += dy;
+	          child.redraw();
+	        }
+	        else if(child instanceof Circle){
+	          child.shift(dx,dy);
+	          child.redraw();
+	        }
+	      });
+
 	    } 
 	    else if (pos == 1) {
 
@@ -326,6 +340,20 @@
 
 	      this.drawVertex();
 	      this.drawConnector();
+
+	      this.children.map((child) => {
+	        if(child instanceof Line){
+	          child.y += dy;
+	          child.dest_x += dx;
+	          child.dest_y += dy;
+	          child.redraw();
+	        }
+	        else if(child instanceof Circle){
+	          child.shift(dx,dy);
+	          child.redraw();
+	        }
+	      });
+
 	    } 
 	    else if (pos == 2) {
 
@@ -334,6 +362,20 @@
 
 	      this.drawVertex();
 	      this.drawConnector();
+
+	      this.children.map((child) => {
+	        if(child instanceof Line){
+	          child.y += dy;
+	          child.dest_x += dx;
+	          child.dest_y += dy;
+	          child.redraw();
+	        }
+	        else if(child instanceof Circle){
+	          child.shift(dx,dy);
+	          child.redraw();
+	        }
+	      });
+
 	    } 
 	    else if (pos == 3) {
 
@@ -344,6 +386,19 @@
 
 	      this.drawVertex();
 	      this.drawConnector();
+
+	      this.children.map((child) => {
+	        if(child instanceof Line){
+	          child.x += dx;
+	          child.y += dy;
+	          child.dest_y += dy;
+	          child.redraw();
+	        }
+	        else if(child instanceof Circle){
+	          child.shift(dx,dy);
+	          child.redraw();
+	        }
+	      });
 
 	    }
 	  }
@@ -679,6 +734,7 @@
 	          //     }
 	          //   });
 	          // }
+
 	          source.form.resize(pos, deltaX, deltaY);
 	          source.form.redraw();
 	        } 
@@ -804,6 +860,7 @@
 
 	        this.c_svg.setAttribute("cx", this.x);
 	        this.c_svg.setAttribute("cy",this.y);
+	        this.c_svg.setAttribute("r", this.r);
 	    }
 	}
 
@@ -856,7 +913,6 @@
 
 	    createChildren(children){
 
-	        if(children.length > 0)
 	            children.map((chd) => {
 	                var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
 	                this.form.children.push(child);

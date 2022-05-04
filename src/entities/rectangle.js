@@ -2,6 +2,8 @@ import { Connector } from "./connector.js";
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
 import { _Register } from "../register.js";
+import { Line } from "./line.js";
+import { Circle } from "./circle.js";
 
 /**
  * Rectangle class
@@ -139,6 +141,20 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map((child) => {
+        if(child instanceof Line){
+          child.x += dx;
+          child.y += dy;
+          child.dest_y += dy;
+          child.redraw();
+        }
+        else if(child instanceof Circle){
+          child.shift(dx,dy);
+          child.redraw();
+        }
+      });
+
     } 
     else if (pos == 1) {
 
@@ -149,6 +165,20 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map((child) => {
+        if(child instanceof Line){
+          child.y += dy;
+          child.dest_x += dx;
+          child.dest_y += dy;
+          child.redraw();
+        }
+        else if(child instanceof Circle){
+          child.shift(dx,dy);
+          child.redraw();
+        }
+      });
+
     } 
     else if (pos == 2) {
 
@@ -157,6 +187,20 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map((child) => {
+        if(child instanceof Line){
+          child.y += dy;
+          child.dest_x += dx;
+          child.dest_y += dy;
+          child.redraw();
+        }
+        else if(child instanceof Circle){
+          child.shift(dx,dy);
+          child.redraw();
+        }
+      });
+
     } 
     else if (pos == 3) {
 
@@ -167,6 +211,19 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map((child) => {
+        if(child instanceof Line){
+          child.x += dx;
+          child.y += dy;
+          child.dest_y += dy;
+          child.redraw();
+        }
+        else if(child instanceof Circle){
+          child.shift(dx,dy);
+          child.redraw();
+        }
+      });
 
     }
   }

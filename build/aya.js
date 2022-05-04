@@ -349,7 +349,7 @@
 	          child.redraw();
 	        }
 	        else if(child instanceof Circle){
-	          child.shift(dx,dy);
+	          child.y += dy;
 	          child.redraw();
 	        }
 	      });

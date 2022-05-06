@@ -34,10 +34,11 @@ class Point {
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    // this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
+    //this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 
     svgs.appendChild(this.c_svg);
+
   }
 
   shift(dx, dy) {
@@ -48,8 +49,8 @@ class Point {
 
   redraw() {
     this.c_svg.setAttribute("cx", this.x);
-
     this.c_svg.setAttribute("cy", this.y);
+    
   }
 }
 

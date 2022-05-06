@@ -31,11 +31,8 @@ function nativeEvents() {
             ? _Register.find(cp.parent)
             : cp;
 
-      console.log(cp);
-      // console.log("----");
-      // console.log(source.form.p_resizer);
-      // console.log("---");
-      //console.log(source);
+      // console.log(cp.parent);
+      // console.log(source);
 
       lk = _Register.getAllLinksByComponent(cp);
 
@@ -43,8 +40,7 @@ function nativeEvents() {
       if (cp != undefined && cp.parent == undefined)
         state = "moving";
       else {
-        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
-              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
+        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) )
         {
           state = "resizing";
           dx = e.offsetX;
@@ -68,7 +64,7 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange" || cp.type == "circle") {
           lk.map(({ source, line }) => {
             if (cp == source) {
               cp.form.c_points.map((pnt) => {
@@ -89,15 +85,22 @@ function nativeEvents() {
             }
           });
           
-          cp.form.shift(deltaX, deltaY);
-          cp.form.redraw();
+          if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+            cp.form.shift(deltaX, deltaY);
+            cp.form.redraw();
+          }
+          else if(source.type == "circle") {
+            cp.form.x += deltaX;
+            cp.form.y += deltaY;
+            
+            cp.form.drawVertex();
+            cp.form.drawConnector();
+            cp.form.redrawLineConnector();
+            cp.form.redraw();
+          }
+          
         }
-        else if(source.type == "circle") {
-          cp.form.x += deltaX;
-          cp.form.y += deltaY;
-          cp.form.drawResizer();
-          cp.form.redraw();
-        }
+        
       } 
       else if (state == "drawing_link") {
         console.log(state);
@@ -151,11 +154,13 @@ function nativeEvents() {
           prev_pos = pos;
         } 
         else if (source.type == "circle") {
-          console.log("circle is moving");
+          console.log(pos);
+          console.log(`circle is  ${state}`);
           //console.log(source.form);
           deltaX = e.offsetX - dx;
           dx = e.offsetX;
-          source.form.resize(deltaX);
+          source.form.resize(pos,deltaX);
+          source.form.redrawLineConnector();
           source.form.redraw();
         }
         else if (source.type == "losange") {

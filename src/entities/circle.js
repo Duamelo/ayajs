@@ -21,9 +21,13 @@ class Circle {
     this.r = r;
     this.events = events;
     this.c_svg = "";
+    this.line_svg = "";
 
-    this.p_resizer = Connector.create("circle", uuid);
-    this.drawResizer();
+    this.c_points = Connector.create("circle", uuid);
+    this.vertex = Connector.create("circle", uuid);
+    this.drawConnector();
+    this.drawVertex();
+    this.drawLineConnector(svg);
   }
 
   /**
@@ -42,38 +46,99 @@ class Circle {
 
     this.c_svg.setAttribute("r", this.r);
 
-    this.c_svg.setAttribute("fill", "red");
+    this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
 
-    this.c_svg.setAttribute("stroke", "yellow");
+    this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
 
-    this.c_svg.setAttribute("stroke-width", "2.5");
+    this.c_svg.setAttribute("stroke-width", "1.5");
 
     this.c_svg.setAttribute("id", this.uuid);
 
     svgs.appendChild(this.c_svg);
 
-    this.p_resizer.map((p_resizer) => {
-      p_resizer.draw(svgs);
+    this.vertex.map((vert) => {
+      vert.draw(svgs);
+    });
+
+    this.c_points.map((point) => {
+      point.draw(svgs);
     });
 
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
+    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
-  drawResizer() {
-    this.p_resizer[0].x = this.x + this.r;
-    this.p_resizer[0].y = this.y;
-    this.p_resizer[0].r = 5;
-    console.log(this.p_resizer);
+  drawLineConnector(svg){
+    const ns = "http://www.w3.org/2000/svg";
+    this.line_svg = document.createElementNS(ns, "path");
+
+    this.p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+              L ${this.c_points[1].x} ${this.c_points[1].y} 
+              L ${this.vertex[1].x}   ${this.vertex[1].y} 
+              L ${this.c_points[2].x} ${this.c_points[2].y}
+              L ${this.vertex[2].x}   ${this.vertex[2].y}
+              L ${this.c_points[3].x} ${this.c_points[3].y} 
+              L ${this.vertex[3].x}   ${this.vertex[3].y} 
+              L ${this.c_points[0].x} ${this.c_points[0].y} Z`;
+
+    this.line_svg.setAttribute("id", this.uuid);
+    this.line_svg.setAttribute("d", this.p);
+    this.line_svg.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
+    this.line_svg.setAttributeNS(null, "stroke-width", "1px");
+    this.line_svg.setAttributeNS(null, "fill", "none");
+    this.line_svg.setAttribute("stroke-dasharray", "4");
+
+    svg.appendChild(this.line_svg);
+
   }
 
-  resize(deltaX) {
-      // this.r += deltaX;
-      // this.drawResizer();
+  drawVertex(){
+    this.vertex[0].x = this.x - this.r;
+    this.vertex[0].y = this.y - this.r;
 
-    this.r += deltaX;
+    this.vertex[1].x = this.x - this.r;
+    this.vertex[1].y = this.y + this.r;
+
+    this.vertex[2].x = this.x + this.r;
+    this.vertex[2].y = this.y + this.r;
+
+    this.vertex[3].x = this.x + this.r;
+    this.vertex[3].y = this.y - this.r;
+   }
+
+  drawConnector() {
+    this.c_points[0].x = this.x;
+    this.c_points[0].y = this.y - this.r;
+
+    this.c_points[1].x = this.x - this.r;
+    this.c_points[1].y = this.y;
+
+    this.c_points[2].x = this.x;
+    this.c_points[2].y = this.y + this.r;
+
+    this.c_points[3].x = this.x + this.r;
+    this.c_points[3].y = this.y;
+  }
+
+
+  resize(pos,deltaX) {
+
+    if(pos == 0 || pos == 1 ) {
+      this.r -= deltaX;
+      this.drawConnector();
+      this.drawVertex();
+    }
+    else {
+      this.r += deltaX;
+      this.drawConnector();
+      this.drawVertex();
+    }
+
     if(this.r <= 20)
       this.r = 20;
-    this.drawResizer();
+    
     }
     
 
@@ -81,11 +146,31 @@ class Circle {
     this.c_svg.setAttribute("cx", this.x);
     this.c_svg.setAttribute("cy", this.y);
     this.c_svg.setAttribute("r", this.r);
-
-    this.p_resizer.map((p_resizer) => {
-      p_resizer.redraw();
+  
+    this.c_points.map((p) => {
+      p.redraw();
     });
+
+    this.vertex.map((vert) => {
+      vert.redraw();
+    });
+
   }
+
+  redrawLineConnector()
+  {
+    this.p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+              L ${this.c_points[1].x} ${this.c_points[1].y} 
+              L ${this.vertex[1].x}   ${this.vertex[1].y} 
+              L ${this.c_points[2].x} ${this.c_points[2].y}
+              L ${this.vertex[2].x}   ${this.vertex[2].y}
+              L ${this.c_points[3].x} ${this.c_points[3].y} 
+              L ${this.vertex[3].x}   ${this.vertex[3].y} 
+              L ${this.c_points[0].x} ${this.c_points[0].y} Z`;
+    
+    this.line_svg.setAttribute("d", this.p);
+  }
+
 }
 
 export { Circle };

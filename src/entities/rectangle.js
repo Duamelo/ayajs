@@ -1,6 +1,7 @@
 import { Connector } from "./connector.js";
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
+import { _Register } from "../register.js";
 
 /**
  * Rectangle class
@@ -18,6 +19,7 @@ class Rectangle {
    */
 
   constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = []) {
+
     this.uuid = uuid;
 
     this.x = x;
@@ -29,10 +31,15 @@ class Rectangle {
     this.events = events;
     this.c_svg = "";
 
-    this.c_points = Connector.create("rectangle", uuid);
-    this.vertex = Connector.create("rectangle", uuid);
+    this.children = [];
+
+    this.c_points = Connector.create("rectangle", this.uuid);
+    this.vertex = Connector.create("rectangle", this.uuid);
+
     this.drawConnector();
     this.drawVertex();
+
+    _Register.add(this);
   }
 
   draw(svgs) {
@@ -120,11 +127,20 @@ class Rectangle {
     this.vertex.map((p) => {
       p.redraw();
     });
+
+    this.children.map((child) => {
+      child.redraw();
+    });
   }
 
   resize(pos, dx, dy) {
 
     if (pos == 0) {
+
+      this.children.map((child) => {
+        child.resize(pos, dx, dy);
+      });
+
       this.shift(dx, dy);
 
       this.width += -dx;
@@ -132,6 +148,9 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      
+
     } 
     else if (pos == 1) {
 
@@ -142,6 +161,10 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map((child) => {
+        child.resize(pos, dx, dy);
+      });
     } 
     else if (pos == 2) {
 
@@ -150,6 +173,10 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+        this.children.map((child) => {
+          child.resize(pos, dx, dy);
+        });
     } 
     else if (pos == 3) {
 
@@ -161,6 +188,9 @@ class Rectangle {
       this.drawVertex();
       this.drawConnector();
 
+      this.children.map((child) => {
+        child.resize(pos, dx, dy);
+      });
     }
   }
 }

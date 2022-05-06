@@ -7,7 +7,7 @@
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
    <script src="./build/aya.js"></script>
-   <title>Document</title>
+   <title>ayajs</title>
 </head>
 
 <body>
@@ -20,31 +20,58 @@
       svg.setAttribute("id", "svg");
 
 
-      // svg.addEventListener("mousedown", aya.events.mouseDownCb);
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
-      var rect = new aya.Component("rectangle", [], {
-         x: 550,
-         y: 250,
-         width: 100,
-         height: 100
-      });
+      // var rect = new aya.Component("rectangle", [], {
+      //    x: 550,
+      //    y: 250,
+      //    width: 100,
+      //    height: 100
+      // });
 
-      var tri = new aya.Component("triangle", [], {
-         x1: 410,
-         y1: 118,
+      // rect.createChildren(rect.uuid, [
+      //    {
+      //       type: 'line',
+      //       props: { x: 550, y: 250 + (100 / 2), dest_x: 550 + 100, dest_y : 250 + (100 / 2)},
+      //       events: []
+      //    },
+      //    {
+      //       type: 'line',
+      //       props: { x: 550 + (100 / 2), y: 250, dest_x: 550 + (100 / 2), dest_y : 250 + (150 / 2)},
+      //       events: []
+      //    },
+      //    {
+      //       type: 'circle',
+      //       props: {x: 550 + 95, y: 250 + (95)},
+      //       events: []
+      //    }
+      // ]);
 
-         x2: 360,
-         y2: 18,
+      var gp = new aya.Group([
+         {
+            type: "rectangle",
+            props: {x: 550, y: 250, width: 100, height: 100},
+            events: []
+         },
+         {
+            type: 'line',
+            props: { x: 550, y: 250 + (100 / 2), dest_x: 550 + 100, dest_y : 250 + (100 / 2)},
+            events: []
+         },
+         {
+            type: 'line',
+            props: { x: 550 + (100 / 2), y: 250, dest_x: 550 + (100 / 2), dest_y : 250 + (150 / 2)},
+            events: []
+         },
+         {
+            type: 'circle',
+            props: {x: 550 + 95, y: 250 + (95)},
+            events: []
+         }
+      ]);
 
-         x3: 60,
-         y3: 118
-      });
-
-      var circle = new aya.Component("circle", [], {  x:150,   y:150,   r:70  });
-
-      var losange = new aya.Component("losange", [], {});
+      gp.draw(svg);
 
       document.body.append(svg);
    </script>

@@ -28,7 +28,7 @@ class FactoryForm
         else if(type == "rectangle")
             return new Rectangle(uuid, props.x, props.y, props.width, props.height, events);
         else if(type == "line")
-            return new Line(uuid, props.x, props.y, events);
+            return new Line(uuid, props.x, props.y, events, props.dest_x, props.dest_y);
         else if(type == "triangle")
             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events);
         else if(type == "losange")

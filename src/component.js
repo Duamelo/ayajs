@@ -18,8 +18,16 @@ class Component
         _Register.add(this);
         this.form.draw(svg);
     }
+
+    createChildren(parentId, children = []){
+
+            children.map((chd) => {
+                var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
+                this.form.children.push(child);
+                child.parent = parentId;
+                child.draw(svg);
+            });
+    }
 }
 
 export  {Component};
-
-

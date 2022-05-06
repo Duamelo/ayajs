@@ -17,7 +17,8 @@ class Circle
      */
 
     constructor(uuid, x = 0, y = 0, r = 5, events = []){
-        this.uuid = uuid;
+        this.parent = uuid;
+        this.uuid = _uuid.generate();
         this.x = x;
         this.y = y;
         this.r = r;
@@ -63,6 +64,10 @@ class Circle
         this.c_svg.setAttribute("cx", this.x);
         this.c_svg.setAttribute("cy",this.y);
         this.c_svg.setAttribute("r", this.r);
+    }
+
+    resize(pos, dx, dy, zoom = false){
+        
     }
 }
 

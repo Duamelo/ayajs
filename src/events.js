@@ -29,6 +29,9 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
+      console.log("point");
+      console.log(cp);
+
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -90,6 +93,7 @@ function nativeEvents() {
 
         if(cp.form != undefined && cp.form.children.length > 0){
           cp.form.children.map( (child) => {
+            console.log("children resizing");
             if(child instanceof Line){
               child.shift(deltaX, deltaY);
               child.dest_x += deltaX;

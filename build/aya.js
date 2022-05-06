@@ -51,8 +51,7 @@
 	{
 	    constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
 	        
-	        // this.parent = uuid;
-	        this.uuid = _uuid.generate();
+	        this.uuid = uuid;
 	        this.x = x;
 	        this.y = y;
 	        this.dest_x = dest_x;
@@ -92,7 +91,117 @@
 	        this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
 	        this.c_svg.setAttribute("d", this.p);
 	    }
-	    
+
+	    resize(pos, dx, dy, zoom = false){
+
+	        var p = _Register.find(this.parent);
+
+	        if( pos == 0){
+	            console.log("pos = 0");
+	            var c_p = p.form.c_points[pos];
+
+	            // vertical line
+	            if( this.x == this.dest_x && this.y != this.dest_y){
+	                if( (this.y - c_p.y) <   (this.dest_y - c_p.y)){
+	                    this.y += dy;
+	                }
+	                else {
+	                    this.dest_y += -dy;
+	                }
+	            }
+
+	            // horizontal line
+	            else if( this.y == this.dest_y && this.x != this.dest_x){
+	                if(  (this.x - c_p.x) <   (this.dest_x - c_p.x)  ){
+
+	                    this.x += dx;
+	                }
+	                else {
+	                    this.dest_x += dx;
+	                }
+	            }
+	            else;
+
+	        }
+	        else if(pos == 1){
+	            console.log("pos = 1");
+	            var c_p = p.form.c_points[pos];
+
+	            // vertical line
+	            if( this.x == this.dest_x && this.y != this.dest_y){
+	                if(  ( this.y - c_p.y  ) <= ( this.dest_y - c_p.y) ){
+	                    this.y += dy;
+	                }
+	                else {
+	                    this.dest_y += -dy;
+	                }
+	            }
+	            // horizontal line
+	            else if( this.y == this.dest_y && this.x != this.dest_x){
+	                if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
+
+	                    this.x += dx;
+	                }
+	                else {
+	                    this.dest_x += dx;
+	                }
+	            }
+	            else;
+
+	        }
+	        else if(pos == 2){
+	            console.log("pos = 2");
+	            var c_p = p.form.c_points[pos];
+
+	            // vertical line
+	            if( this.x == this.dest_x && this.y != this.dest_y){
+	                if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
+	                    this.y += dy;
+	                }
+	                else {
+	                    this.dest_y += dy;
+	                }
+	            }
+	            // horizontal line
+	            else if( this.y == this.dest_y && this.x != this.dest_x){
+	                if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
+
+	                    this.x += dx;
+	                }
+	                else {
+	                    this.dest_x += dx;
+	                }
+	            }
+	            else;
+
+	        }
+	        else if(pos == 3){
+	            console.log("pos = 3");
+	            var c_p = p.form.c_points[pos];
+
+	            // vertical line
+	            if( this.x == this.dest_x && this.y != this.dest_y){
+	                if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
+	                    this.y += dy;
+	                }
+	                else {
+	                    this.dest_y += dy;
+	                }
+	            }
+	            // horizontal line
+	            else if( this.y == this.dest_y && this.x != this.dest_x){
+	                if( ( this.x - c_p.x ) <= ( this.dest_x - c_p.x) ){
+
+	                    this.x += dx;
+	                }
+	                else {
+	                    this.dest_x += dx;
+	                }
+	            }
+	            else;
+
+	        }
+	    }
 	}
 
 	/**
@@ -304,11 +413,20 @@
 	    this.vertex.map((p) => {
 	      p.redraw();
 	    });
+
+	    this.children.map((child) => {
+	      child.redraw();
+	    });
 	  }
 
 	  resize(pos, dx, dy) {
 
 	    if (pos == 0) {
+
+	      this.children.map((child) => {
+	        child.resize(pos, dx, dy);
+	      });
+
 	      this.shift(dx, dy);
 
 	      this.width += -dx;
@@ -317,18 +435,7 @@
 	      this.drawVertex();
 	      this.drawConnector();
 
-	      this.children.map((child) => {
-	        if(child instanceof Line){
-	          child.x += dx;
-	          child.y += dy;
-	          child.dest_y += dy;
-	          child.redraw();
-	        }
-	        else if(child instanceof Circle){
-	          child.shift(dx,dy);
-	          child.redraw();
-	        }
-	      });
+	      
 
 	    } 
 	    else if (pos == 1) {
@@ -342,18 +449,8 @@
 	      this.drawConnector();
 
 	      this.children.map((child) => {
-	        if(child instanceof Line){
-	          child.y += dy;
-	          child.dest_x += dx;
-	          child.dest_y += dy;
-	          child.redraw();
-	        }
-	        else if(child instanceof Circle){
-	          child.y += dy;
-	          child.redraw();
-	        }
+	        child.resize(pos, dx, dy);
 	      });
-
 	    } 
 	    else if (pos == 2) {
 
@@ -363,19 +460,9 @@
 	      this.drawVertex();
 	      this.drawConnector();
 
-	      this.children.map((child) => {
-	        if(child instanceof Line){
-	          child.y += dy;
-	          child.dest_x += dx;
-	          child.dest_y += dy;
-	          child.redraw();
-	        }
-	        else if(child instanceof Circle){
-	          child.shift(dx,dy);
-	          child.redraw();
-	        }
-	      });
-
+	        this.children.map((child) => {
+	          child.resize(pos, dx, dy);
+	        });
 	    } 
 	    else if (pos == 3) {
 
@@ -388,18 +475,8 @@
 	      this.drawConnector();
 
 	      this.children.map((child) => {
-	        if(child instanceof Line){
-	          child.x += dx;
-	          child.y += dy;
-	          child.dest_y += dy;
-	          child.redraw();
-	        }
-	        else if(child instanceof Circle){
-	          child.shift(dx,dy);
-	          child.redraw();
-	        }
+	        child.resize(pos, dx, dy);
 	      });
-
 	    }
 	  }
 	}
@@ -596,6 +673,9 @@
 
 	      cp = _Register.find(id);
 
+	      console.log("point");
+	      console.log(cp);
+
 	      if (id != "svg")
 	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -657,6 +737,7 @@
 
 	        if(cp.form != undefined && cp.form.children.length > 0){
 	          cp.form.children.map( (child) => {
+	            console.log("children resizing");
 	            if(child instanceof Line){
 	              child.shift(deltaX, deltaY);
 	              child.dest_x += deltaX;
@@ -815,7 +896,8 @@
 	     */
 
 	    constructor(uuid, x = 0, y = 0, r = 5, events = []){
-	        this.uuid = uuid;
+	        this.parent = uuid;
+	        this.uuid = _uuid.generate();
 	        this.x = x;
 	        this.y = y;
 	        this.r = r;
@@ -862,6 +944,10 @@
 	        this.c_svg.setAttribute("cy",this.y);
 	        this.c_svg.setAttribute("r", this.r);
 	    }
+
+	    resize(pos, dx, dy, zoom = false){
+	        
+	    }
 	}
 
 	/**
@@ -901,23 +987,47 @@
 	     * @param {array} events 
 	     * @param {object} params 
 	     */
-	    constructor( type, events = [],  props, children = [])
+	    constructor( type, events = [],  props)
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
 	        this.form = FactoryForm.createForm(this.uuid, type, props, events);
 	        _Register.add(this);
 	        this.form.draw(svg);
-	        this.createChildren(children);
 	    }
 
-	    createChildren(children){
+	    createChildren(parentId, children = []){
 
 	            children.map((chd) => {
 	                var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
 	                this.form.children.push(child);
+	                child.parent = parentId;
 	                child.draw(svg);
 	            });
+	    }
+	}
+
+	class Group
+	{
+	    constructor(children = []){
+	        this.uuid = _uuid.generate();
+	        this.children = children;
+	        this.g_svg = "";
+	    }
+
+
+	    draw(svgs){
+	        const svgns = "http://www.w3.org/2000/svg";
+	        this.g_svg = document.createElementNS(svgns, "g");
+	    
+	        this.g_svg.setAttributeNS(null, "id", this.uuid);
+
+	        this.children.map((chd) => {
+	            var child = FactoryForm.createForm(_uuid.generate(), chd.type, chd.props, chd.events);
+	            child.draw(this.g_svg);
+	        });
+
+	        svgs.appendChild(this.g_svg);
 	    }
 	}
 
@@ -925,6 +1035,7 @@
 	exports.Component = Component;
 	exports.Connector = Connector;
 	exports.FactoryForm = FactoryForm;
+	exports.Group = Group;
 	exports.Line = Line;
 	exports.Point = Point;
 	exports.Rectangle = Rectangle;

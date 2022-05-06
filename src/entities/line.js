@@ -9,8 +9,7 @@ class Line
 {
     constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
         
-        // this.parent = uuid;
-        this.uuid = _uuid.generate();
+        this.uuid = uuid;
         this.x = x;
         this.y = y;
         this.dest_x = dest_x;
@@ -50,7 +49,125 @@ class Line
         this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
         this.c_svg.setAttribute("d", this.p);
     }
-    
+
+    resize(pos, dx, dy, zoom = false){
+
+        var p = _Register.find(this.parent);
+
+        if( pos == 0){
+            console.log("pos = 0");
+            var c_p = p.form.c_points[pos];
+
+            // vertical line
+            if( this.x == this.dest_x && this.y != this.dest_y){
+                if( (this.y - c_p.y) <   (this.dest_y - c_p.y)){
+                    this.y += dy;
+                }
+                else{
+                    this.dest_y += -dy;
+                }
+            }
+
+            // horizontal line
+            else if( this.y == this.dest_y && this.x != this.dest_x){
+                if(  (this.x - c_p.x) <   (this.dest_x - c_p.x)  ){
+
+                    this.x += dx;
+                }
+                else{
+                    this.dest_x += dx;
+                }
+            }
+            else{
+
+            }
+
+        }
+        else if(pos == 1){
+            console.log("pos = 1");
+            var c_p = p.form.c_points[pos];
+
+            // vertical line
+            if( this.x == this.dest_x && this.y != this.dest_y){
+                if(  ( this.y - c_p.y  ) <= ( this.dest_y - c_p.y) ){
+                    this.y += dy;
+                }
+                else{
+                    this.dest_y += -dy;
+                }
+            }
+            // horizontal line
+            else if( this.y == this.dest_y && this.x != this.dest_x){
+                if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
+
+                    this.x += dx;
+                }
+                else{
+                    this.dest_x += dx;
+                }
+            }
+            else{
+
+            }
+
+        }
+        else if(pos == 2){
+            console.log("pos = 2");
+            var c_p = p.form.c_points[pos];
+
+            // vertical line
+            if( this.x == this.dest_x && this.y != this.dest_y){
+                if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
+                    this.y += dy;
+                }
+                else{
+                    this.dest_y += dy;
+                }
+            }
+            // horizontal line
+            else if( this.y == this.dest_y && this.x != this.dest_x){
+                if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
+
+                    this.x += dx;
+                }
+                else{
+                    this.dest_x += dx;
+                }
+            }
+            else{
+
+            }
+
+        }
+        else if(pos == 3){
+            console.log("pos = 3");
+            var c_p = p.form.c_points[pos];
+
+            // vertical line
+            if( this.x == this.dest_x && this.y != this.dest_y){
+                if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
+                    this.y += dy;
+                }
+                else{
+                    this.dest_y += dy;
+                }
+            }
+            // horizontal line
+            else if( this.y == this.dest_y && this.x != this.dest_x){
+                if( ( this.x - c_p.x ) <= ( this.dest_x - c_p.x) ){
+
+                    this.x += dx;
+                }
+                else{
+                    this.dest_x += dx;
+                }
+            }
+            else{
+
+            }
+
+        }
+    }
 }
  
 export {Line};

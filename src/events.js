@@ -56,6 +56,8 @@ function nativeEvents() {
           if (cp != source) {
             line = new Line(id, cp.x, cp.y, []);
             line.draw(svg);
+
+            source.linesAndConnectors.push({ lines : line, firstPoint : cp});
           }
         }
       }
@@ -173,6 +175,32 @@ function nativeEvents() {
           source.form.redraw();
         }
 
+        
+        source.linesAndConnectors.forEach(elt => {
+
+            if(elt.firstPoint != null){
+
+              
+              console.log("elt.firstPoint");
+              console.log(elt)
+
+              elt.lines.x = elt.firstPoint.x;
+              elt.lines.y = elt.firstPoint.y;
+              elt.lines.redraw();
+
+            }
+            if(elt.secondPoint != null){
+
+              console.log("elt.secondPoint");
+              console.log(elt);
+
+              elt.lines.dest_x = elt.secondPoint.x;
+              elt.lines.dest_y = elt.secondPoint.y;
+              elt.lines.redraw();
+              
+            }
+        });
+
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -190,6 +218,11 @@ function nativeEvents() {
           // for automatic redrawing
           line.redraw();
           new Link(source, destination, line);
+
+
+          destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
+          // source.linesAndConnectors.push({ lines : line });
+
         } else if (id == "svg" || pnt.parent == undefined) {
           var ref = document.getElementById(line.uuid);
           ref.remove();

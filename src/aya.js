@@ -10,4 +10,3 @@ export  {Connector} from "./entities/connector";
 export  {Line} from "./entities/line";
 export  {events} from "./events";
 
-

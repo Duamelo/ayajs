@@ -27,6 +27,7 @@ function nativeEvents() {
       cp = _Register.find(id);
 
       if (id != "svg")
+
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
       if(cp.form != undefined)
@@ -96,6 +97,21 @@ function nativeEvents() {
             }
           });
           
+          if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+            if(cp.type == "losange")
+              cp.form.redrawLineConnector();
+            cp.form.shift(deltaX, deltaY);
+            cp.form.redraw();
+          }
+          else if(source.type == "circle") {
+            cp.form.x += deltaX;
+            cp.form.y += deltaY;
+            
+            cp.form.drawVertex();
+            cp.form.drawConnector();
+            cp.form.redrawLineConnector();
+            cp.form.redraw();
+          }
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
         }
@@ -115,6 +131,7 @@ function nativeEvents() {
             cp.redraw();
           }
         }
+        
       } 
       else if (state == "drawing_link") {
         console.log(state);
@@ -158,8 +175,8 @@ function nativeEvents() {
           } else if (prev_pos == 2 && pos == -1) {
             pos += 3;
           }
-          console.log(pos);
-          console.log(prev_pos);
+          // console.log(pos);
+          // console.log(prev_pos);
           dx = e.offsetX;
           dy = e.offsetY;
 
@@ -168,11 +185,13 @@ function nativeEvents() {
           prev_pos = pos;
         } 
         else if (source.type == "circle") {
-          console.log("circle is moving");
+          console.log(pos);
+          console.log(`circle is  ${state}`);
           //console.log(source.form);
           deltaX = e.offsetX - dx;
           dx = e.offsetX;
-          source.form.resize(deltaX);
+          source.form.resize(pos,deltaX);
+          source.form.redrawLineConnector();
           source.form.redraw();
         }
         else if (source.type == "losange") {
@@ -187,6 +206,7 @@ function nativeEvents() {
           else if(pos == 1 || pos == 3){
             source.form.resize(pos,deltaX);
           }
+          source.form.redrawLineConnector();
           source.form.redraw();
         }
       }

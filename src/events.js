@@ -2,6 +2,8 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+import { Point } from "./entities/point.js";
+import { Circle } from "./entities/circle.js";
 
 
 function nativeEvents() {
@@ -13,7 +15,6 @@ function nativeEvents() {
   var line = "";
   var source;
   var lk;
-  var prev_pos;
   var pos;
 
   return {
@@ -32,26 +33,17 @@ function nativeEvents() {
       console.log(cp);
 
       if (id != "svg")
-        source =
-          cp != undefined && cp.parent != undefined
-            ? _Register.find(cp.parent)
-            : cp;
 
-      console.log(cp);
-      // console.log("----");
-      // console.log(source.form.p_resizer);
-      // console.log("---");
-      //console.log(source);
+        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
-      lk = _Register.getAllLinksByComponent(cp);
+      if(cp.form != undefined)
+        lk = _Register.getAllLinksByComponent(cp);
 
-      // un component n'a pas de propriété parent
-      if (cp != undefined && cp.parent == undefined)
-        state = "moving";
+      // une forme différente de Point n'a pas de propriété ref
+      if ((cp != undefined && cp.ref == undefined) ) 
+          state = "moving";
       else {
-        if ( (source.form.vertex != undefined &&  (pos = source.form.vertex.indexOf(cp)) >= 0) 
-              ||  source.form.p_resizer != undefined && source.form.p_resizer.length >= 0 )
-        {
+        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
           state = "resizing";
           dx = e.offsetX;
           dy = e.offsetY;
@@ -78,7 +70,7 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+        if(cp.form != undefined){
           lk.map(({ source, line }) => {
             if (cp == source) {
               cp.form.c_points.map((pnt) => {
@@ -88,7 +80,8 @@ function nativeEvents() {
                   line.redraw();
                 }
               });
-            } else {
+            } 
+            else {
               cp.form.c_points.map((pnt) => {
                 if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
                   line.dest_x += deltaX;
@@ -98,16 +91,57 @@ function nativeEvents() {
               });
             }
           });
+        }
+        if(cp.form != undefined && cp.form.children.length > 0){
+          cp.form.children.map( (child) => {
+            console.log("children resizing");
+            if(child instanceof Line){
+              child.shift(deltaX, deltaY);
+              child.dest_x += deltaX;
+              child.dest_y += deltaY;
+              child.redraw();
+            }
+            else if(child instanceof Circle){
+              child.shift(deltaX, deltaY);
+              child.redraw();
+            }
+          });
           
+          if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+            if(cp.type == "losange")
+              cp.form.redrawLineConnector();
+            cp.form.shift(deltaX, deltaY);
+            cp.form.redraw();
+          }
+          else if(source.type == "circle") {
+            cp.form.x += deltaX;
+            cp.form.y += deltaY;
+            
+            cp.form.drawVertex();
+            cp.form.drawConnector();
+            cp.form.redrawLineConnector();
+            cp.form.redraw();
+          }
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
         }
-        else if(source.type == "circle") {
-          cp.form.x += deltaX;
-          cp.form.y += deltaY;
-          cp.form.drawResizer();
-          cp.form.redraw();
+        // il s'agit d'une form pas d'une instance de la classe Component ou de Point
+        if(cp.form  == undefined && cp.ref == undefined){
+
+          if(cp instanceof Line){
+            cp.shift(deltaX, deltaY);
+
+            cp.dest_x += deltaX;
+            cp.dest_y += deltaY;
+
+            cp.redraw();
+          }
+          else {
+            cp.shift(deltaX, deltaY);
+            cp.redraw();
+          }
         }
+        
       } 
       else if (state == "drawing_link") {
         console.log(state);
@@ -151,8 +185,8 @@ function nativeEvents() {
           } else if (prev_pos == 2 && pos == -1) {
             pos += 3;
           }
-          console.log(pos);
-          console.log(prev_pos);
+          // console.log(pos);
+          // console.log(prev_pos);
           dx = e.offsetX;
           dy = e.offsetY;
 
@@ -161,11 +195,13 @@ function nativeEvents() {
           prev_pos = pos;
         } 
         else if (source.type == "circle") {
-          console.log("circle is moving");
+          console.log(pos);
+          console.log(`circle is  ${state}`);
           //console.log(source.form);
           deltaX = e.offsetX - dx;
           dx = e.offsetX;
-          source.form.resize(deltaX);
+          source.form.resize(pos,deltaX);
+          source.form.redrawLineConnector();
           source.form.redraw();
         }
         else if (source.type == "losange") {
@@ -180,10 +216,9 @@ function nativeEvents() {
           else if(pos == 1 || pos == 3){
             source.form.resize(pos,deltaX);
           }
+          source.form.redrawLineConnector();
           source.form.redraw();
-        }
-
-        
+        }        
         source.linesAndConnectors.forEach(elt => {
 
             if(elt.firstPoint != null){
@@ -208,7 +243,6 @@ function nativeEvents() {
               
             }
         });
-
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -217,8 +251,8 @@ function nativeEvents() {
         id = e.srcElement.id;
         var pnt = _Register.find(id);
 
-        if (pnt != undefined && pnt.parent != undefined) {
-          destination = _Register.find(pnt.parent);
+        if (pnt != undefined && pnt.ref != undefined) {
+          destination = _Register.find(pnt.ref);
 
           line.dest_x = pnt.x;
           line.dest_y = pnt.y;
@@ -226,11 +260,10 @@ function nativeEvents() {
           // for automatic redrawing
           line.redraw();
           new Link(source, destination, line);
-
-
+          
           destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
-
-        } else if (id == "svg" || pnt.parent == undefined) {
+        }
+        else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);
           ref.remove();
         }
@@ -242,8 +275,7 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
-      if (cp.parent == undefined) {
-
+      if (cp instanceof Point) {
         cp.form.vertex.map((v) => {
           v.c_svg.classList.remove("vertex");
           v.c_svg.classList.add("vertex_hover");
@@ -269,9 +301,11 @@ function nativeEvents() {
       //     v.c_svg.classList.remove("vertex_hover");
       //   });
       // }
-    },
-  };
+    }
+  }
 }
+
+
 var events = nativeEvents();
 
 export { events };

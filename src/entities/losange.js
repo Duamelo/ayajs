@@ -53,6 +53,8 @@ class Losange {
             new Point(this.uuid, this.x4, this.y4, 5),
         ];
         this.drawConnector();
+        this.drawVertex();
+        this.drawLineConnector(svg);
     }
 
 
@@ -88,35 +90,37 @@ class Losange {
   }
 
   drawVertex(){
-    this.vertex[0].x = this.x1;
+    this.vertex[0].x = this.x2;
     this.vertex[0].y = this.y1;
 
     this.vertex[1].x = this.x2;
-    this.vertex[1].y = this.y2;
+    this.vertex[1].y = this.y3;
 
-    this.vertex[2].x = this.x3;
+    this.vertex[2].x = this.x4;
     this.vertex[2].y = this.y3;
 
     this.vertex[3].x = this.x4;
-    this.vertex[3].y = this.y4;
+    this.vertex[3].y = this.y1;
   }
 
   drawConnector() {
-    this.c_points[0].x = (this.x1 + this.x2) / 2;
-    this.c_points[0].y = (this.y1 + this.y2) / 2;
+    this.c_points[0].x = this.x1;
+    this.c_points[0].y = this.y1;
     this.c_points[0].r = 5;
 
-    this.c_points[1].x = (this.x2 + this.x3) / 2;
-    this.c_points[1].y = (this.y2 + this.y3) / 2;
+    this.c_points[1].x = this.x2;
+    this.c_points[1].y = this.y2;
     this.c_points[1].r = 5;
 
-    this.c_points[2].x = (this.x3 + this.x4) / 2;
-    this.c_points[2].y = (this.y3 + this.y4) / 2;
+    this.c_points[2].x = this.x3;
+    this.c_points[2].y = this.y3;
     this.c_points[2].r = 5;
 
-    this.c_points[3].x = (this.x4 + this.x1) / 2;
-    this.c_points[3].y = (this.y4 + this.y1) / 2;
+    this.c_points[3].x = this.x4;
+    this.c_points[3].y = this.y4;
     this.c_points[3].r = 5;
+
+    //diagonales
 
     this.c_points[4].x = (this.x2 + this.x4) / 2;
     this.c_points[4].y = (this.y2 + this.y4) / 2;
@@ -173,6 +177,44 @@ class Losange {
       this.vertex.map((v) => {
         v.redraw();
       });
+  }
+
+  drawLineConnector(svg){
+    const ns = "http://www.w3.org/2000/svg";
+    this.line_svg = document.createElementNS(ns, "path");
+
+    this.p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+              L ${this.c_points[1].x} ${this.c_points[1].y} 
+              L ${this.vertex[1].x}   ${this.vertex[1].y} 
+              L ${this.c_points[2].x} ${this.c_points[2].y}
+              L ${this.vertex[2].x}   ${this.vertex[2].y}
+              L ${this.c_points[3].x} ${this.c_points[3].y} 
+              L ${this.vertex[3].x}   ${this.vertex[3].y} 
+              L ${this.c_points[0].x} ${this.c_points[0].y} Z`;
+
+    this.line_svg.setAttribute("id", this.uuid);
+    this.line_svg.setAttribute("d", this.p);
+    this.line_svg.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
+    this.line_svg.setAttributeNS(null, "stroke-width", "1px");
+    this.line_svg.setAttributeNS(null, "fill", "none");
+    this.line_svg.setAttribute("stroke-dasharray", "4");
+
+    svg.appendChild(this.line_svg);
+
+  }
+
+  redrawLineConnector()
+  {
+    this.p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+              L ${this.c_points[1].x} ${this.c_points[1].y} 
+              L ${this.vertex[1].x}   ${this.vertex[1].y} 
+              L ${this.c_points[2].x} ${this.c_points[2].y}
+              L ${this.vertex[2].x}   ${this.vertex[2].y}
+              L ${this.c_points[3].x} ${this.c_points[3].y} 
+              L ${this.vertex[3].x}   ${this.vertex[3].y} 
+              L ${this.c_points[0].x} ${this.c_points[0].y} Z`;
+    
+    this.line_svg.setAttribute("d", this.p);
   }
 
   shift(dx, dy) {

@@ -18,7 +18,9 @@ class Connector {
     } 
     else if (type == "circle") {
       cp = [];
-      cp.push(new Point(uuid, 0, 0));
+      for (var i = 0; i < 4; i++) {
+        cp.push(new Point(uuid, 0, 0));
+      }
     } 
     else if (type == "losange") {
       cp = [];

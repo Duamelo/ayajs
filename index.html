@@ -7,7 +7,7 @@
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
    <script src="./build/aya.js"></script>
-   <title>Document</title>
+   <title>ayajs</title>
 </head>
 
 <body>
@@ -19,8 +19,6 @@
       svg.setAttribute("height", 600);
       svg.setAttribute("id", "svg");
 
-
-      svg.addEventListener("mousedown", aya.events.mouseDownCb);
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
@@ -50,8 +48,6 @@
       });
 
       var circle = new aya.Component("circle", [], {  x:150,   y:150,   r:70  });
-
-      var losange = new aya.Component("losange", [], {});
 
       document.body.append(svg);
    </script>

@@ -9,10 +9,9 @@ import { _uuid } from "./uuid.js";
  *
  */
 class Point {
-  constructor(uuid, x = 0, y = 0, r = 4) 
-  {
+  constructor(uuid, x = 0, y = 0, r = 3) {
     this.uuid = _uuid.generate();
-    this.parent = uuid;
+    this.ref = uuid;
     this.x = x;
     this.y = y;
     this.r = r;
@@ -30,26 +29,26 @@ class Point {
 
     this.c_svg.setAttribute("r", this.r);
 
-    //this.c_svg.setAttribute("class", "vertex");
+    // this.c_svg.setAttribute("class", "vertex");
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    // this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
+    //this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 
     svgs.appendChild(this.c_svg);
+
   }
 
   shift(dx, dy) {
-    // console.log("dx: " + dx + " dy : " + dy);
     this.x += dx;
     this.y += dy;
   }
 
   redraw() {
     this.c_svg.setAttribute("cx", this.x);
-
     this.c_svg.setAttribute("cy", this.y);
+    
   }
 }
 

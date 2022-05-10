@@ -1,6 +1,8 @@
 import { Connector } from "./connector.js";
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
+import { _Register } from "../register.js";
+import { FactoryForm } from "../factoryForm.js";
 
 /**
  * Rectangle class
@@ -17,7 +19,8 @@ class Rectangle {
    * @param {array of object} events
    */
 
-  constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = []) {
+  constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = [], children, ratio = {}) {
+
     this.uuid = uuid;
 
     this.x = x;
@@ -29,10 +32,18 @@ class Rectangle {
     this.events = events;
     this.c_svg = "";
 
-    this.c_points = Connector.create("rectangle", uuid);
-    this.vertex = Connector.create("rectangle", uuid);
+    this.children = [];
+    this.ratio = ratio;
+
+    this.c_points = Connector.create("rectangle", this.uuid);
+    this.vertex = Connector.create("rectangle", this.uuid);
+
     this.drawConnector();
     this.drawVertex();
+
+    this.createChildren(children);
+
+    _Register.add(this);
   }
 
   draw(svgs) {
@@ -56,6 +67,11 @@ class Rectangle {
 
     this.vertex.map((point) => {
       point.draw(svgs);
+    });
+
+
+    this.children.map((child) => {
+      child.draw(svgs);
     });
 
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
@@ -121,18 +137,35 @@ class Rectangle {
     this.vertex.map((p) => {
       p.redraw();
     });
+
+    this.children.map ( (child) => {
+        child.redraw()
+    })
   }
 
-  resize(pos, dx, dy) {
+  resize(pos, dx, dy, zoom ) {
 
     if (pos == 0) {
+
       this.shift(dx, dy);
 
       this.width += -dx;
       this.height += -dy;
 
+      this.children.map ( (child) => {
+        if(child.type == "circle"){
+          child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
+        }
+        else{
+
+        }
+      });
+
+
       this.drawVertex();
       this.drawConnector();
+      
+     
     } 
     else if (pos == 1) {
 
@@ -143,6 +176,10 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
+      });
     } 
     else if (pos == 2) {
 
@@ -151,6 +188,10 @@ class Rectangle {
 
       this.drawVertex();
       this.drawConnector();
+
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
+      });
     } 
     else if (pos == 3) {
 
@@ -162,7 +203,23 @@ class Rectangle {
       this.drawVertex();
       this.drawConnector();
 
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height}, child.zoom);
+      });
     }
+  }
+
+
+  createChildren(children){
+    children.map( (chd) => {
+      if(chd.type == "circle"){
+        var abs = this.x +  (chd.ratio.x * this.width);
+        var ord = this.y + (chd.ratio.y * this.height);
+        var rayon = (chd.ratio.r * this.width);
+        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon}, [], [], chd.ratio, chd.zoom);
+        this.children.push(child);
+      }
+    })
   }
 }
 export { Rectangle };

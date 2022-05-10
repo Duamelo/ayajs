@@ -10,3 +10,9 @@
 .vertex_hover{
     visibility: visible;
 }
+
+
+.test{
+    border:1px solid rgb(224, 115, 115);
+    margin: 5Opx;
+}

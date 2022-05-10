@@ -17,6 +17,7 @@ class Line
         this.events = events;
         this.c_svg = "";
         this.p = "";
+        this.type = "line";
         _Register.add(this);
         
     }

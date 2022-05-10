@@ -83,7 +83,8 @@ class Losange {
      this.c_svg.addEventListener("mousedown", events.mouseDownCb);
      this.c_svg.addEventListener("mouseup", events.mouseUpCb);
      this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+    //  this.c_svg.addEventListener("mouseover", events.mouseMoveCb);
+    //  this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
   }
 
   drawVertex(){

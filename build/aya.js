@@ -119,9 +119,15 @@
 	      dx = e.offsetX;
 	      dy = e.offsetY;
 
+	      console.log("enter mouse down");
+	      console.log(e);
 	      id = e.srcElement.id;
 
+	      console.log(e);
+
 	      cp = _Register.find(id);
+
+	      console.log(cp);
 
 	      if (id != "svg")
 	        source =
@@ -161,6 +167,8 @@
 	      }
 	    },
 	    mouseMoveCb: function movecb(e) {
+	      console.log("enter mouse move");
+	      console.log(e);
 	      if (state == "moving") {
 	        deltaX = e.offsetX - dx;
 	        deltaY = e.offsetY - dy;
@@ -319,7 +327,6 @@
 
 
 	          destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
-	          // source.linesAndConnectors.push({ lines : line });
 
 	        } else if (id == "svg" || pnt.parent == undefined) {
 	          var ref = document.getElementById(line.uuid);
@@ -595,6 +602,7 @@
 	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 	    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
 	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+	    this.c_svg.addEventListener("mousemove",  events.mouseMoveCb );
 	  }
 
 	  drawVertex(){
@@ -952,6 +960,7 @@
 	     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 	     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 	     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
+	     this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
 	     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
 	  }
 

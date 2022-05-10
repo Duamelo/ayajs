@@ -21,9 +21,15 @@ function nativeEvents() {
       dx = e.offsetX;
       dy = e.offsetY;
 
+      console.log("enter mouse down");
+      console.log(e);
       id = e.srcElement.id;
 
+      console.log(e);
+
       cp = _Register.find(id);
+
+      console.log(cp);
 
       if (id != "svg")
         source =
@@ -63,6 +69,8 @@ function nativeEvents() {
       }
     },
     mouseMoveCb: function movecb(e) {
+      console.log("enter mouse move");
+      console.log(e);
       if (state == "moving") {
         deltaX = e.offsetX - dx;
         deltaY = e.offsetY - dy;
@@ -221,7 +229,6 @@ function nativeEvents() {
 
 
           destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
-          // source.linesAndConnectors.push({ lines : line });
 
         } else if (id == "svg" || pnt.parent == undefined) {
           var ref = document.getElementById(line.uuid);

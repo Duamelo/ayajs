@@ -27,6 +27,7 @@ class Line
         this.c_svg.setAttribute("d", this.p);
         this.c_svg.setAttribute("stroke", "black");
         
+        
         svgs.appendChild(this.c_svg);
     }
 

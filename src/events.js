@@ -86,6 +86,8 @@ function nativeEvents() {
           });
           
           if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
+            if(cp.type == "losange")
+              cp.form.redrawLineConnector();
             cp.form.shift(deltaX, deltaY);
             cp.form.redraw();
           }
@@ -144,8 +146,8 @@ function nativeEvents() {
           } else if (prev_pos == 2 && pos == -1) {
             pos += 3;
           }
-          console.log(pos);
-          console.log(prev_pos);
+          // console.log(pos);
+          // console.log(prev_pos);
           dx = e.offsetX;
           dy = e.offsetY;
 
@@ -175,6 +177,7 @@ function nativeEvents() {
           else if(pos == 1 || pos == 3){
             source.form.resize(pos,deltaX);
           }
+          source.form.redrawLineConnector();
           source.form.redraw();
         }
 

@@ -22,9 +22,15 @@ function nativeEvents() {
       dx = e.offsetX;
       dy = e.offsetY;
 
+      console.log("enter mouse down");
+      console.log(e);
       id = e.srcElement.id;
 
+      console.log(e);
+
       cp = _Register.find(id);
+
+      console.log(cp);
 
       if (id != "svg")
 
@@ -48,11 +54,15 @@ function nativeEvents() {
           if (cp != source) {
             line = new Line(id, cp.x, cp.y, []);
             line.draw(svg);
+
+            source.linesAndConnectors.push({ lines : line, firstPoint : cp});
           }
         }
       }
     },
     mouseMoveCb: function movecb(e) {
+      console.log("enter mouse move");
+      console.log(e);
       if (state == "moving") {
         deltaX = e.offsetX - dx;
         deltaY = e.offsetY - dy;
@@ -208,7 +218,31 @@ function nativeEvents() {
           }
           source.form.redrawLineConnector();
           source.form.redraw();
-        }
+        }        
+        source.linesAndConnectors.forEach(elt => {
+
+            if(elt.firstPoint != null){
+
+              
+              console.log("elt.firstPoint");
+              console.log(elt)
+
+              elt.lines.x = elt.firstPoint.x;
+              elt.lines.y = elt.firstPoint.y;
+              elt.lines.redraw();
+
+            }
+            if(elt.secondPoint != null){
+
+              console.log("elt.secondPoint");
+              console.log(elt);
+
+              elt.lines.dest_x = elt.secondPoint.x;
+              elt.lines.dest_y = elt.secondPoint.y;
+              elt.lines.redraw();
+              
+            }
+        });
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -226,6 +260,8 @@ function nativeEvents() {
           // for automatic redrawing
           line.redraw();
           new Link(source, destination, line);
+          
+          destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
         }
         else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);

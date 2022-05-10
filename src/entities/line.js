@@ -34,6 +34,7 @@ class Line
         this.c_svg.setAttributeNS(null, "stroke-width", "4px");
 
         
+        
         svgs.appendChild(this.c_svg);
     }
 

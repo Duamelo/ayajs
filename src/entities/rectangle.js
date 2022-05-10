@@ -78,6 +78,7 @@ class Rectangle {
     this.c_svg.addEventListener("mouseup", events.mouseUpCb);
     this.c_svg.addEventListener("mouseover", events.mouseOverCb);
     this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+    this.c_svg.addEventListener("mousemove",  events.mouseMoveCb )
   }
 
   drawVertex(){

@@ -2,6 +2,8 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+import { Point } from "./entities/point.js";
+import { Circle } from "./entities/circle.js";
 
 
 function nativeEvents() {
@@ -13,7 +15,6 @@ function nativeEvents() {
   var line = "";
   var source;
   var lk;
-  var prev_pos;
   var pos;
 
   return {

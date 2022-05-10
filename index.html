@@ -23,55 +23,18 @@
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
-      // var rect = new aya.Component("rectangle", [], {
-      //    x: 550,
-      //    y: 250,
-      //    width: 100,
-      //    height: 100
-      // });
-
-      // rect.createChildren(rect.uuid, [
-      //    {
-      //       type: 'line',
-      //       props: { x: 550, y: 250 + (100 / 2), dest_x: 550 + 100, dest_y : 250 + (100 / 2)},
-      //       events: []
-      //    },
-      //    {
-      //       type: 'line',
-      //       props: { x: 550 + (100 / 2), y: 250, dest_x: 550 + (100 / 2), dest_y : 250 + (150 / 2)},
-      //       events: []
-      //    },
-      //    {
-      //       type: 'circle',
-      //       props: {x: 550 + 95, y: 250 + (95)},
-      //       events: []
-      //    }
-      // ]);
-
-      var gp = new aya.Group([
+      var rect = new aya.Component("rectangle", [], {
+         x: 550,
+         y: 250,
+         width: 100,
+         height: 100
+      }, [
          {
-            type: "rectangle",
-            props: {x: 550, y: 250, width: 100, height: 100},
-            events: []
-         },
-         {
-            type: 'line',
-            props: { x: 550, y: 250 + (100 / 2), dest_x: 550 + 100, dest_y : 250 + (100 / 2)},
-            events: []
-         },
-         {
-            type: 'line',
-            props: { x: 550 + (100 / 2), y: 250, dest_x: 550 + (100 / 2), dest_y : 250 + (150 / 2)},
-            events: []
-         },
-         {
-            type: 'circle',
-            props: {x: 550 + 95, y: 250 + (95)},
-            events: []
+            type: "circle",
+            ratio: {x: 1/2, y: 1/2, r: 1/2},
+            zoom: true
          }
       ]);
-
-      gp.draw(svg);
 
       document.body.append(svg);
    </script>

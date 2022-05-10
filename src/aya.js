@@ -9,5 +9,4 @@ export  {Triangle} from "./entities/triangle.js"
 export  {Connector} from "./entities/connector";
 export  {Line} from "./entities/line";
 export  {events} from "./events";
-export  {Group} from "./group";
 

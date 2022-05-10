@@ -17,17 +17,20 @@ class Circle
      * @param {array} events   array of object events
      */
 
-    constructor(uuid, x = 0, y = 0, r = 5, events = []){
-        this.parent = uuid;
-        this.uuid = _uuid.generate();
+    constructor(uuid, x = 0, y = 0, r = 5, events = [], children = [], ratio = {}, zoom){
+
+        this.uuid = uuid;
         this.x = x;
         this.y = y;
         this.r = r;
+        this.ratio = ratio;
         this.events = events;
         this.c_svg = "";
+        this.type = "circle";
+        this.zoom = zoom;
         _Register.add(this);
     }
-    
+
     /**
      * 
      * @param {DOMElement} svgs 
@@ -67,9 +70,15 @@ class Circle
         this.c_svg.setAttribute("r", this.r);
     }
 
-    resize(pos, dx, dy, zoom = false){
-        
+    resize(pos, dx, dy, param = {}, zoom = false){
+        if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
+            this.x = param.x + this.ratio.x * param.width;
+            this.y = param.y + this.ratio.y * param.height;
+        }else{
+            this.x = param.x + this.ratio.x * param.width;
+            this.y = param.y + this.ratio.y * param.height;
+            (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
+        }
     }
 }
-
-export { Circle };
+export {Circle};

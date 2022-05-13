@@ -25,9 +25,6 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
-      console.log(cp);
-
-
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -47,7 +44,7 @@ function nativeEvents() {
           state = "drawing_link";
           id = _uuid.generate();
           if (cp != source) {
-            line = new Line(id, cp.x, cp.y, []);
+            line = new Line(id, cp.x, cp.y);
             line.draw(svg);
           }
         }
@@ -143,28 +140,12 @@ function nativeEvents() {
       } 
       else if (state == "resizing") {
 
-        if (source.type == "rectangle") {
+        if (source) {
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
 
           dx = e.offsetX;
           dy = e.offsetY;
-
-          // console.log(source.form.children);
-          // if(source.form != undefined && source.form.children.length > 0){
-          //   source.form.children.map( (child ) => {
-          //     if(child instanceof Line){
-          //       child.shift(deltaX, deltaY);
-          //       child.dest_x += deltaX;
-          //       child.dest_y += deltaY;
-          //       child.redraw();
-          //     }
-          //     else if(child instanceof Circle){
-          //       child.shift(deltaX, deltaY);
-          //       child.redraw();
-          //     }
-          //   });
-          // }
 
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
@@ -177,6 +158,7 @@ function nativeEvents() {
         id = e.srcElement.id;
         var pnt = _Register.find(id);
 
+        
         if (pnt != undefined && pnt.ref != undefined) {
           destination = _Register.find(pnt.ref);
 

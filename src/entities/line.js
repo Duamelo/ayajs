@@ -33,8 +33,6 @@ class Line
         this.events = new EventManager();
 
         this.c_svg = "";
-        this.p = "";
-
         this.type = "line";
 
         this.ratio = ratio;
@@ -49,10 +47,10 @@ class Line
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
 
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("d", this.p);
+        this.c_svg.setAttribute("d", p);
         this.c_svg.setAttribute("stroke", "black");
         this.c_svg.setAttributeNS(null, "stroke-width", "4px");
 

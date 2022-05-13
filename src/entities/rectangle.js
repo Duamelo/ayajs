@@ -162,7 +162,7 @@ class Rectangle {
       this.height += -dy;
 
       this.children.map ( (child) => {
-          child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+          child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
       });
       this.drawVertex();
       this.drawConnector();
@@ -175,7 +175,7 @@ class Rectangle {
       this.height += -dy;
 
       this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
       });
 
       this.drawVertex();
@@ -187,7 +187,7 @@ class Rectangle {
       this.height += dy;
 
       this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
       });
 
       this.drawVertex();
@@ -201,7 +201,7 @@ class Rectangle {
       this.height += dy;
 
       this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
       });
 
       this.drawVertex();

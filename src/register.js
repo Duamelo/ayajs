@@ -18,8 +18,8 @@ class _Register
         var result = [];
         Object.keys(store).map((id) => {
             var obj = _Register.find(id);
-            if(obj.form != undefined){
-                if((component == obj.source)  || (component == obj.destination))
+            if(obj.type == "link"){
+                if(component == obj.source || component == obj.destination)
                     result.push(obj);
             }
         });

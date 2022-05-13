@@ -19,6 +19,8 @@ class Point {
     this.y = y;
     this.r = r;
 
+    this.c_svg = "";
+
     _Register.add(this);
   }
 
@@ -49,6 +51,7 @@ class Point {
   }
 
   redraw() {
+
     this.c_svg.setAttribute("cx", this.x);
 
     this.c_svg.setAttribute("cy", this.y);

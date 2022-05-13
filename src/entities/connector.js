@@ -15,6 +15,9 @@ class Connector {
         cp.push(new Point(uuid, 0, 0));
       }
     }
+    else if(type =="circle"){
+      
+    }
     return cp;
   }
 }

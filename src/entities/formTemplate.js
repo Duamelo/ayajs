@@ -3,12 +3,9 @@ import { _uuid } from "./uuid";
 import {events} from "../events";
 import { EventManager } from "../eventManager";
 import { Point } from "./point";
-/**
- * @class Circle
- */
 
-class Circle
-{
+
+class TemplateForm{
     /**
      * 
      * @param {string} uuid 
@@ -20,88 +17,73 @@ class Circle
      * @param {boolean} zoom 
      */
 
-    constructor(uuid, x = 0, y = 0, r = 5, children = [], ratio = {}, zoom){
+    constructor(uuid, /* ajouter les paramètres de votre forme */){
 
         this.uuid = uuid;
 
-        this.x = x;
-        this.y = y;
-        this.r = r;
-
+        /* ajouter vos events */
         this.events = new EventManager();
 
+
+        this.c_svg = "";
+        this.type = "";
+
+     
+
+        /* ajouter autant de point de connexion que nécessaire*/
+        this.c_points = [
+            new Point(this.uuid,0, 0 ),
+        ];
+
+        /* ajouter autant de sommet que nécessaire*/
+        this.vertex = [
+            new Point(this.uuid,0, 0 ),
+        ];
+
+        /* ajouter les enfants d'un composant*/
         this.children = [];
 
-        this.box = ""
-        this.c_svg = "";
-        this.type = "circle";
-
+        /* s'il s'agit de enfant*/
         this.ratio = ratio;
         this.zoom = zoom;
 
-        this.c_points = [
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 )
-        ];
-        this.vertex = [
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 )
-        ];
-
-
+        /* créer chacque enfant s'il y a lieu*/
         this.createChildren(children);
+
+        /* enregistrer le composant*/
         _Register.add(this);
     }
 
 
   
     drawVertex(){
-        this.vertex[0].x = this.x - this.r;
-        this.vertex[0].y = this.y - this.r;
-    
-        this.vertex[1].x = this.x + this.r;
-        this.vertex[1].y = this.y - this.r;
-
-        this.vertex[2].x = this.x + this.r;
-        this.vertex[2].y = this.y + this.r;
-    
-        this.vertex[3].x = this.x - this.r;
-        this.vertex[3].y = this.y + this.r;
-
-        
+       /* initialiser les coordonnées de chaque sommet*/
+    //    this.c_points[0].x = this.x;
+    //    this.c_points[0].y = this.y - this.r;
     }
     
     drawConnector() {
-        this.c_points[0].x = this.x;
-        this.c_points[0].y = this.y - this.r;
+        /* initialiser les coordonnées de chaque point de connexion*/
 
-        this.c_points[1].x = this.x + this.r;
-        this.c_points[1].y = this.y;
-
-
-        this.c_points[2].x = this.x;
-        this.c_points[2].y = this.y + this.r;
-
-        this.c_points[3].x = this.x - this.r;
-        this.c_points[3].y = this.y;
+        // this.c_points[0].x = this.x;
+        // this.c_points[0].y = this.y - this.r;
     }
 
     drawBox(){
 
-        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-                  L ${this.c_points[0].x} ${this.c_points[0].y} 
-                  L ${this.vertex[1].x}   ${this.vertex[1].y} 
-                  L ${this.c_points[1].x} ${this.c_points[1].y}
-                  L ${this.vertex[2].x}   ${this.vertex[2].y}
-                  L ${this.c_points[2].x} ${this.c_points[2].y} 
-                  L ${this.vertex[3].x}   ${this.vertex[3].y} 
-                  L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+
+        /* dessiner le contour de la forme sous forme de carré*/
+
+        // var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+        //           L ${this.c_points[0].x} ${this.c_points[0].y} 
+        //           L ${this.vertex[1].x}   ${this.vertex[1].y} 
+        //           L ${this.c_points[1].x} ${this.c_points[1].y}
+        //           L ${this.vertex[2].x}   ${this.vertex[2].y}
+        //           L ${this.c_points[2].x} ${this.c_points[2].y} 
+        //           L ${this.vertex[3].x}   ${this.vertex[3].y} 
+        //           L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
     
-        this.box.setAttribute("d", p);
+        // this.box.setAttribute("d", p);
       }
     
     /**
@@ -110,26 +92,12 @@ class Circle
      */
     
     draw(svgs){
-        var ns="http://www.w3.org/2000/svg";
 
-        this.box = document.createElementNS(ns, "path");
-        this.c_svg = document.createElementNS(ns,"circle");
-
-        this.c_svg.setAttribute("id", this.uuid);
-
-        this.c_svg.setAttribute("cx", this.x);
-
-        this.c_svg.setAttribute("cy",this.y);
-
-        this.c_svg.setAttribute("r", this.r);
-
-        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
-
-        this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
-    
-        this.c_svg.setAttribute("stroke-width", "1.5");
-    
-        /** draw box */
+        /* dessiner la forme svg adéquate*/
+        const svgns = "http://www.w3.org/2000/svg";
+        this.c_svg = document.createElementNS(svgns, "rect");
+        
+        /* dessin le contour */
         this.drawBox();
         this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
         this.box.setAttributeNS(null, "stroke-width", "1px");
@@ -140,6 +108,7 @@ class Circle
         svgs.appendChild(this.c_svg);
         svgs.appendChild(this.box);
 
+        
         this.drawVertex();
         this.drawConnector();
 
@@ -152,8 +121,10 @@ class Circle
           });
       
 
+          /* ajouter vos évènements dans events*/
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
+        /* créer les évènements*/
         this.events.create();
     }
 
@@ -164,10 +135,9 @@ class Circle
     }
 
     redraw(){
-        this.c_svg.setAttribute("cx", this.x);
-        this.c_svg.setAttribute("cy",this.y);
-        this.c_svg.setAttribute("r", this.r);
 
+        /* modifier les paramètres de la forme en fonction de vos besoins*/
+        
         this.drawConnector();
         this.drawVertex();
         this.drawBox();
@@ -213,5 +183,5 @@ class Circle
 
         });
     }
+
 }
-export {Circle};

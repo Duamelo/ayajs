@@ -1,10 +1,9 @@
 import { _uuid } from "./uuid";
-import {events} from "../events";
 import { _Register } from "../register";
 import { EventManager } from "../eventManager";
 
 /**
- * @class Line class
+ * @class Line
  */
 
 class Line 
@@ -21,7 +20,7 @@ class Line
      */
 
     constructor(uuid, x=0, y=0, dest_x = x, dest_y = y, children = [], ratio = {}){
-        
+
         this.uuid = uuid;
 
         this.x = x;
@@ -59,6 +58,7 @@ class Line
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
         this.events.create();
+
     }
 
     shift(dx,dy){

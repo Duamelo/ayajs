@@ -88,6 +88,7 @@ class Rectangle {
     this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
     this.events.create();
+
   }
 
   drawVertex(){

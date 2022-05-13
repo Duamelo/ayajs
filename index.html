@@ -19,18 +19,8 @@
       svg.setAttribute("height", 600);
       svg.setAttribute("id", "svg");
 
-
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
-
-      // var tri = new aya.Component("triangle", {
-      //    x1: 125,
-      //    y1: 100,
-      //    x2: 124,
-      //    y2: 400,
-      //    x3: 300,
-      //    y3: 600
-      // });
 
       var rect = new aya.Component("rectangle",{
          x: 550,
@@ -54,18 +44,12 @@
          //    zoom: false
          // }
       ]);
-
-      rect.form.children.map( (child) => {
-            child.events.clear();
-      })
-
+  
       var circle = new aya.Component("circle", {
          x: 153,
          y: 200,
          r: 50
       });
-
-      // console.log(circle);
 
       document.body.append(svg);
    </script>

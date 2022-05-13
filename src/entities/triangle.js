@@ -22,6 +22,7 @@ class Triangle {
    */
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
   {
+
     this.uuid = uuid;
 
     this.x1 = x1;
@@ -112,6 +113,7 @@ class Triangle {
     this.c_points[2].x = (this.x1 + this.x3) / 2;
     this.c_points[2].y = (this.y1 + this.y3) / 2;
     this.c_points[2].r = 3;
+
   }
 
   shift(dx, dy) {
@@ -145,7 +147,7 @@ class Triangle {
       v.redraw();
     });
   }
-
+  
   resize(pos, dx, dy, param = {}) {
 
     if(param.parent == "rectangle"){
@@ -178,7 +180,7 @@ class Triangle {
         this.vertex[2].y = dy;
         this.drawConnector();
       }
-  
+ 
     }
   }
 

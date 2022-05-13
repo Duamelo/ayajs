@@ -3,10 +3,10 @@ import { _uuid } from "./uuid";
 import {events} from "../events";
 import { EventManager } from "../eventManager";
 import { Point } from "./point";
+
 /**
  * @class Circle
  */
-
 class Circle
 {
     /**
@@ -38,7 +38,7 @@ class Circle
 
         this.ratio = ratio;
         this.zoom = zoom;
-
+      
         this.c_points = [
             new Point(this.uuid,0, 0 ),
             new Point(this.uuid,0, 0 ),
@@ -52,8 +52,8 @@ class Circle
             new Point(this.uuid,0, 0 )
         ];
 
-
         this.createChildren(children);
+       
         _Register.add(this);
     }
 
@@ -122,13 +122,17 @@ class Circle
         this.c_svg.setAttribute("cy",this.y);
 
         this.c_svg.setAttribute("r", this.r);
+        
+        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
 
         this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
 
         this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
+
     
         this.c_svg.setAttribute("stroke-width", "1.5");
     
+      
         /** draw box */
         this.drawBox();
         this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -157,7 +161,6 @@ class Circle
         this.events.create();
     }
 
-  
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
@@ -213,5 +216,5 @@ class Circle
 
         });
     }
-}
+
 export {Circle};

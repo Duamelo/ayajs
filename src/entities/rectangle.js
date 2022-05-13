@@ -1,25 +1,28 @@
 import { Connector } from "./connector.js";
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
-import { _Register } from "../register.js";
 import { FactoryForm } from "../factoryForm.js";
+import { EventManager } from "../eventManager.js";
+import { _Register } from "../register.js";
 
 /**
  * Rectangle class
  */
 
 class Rectangle {
+
   /**
-   *
-   * @param {string} uuid
-   * @param {number} x
-   * @param {number} y
-   * @param {number} width
-   * @param {number} height
-   * @param {array of object} events
+   * 
+   * @param {string} uuid 
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} width 
+   * @param {number} height 
+   * @param {array of object} children 
+   * @param {object} ratio 
    */
 
-  constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = [], children, ratio = {}) {
+  constructor(uuid, x = 0, y = 0, width = 10, height = 10, children = [], ratio = {}, zoom = false) {
 
     this.uuid = uuid;
 
@@ -29,20 +32,20 @@ class Rectangle {
     this.width = width;
     this.height = height;
 
-    this.events = events;
+    this.events = new EventManager();
+
     this.c_svg = "";
 
+    this.type = "rectangle";
     this.children = [];
     this.ratio = ratio;
+    this.zoom = zoom;
+
 
     this.c_points = Connector.create("rectangle", this.uuid);
     this.vertex = Connector.create("rectangle", this.uuid);
 
-    this.drawConnector();
-    this.drawVertex();
-
     this.createChildren(children);
-
     _Register.add(this);
   }
 
@@ -59,7 +62,12 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "stroke-width", "3px");
     this.c_svg.setAttributeNS(null, "fill", "cornsilk");
 
+
     svgs.appendChild(this.c_svg);
+
+
+    this.drawConnector();
+    this.drawVertex();
 
     this.c_points.map((point) => {
       point.draw(svgs);
@@ -74,11 +82,13 @@ class Rectangle {
       child.draw(svgs);
     });
 
-    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
-    this.c_svg.addEventListener("mousemove",  events.mouseMoveCb )
+    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
+
+    this.events.create();
+
   }
 
   drawVertex(){
@@ -143,7 +153,7 @@ class Rectangle {
     })
   }
 
-  resize(pos, dx, dy, zoom ) {
+  resize(pos, dx, dy, param = {} ) {
 
     if (pos == 0) {
 
@@ -153,19 +163,10 @@ class Rectangle {
       this.height += -dy;
 
       this.children.map ( (child) => {
-        if(child.type == "circle"){
-          child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-        }
-        else{
-
-        }
+          child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
       });
-
-
       this.drawVertex();
       this.drawConnector();
-      
-     
     } 
     else if (pos == 1) {
 
@@ -174,24 +175,24 @@ class Rectangle {
       this.width += dx;
       this.height += -dy;
 
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+      });
+
       this.drawVertex();
       this.drawConnector();
-
-      this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-      });
     } 
     else if (pos == 2) {
 
       this.width += dx;
       this.height += dy;
 
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+      });
+
       this.drawVertex();
       this.drawConnector();
-
-      this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-      });
     } 
     else if (pos == 3) {
 
@@ -200,12 +201,12 @@ class Rectangle {
       this.width += -dx;
       this.height += dy;
 
+      this.children.map ( (child) => {
+        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+      });
+
       this.drawVertex();
       this.drawConnector();
-
-      this.children.map ( (child) => {
-        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height}, child.zoom);
-      });
     }
   }
 
@@ -216,10 +217,35 @@ class Rectangle {
         var abs = this.x +  (chd.ratio.x * this.width);
         var ord = this.y + (chd.ratio.y * this.height);
         var rayon = (chd.ratio.r * this.width);
-        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon}, [], [], chd.ratio, chd.zoom);
+        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon},[], chd.ratio, chd.zoom);
         this.children.push(child);
       }
-    })
+      else if(chd.type == "rectangle"){
+        var _x = this.x + (chd.ratio .x * this.width);
+        var _y = this.y + (chd.ratio.y * this.height);
+        var _width = chd.ratio.width * this.width;
+        var _height = chd.ratio.height * this.height ;
+        console.log(_x + " " + _y + " " + _width + " " + _height);
+        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: _x, y: _y, width: _width, height: _height}, [], chd.ratio, chd.zoom);
+        this.children.push(child);
+      }
+      else if(chd.type == "triangle"){
+        var _x1 = this.x + (chd.ratio.p1.x * this.width);
+        var _y1 = this.y + (chd.ratio.p1.y * this.height); 
+      
+        var _x2 = this.x + (chd.ratio.p2.x * this.width);
+        var _y2 = this.y + (chd.ratio.p2.y * this.height); 
+
+        var _x3 = this.x + (chd.ratio.p3.x * this.width);
+        var _y3 = this.y + (chd.ratio.p3.y * this.height); 
+
+        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
+        this.children.push(child);
+      }
+      else if(chd.type == "losange"){
+        
+      }
+    });
   }
 }
 export { Rectangle };

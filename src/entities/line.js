@@ -1,5 +1,6 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
+import { EventManager } from "../eventManager";
 
 /**
  * @class Line
@@ -7,18 +8,37 @@ import { _Register } from "../register";
 
 class Line 
 {
-    constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
+    /**
+     * 
+     * @param {string} uuid 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} dest_x 
+     * @param {number} dest_y 
+     * @param {array of object} children 
+     * @param {object} ratio 
+     */
+
+    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y, children = [], ratio = {}){
+
         this.uuid = uuid;
+
         this.x = x;
         this.y = y;
+        
         this.dest_x = dest_x;
         this.dest_y = dest_y;
-        this.events = events;
-        this.c_svg = "";
-        this.p = "";
-        this.type = "line";
-        _Register.add(this);
         
+        this.events = new EventManager();
+
+        this.c_svg = "";
+        this.type = "line";
+
+        this.ratio = ratio;
+        this.children = [];
+
+        this.createChildren(children);
+        _Register.add(this);
     }
 
     draw(svgs){
@@ -26,16 +46,19 @@ class Line
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
-        
+        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("d", this.p);
+        this.c_svg.setAttribute("d", p);
         this.c_svg.setAttribute("stroke", "black");
         this.c_svg.setAttributeNS(null, "stroke-width", "4px");
 
-        
-        
         svgs.appendChild(this.c_svg);
+
+        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+
+        this.events.create();
+
     }
 
     shift(dx,dy){
@@ -48,7 +71,7 @@ class Line
         this.c_svg.setAttribute("d", this.p);
     }
 
-    resize(pos, dx, dy, zoom = false){
+    resize(pos, dx, dy, param = {}){
 
         var p = _Register.find(this.parent);
 
@@ -166,8 +189,14 @@ class Line
 
         }
     }
+
+
+    createChildren(children){
+        children.map((chd) => {
+
+        });
+    }
 }
- 
 export {Line};
  
 

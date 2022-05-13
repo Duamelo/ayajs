@@ -2,8 +2,6 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
-import { Point } from "./entities/point.js";
-import { Circle } from "./entities/circle.js";
 
 
 function nativeEvents() {
@@ -19,21 +17,15 @@ function nativeEvents() {
 
   return {
     mouseDownCb: function mousedowncb(e) {
+
       dx = e.offsetX;
       dy = e.offsetY;
 
-      console.log("enter mouse down");
-      console.log(e);
       id = e.srcElement.id;
-
-      console.log(e);
 
       cp = _Register.find(id);
 
-      console.log(cp);
-
       if (id != "svg")
-
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
       if(cp.form != undefined)
@@ -52,18 +44,16 @@ function nativeEvents() {
           state = "drawing_link";
           id = _uuid.generate();
           if (cp != source) {
-            line = new Line(id, cp.x, cp.y, []);
+            line = new Line(id, cp.x, cp.y);
             line.draw(svg);
-
-            source.linesAndConnectors.push({ lines : line, firstPoint : cp});
           }
         }
       }
     },
     mouseMoveCb: function movecb(e) {
-      console.log("enter mouse move");
-      console.log(e);
+
       if (state == "moving") {
+        
         deltaX = e.offsetX - dx;
         deltaY = e.offsetY - dy;
 
@@ -91,44 +81,29 @@ function nativeEvents() {
               });
             }
           });
-        }
-        if(cp.form != undefined && cp.form.children.length > 0){
+
+
           cp.form.children.map( (child) => {
-            console.log("children resizing");
-            if(child instanceof Line){
+            if(child.type == "line"){
               child.shift(deltaX, deltaY);
               child.dest_x += deltaX;
               child.dest_y += deltaY;
               child.redraw();
             }
-            else if(child instanceof Circle){
+            else{
               child.shift(deltaX, deltaY);
               child.redraw();
             }
           });
           
-          if(cp.type == "rectangle" || cp.type == "triangle" || cp.type == "losange") {
-            if(cp.type == "losange")
-              cp.form.redrawLineConnector();
-            cp.form.shift(deltaX, deltaY);
-            cp.form.redraw();
-          }
-          else if(source.type == "circle") {
-            cp.form.x += deltaX;
-            cp.form.y += deltaY;
-            
-            cp.form.drawVertex();
-            cp.form.drawConnector();
-            cp.form.redrawLineConnector();
-            cp.form.redraw();
-          }
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
         }
+
         // il s'agit d'une form pas d'une instance de la classe Component ou de Point
         if(cp.form  == undefined && cp.ref == undefined){
 
-          if(cp instanceof Line){
+          if(cp.type == "line"){
             cp.shift(deltaX, deltaY);
 
             cp.dest_x += deltaX;
@@ -141,10 +116,9 @@ function nativeEvents() {
             cp.redraw();
           }
         }
-        
       } 
       else if (state == "drawing_link") {
-        console.log(state);
+
         source.form.vertex.map((v) => {
           if (v.x == line.x && v.y == line.y) {
             v.c_svg.classList.remove("vertex");
@@ -165,7 +139,8 @@ function nativeEvents() {
         line.redraw();
       } 
       else if (state == "resizing") {
-        if (source.type == "rectangle") {
+
+        if (source) {
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
 
@@ -175,74 +150,6 @@ function nativeEvents() {
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
         } 
-        else if (source.type == "triangle") {
-          console.log("triangle is moving");
-
-          if (prev_pos == 0 && pos == -1) {
-            pos += 1;
-          } else if (prev_pos == 1 && pos == -1) {
-            pos += 2;
-          } else if (prev_pos == 2 && pos == -1) {
-            pos += 3;
-          }
-          // console.log(pos);
-          // console.log(prev_pos);
-          dx = e.offsetX;
-          dy = e.offsetY;
-
-          source.form.resize(pos, dx, dy);
-          source.form.redraw();
-          prev_pos = pos;
-        } 
-        else if (source.type == "circle") {
-          console.log(pos);
-          console.log(`circle is  ${state}`);
-          //console.log(source.form);
-          deltaX = e.offsetX - dx;
-          dx = e.offsetX;
-          source.form.resize(pos,deltaX);
-          source.form.redrawLineConnector();
-          source.form.redraw();
-        }
-        else if (source.type == "losange") {
-          //console.log(pos);
-          deltaX = e.offsetX - dx;
-          deltaY = e.offsetY - dy;
-          dx = e.offsetX;
-          dy = e.offsetY;
-          if(pos == 0 || pos == 2) {
-            source.form.resize(pos,deltaY);
-          } 
-          else if(pos == 1 || pos == 3){
-            source.form.resize(pos,deltaX);
-          }
-          source.form.redrawLineConnector();
-          source.form.redraw();
-        }        
-        source.linesAndConnectors.forEach(elt => {
-
-            if(elt.firstPoint != null){
-
-              
-              console.log("elt.firstPoint");
-              console.log(elt)
-
-              elt.lines.x = elt.firstPoint.x;
-              elt.lines.y = elt.firstPoint.y;
-              elt.lines.redraw();
-
-            }
-            if(elt.secondPoint != null){
-
-              console.log("elt.secondPoint");
-              console.log(elt);
-
-              elt.lines.dest_x = elt.secondPoint.x;
-              elt.lines.dest_y = elt.secondPoint.y;
-              elt.lines.redraw();
-              
-            }
-        });
       }
     },
     mouseUpCb: function mouseupcb(e) {
@@ -251,6 +158,7 @@ function nativeEvents() {
         id = e.srcElement.id;
         var pnt = _Register.find(id);
 
+        
         if (pnt != undefined && pnt.ref != undefined) {
           destination = _Register.find(pnt.ref);
 
@@ -260,9 +168,7 @@ function nativeEvents() {
           // for automatic redrawing
           line.redraw();
           new Link(source, destination, line);
-          
-          destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
-        }
+        } 
         else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);
           ref.remove();
@@ -270,42 +176,40 @@ function nativeEvents() {
       }
       state = "";
     },
-    mouseOverCb: function mouseovercb(e) {
-      id = e.srcElement.id;
-
-      cp = _Register.find(id);
-
-      if (cp instanceof Point) {
-        cp.form.vertex.map((v) => {
-          v.c_svg.classList.remove("vertex");
-          v.c_svg.classList.add("vertex_hover");
-        });
-
-        cp.form.c_points.map((v) => {
-          v.c_svg.style.color = "gray";
-          v.c_svg.classList.remove("vertex");
-          v.c_svg.classList.add("vertex_hover");
-        });
-      }
-    },
-    mouseLeaveCb: function mouseleavecb(e) {
+  mouseOverCb: function mouseovercb(e) {
       // id = e.srcElement.id;
+
       // cp = _Register.find(id);
-      // if (cp.parent == undefined) {
+
+      // if (cp.type == "point") {
       //   cp.form.vertex.map((v) => {
-      //     v.c_svg.classList.add("vertex");
-      //     v.c_svg.classList.remove("vertex_hover");
+      //     v.c_svg.classList.remove("vertex");
+      //     v.c_svg.classList.add("vertex_hover");
       //   });
+
       //   cp.form.c_points.map((v) => {
-      //     v.c_svg.classList.add("vertex");
-      //     v.c_svg.classList.remove("vertex_hover");
+      //     v.c_svg.style.color = "gray";
+      //     v.c_svg.classList.remove("vertex");
+      //     v.c_svg.classList.add("vertex_hover");
       //   });
       // }
-    }
+  },
+  mouseLeaveCb: function mouseleavecb(e) {
+    // id = e.srcElement.id;
+    // cp = _Register.find(id);
+    // if (cp.ref == undefined) {
+    //   cp.form.vertex.map((v) => {
+    //     v.c_svg.classList.add("vertex");
+    //     v.c_svg.classList.remove("vertex_hover");
+    //   });
+    //   cp.form.c_points.map((v) => {
+    //     v.c_svg.classList.add("vertex");
+    //     v.c_svg.classList.remove("vertex_hover");
+    //   });
+    // }
   }
 }
-
-
+}
 var events = nativeEvents();
 
 export { events };

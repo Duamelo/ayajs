@@ -1,6 +1,7 @@
-import { events } from "../events.js";
-import { _Register } from "../register.js";
-import { _uuid } from "./uuid.js";
+import {events} from "../events.js";
+import {_Register} from "../register.js";
+import {_uuid} from "./uuid.js";
+
 /**
  *
  * @class Point
@@ -8,13 +9,19 @@ import { _uuid } from "./uuid.js";
  * @param {number} y
  *
  */
+
 class Point {
   constructor(uuid, x = 0, y = 0, r = 3) {
-    this.uuid = _uuid.generate();
+
     this.ref = uuid;
+    this.uuid = _uuid.generate();
+
     this.x = x;
     this.y = y;
     this.r = r;
+
+    this.c_svg = "";
+
     _Register.add(this);
   }
 
@@ -46,6 +53,7 @@ class Point {
   }
 
   redraw() {
+
     this.c_svg.setAttribute("cx", this.x);
     this.c_svg.setAttribute("cy", this.y);
     

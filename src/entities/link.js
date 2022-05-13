@@ -13,6 +13,7 @@ class Link
        this.source = source;
        this.destination = destination;
        this.line = line;
+       this.type = "link";
        _Register.add(this);
     }
 }

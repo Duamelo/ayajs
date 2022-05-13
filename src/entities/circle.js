@@ -217,4 +217,5 @@ class Circle
         });
     }
 
+}
 export {Circle};

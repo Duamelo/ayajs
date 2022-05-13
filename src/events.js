@@ -57,7 +57,7 @@ function nativeEvents() {
             line = new Line(id, cp.x, cp.y, []);
             line.draw(svg);
 
-            source.linesAndConnectors.push({ lines : line, firstPoint : cp});
+            // source.linesAndConnectors.push({ lines : line, firstPoint : cp});
           }
         }
       }
@@ -120,7 +120,25 @@ function nativeEvents() {
 
         line.dest_x = e.clientX;
         line.dest_y = e.clientY;
+
+        if(deltaY != undefined || deltaX != undefined){
+          // deltaX = (deltaX == undefined) ? 0 : deltaX;
+          // deltaY = (deltaY == undefined) ? 0 : deltaY;
+
+          if(delta)
+            if( source.form.y < line.y < source.form.y + source.form.height)
+              line.shift(0,deltaY)
+
+          if(deltaX)
+            if( source.form.x < line.x < source.form.x + source.form.width)
+              line.shift(deltaX, 0)
+          
+
+        }
+
         line.redraw();
+
+
       } 
       else if (state == "resizing") {
         if (source.type == "rectangle") {
@@ -176,30 +194,30 @@ function nativeEvents() {
         }
 
         
-        source.linesAndConnectors.forEach(elt => {
+        // source.linesAndConnectors.forEach(elt => {
 
-            if(elt.firstPoint != null){
+        //     if(elt.firstPoint != null){
 
               
-              console.log("elt.firstPoint");
-              console.log(elt)
+        //       console.log("elt.firstPoint");
+        //       console.log(elt)
 
-              elt.lines.x = elt.firstPoint.x;
-              elt.lines.y = elt.firstPoint.y;
-              elt.lines.redraw();
+        //       elt.lines.x = elt.firstPoint.x;
+        //       elt.lines.y = elt.firstPoint.y;
+        //       elt.lines.redraw();
 
-            }
-            if(elt.secondPoint != null){
+        //     }
+        //     if(elt.secondPoint != null){
 
-              console.log("elt.secondPoint");
-              console.log(elt);
+        //       console.log("elt.secondPoint");
+        //       console.log(elt);
 
-              elt.lines.dest_x = elt.secondPoint.x;
-              elt.lines.dest_y = elt.secondPoint.y;
-              elt.lines.redraw();
+        //       elt.lines.dest_x = elt.secondPoint.x;
+        //       elt.lines.dest_y = elt.secondPoint.y;
+        //       elt.lines.redraw();
               
-            }
-        });
+        //     }
+        // });
 
       }
     },
@@ -220,7 +238,7 @@ function nativeEvents() {
           new Link(source, destination, line);
 
 
-          destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
+          // destination.linesAndConnectors.push({ lines : line, secondPoint : pnt });
           // source.linesAndConnectors.push({ lines : line });
 
         } else if (id == "svg" || pnt.parent == undefined) {

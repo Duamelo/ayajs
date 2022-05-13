@@ -16,6 +16,11 @@ class Link
        this.type = "link";
        _Register.add(this);
     }
+
+    redraw(){
+        this.line.redraw();
+    }
+
 }
 
 export  {Link};

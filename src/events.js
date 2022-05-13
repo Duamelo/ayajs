@@ -165,9 +165,12 @@ function nativeEvents() {
           line.dest_x = pnt.x;
           line.dest_y = pnt.y;
 
+          /* faire le calcul automatique ici*/
+
           // for automatic redrawing
-          line.redraw();
-          new Link(source, destination, line);
+          // line.redraw();
+          new Link(source, destination, line).redraw();
+
         } 
         else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);

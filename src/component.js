@@ -17,11 +17,6 @@ class Component
         this.form = FactoryForm.createForm(this.uuid, type, props, children);
         _Register.add(this);
         this.form.draw(svg);
-        this.linesAndConnectors = [{
-            lines : null,
-            firstPoint: null,
-            secondPoint: null
-        }]
     }
 }
 export  {Component};

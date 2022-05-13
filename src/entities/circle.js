@@ -191,7 +191,8 @@ class Circle
             if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
                 this.x = param.x + this.ratio.x * param.width;
                 this.y = param.y + this.ratio.y * param.height;
-            }else{
+            }
+            else{
                 this.x = param.x + this.ratio.x * param.width;
                 this.y = param.y + this.ratio.y * param.height;
                 (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;

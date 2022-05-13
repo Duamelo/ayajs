@@ -282,6 +282,11 @@
 	       this.type = "link";
 	       _Register.add(this);
 	    }
+
+	    redraw(){
+	        this.line.redraw();
+	    }
+
 	}
 
 	function nativeEvents() {
@@ -445,9 +450,12 @@
 	          line.dest_x = pnt.x;
 	          line.dest_y = pnt.y;
 
+	          /* faire le calcul automatique ici*/
+
 	          // for automatic redrawing
-	          line.redraw();
-	          new Link(source, destination, line);
+	          // line.redraw();
+	          new Link(source, destination, line).redraw();
+
 	        } 
 	        else if (id == "svg" || pnt.ref == undefined) {
 	          var ref = document.getElementById(line.uuid);
@@ -490,7 +498,7 @@
 	  }
 	}
 	}
-	var events$1 = nativeEvents();
+	var events = nativeEvents();
 
 	/**
 	 *
@@ -529,9 +537,9 @@
 	    // this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.addEventListener("mousedown", events$1.mouseDownCb);
+	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 	    //this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-	    this.c_svg.addEventListener("mouseup", events$1.mouseUpCb);
+	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 
 	    svgs.appendChild(this.c_svg);
 
@@ -702,7 +710,7 @@
 	          });
 	      
 
-	        this.events.add(this.c_svg, "mousedown", events$1.mouseDownCb);
+	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
 	        this.events.create();
 	    }
@@ -737,7 +745,8 @@
 	            if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
 	                this.x = param.x + this.ratio.x * param.width;
 	                this.y = param.y + this.ratio.y * param.height;
-	            }else {
+	            }
+	            else {
 	                this.x = param.x + this.ratio.x * param.width;
 	                this.y = param.y + this.ratio.y * param.height;
 	                (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
@@ -875,10 +884,10 @@
 	      child.draw(svgs);
 	    });
 
-	    this.events.add(this.c_svg, "mousedown", events$1.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events$1.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events$1.mouseOverCb);
-	    this.events.add(this.c_svg, "mouseleave", events$1.mouseLeaveCb);
+	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+	    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
 	    this.events.create();
 
@@ -948,58 +957,69 @@
 
 	  resize(pos, dx, dy, param = {} ) {
 
-	    if (pos == 0) {
+	   
+	    if(Object.keys(param).length > 0 && !this.zoom && Object.keys(this.ratio).length > 0){
+	        this.x = param.x + (this.ratio.x * param.width);
+	        this.y = param.y + (this.ratio.y * param.height);
+	        this.width = this.ratio.width * param.width;
+	        this.height = this.ratio.height * param.height;
+	        this.drawConnector();
+	        this.drawVertex();
+	    }
+	    else {
+	      if (pos == 0) {
 
-	      this.shift(dx, dy);
-
-	      this.width += -dx;
-	      this.height += -dy;
-
-	      this.children.map ( (child) => {
+	        this.shift(dx, dy);
+	  
+	        this.width += -dx;
+	        this.height += -dy;
+	  
+	        this.children.map ( (child) => {
+	            child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+	        });
+	        this.drawVertex();
+	        this.drawConnector();
+	      } 
+	      else if (pos == 1) {
+	  
+	        this.y += dy;
+	  
+	        this.width += dx;
+	        this.height += -dy;
+	  
+	        this.children.map ( (child) => {
 	          child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
-	      this.drawVertex();
-	      this.drawConnector();
-	    } 
-	    else if (pos == 1) {
-
-	      this.y += dy;
-
-	      this.width += dx;
-	      this.height += -dy;
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
-
-	      this.drawVertex();
-	      this.drawConnector();
-	    } 
-	    else if (pos == 2) {
-
-	      this.width += dx;
-	      this.height += dy;
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
-
-	      this.drawVertex();
-	      this.drawConnector();
-	    } 
-	    else if (pos == 3) {
-
-	      this.x += dx;
-
-	      this.width += -dx;
-	      this.height += dy;
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
-
-	      this.drawVertex();
-	      this.drawConnector();
+	        });
+	  
+	        this.drawVertex();
+	        this.drawConnector();
+	      } 
+	      else if (pos == 2) {
+	  
+	        this.width += dx;
+	        this.height += dy;
+	  
+	        this.children.map ( (child) => {
+	          child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+	        });
+	  
+	        this.drawVertex();
+	        this.drawConnector();
+	      } 
+	      else if (pos == 3) {
+	  
+	        this.x += dx;
+	  
+	        this.width += -dx;
+	        this.height += dy;
+	  
+	        this.children.map ( (child) => {
+	          child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
+	        });
+	  
+	        this.drawVertex();
+	        this.drawConnector();
+	      }
 	    }
 	  }
 
@@ -1018,7 +1038,6 @@
 	        var _y = this.y + (chd.ratio.y * this.height);
 	        var _width = chd.ratio.width * this.width;
 	        var _height = chd.ratio.height * this.height ;
-	        console.log(_x + " " + _y + " " + _width + " " + _height);
 	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: _x, y: _y, width: _width, height: _height}, [], chd.ratio, chd.zoom);
 	        this.children.push(child);
 	      }
@@ -1275,11 +1294,6 @@
 	        this.form = FactoryForm.createForm(this.uuid, type, props, children);
 	        _Register.add(this);
 	        this.form.draw(svg);
-	        this.linesAndConnectors = [{
-	            lines : null,
-	            firstPoint: null,
-	            secondPoint: null
-	        }];
 	    }
 	}
 
@@ -1293,7 +1307,7 @@
 	exports.Triangle = Triangle;
 	exports._Register = _Register;
 	exports._uuid = _uuid;
-	exports.events = events$1;
+	exports.events = events;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

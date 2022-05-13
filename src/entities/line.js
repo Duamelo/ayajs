@@ -1,6 +1,8 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { EventManager } from "../eventManager";
+import {events} from "../events";
+
 
 /**
  * @class Line

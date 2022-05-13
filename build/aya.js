@@ -24,7 +24,7 @@
 	        var result = [];
 	        Object.keys(store).map((id) => {
 	            var obj = _Register.find(id);
-	            if(obj.type == undefined){
+	            if(obj.form != undefined){
 	                if((component == obj.source)  || (component == obj.destination))
 	                    result.push(obj);
 	            }
@@ -44,24 +44,80 @@
 	}
 
 	/**
+	 * @class EventManager
+	 */
+	 class EventManager
+	 {
+	      constructor(){
+	  
+	          this.events = [];
+	      }
+	  
+	      add(target, event, callback){
+	          this.events.push([target, event, callback]);
+	      }
+	  
+	      clear(){
+	          this.destroy();
+	          this.events = [];
+	      }
+	  
+	      destroy(){
+	          for(var i = 0; i < this.events.length; i++)
+	          {
+	              var event = this.events[i];
+	              event[0].removeEventListener(event[1], event[2]);
+	          }
+	      }
+	  
+	      create(){
+	          for(var i = 0; i < this.events.length; i++)
+	          {
+	              var event = this.events[i];
+	              event[0].addEventListener(event[1], event[2]);
+	          }
+	      }
+	 }
+
+	/**
 	 * @class Line class
 	 */
 
 	class Line 
 	{
-	    constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
+	    /**
+	     * 
+	     * @param {string} uuid 
+	     * @param {number} x 
+	     * @param {number} y 
+	     * @param {number} dest_x 
+	     * @param {number} dest_y 
+	     * @param {array of object} children 
+	     * @param {object} ratio 
+	     */
+
+	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y, children = [], ratio = {}){
 	        
 	        this.uuid = uuid;
+
 	        this.x = x;
 	        this.y = y;
+	        
 	        this.dest_x = dest_x;
 	        this.dest_y = dest_y;
-	        this.events = events;
+	        
+	        this.events = new EventManager();
+
 	        this.c_svg = "";
 	        this.p = "";
+
 	        this.type = "line";
+
+	        this.ratio = ratio;
+	        this.children = [];
+
+	        this.createChildren(children);
 	        _Register.add(this);
-	        
 	    }
 
 	    draw(svgs){
@@ -70,17 +126,17 @@
 	        this.c_svg = document.createElementNS(ns,'path');
 
 	        this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
-	        
+
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", this.p);
 	        this.c_svg.setAttribute("stroke", "black");
 	        this.c_svg.setAttributeNS(null, "stroke-width", "4px");
 
-	        
 	        svgs.appendChild(this.c_svg);
 
-	        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
+	        this.events.create();
 	    }
 
 	    shift(dx,dy){
@@ -93,7 +149,7 @@
 	        this.c_svg.setAttribute("d", this.p);
 	    }
 
-	    resize(pos, dx, dy, zoom = false){
+	    resize(pos, dx, dy, param = {}){
 
 	        var p = _Register.find(this.parent);
 
@@ -203,6 +259,13 @@
 
 	        }
 	    }
+
+
+	    createChildren(children){
+	        children.map((chd) => {
+
+	        });
+	    }
 	}
 
 	/**
@@ -219,56 +282,6 @@
 	       this.line = line;
 	       _Register.add(this);
 	    }
-	}
-
-	/**
-	 *
-	 * @class Point
-	 * @param {number} x
-	 * @param {number} y
-	 *
-	 */
-	class Point {
-	  constructor(uuid, x = 0, y = 0, r = 3) {
-	    this.uuid = _uuid.generate();
-	    this.ref = uuid;
-	    this.x = x;
-	    this.y = y;
-	    this.r = r;
-	    _Register.add(this);
-	  }
-
-	  draw(svgs) {
-	    var ns = "http://www.w3.org/2000/svg";
-
-	    this.c_svg = document.createElementNS(ns, "circle");
-
-	    this.c_svg.setAttribute("cx", this.x);
-
-	    this.c_svg.setAttribute("cy", this.y);
-
-	    this.c_svg.setAttribute("r", this.r);
-
-	    // this.c_svg.setAttribute("class", "vertex");
-
-	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-	    // this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-
-	    svgs.appendChild(this.c_svg);
-	  }
-
-	  shift(dx, dy) {
-	    this.x += dx;
-	    this.y += dy;
-	  }
-
-	  redraw() {
-	    this.c_svg.setAttribute("cx", this.x);
-
-	    this.c_svg.setAttribute("cy", this.y);
-	  }
 	}
 
 	function nativeEvents() {
@@ -292,8 +305,8 @@
 
 	      cp = _Register.find(id);
 
-	      console.log("point");
 	      console.log(cp);
+
 
 	      if (id != "svg")
 	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
@@ -351,19 +364,16 @@
 	              });
 	            }
 	          });
-	        }
-	       
 
-	        if(cp.form != undefined && cp.form.children.length > 0){
+
 	          cp.form.children.map( (child) => {
-	            console.log("children resizing");
-	            if(child instanceof Line){
+	            if(child.type == "line"){
 	              child.shift(deltaX, deltaY);
 	              child.dest_x += deltaX;
 	              child.dest_y += deltaY;
 	              child.redraw();
 	            }
-	            else if(child instanceof Circle){
+	            else {
 	              child.shift(deltaX, deltaY);
 	              child.redraw();
 	            }
@@ -372,10 +382,11 @@
 	          cp.form.shift(deltaX, deltaY);
 	          cp.form.redraw();
 	        }
+
 	        // il s'agit d'une form pas d'une instance de la classe Component ou de Point
 	        if(cp.form  == undefined && cp.ref == undefined){
 
-	          if(cp instanceof Line){
+	          if(cp.type == "line"){
 	            cp.shift(deltaX, deltaY);
 
 	            cp.dest_x += deltaX;
@@ -464,22 +475,22 @@
 	      state = "";
 	    },
 	  mouseOverCb: function mouseovercb(e) {
-	      id = e.srcElement.id;
+	      // id = e.srcElement.id;
 
-	      cp = _Register.find(id);
+	      // cp = _Register.find(id);
 
-	      if (cp instanceof Point) {
-	        cp.form.vertex.map((v) => {
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
+	      // if (cp.type == "point") {
+	      //   cp.form.vertex.map((v) => {
+	      //     v.c_svg.classList.remove("vertex");
+	      //     v.c_svg.classList.add("vertex_hover");
+	      //   });
 
-	        cp.form.c_points.map((v) => {
-	          v.c_svg.style.color = "gray";
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
-	      }
+	      //   cp.form.c_points.map((v) => {
+	      //     v.c_svg.style.color = "gray";
+	      //     v.c_svg.classList.remove("vertex");
+	      //     v.c_svg.classList.add("vertex_hover");
+	      //   });
+	      // }
 	  },
 	  mouseLeaveCb: function mouseleavecb(e) {
 	    // id = e.srcElement.id;
@@ -507,24 +518,34 @@
 	{
 	    /**
 	     * 
-	     * @param {string} uuid id
-	     * @param {number} x center abscissa
-	     * @param {number} y   center ordinate
-	     * @param {number} r radius of circle
-	     * @param {array} events   array of object events
+	     * @param {string} uuid 
+	     * @param {number} x 
+	     * @param {number} y 
+	     * @param {number} r 
+	     * @param {array of object} children 
+	     * @param {object} ratio 
+	     * @param {boolean} zoom 
 	     */
 
-	    constructor(uuid, x = 0, y = 0, r = 5, events = [], children = [], ratio = {}, zoom){
+	    constructor(uuid, x = 0, y = 0, r = 5, children = [], ratio = {}, zoom){
 
 	        this.uuid = uuid;
+
 	        this.x = x;
 	        this.y = y;
 	        this.r = r;
-	        this.ratio = ratio;
-	        this.events = events;
+
+	        this.events = new EventManager();
+
+	        this.children = [];
+
 	        this.c_svg = "";
 	        this.type = "circle";
+
+	        this.ratio = ratio;
 	        this.zoom = zoom;
+
+	        this.createChildren(children);
 	        _Register.add(this);
 	    }
 
@@ -535,24 +556,24 @@
 	    
 	    draw(svgs){
 	        var ns="http://www.w3.org/2000/svg";
-	    
+
 	        this.c_svg = document.createElementNS(ns,"circle");
-	    
+
+	        this.c_svg.setAttribute("id", this.uuid);
+
 	        this.c_svg.setAttribute("cx", this.x);
-	    
+
 	        this.c_svg.setAttribute("cy",this.y);
-	    
+
 	        this.c_svg.setAttribute("r", this.r);
 
-	        this.c_svg.setAttributeNS(null, "fill", "red");
-
-	    
-	        this.c_svg.setAttribute("id", this.uuid);
+	        this.c_svg.setAttributeNS(null, "fill", "indigo");
 
 	        svgs.appendChild(this.c_svg);
 
-	        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
+	        this.events.create();
 	    }
 
 	    shift(dx, dy){
@@ -561,23 +582,82 @@
 	    }
 
 	    redraw(){
-
 	        this.c_svg.setAttribute("cx", this.x);
 	        this.c_svg.setAttribute("cy",this.y);
 	        this.c_svg.setAttribute("r", this.r);
 	    }
 
-	    resize(pos, dx, dy, param = {}, zoom = false){
-	        console.log(this.zoom);
-	        if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
-	            this.x = param.x + this.ratio.x * param.width;
-	            this.y = param.y + this.ratio.y * param.height;
-	        }else {
-	            this.x = param.x + this.ratio.x * param.width;
-	            this.y = param.y + this.ratio.y * param.height;
-	            (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
+	    resize(pos, dx, dy, param = {}){
+	        if(param.parent == "rectangle"){
+	            if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
+	                this.x = param.x + this.ratio.x * param.width;
+	                this.y = param.y + this.ratio.y * param.height;
+	            }else {
+	                this.x = param.x + this.ratio.x * param.width;
+	                this.y = param.y + this.ratio.y * param.height;
+	                (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
+	            }
 	        }
 	    }
+
+	    createChildren(children){
+	        children.map( (chd) => {
+
+	        });
+	    }
+	}
+
+	/**
+	 *
+	 * @class Point
+	 * @param {number} x
+	 * @param {number} y
+	 *
+	 */
+	class Point {
+	  constructor(uuid, x = 0, y = 0, r = 3) {
+
+	    this.ref = uuid;
+	    this.uuid = _uuid.generate();
+
+	    this.x = x;
+	    this.y = y;
+	    this.r = r;
+
+	    _Register.add(this);
+	  }
+
+	  draw(svgs) {
+	    var ns = "http://www.w3.org/2000/svg";
+
+	    this.c_svg = document.createElementNS(ns, "circle");
+
+	    this.c_svg.setAttribute("cx", this.x);
+
+	    this.c_svg.setAttribute("cy", this.y);
+
+	    this.c_svg.setAttribute("r", this.r);
+
+	    // this.c_svg.setAttribute("class", "vertex");
+
+	    this.c_svg.setAttribute("id", this.uuid);
+	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+	    // this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
+	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
+
+	    svgs.appendChild(this.c_svg);
+	  }
+
+	  shift(dx, dy) {
+	    this.x += dx;
+	    this.y += dy;
+	  }
+
+	  redraw() {
+	    this.c_svg.setAttribute("cx", this.x);
+
+	    this.c_svg.setAttribute("cy", this.y);
+	  }
 	}
 
 	class Connector {
@@ -604,17 +684,19 @@
 	 */
 
 	class Rectangle {
+
 	  /**
-	   *
-	   * @param {string} uuid
-	   * @param {number} x
-	   * @param {number} y
-	   * @param {number} width
-	   * @param {number} height
-	   * @param {array of object} events
+	   * 
+	   * @param {string} uuid 
+	   * @param {number} x 
+	   * @param {number} y 
+	   * @param {number} width 
+	   * @param {number} height 
+	   * @param {array of object} children 
+	   * @param {object} ratio 
 	   */
 
-	  constructor(uuid, x = 0, y = 0, width = 10, height = 10, events = [], children, ratio = {}) {
+	  constructor(uuid, x = 0, y = 0, width = 10, height = 10, children = [], ratio = {}, zoom = false) {
 
 	    this.uuid = uuid;
 
@@ -624,20 +706,20 @@
 	    this.width = width;
 	    this.height = height;
 
-	    this.events = events;
+	    this.events = new EventManager();
+
 	    this.c_svg = "";
 
+	    this.type = "rectangle";
 	    this.children = [];
 	    this.ratio = ratio;
+	    this.zoom = zoom;
+
 
 	    this.c_points = Connector.create("rectangle", this.uuid);
 	    this.vertex = Connector.create("rectangle", this.uuid);
 
-	    this.drawConnector();
-	    this.drawVertex();
-
 	    this.createChildren(children);
-
 	    _Register.add(this);
 	  }
 
@@ -654,7 +736,12 @@
 	    this.c_svg.setAttributeNS(null, "stroke-width", "3px");
 	    this.c_svg.setAttributeNS(null, "fill", "cornsilk");
 
+
 	    svgs.appendChild(this.c_svg);
+
+
+	    this.drawConnector();
+	    this.drawVertex();
 
 	    this.c_points.map((point) => {
 	      point.draw(svgs);
@@ -669,10 +756,12 @@
 	      child.draw(svgs);
 	    });
 
-	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-	    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+	    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
+
+	    this.events.create();
 	  }
 
 	  drawVertex(){
@@ -737,7 +826,7 @@
 	    });
 	  }
 
-	  resize(pos, dx, dy, zoom ) {
+	  resize(pos, dx, dy, param = {} ) {
 
 	    if (pos == 0) {
 
@@ -747,16 +836,10 @@
 	      this.height += -dy;
 
 	      this.children.map ( (child) => {
-	        if(child.type == "circle"){
-	          child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-	        }
+	          child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
 	      });
-
-
 	      this.drawVertex();
 	      this.drawConnector();
-	      
-	     
 	    } 
 	    else if (pos == 1) {
 
@@ -765,24 +848,24 @@
 	      this.width += dx;
 	      this.height += -dy;
 
+	      this.children.map ( (child) => {
+	        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+	      });
+
 	      this.drawVertex();
 	      this.drawConnector();
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
 	    } 
 	    else if (pos == 2) {
 
 	      this.width += dx;
 	      this.height += dy;
 
+	      this.children.map ( (child) => {
+	        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+	      });
+
 	      this.drawVertex();
 	      this.drawConnector();
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height});
-	      });
 	    } 
 	    else if (pos == 3) {
 
@@ -791,12 +874,12 @@
 	      this.width += -dx;
 	      this.height += dy;
 
+	      this.children.map ( (child) => {
+	        child.resize(pos, dx, dy, {parent: "rectangle", x: this.x, y: this.y, width: this.width, height: this.height});
+	      });
+
 	      this.drawVertex();
 	      this.drawConnector();
-
-	      this.children.map ( (child) => {
-	        child.resize(pos, dx, dy, {x: this.x, y: this.y, width: this.width, height: this.height}, child.zoom);
-	      });
 	    }
 	  }
 
@@ -807,7 +890,29 @@
 	        var abs = this.x +  (chd.ratio.x * this.width);
 	        var ord = this.y + (chd.ratio.y * this.height);
 	        var rayon = (chd.ratio.r * this.width);
-	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon}, [], [], chd.ratio, chd.zoom);
+	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon},[], chd.ratio, chd.zoom);
+	        this.children.push(child);
+	      }
+	      else if(chd.type == "rectangle"){
+	        var _x = this.x + (chd.ratio .x * this.width);
+	        var _y = this.y + (chd.ratio.y * this.height);
+	        var _width = chd.ratio.width * this.width;
+	        var _height = chd.ratio.height * this.height ;
+	        console.log(_x + " " + _y + " " + _width + " " + _height);
+	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: _x, y: _y, width: _width, height: _height}, [], chd.ratio, chd.zoom);
+	        this.children.push(child);
+	      }
+	      else if(chd.type == "triangle"){
+	        var _x1 = this.x + (chd.ratio.p1.x * this.width);
+	        var _y1 = this.y + (chd.ratio.p1.y * this.height); 
+	      
+	        var _x2 = this.x + (chd.ratio.p2.x * this.width);
+	        var _y2 = this.y + (chd.ratio.p2.y * this.height); 
+
+	        var _x3 = this.x + (chd.ratio.p3.x * this.width);
+	        var _y3 = this.y + (chd.ratio.p3.y * this.height); 
+
+	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
 	        this.children.push(child);
 	      }
 	    });
@@ -815,7 +920,7 @@
 	}
 
 	/**
-	 * @class Triangle class
+	 * @class Triangle
 	 */
 
 	class Triangle {
@@ -830,7 +935,7 @@
 	   * @param {LineTo this ordonne point} y3
 	   * @param {array of object} events
 	   */
-	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
+	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
 	  {
 	    this.uuid = uuid;
 
@@ -843,39 +948,30 @@
 	    this.x3 = x3;
 	    this.y3 = y3;
 
-	    this.events = events;
+	    this.events = new EventManager();
+
 	    this.c_svg = "";
 	    this.p = "";
 
-	    this.c_points = Connector.create("triangle", uuid);
-	    this.vertex = [
-	      new Point(this.uuid, this.x1, this.y1, 5),
-	      new Point(this.uuid, this.x2, this.y2, 5),
-	      new Point(this.uuid, this.x3, this.y3, 5),
-	    ];
-	    this.drawConnector();
+	    this.type = "triangle";
+	    this.ratio = ratio;
+	    this.zoom = zoom;
+
+	    this.children = [];
+
+	    this.c_points = Connector.create("triangle", this.uuid);
+	    this.vertex = Connector.create("triangle", this.uuid);
+
+	    this.createChildren(children);
+	    _Register.add(this);
 	  }
 
 	  draw(svgs) {
 	    const ns = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(ns, "path");
 
-	    this.p =
-	      "M " +
-	      this.x1 +
-	      "," +
-	      this.y1 +
-	      " " +
-	      "L " +
-	      this.x2 +
-	      "," +
-	      this.y2 +
-	      " " +
-	      "L " +
-	      this.x3 +
-	      "," +
-	      this.y3 +
-	      " Z";
+	    this.p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
+
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", this.p);
@@ -885,6 +981,10 @@
 
 	    svgs.appendChild(this.c_svg);
 
+
+	    this.drawConnector();
+	    this.drawVertex();
+
 	    this.c_points.map((point) => {
 	      point.draw(svgs);
 	    });
@@ -893,24 +993,40 @@
 	      v.draw(svgs);
 	    });
 
-	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-	    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-	    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+	    // this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	    // this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+	    // this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+	    // this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
+
+	    // this.events.create();
+	  }
+
+	  drawVertex(){
+	    this.vertex[0].x = this.x1;
+	    this.vertex[0].y = this.y1;
+	    this.vertex[0].r = 3;
+
+	    this.vertex[1].x = this.x2 ;
+	    this.vertex[1].y = this.y2 ;
+	    this.vertex[1].r = 3;
+
+	    this.vertex[2].x =  this.x3;
+	    this.vertex[2].y =  this.y3;
+	    this.vertex[2].r = 3;
 	  }
 
 	  drawConnector() {
 	    this.c_points[0].x = (this.x1 + this.x2) / 2;
 	    this.c_points[0].y = (this.y1 + this.y2) / 2;
-	    this.c_points[0].r = 5;
+	    this.c_points[0].r = 3;
 
 	    this.c_points[1].x = (this.x2 + this.x3) / 2;
 	    this.c_points[1].y = (this.y2 + this.y3) / 2;
-	    this.c_points[1].r = 5;
+	    this.c_points[1].r = 3;
 
 	    this.c_points[2].x = (this.x1 + this.x3) / 2;
 	    this.c_points[2].y = (this.y1 + this.y3) / 2;
-	    this.c_points[2].r = 5;
+	    this.c_points[2].r = 3;
 	  }
 
 	  shift(dx, dy) {
@@ -933,22 +1049,7 @@
 	  }
 
 	  redraw() {
-	    this.p =
-	      "M " +
-	      this.x1 +
-	      "," +
-	      this.y1 +
-	      " " +
-	      "L " +
-	      this.x2 +
-	      "," +
-	      this.y2 +
-	      " " +
-	      "L " +
-	      this.x3 +
-	      "," +
-	      this.y3 +
-	      " Z";
+	    this.p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
 
 	    this.c_svg.setAttribute("d", this.p);
 
@@ -960,28 +1061,47 @@
 	    });
 	  }
 
-	  resize(pos, dx, dy) {
-	    //console.log(dx + "---" + dy);
-	    if (pos == 0) {
-	      this.x1 = dx;
-	      this.y1 = dy;
-	      this.vertex[0].x = dx;
-	      this.vertex[0].y = dy;
-	      this.createConnector();
-	      //console.log(this.vertex[0].x);
-	    } else if (pos == 1) {
-	      this.x2 = dx;
-	      this.y2 = dy;
-	      this.vertex[1].x = dx;
-	      this.vertex[1].y = dy;
-	      this.createConnector();
-	    } else if (pos == 2) {
-	      this.x3 = dx;
-	      this.y3 = dy;
-	      this.vertex[2].x = dx;
-	      this.vertex[2].y = dy;
-	      this.createConnector();
+	  resize(pos, dx, dy, param = {}) {
+
+	    if(param.parent == "rectangle"){
+	      if(Object.keys(this.ratio).length > 0){
+
+	        (this.zoom == false) ? 
+	          this.shift(dx,dy):
+	        undefined ;
+	      }
 	    }
+	    else {
+	      if (pos == 0) {
+	        this.x1 = dx;
+	        this.y1 = dy;
+	        this.vertex[0].x = dx;
+	        this.vertex[0].y = dy;
+	        this.drawConnector();
+	      } 
+	      else if (pos == 1) {
+	        this.x2 = dx;
+	        this.y2 = dy;
+	        this.vertex[1].x = dx;
+	        this.vertex[1].y = dy;
+	        this.drawConnector();
+	      }
+	      else if (pos == 2) {
+	        this.x3 = dx;
+	        this.y3 = dy;
+	        this.vertex[2].x = dx;
+	        this.vertex[2].y = dy;
+	        this.drawConnector();
+	      }
+	  
+	    }
+	  }
+
+
+	  createChildren(children){
+	    children.map( (chd) => {
+
+	    });
 	  }
 	}
 
@@ -992,25 +1112,27 @@
 
 	class FactoryForm
 	{
-	   /**
-	    * 
-	    * @param {string} uuid 
-	    * @param {string} type 
-	    * @param {object} props 
-	    * @param {array} events 
-	    * @returns form
-	    */
+	    /**
+	     * 
+	     * @param {string} uuid 
+	     * @param {string} type 
+	     * @param {object} props 
+	     * @param {array of object} children 
+	     * @param {pbject} ratio 
+	     * @param {boolean} zoom 
+	     * @returns @form
+	     */
 
-	   static createForm(uuid, type, props = {}, events, children, ratio = {}, zoom = false)
+	   static createForm(uuid, type, props = {}, children = [], ratio = {}, zoom = false)
 	    {
 	        if(type == "circle")
-	            return new Circle(uuid, props.x, props.y, props.r, events, children, ratio, zoom);
+	            return new Circle(uuid, props.x, props.y, props.r, children, ratio, zoom);
 	        else if(type == "rectangle")
-	            return new Rectangle(uuid, props.x, props.y, props.width, props.height, events, children);
+	            return new Rectangle(uuid, props.x, props.y, props.width, props.height, children, ratio, zoom);
 	        else if(type == "line")
-	            return new Line(uuid, props.x, props.y, events, props.dest_x, props.dest_y, children);
+	            return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y, children, ratio, zoom);
 	        else if(type == "triangle")
-	             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, events, children);
+	                return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, children, ratio, zoom);
 	    }
 	}
 
@@ -1022,11 +1144,11 @@
 	     * @param {array} events 
 	     * @param {object} params 
 	     */
-	    constructor( type, events = [],  props, children = [])
+	    constructor( type, props, children = [])
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
-	        this.form = FactoryForm.createForm(this.uuid, type, props, events, children);
+	        this.form = FactoryForm.createForm(this.uuid, type, props, children);
 	        _Register.add(this);
 	        this.form.draw(svg);
 	    }

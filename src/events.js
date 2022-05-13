@@ -2,8 +2,6 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
-import { Point } from "./entities/point.js";
-import { Circle } from "./entities/circle.js";
 
 
 function nativeEvents() {
@@ -27,8 +25,8 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
-      console.log("point");
       console.log(cp);
+
 
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
@@ -86,19 +84,16 @@ function nativeEvents() {
               });
             }
           });
-        }
-       
 
-        if(cp.form != undefined && cp.form.children.length > 0){
+
           cp.form.children.map( (child) => {
-            console.log("children resizing");
-            if(child instanceof Line){
+            if(child.type == "line"){
               child.shift(deltaX, deltaY);
               child.dest_x += deltaX;
               child.dest_y += deltaY;
               child.redraw();
             }
-            else if(child instanceof Circle){
+            else{
               child.shift(deltaX, deltaY);
               child.redraw();
             }
@@ -107,10 +102,11 @@ function nativeEvents() {
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
         }
+
         // il s'agit d'une form pas d'une instance de la classe Component ou de Point
         if(cp.form  == undefined && cp.ref == undefined){
 
-          if(cp instanceof Line){
+          if(cp.type == "line"){
             cp.shift(deltaX, deltaY);
 
             cp.dest_x += deltaX;
@@ -199,22 +195,22 @@ function nativeEvents() {
       state = "";
     },
   mouseOverCb: function mouseovercb(e) {
-      id = e.srcElement.id;
+      // id = e.srcElement.id;
 
-      cp = _Register.find(id);
+      // cp = _Register.find(id);
 
-      if (cp instanceof Point) {
-        cp.form.vertex.map((v) => {
-          v.c_svg.classList.remove("vertex");
-          v.c_svg.classList.add("vertex_hover");
-        });
+      // if (cp.type == "point") {
+      //   cp.form.vertex.map((v) => {
+      //     v.c_svg.classList.remove("vertex");
+      //     v.c_svg.classList.add("vertex_hover");
+      //   });
 
-        cp.form.c_points.map((v) => {
-          v.c_svg.style.color = "gray";
-          v.c_svg.classList.remove("vertex");
-          v.c_svg.classList.add("vertex_hover");
-        });
-      }
+      //   cp.form.c_points.map((v) => {
+      //     v.c_svg.style.color = "gray";
+      //     v.c_svg.classList.remove("vertex");
+      //     v.c_svg.classList.add("vertex_hover");
+      //   });
+      // }
   },
   mouseLeaveCb: function mouseleavecb(e) {
     // id = e.srcElement.id;

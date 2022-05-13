@@ -1,9 +1,11 @@
 import { Connector } from "./connector.js";
 import { events } from "../events.js";
-import { Point } from "./point.js";
 import { _uuid } from "./uuid.js";
+import { EventManager } from "../eventManager.js";
+import { _Register } from "../register.js";
+
 /**
- * @class Triangle class
+ * @class Triangle
  */
 
 class Triangle {
@@ -18,7 +20,7 @@ class Triangle {
    * @param {LineTo this ordonne point} y3
    * @param {array of object} events
    */
-  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, events = [] )
+  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
   {
     this.uuid = uuid;
 
@@ -31,39 +33,30 @@ class Triangle {
     this.x3 = x3;
     this.y3 = y3;
 
-    this.events = events;
+    this.events = new EventManager();
+
     this.c_svg = "";
     this.p = "";
 
-    this.c_points = Connector.create("triangle", uuid);
-    this.vertex = [
-      new Point(this.uuid, this.x1, this.y1, 5),
-      new Point(this.uuid, this.x2, this.y2, 5),
-      new Point(this.uuid, this.x3, this.y3, 5),
-    ];
-    this.drawConnector();
+    this.type = "triangle";
+    this.ratio = ratio;
+    this.zoom = zoom;
+
+    this.children = [];
+
+    this.c_points = Connector.create("triangle", this.uuid);
+    this.vertex = Connector.create("triangle", this.uuid);
+
+    this.createChildren(children);
+    _Register.add(this);
   }
 
   draw(svgs) {
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
 
-    this.p =
-      "M " +
-      this.x1 +
-      "," +
-      this.y1 +
-      " " +
-      "L " +
-      this.x2 +
-      "," +
-      this.y2 +
-      " " +
-      "L " +
-      this.x3 +
-      "," +
-      this.y3 +
-      " Z";
+    this.p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
+
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
@@ -73,6 +66,10 @@ class Triangle {
 
     svgs.appendChild(this.c_svg);
 
+
+    this.drawConnector();
+    this.drawVertex();
+
     this.c_points.map((point) => {
       point.draw(svgs);
     });
@@ -81,24 +78,40 @@ class Triangle {
       v.draw(svgs);
     });
 
-    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
-    this.c_svg.addEventListener("mouseover", events.mouseOverCb);
-    this.c_svg.addEventListener("mouseleave", events.mouseLeaveCb);
+    // this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+    // this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+    // this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+    // this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
+
+    // this.events.create();
+  }
+
+  drawVertex(){
+    this.vertex[0].x = this.x1;
+    this.vertex[0].y = this.y1;
+    this.vertex[0].r = 3;
+
+    this.vertex[1].x = this.x2 ;
+    this.vertex[1].y = this.y2 ;
+    this.vertex[1].r = 3;
+
+    this.vertex[2].x =  this.x3;
+    this.vertex[2].y =  this.y3;
+    this.vertex[2].r = 3;
   }
 
   drawConnector() {
     this.c_points[0].x = (this.x1 + this.x2) / 2;
     this.c_points[0].y = (this.y1 + this.y2) / 2;
-    this.c_points[0].r = 5;
+    this.c_points[0].r = 3;
 
     this.c_points[1].x = (this.x2 + this.x3) / 2;
     this.c_points[1].y = (this.y2 + this.y3) / 2;
-    this.c_points[1].r = 5;
+    this.c_points[1].r = 3;
 
     this.c_points[2].x = (this.x1 + this.x3) / 2;
     this.c_points[2].y = (this.y1 + this.y3) / 2;
-    this.c_points[2].r = 5;
+    this.c_points[2].r = 3;
   }
 
   shift(dx, dy) {
@@ -121,22 +134,7 @@ class Triangle {
   }
 
   redraw() {
-    this.p =
-      "M " +
-      this.x1 +
-      "," +
-      this.y1 +
-      " " +
-      "L " +
-      this.x2 +
-      "," +
-      this.y2 +
-      " " +
-      "L " +
-      this.x3 +
-      "," +
-      this.y3 +
-      " Z";
+    this.p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
 
     this.c_svg.setAttribute("d", this.p);
 
@@ -148,29 +146,47 @@ class Triangle {
     });
   }
 
-  resize(pos, dx, dy) {
-    //console.log(dx + "---" + dy);
-    if (pos == 0) {
-      this.x1 = dx;
-      this.y1 = dy;
-      this.vertex[0].x = dx;
-      this.vertex[0].y = dy;
-      this.createConnector();
-      //console.log(this.vertex[0].x);
-    } else if (pos == 1) {
-      this.x2 = dx;
-      this.y2 = dy;
-      this.vertex[1].x = dx;
-      this.vertex[1].y = dy;
-      this.createConnector();
-    } else if (pos == 2) {
-      this.x3 = dx;
-      this.y3 = dy;
-      this.vertex[2].x = dx;
-      this.vertex[2].y = dy;
-      this.createConnector();
+  resize(pos, dx, dy, param = {}) {
+
+    if(param.parent == "rectangle"){
+      if(Object.keys(this.ratio).length > 0){
+
+        (this.zoom == false) ? 
+          this.shift(dx,dy):
+        undefined ;
+      }
+    }
+    else{
+      if (pos == 0) {
+        this.x1 = dx;
+        this.y1 = dy;
+        this.vertex[0].x = dx;
+        this.vertex[0].y = dy;
+        this.drawConnector();
+      } 
+      else if (pos == 1) {
+        this.x2 = dx;
+        this.y2 = dy;
+        this.vertex[1].x = dx;
+        this.vertex[1].y = dy;
+        this.drawConnector();
+      }
+      else if (pos == 2) {
+        this.x3 = dx;
+        this.y3 = dy;
+        this.vertex[2].x = dx;
+        this.vertex[2].y = dy;
+        this.drawConnector();
+      }
+  
     }
   }
-}
 
+
+  createChildren(children){
+    children.map( (chd) => {
+
+    });
+  }
+}
 export { Triangle };

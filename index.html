@@ -23,7 +23,16 @@
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
-      var rect = new aya.Component("rectangle", [], {
+      var tri = new aya.Component("triangle", {
+         x1: 125,
+         y1: 100,
+         x2: 124,
+         y2: 400,
+         x3: 300,
+         y3: 600
+      });
+
+      var rect = new aya.Component("rectangle",{
          x: 550,
          y: 250,
          width: 100,
@@ -32,9 +41,26 @@
          {
             type: "circle",
             ratio: {x: 1/2, y: 1/2, r: 1/2},
-            zoom: true
+            zoom: false
+         },
+         // {
+         //    type: "rectangle",
+         //    ratio: {x: 1/2, y: 1/2, width: 1/4, height: 1/4}
+         // },
+         {
+            type: "triangle",
+            ratio: {p1:{x: 3/5, y: 1/6}, p2:{x: 1 /7, y: 4/7}, p3:{x: 3/4, y: 1/4}},
+            zoom: false
          }
       ]);
+
+      rect.form.children.map( (child) => {
+         if(child.type == "triangle"){
+            console.log(aya._Register.find(child.uuid));
+            child.events.add(child.c_svg, "mousedown", aya.events.mouseDownCb);
+            child.events.create();
+         }
+      })
 
       document.body.append(svg);
    </script>

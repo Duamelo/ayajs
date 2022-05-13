@@ -1,25 +1,47 @@
 import { _uuid } from "./uuid";
 import {events} from "../events";
 import { _Register } from "../register";
+import { EventManager } from "../eventManager";
+
 /**
  * @class Line class
  */
 
 class Line 
 {
-    constructor(uuid, x=0, y=0, events, dest_x = x, dest_y = y){
+    /**
+     * 
+     * @param {string} uuid 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} dest_x 
+     * @param {number} dest_y 
+     * @param {array of object} children 
+     * @param {object} ratio 
+     */
+
+    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y, children = [], ratio = {}){
         
         this.uuid = uuid;
+
         this.x = x;
         this.y = y;
+        
         this.dest_x = dest_x;
         this.dest_y = dest_y;
-        this.events = events;
+        
+        this.events = new EventManager();
+
         this.c_svg = "";
         this.p = "";
+
         this.type = "line";
+
+        this.ratio = ratio;
+        this.children = [];
+
+        this.createChildren(children);
         _Register.add(this);
-        
     }
 
     draw(svgs){
@@ -28,17 +50,17 @@ class Line
         this.c_svg = document.createElementNS(ns,'path');
 
         this.p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
-        
+
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", this.p);
         this.c_svg.setAttribute("stroke", "black");
         this.c_svg.setAttributeNS(null, "stroke-width", "4px");
 
-        
         svgs.appendChild(this.c_svg);
 
-        this.c_svg.addEventListener("mousedown", events.mouseDownCb);
+        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
+        this.events.create();
     }
 
     shift(dx,dy){
@@ -51,7 +73,7 @@ class Line
         this.c_svg.setAttribute("d", this.p);
     }
 
-    resize(pos, dx, dy, zoom = false){
+    resize(pos, dx, dy, param = {}){
 
         var p = _Register.find(this.parent);
 
@@ -169,8 +191,14 @@ class Line
 
         }
     }
+
+
+    createChildren(children){
+        children.map((chd) => {
+
+        });
+    }
 }
- 
 export {Line};
  
 

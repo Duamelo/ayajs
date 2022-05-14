@@ -1,0 +1,8 @@
+- actualiser les liens d'un composant lors du resizing
+- finaliser le composant line ( delimiter les bord, faire un resize, ...
+- faire le resize du triangle
+- faire le resize du cercle
+- créer la forme losange, faire le resize du losange
+- créer des composants comme pour faire des diagrames de classe
+- definir les points d'inflexion lors du déplacement des composants liés
+- définir le plus court chemin pour lier deux composants dont les points de connexions sont situés à l’extrême.

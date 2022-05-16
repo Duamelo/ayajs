@@ -46,7 +46,6 @@ class Rectangle {
     this.vertex = Connector.create("rectangle", this.uuid);
 
     this.createChildren(children);
-    _Register.add(this);
   }
 
   draw(svgs) {
@@ -140,6 +139,9 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "height", this.height);
     this.c_svg.setAttributeNS(null, "width", this.width);
 
+    this.drawVertex();
+    this.drawConnector();
+
     this.c_points.map((p) => {
       p.redraw();
     });
@@ -155,14 +157,11 @@ class Rectangle {
 
   resize(pos, dx, dy, param = {} ) {
 
-   
     if(Object.keys(param).length > 0 && !this.zoom && Object.keys(this.ratio).length > 0){
         this.x = param.x + (this.ratio.x * param.width);
         this.y = param.y + (this.ratio.y * param.height);
         this.width = this.ratio.width * param.width;
         this.height = this.ratio.height * param.height;
-        this.drawConnector();
-        this.drawVertex();
     }
     else{
       if (pos == 0) {
@@ -175,8 +174,6 @@ class Rectangle {
         this.children.map ( (child) => {
             child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
         });
-        this.drawVertex();
-        this.drawConnector();
       } 
       else if (pos == 1) {
   
@@ -188,9 +185,6 @@ class Rectangle {
         this.children.map ( (child) => {
           child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
         });
-  
-        this.drawVertex();
-        this.drawConnector();
       } 
       else if (pos == 2) {
   
@@ -200,9 +194,6 @@ class Rectangle {
         this.children.map ( (child) => {
           child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
         });
-  
-        this.drawVertex();
-        this.drawConnector();
       } 
       else if (pos == 3) {
   
@@ -214,9 +205,6 @@ class Rectangle {
         this.children.map ( (child) => {
           child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
         });
-  
-        this.drawVertex();
-        this.drawConnector();
       }
     }
   }

@@ -33,7 +33,8 @@ class FactoryForm
             return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y, children, ratio, zoom);
         else if(type == "triangle")
             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, children, ratio, zoom);
-
+        else if(type == "losange")
+            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2, children, ratio, zoom);
     }
 }
 export {FactoryForm};

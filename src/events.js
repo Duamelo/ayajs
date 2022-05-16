@@ -25,6 +25,8 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
+      console.log(cp);
+      
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -146,6 +148,30 @@ function nativeEvents() {
 
           dx = e.offsetX;
           dy = e.offsetY;
+
+          lk = _Register.getAllLinksByComponent(source);
+          var source_c = source;
+
+          lk.map(({ source, line }) => {
+            if (source_c == source) {
+              source_c.form.c_points.map((pnt) => {
+                if (pnt.x == line.x && pnt.y == line.y) {
+                  line.x += deltaX;
+                  line.y += deltaY;
+                  line.redraw();
+                }
+              });
+            } 
+            else {
+              source_c.form.c_points.map((pnt) => {
+                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
+                  line.dest_x += deltaX;
+                  line.dest_y += deltaY;
+                  line.redraw();
+                }
+              });
+            }
+          });
 
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();

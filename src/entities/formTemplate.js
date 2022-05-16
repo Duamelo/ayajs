@@ -54,8 +54,70 @@ class TemplateForm{
         _Register.add(this);
     }
 
+    determine_the_right_point(line){
 
+        var _x, _y;
+        var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+        var b = line.y - a * line.x;
+        
+
+        for (var i = 0; i <= 3; i++){
+            if(i % 2 == 0){
+                _y = this.vertex[i].y;
+                _x = (y - b)/a;
+            }
+            else{
+                _x = this.vertex[i].x;
+                _y = a * x + b;
+            }
+            if( (_x == this.line.x && _y == line.y) || (_x == this.line.dest_x && _y == line.dest_y))
+                continue;
+            if((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) ||
+               (i == 1 &&  _x > this.vertex[i].y && _x < this.vertex[i+1].y) || 
+               (i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) ||
+               (i == 3 &&  _x > this.vertex[0].y && _x < this.vertex[i].y)) 
+                
+               return this.c_points[i];
+    }
+
+
+}
+
+
+
+
+
+
+ 
   
+    determine_the_equation_of_a_straight_line(pt1, pt2){
+        var _cf, _slope;
+
+        _slope = this.slope_of_a_straight_line(pt1, pt2);
+        _cf = this.determine_the_coefficient(pt1, pt2, slope);
+
+        return {coefficient: _cf, slope: _slope}
+    }
+
+    /* return the interction point of two line*/
+    solve_the_equation_system(cf1, slope1, cf2, slope2){
+        var _x = (cf1 - cf2) / (slope2 - slope1);
+        var _y = slope2 * _x + cf2;
+        return {x: _x, y: _y};
+    }
+
+    /* pente de la droite */
+    slope_of_a_straight_line(pt1, pt2){
+        return (pt2.y - pt1.y) / (pt2.x - pt1.x); 
+    }
+
+
+    determine_the_coefficient(pt1, pt2, slope){
+        return pt2.y - slope * pt1.x;
+    }
+
+
+
     drawVertex(){
        /* initialiser les coordonnées de chaque sommet*/
     //    this.c_points[0].x = this.x;
@@ -150,7 +212,6 @@ class TemplateForm{
             this.c_points.map( (point) => {
             point.redraw();
         });
-
     }
 
     resize(pos, dx, dy, param = {}){
@@ -158,7 +219,8 @@ class TemplateForm{
             if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
                 this.x = param.x + this.ratio.x * param.width;
                 this.y = param.y + this.ratio.y * param.height;
-            }else{
+            }
+            else{
                 this.x = param.x + this.ratio.x * param.width;
                 this.y = param.y + this.ratio.y * param.height;
                 (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
@@ -185,3 +247,34 @@ class TemplateForm{
     }
 
 }
+
+
+
+/**
+ *         equation_line = this.determine_the_equation_of_a_straight_line({x: this.line.x, y: this.line.y}, {x: this.line.dest_x, y: this.line.dest_y});
+
+        for (var i = 0; i <=3; i++){
+
+            if( i == 3){
+                equation_of_a_side = this.determine_the_equation_of_a_straight_line(this.vertex[i], this.vertex[0]);
+                
+                var solution = this.solve_the_equation_system(equation_line.coefficient, equation_line.slope, equation_of_a_side.coefficient, equation_of_a_side.slope);
+                
+                if(i % 2 == 0){
+                    if(solution.x > this.vertex[i].x && solution.x < this.vertex[i+1])
+                        result.push(solution);
+                }
+                else{
+                    if( (solution.y > this.vertex[i].y && solution.y < this.vertex[i+1]) && (solution.x != ))
+
+                }
+            }
+            equation_line = this.determine_the_equation_of_a_straight_line({x: this.line.x, y: this.line.y}, {x: this.line.dest_x, y: this.line.dest_y});
+            equation_of_a_side = this.determine_the_equation_of_a_straight_line(this.vertex[i], this.vertex[i+1]);
+            
+            var solution = this.solve_the_equation_system(equation_line.coefficient, equation_line.slope, equation_of_a_side.coefficient, equation_of_a_side.slope);
+            
+            result.push(solution);
+
+
+ */

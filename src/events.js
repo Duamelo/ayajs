@@ -84,39 +84,8 @@ function nativeEvents() {
             }
           });
 
-
-          cp.form.children.map( (child) => {
-            if(child.type == "line"){
-              child.shift(deltaX, deltaY);
-              child.dest_x += deltaX;
-              child.dest_y += deltaY;
-              child.redraw();
-            }
-            else{
-              child.shift(deltaX, deltaY);
-              child.redraw();
-            }
-          });
-          
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
-        }
-
-        // il s'agit d'une form pas d'une instance de la classe Component ou de Point
-        if(cp.form  == undefined && cp.ref == undefined){
-
-          if(cp.type == "line"){
-            cp.shift(deltaX, deltaY);
-
-            cp.dest_x += deltaX;
-            cp.dest_y += deltaY;
-
-            cp.redraw();
-          }
-          else {
-            cp.shift(deltaX, deltaY);
-            cp.redraw();
-          }
         }
       } 
       else if (state == "drawing_link") {
@@ -175,7 +144,7 @@ function nativeEvents() {
 
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
-        } 
+        }
       }
     },
     mouseUpCb: function mouseupcb(e) {

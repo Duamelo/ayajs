@@ -10,7 +10,7 @@ import { Point } from "./point.js";
 
 class Triangle {
 
-  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
+  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
   {
 
     this.uuid = uuid;
@@ -30,11 +30,20 @@ class Triangle {
     this.p = "";
 
     this.type = "triangle";
-    this.ratio = ratio;
-    this.zoom = zoom;
     this.box = "";  
 
     this.children = [];
+
+    this.offsetX = 0;
+    this.offsetY = 0;
+
+    this.scaleX = 0;
+    this.scaleY = 0;
+
+    this.angle = 0;
+    this.centerX = 0;
+    this.centerY = 0;
+
 
     this.p1 = {x: 0, y: 0};
     this.p2 = {x: 0, y: 0};
@@ -62,9 +71,51 @@ class Triangle {
 
     // console.log(this.vertex);
     // console.log(this.c_points);
-
-    this.createChildren(children);
   }
+
+
+  setOffsetX(x){
+    this.offsetX = x;
+  }
+
+  setOffsetY(y){
+    this.offsetY = y;
+  }
+
+  setScaleX(x){
+    this.scaleX = x;
+  }
+
+  setScaleY(y){
+    this.scaleY = y;
+  }
+
+  getOffsetX(){
+    return this.offsetX;
+  }
+
+  getOffsetY(){
+    return this.offsetY;
+  }
+
+  getScaleX(){
+    return this.scaleX;
+  }
+
+  getScaleY(){
+    return this.scaleY;
+  }
+
+
+  setRotateCenter(centerX, centerY){
+    this.centerX = centerX;
+    this.centerY = centerY;
+  }
+
+  setRotateAngle(angle){
+    this.angle = angle;
+  }
+
 
   base(){
     var base;
@@ -156,8 +207,44 @@ class Triangle {
     this.c_svg = document.createElementNS(ns, "path");
     // this.box = document.createElementNS(ns, "path");
 
+    var p;
 
-    var p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
+    console.log("x1 x2 x3")
+    console.log(this.x1 + " " + this.x2 + " "+ this.x3 );
+
+    if(this.angle > 0){
+      var x1, x2, x3, y1, y2, y3;
+
+      var rayon =Math.floor( Math.sqrt( (Math.pow( (this.x1 - this.centerX ), 2)) + (Math.pow( (this.y1 - this.centerY ), 2))));
+      var teta = (this.angle * Math.PI) / 180;
+
+      console.log("x1 x2 x3 prime");
+
+      
+      x1 = this.centerX + rayon * Math.cos(teta);
+      y1 = this.centerY + rayon * Math.sin(teta);
+
+      rayon = Math.floor(Math.sqrt( (Math.pow( (this.x2 - this.centerX ), 2)) + (Math.pow( (this.y2 - this.centerY ), 2))));
+
+      var teta = ((this.angle  + 90)* Math.PI) / 180;
+
+      x2 = this.centerX + rayon * Math.cos(teta);
+      y2 = this.centerY + rayon * Math.sin(teta);
+
+      rayon = Math.floor(Math.sqrt( (Math.pow( (this.x3 - this.centerX ), 2)) + (Math.pow( (this.y3 - this.centerY ), 2))));
+
+      var teta = ((this.angle + 270) * Math.PI) / 180;
+
+      x3 = this.centerX + rayon * Math.cos(teta);
+      y3 = this.centerY + rayon * Math.sin(teta);
+
+      console.log(rayon + " " + x1 + " " + x2 + " "+ x3 );
+
+
+      p = "M " + x1 + "," + y1 + " " + "L " + x2 + "," + y2 + " " + "L " + x3 + "," + y3 + " Z";
+    }
+    else
+      p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
 
 
     this.c_svg.setAttribute("id", this.uuid);
@@ -270,13 +357,6 @@ class Triangle {
       }
  
     }
-  }
-
-
-  createChildren(children){
-    children.map( (chd) => {
-
-    });
   }
 }
 export { Triangle };

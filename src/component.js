@@ -10,11 +10,11 @@ class Component
      * @param {array} events 
      * @param {object} params 
      */
-    constructor( type, props, children = [])
+    constructor( type, props)
     {
         this.uuid = _uuid.generate();
         this.type = type;
-        this.form = FactoryForm.createForm(this.uuid, type, props, children);
+        this.form = FactoryForm.createForm(this.uuid, type, props);
         _Register.add(this);
         this.form.draw(svg);
     }

@@ -23,18 +23,18 @@ class FactoryForm
      * @returns @form
      */
 
-   static createForm(uuid, type, props = {}, children = [], ratio = {}, zoom = false)
+   static createForm(uuid, type, props = {})
     {
         if(type == "circle")
-            return new Circle(uuid, props.x, props.y, props.r, children, ratio, zoom);
+            return new Circle(uuid, props.x, props.y, props.r);
         else if(type == "rectangle")
-            return new Rectangle(uuid, props.x, props.y, props.width, props.height, children, ratio, zoom);
+            return new Rectangle(uuid, props.x, props.y, props.width, props.height);
         else if(type == "line")
-            return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y, children, ratio, zoom);
+            return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y);
         else if(type == "triangle")
-            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, children, ratio, zoom);
+            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3);
         else if(type == "losange")
-            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2, children, ratio, zoom);
+            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2);
     }
 }
 export {FactoryForm};

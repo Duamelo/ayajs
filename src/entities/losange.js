@@ -23,7 +23,7 @@ class Losange {
      * @param {array of object} events
      */
 
-    constructor(uuid, x1 = 0, y1 = 0, x2 = 0, y2 = 0, children = [], ratio = {}, zoom = false )
+    constructor(uuid, x1 = 0, y1 = 0, x2 = 0, y2 = 0)
     {
         this.uuid = uuid;
 
@@ -46,8 +46,6 @@ class Losange {
         this.box = "";
         this.type = "losange";
 
-        this.zoom = zoom;
-        this.ratio = ratio;
 
         this.children = [];
 
@@ -67,7 +65,6 @@ class Losange {
           new Point(this.uuid, 0, 0),
         ];
 
-        this.createChildren(children);
     }
 
   draw(svgs) {

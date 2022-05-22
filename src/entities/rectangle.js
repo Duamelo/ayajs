@@ -41,8 +41,8 @@ class Rectangle {
     this.offsetX = 0;
     this.offsetY = 0;
 
-    this.scaleX = 0;
-    this.scaleY = 0;
+    this.scaleX = 1;
+    this.scaleY = 1;
 
     this.angle = 0;
     this.centerX = 0;
@@ -66,10 +66,10 @@ class Rectangle {
 
 
   addChild(child, scale, rotate){
-    scale(this, child);
-    rotate(this, child);
     child.setOffsetX(this.x);
     child.setOffsetY(this.y);
+    scale(this, child);
+    rotate(this, child);
     child.draw(svg);
     this.children.push({child, scale, rotate});
   }
@@ -78,11 +78,11 @@ class Rectangle {
     const svgns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(svgns, "rect");
 
-    this.c_svg.setAttributeNS(null, "x", this.x + this.scaleX + this.offsetX);
-    this.c_svg.setAttributeNS(null, "y", this.y + this.scaleY + this.offsetY);
+    this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
+    this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
     this.c_svg.setAttributeNS(null, "id", this.uuid);
-    this.c_svg.setAttributeNS(null, "height", this.height);
-    this.c_svg.setAttributeNS(null, "width", this.width);
+    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
+    this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
     this.c_svg.setAttributeNS(null, "stroke", "black");
     this.c_svg.setAttributeNS(null, "stroke-width", "3px");
     this.c_svg.setAttributeNS(null, "fill", "cornsilk");
@@ -164,35 +164,33 @@ class Rectangle {
     return this.height;
   }
 
-
   drawVertex(){
-    this.vertex[0].x = this.x + this.offsetX + this.scaleX;
-    this.vertex[0].y = this.y + this.offsetY + this.scaleY;
+    this.vertex[0].x = this.x + this.offsetX;
+    this.vertex[0].y = this.y + this.offsetY;
 
-    this.vertex[1].x = this.x + this.offsetX + this.scaleX + this.width;
-    this.vertex[1].y = this.y + this.offsetY + this.scaleY;
+    this.vertex[1].x = this.x + this.offsetX + this.width * this.scaleX;
+    this.vertex[1].y = this.y + this.offsetY ;
 
-    this.vertex[2].x = this.x + this.offsetX + this.scaleX + this.width;
-    this.vertex[2].y = this.y + this.offsetY + this.scaleY + this.height;
+    this.vertex[2].x = this.x + this.offsetX + this.width  * this.scaleX;
+    this.vertex[2].y = this.y + this.offsetY + this.height * this.scaleY;
 
-    this.vertex[3].x = this.x + this.offsetX + this.scaleX ;
-    this.vertex[3].y = this.y + this.offsetY + this.scaleY + this.height;
+    this.vertex[3].x = this.x + this.offsetX;
+    this.vertex[3].y = this.y + this.offsetY + this.height * this.scaleY;
   }
 
   drawConnector() {
-    this.c_points[0].x = this.x +  this.offsetX + this.scaleX + this.width / 2;
-    this.c_points[0].y = this.y + this.offsetY + this.scaleY;
+    this.c_points[0].x = this.x +  this.offsetX  + (this.width / 2) * this.scaleX;
+    this.c_points[0].y = this.y + this.offsetY ;
 
-    this.c_points[1].x = this.x +  this.offsetX + this.scaleX + this.width;
-    this.c_points[1].y = this.y + this.offsetY + this.scaleY + this.height / 2;
+    this.c_points[1].x = this.x +  this.offsetX + this.width * this.scaleX;
+    this.c_points[1].y = this.y + this.offsetY  + (this.height / 2) * this.scaleY;
 
-    this.c_points[2].x = this.x + this.offsetX + this.scaleX + this.width / 2;
-    this.c_points[2].y = this.y + this.offsetY + this.scaleY + this.height;
+    this.c_points[2].x = this.x + this.offsetX  + (this.width / 2) * this.scaleX;
+    this.c_points[2].y = this.y + this.offsetY  + (this.height) * this.scaleY;
 
-    this.c_points[3].x = this.x + this.offsetX + this.scaleX;
-    this.c_points[3].y = this.y + this.offsetY + this.scaleY + this.height / 2;
+    this.c_points[3].x = this.x + this.offsetX ;
+    this.c_points[3].y = this.y + this.offsetY + (this.height / 2) * this.scaleY;
   }
-
 
   shift(dx, dy) {
     this.x += dx;
@@ -207,13 +205,11 @@ class Rectangle {
     });
   }
 
-
   redraw() {
-    // console.log(this);
-    this.c_svg.setAttributeNS(null, "x", this.x + this.scaleX + this.offsetX);
-    this.c_svg.setAttributeNS(null, "y", this.y + this.scaleY + this.offsetY);
-    this.c_svg.setAttributeNS(null, "height", this.height);
-    this.c_svg.setAttributeNS(null, "width", this.width);
+    this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
+    this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
+    this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
 
     this.drawVertex();
     this.drawConnector();
@@ -272,8 +268,5 @@ class Rectangle {
         child.redraw();
       })
   }
-
-
-
 }
 export { Rectangle };

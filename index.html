@@ -32,25 +32,25 @@
 
       var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
-      var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 100, 0,);
+      var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
 
       
       rect.form.addChild(rect2, (p, c)=> {
-         c.setOffsetX(p.x);
-         c.setOffsetY(p.y);
-         c.setScaleX(p.getWidth() / 2 - 10);
-         c.setScaleY(p.getHeight() - 20);
+         console.log(c);
+         c.setOffsetX(p.x + 200);
+         c.setOffsetY(p.y + 100);
+         c.setScaleX(4);
+         c.setScaleY(3);
       }, (p, c) => {
 
       });
 
       rect.form.addChild(tri, (p, c)=> {
+         c.setOffsetX(p.x + 300);
+         c.setOffsetY(p.y);
       }, (p, c) => {
-         c.setRotateCenter(100, 150);
-         c.setRotateAngle(15);
+         c.setRotateAngle(-10);
       });
-
-
       document.body.append(svg);
    </script>
 

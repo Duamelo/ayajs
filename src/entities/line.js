@@ -21,7 +21,7 @@ class Line
      * @param {object} ratio 
      */
 
-    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y, children = [], ratio = {}){
+    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
         this.uuid = uuid;
 
@@ -36,10 +36,7 @@ class Line
         this.c_svg = "";
         this.type = "line";
 
-        this.ratio = ratio;
         this.children = [];
-
-        this.createChildren(children);
     }
 
     draw(svgs){

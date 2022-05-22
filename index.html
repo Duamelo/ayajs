@@ -23,12 +23,12 @@
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
     
-      var rect = new aya.Component("rectangle", {
-         x: 100,
-         y: 100, 
-         width: 300,
-         height: 200
-      });
+      // var rect = new aya.Component("rectangle", {
+      //    x: 100,
+      //    y: 100, 
+      //    width: 300,
+      //    height: 200
+      // });
 
       // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
@@ -52,32 +52,51 @@
       //    c.setRotateAngle(-10);
       // });
 
-      // var line = new aya.Component("line",{
-      //    x: 10,
-      //    y: 10,
-      //    dest_x: 390,
-      //    dest_y:290
+      // var losange = new aya.Component("losange", {
+      //    x: 500,
+      //    y: 150,
+      //    width: 200,
+      //    height:300
       // });
 
-      var losange = new aya.Component("losange", {
-         x1: 500,
-         y1: 150,
-         x2: 600,
-         y2: 250
+      // var los = new aya.Losange(aya._uuid.generate(), 50, 0,  100, 50);
+
+      // losange.form.addChild(los, (p,c)=>{
+      //    c.setOffsetX(p.x);
+      //    c.setOffsetY(p.y);
+      //    c.setScaleX(2);
+      //    c.setScaleY(2);
+      // }, (p, c) => {
+
+      // })
+
+      // var circle = new aya.Component("circle", { x: 100, y: 100, r: 50});
+
+      // var cir = new aya.Circle(aya._uuid.generate(), 0, 0, 25);
+
+      // circle.form.addChild(cir, (p, c)=> {
+      //    c.setOffsetX(p.x);
+      //    c.setOffsetY(p.y);
+      //    c.setScale(4);
+      // }, (p, c) => {
+
+      // })
+
+      var line = new aya.Component("line",{
+         x: 200,
+         y: 200,
+         dest_x: 390,
+         dest_y:290
       });
 
-      var los = new aya.Losange(aya._uuid.generate(), 50, 0,  100, 50);
+      var l = new aya.Line(aya._uuid.generate(), 0, 0, 50, 100);
 
-      losange.form.addChild(los, (p,c)=>{
-         c.setOffsetX(p.x1);
-         c.setOffsetY(p.y1);
-         // c.setScaleX(1/2);
-         // c.setScaleY(1/2);
-         console.log(c);
-      }, (p, c) => {
+      line.form.addChild(l, (p, c) => {
+         c.setOffsetX(p.x);
+         c.setOffsetY(p.y);
+      }, (p, c)=> {
 
       })
-
       document.body.append(svg);
    </script>
 

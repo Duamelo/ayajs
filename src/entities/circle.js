@@ -20,7 +20,7 @@ class Circle
      * @param {boolean} zoom 
      */
 
-    constructor(uuid, x = 0, y = 0, r = 5, children = [], ratio = {}, zoom){
+    constructor(uuid, x = 0, y = 0, r = 5){
 
         this.uuid = uuid;
 
@@ -30,14 +30,18 @@ class Circle
 
         this.events = new EventManager();
 
-        this.children = [];
-
         this.box = ""
         this.c_svg = "";
         this.type = "circle";
 
-        this.ratio = ratio;
-        this.zoom = zoom;
+        this.scale = 1;
+
+        this.offsetX = 0;
+        this.offsetY = 0;
+    
+        this.angle = 0;
+  
+        this.children = [];
       
         this.c_points = [
             new Point(this.uuid,0, 0 ),
@@ -51,47 +55,46 @@ class Circle
             new Point(this.uuid,0, 0 ),
             new Point(this.uuid,0, 0 )
         ];
-
-        this.createChildren(children);
-       
-        _Register.add(this);
     }
 
-
+    addChild(child, scale, rotate){
+        child.setOffsetX(this.x);
+        child.setOffsetY(this.y);
+        scale(this, child);
+        rotate(this, child);
+        child.draw(svg);
+        this.children.push({child, scale, rotate});
+    }
   
     drawVertex(){
-        this.vertex[0].x = this.x - this.r;
-        this.vertex[0].y = this.y - this.r;
+        this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
+        this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
     
-        this.vertex[1].x = this.x + this.r;
-        this.vertex[1].y = this.y - this.r;
+        this.vertex[1].x = this.x + this.offsetX + this.r * this.scale;
+        this.vertex[1].y = this.y + this.offsetY - this.r * this.scale;
 
-        this.vertex[2].x = this.x + this.r;
-        this.vertex[2].y = this.y + this.r;
+        this.vertex[2].x = this.x + this.offsetX + this.r * this.scale;
+        this.vertex[2].y = this.y + this.offsetY + this.r * this.scale;
     
-        this.vertex[3].x = this.x - this.r;
-        this.vertex[3].y = this.y + this.r;
-
-        
+        this.vertex[3].x = this.x + this.offsetX - this.r * this.scale;
+        this.vertex[3].y = this.y + this.offsetY + this.r * this.scale;
     }
     
     drawConnector() {
-        this.c_points[0].x = this.x;
-        this.c_points[0].y = this.y - this.r;
+        this.c_points[0].x = this.x + this.offsetX;
+        this.c_points[0].y = this.y + this.offsetY - this.r * this.scale;
 
-        this.c_points[1].x = this.x + this.r;
-        this.c_points[1].y = this.y;
+        this.c_points[1].x = this.x + this.offsetX + this.r * this.scale;
+        this.c_points[1].y = this.y + this.offsetY;
 
+        this.c_points[2].x = this.x + this.offsetX;
+        this.c_points[2].y = this.y + this.offsetY + this.r * this.scale;
 
-        this.c_points[2].x = this.x;
-        this.c_points[2].y = this.y + this.r;
-
-        this.c_points[3].x = this.x - this.r;
-        this.c_points[3].y = this.y;
+        this.c_points[3].x = this.x + this.offsetX - this.r * this.scale;
+        this.c_points[3].y = this.y + this.offsetY;
     }
 
     drawBox(){
-
         var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
                   L ${this.c_points[0].x} ${this.c_points[0].y} 
                   L ${this.vertex[1].x}   ${this.vertex[1].y} 
@@ -102,7 +105,7 @@ class Circle
                   L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
     
         this.box.setAttribute("d", p);
-      }
+    }
     
     /**
      * 
@@ -117,15 +120,14 @@ class Circle
 
         this.c_svg.setAttribute("id", this.uuid);
 
-        this.c_svg.setAttribute("cx", this.x);
+        this.c_svg.setAttribute("cx", this.x + this.offsetX);
 
-        this.c_svg.setAttribute("cy",this.y);
+        this.c_svg.setAttribute("cy",this.y + this.offsetY);
 
-        this.c_svg.setAttribute("r", this.r);
+        this.c_svg.setAttribute("r", this.r * this.scale);
         
-        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
 
-        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
+        this.c_svg.setAttribute("fill", "white");
 
         this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
 
@@ -134,7 +136,6 @@ class Circle
     
       
         /** draw box */
-        this.drawBox();
         this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
         this.box.setAttributeNS(null, "stroke-width", "1px");
         this.box.setAttributeNS(null, "fill", "none");
@@ -146,15 +147,21 @@ class Circle
 
         this.drawVertex();
         this.drawConnector();
+        this.drawBox();
 
         this.c_points.map((point) => {
             point.draw(svgs);
-          });
-      
-          this.vertex.map((point) => {
+        });
+
+        this.vertex.map((point) => {
             point.draw(svgs);
-          });
-      
+        });
+
+        this.children.map( ({child, scale, rotate}) => {
+            scale(this, child);
+            rotate(this, child);
+            child.redraw();
+        });
 
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
@@ -167,56 +174,107 @@ class Circle
     }
 
     redraw(){
-        this.c_svg.setAttribute("cx", this.x);
-        this.c_svg.setAttribute("cy",this.y);
-        this.c_svg.setAttribute("r", this.r);
+        this.c_svg.setAttribute("cx", this.x + this.offsetX);
+        this.c_svg.setAttribute("cy",this.y + this.offsetY);
+        this.c_svg.setAttribute("r", this.r * this.scale);
 
         this.drawConnector();
         this.drawVertex();
         this.drawBox();
 
-
         this.vertex.map((vert) => {
             vert.redraw();
-            });
+        });
 
-            this.c_points.map( (point) => {
+        this.c_points.map( (point) => {
             point.redraw();
         });
 
-    }
-
-    resize(pos, dx, dy, param = {}){
-        if(Object.keys(param).length > 0){
-            if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
-                this.x = param.x + this.ratio.x * param.width;
-                this.y = param.y + this.ratio.y * param.height;
-            }
-            else{
-                this.x = param.x + this.ratio.x * param.width;
-                this.y = param.y + this.ratio.y * param.height;
-                (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
-            }
-        }
-        else{
-            if(pos == 0)
-                this.r += -dx;
-            else if(pos == 1)
-                this.r += dx;
-            else if(pos == 2)
-                this.r += dx;
-            else
-                this.r -= dx;
-        }
-
-        
-    }
-
-    createChildren(children){
-        children.map( (chd) => {
-
+        this.children.map( ({child, scale, rotate}) => {
+            scale(this, child);
+            rotate(this, child);
+            child.redraw();
         });
     }
 
+    resize(pos, dx, dy){
+        if(pos == 0)
+            this.r += -dx;
+        else if(pos == 1)
+            this.r += dx;
+        else if(pos == 2)
+            this.r += dx;
+        else
+            this.r -= dx;
+
+        this.children.map( ({child, scale, rotate}) => {
+            scale(this, child);
+            rotate(this, child);
+            child.redraw();
+        });
+    }
+
+    setRotateAngle(angle){
+        this.angle = angle;
+    }
+    
+    setOffsetX(x){
+       this.offsetX = x;
+    }
+
+    setOffsetY(y){
+        this.offsetY = y;
+    }
+
+    setScale(sc){
+        this.scale = sc;
+    }
+    getOffsetX(){
+        return this.offsetX;
+    }
+
+    getOffsetY(){
+        return this.offsetY;
+    }
+
+    getScale(){
+        return this.scale;
+    }
+
+    optimalPath(line){
+        var _x, _y;
+        var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+        var b = line.y - a * line.x;
+    
+        for (var i = 0; i <= 3; i++){
+            if(i % 2 == 0){
+                _y = this.vertex[i].y;
+                _x = (_y - b)/a;
+            }
+            else{
+                _x = this.vertex[i].x;
+                _y = a * _x + b;
+            }
+    
+            if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+              continue;
+    
+              if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+               ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+               ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+               ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+                return this.c_points[i];
+               }
+          }
+        return null;
+      }
 }
 export {Circle};

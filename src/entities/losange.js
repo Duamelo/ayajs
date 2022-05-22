@@ -10,80 +10,65 @@ import { _uuid } from "./uuid.js";
 
 class Losange {
 
-    /**
-     * @param {string} uuid
-     * @param {abscissa starting point} x1
-     * @param {ordonne starting point} y1
-     * @param {LineTo this abscisse point}x2
-     * @param {LineTo this ordonne point} y2
-     * @param {LineTo this abscisse point}x3
-     * @param {LineTo this ordonne point} y3
-     * @param {LineTo this ordonne point} x4
-     * @param {LineTo this ordonne point} y4
-     * @param {array of object} events
-     */
+/**
+ * 
+ * @param {string} uuid 
+ * @param {number} x 
+ * @param {number} y 
+ * @param {number} width 
+ * @param {number} height 
+ */
 
-    constructor(uuid, x1 = 0, y1 = 0, x2 = 0, y2 = 0)
-    {
-        this.uuid = uuid;
+  constructor(uuid, x = 0, y = 0, width = 10, height = 30)
+  {
+      this.uuid = uuid;
 
-        this.x1 = x1;
-        this.y1 = y1;
+      this.x = x;
+      this.y = y;
 
-        this.x2 = x2;
-        this.y2 = y2;
+      this.width = width;
+      this.height =  height;
 
-        this.scaleX = 1;
-        this.scaleY = 1;
+      this.events = new EventManager();
 
-        this.offsetX = 0;
-        this.offsetY = 0;
-    
-        this.angle = 0;
-        this.centerX = 0;
-        this.centerY = 0;
+      this.c_svg = "";
+      this.box = "";
+      this.type = "losange";
 
-        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-        this.height =  (this.y2 - this.y1) *2 * this.scaleY;
+      this.scaleX = 1;
+      this.scaleY = 1;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + this.height;
+      this.offsetX = 0;
+      this.offsetY = 0;
+  
+      this.angle = 0;
 
-        this.x4 = this.x1 - this.width / 2;
-        this.y4 = this.y2;
+      this.children = [];
 
-        this.c_svg = "";
-        this.box = "";
-        this.type = "losange";
+      this.c_points = [
+        new Point(this.uuid,0,0),
+        new Point(this.uuid,0,0),
+        new Point(this.uuid,0,0),
+        new Point(this.uuid,0,0),
+      ];
 
-        this.children = [];
-
-        this.events = new EventManager();
-
-        this.c_points = [
-          new Point(this.uuid,0,0),
-          new Point(this.uuid,0,0),
-          new Point(this.uuid,0,0),
-          new Point(this.uuid,0,0),
-        ];
-
-        this.vertex = [
-          new Point(this.uuid, 0, 0),
-          new Point(this.uuid, 0, 0),
-          new Point(this.uuid, 0, 0),
-          new Point(this.uuid, 0, 0),
-        ];
-    }
+      this.vertex = [
+        new Point(this.uuid, 0, 0),
+        new Point(this.uuid, 0, 0),
+        new Point(this.uuid, 0, 0),
+        new Point(this.uuid, 0, 0),
+      ];
+  }
 
 
-    addChild(child, scale, rotate){
-      child.setOffsetX(this.x1);
-      child.setOffsetY(this.y1);
-      scale(this, child);
-      rotate(this, child);
-      child.draw(svg);
-      this.children.push({child, scale, rotate});
-    }
+  addChild(child, scale, rotate){
+    child.setOffsetX(this.x);
+    child.setOffsetY(this.y);
+    scale(this, child);
+    rotate(this, child);
+    child.draw(svg);
+    this.children.push({child, scale, rotate});
+  }
 
     
 
@@ -93,7 +78,7 @@ class Losange {
     this.c_svg = document.createElementNS(ns, "path");
     this.box = document.createElementNS(ns, "path");
 
-    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
+    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
 
     this.box.setAttribute("id", this.uuid);
     this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -137,99 +122,74 @@ class Losange {
   }
 
   drawVertex(){
-    this.vertex[0].x = (this.x1 + this.offsetX) - ( (this.width) / 2) * this.scaleX ;
-    this.vertex[0].y = (this.y1 + this.offsetY);
+    this.vertex[0].x = this.x + this.offsetX - (this.width / 2 * this.scaleX) ;
+    this.vertex[0].y = this.y + this.offsetY;
 
-    this.vertex[1].x = (this.x1 + this.offsetX) +  ( (this.width) / 2) * this.scaleX;
-    this.vertex[1].y = (this.y1 + this.offsetY);
+    this.vertex[1].x = this.x + this.offsetX +  (this.width / 2 * this.scaleX);
+    this.vertex[1].y = this.y + this.offsetY;
 
-    this.vertex[2].x = (this.x2 + this.offsetX);
-    this.vertex[2].y = (this.y3 + this.offsetY);
+    this.vertex[2].x = this.x + this.offsetX + (this.width/2 * this.scaleX);
+    this.vertex[2].y = this.y + this.offsetY + this.height * this.scaleY;
 
-    this.vertex[3].x = (this.x4 + this.offsetX);
-    this.vertex[3].y = (this.y3 + this.offsetY);
+    this.vertex[3].x = this.x + this.offsetX - (this.width/2  * this.scaleX);
+    this.vertex[3].y = this.y + this.offsetY + (this.height * this.scaleY);
   }
 
   drawConnector() {
-    this.c_points[0].x = (this.x1 + this.offsetX);
-    this.c_points[0].y = (this.y1 + this.offsetY);
+    this.c_points[0].x = this.x + this.offsetX;
+    this.c_points[0].y = this.y + this.offsetY;
 
-    this.c_points[1].x = (this.x2 + this.offsetX);
-    this.c_points[1].y = (this.y2 + this.offsetY);
+    this.c_points[1].x = this.x + this.offsetX + (this.width/2 * this.scaleX);
+    this.c_points[1].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 
-    this.c_points[2].x = (this.x3 + this.offsetX);
-    this.c_points[2].y = (this.y3 + this.offsetY);
+    this.c_points[2].x = this.x + this.offsetX;
+    this.c_points[2].y = this.y + this.offsetY + (this.height * this.scaleY);
 
-    this.c_points[3].x = (this.x4 + this.offsetX);
-    this.c_points[3].y = (this.y4 + this.offsetY);
+    this.c_points[3].x = this.x + this.offsetX - (this.width/2 * this.scaleX);
+    this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
   }
 
   resize(pos, dx, dy) {
-      if(pos == 0){
-        this.x1 += dx;
-        this.y1 += dy;
+    if (pos == 0) {
 
-        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+      this.shift(dx, dy);
 
+      this.width += -dx;
+      this.height += -dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + this.height;
+    } 
+    else if (pos == 1) {
 
-        this.x4 = this.x1 - this.width / 2;
-        this.y4 = this.y2;
-      }
-      else if(pos == 1){
+      this.y += dy;
 
-        this.x1 += dx;
-        this.y1 += dy;
+      this.width += dx;
+      this.height += -dy;
 
-        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+    } 
+    else if (pos == 2) {
 
+      this.width += dx;
+      this.height += dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + this.height;
+    } 
+    else if (pos == 3) {
 
-        this.x2 = this.x1 + this.width / 2;
-        this.y2 = this.y4;
-      }
-      else if(pos == 2){
-        this.x1 += dx;
-        this.y1 += -dy;
+      this.x += dx;
 
-        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+      this.width += -dx;
+      this.height += dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + this.height;
+    }
 
-        this.x2 = this.x1 + this.width / 2;
-        this.y2 = this.y4;
-      }
-      else if(pos == 3){
-        this.x1 += dx;
-        this.y1 += -dy;
-
-        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
-
-        this.x3 = this.x1;
-        this.y3 = this.y1 + this.height;
-
-        this.x4 = this.x1 - this.width / 2;
-        this.y4 = this.y2;
-      }
-
-      this.children.map( ({child, scale, rotate}) => {
-        scale(this, child);
-        rotate(this, child);
-        child.redraw();
-      });
+    this.children.map( ({child, scale, rotate}) => {
+      scale(this, child);
+      rotate(this, child);
+      child.redraw();
+    })
   }
 
   redraw() {
-    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
+    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
 
     this.drawVertex();
     this.drawConnector();
@@ -269,8 +229,8 @@ class Losange {
   }
 
   shift(dx, dy) {
-    this.x1 += dx;
-    this.y1 += dy;
+    this.x += dx;
+    this.y += dy;
 
     this.x2 += dx;
     this.y2 += dy;

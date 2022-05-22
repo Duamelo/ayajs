@@ -36,6 +36,14 @@ class Line
         this.c_svg = "";
         this.type = "line";
 
+        this.offsetX = 0;
+        this.offsetY = 0;
+    
+        this.scaleX = 1;
+        this.scaleY = 1;
+    
+        this.angle = 0;
+
         this.children = [];
 
         this.vertex = [
@@ -44,12 +52,21 @@ class Line
         ];
     }
 
+    addChild(child, scale, rotate){
+        child.setOffsetX(this.x);
+        child.setOffsetY(this.y);
+        scale(this, child);
+        rotate(this, child);
+        child.draw(svg);
+        this.children.push({child, scale, rotate});
+    }
+    
     drawVertex(){
-        this.vertex[0].x = this.x;
-        this.vertex[0].y = this.y;
+        this.vertex[0].x = this.x + this.offsetX;
+        this.vertex[0].y = this.y + this.offsetY;
 
-        this.vertex[1].x = this.dest_x;
-        this.vertex[1].y = this.dest_y;
+        this.vertex[1].x = (this.dest_x + this.offsetX) * this.scaleX;
+        this.vertex[1].y = (this.dest_y + this.offsetY) * this.scaleY;
     }
 
 
@@ -58,7 +75,7 @@ class Line
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", p);
@@ -93,25 +110,71 @@ class Line
             vertex.redraw();
         });
 
-        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
         this.c_svg.setAttribute("d", p);
+
+        this.children.map ( ({child, scale, rotate}) => {
+            scale(this, child);
+            rotate(this, child);
+            child.redraw();
+        });
     }
 
     resize(pos, dx, dy){
         if(pos == 0){
             this.x += dx;
             this.y += dy;
-            this.c1.x += dx;
-            this.c1.y += dy;
-            this.c2.x += dx;
-            this.c2.y += dy;
         }
         else{
             this.dest_x += dx;
             this.dest_y += dy;
         }
+        this.children.map ( ({child, scale, rotate}) => {
+            scale(this, child);
+            rotate(this, child);
+            child.redraw();
+        });
+    }
+
+    setRotateCenter(centerX, centerY){
+        this.centerX = centerX;
+        this.centerY = centerY;
+    }
+    
+    setRotateAngle(angle){
+        this.angle = angle;
+    }
+
+    setOffsetX(x){
+        this.offsetX = x;
+    }
+
+    setOffsetY(y){
+        this.offsetY = y;
+    }
+
+    setScaleX(x){
+        this.scaleX = x;
+    }
+
+    setScaleY(y){
+        this.scaleY = y;
+    }
+
+    getOffsetX(){
+        return this.offsetX;
+    }
+
+    getOffsetY(){
+        return this.offsetY;
+    }
+
+    getScaleX(){
+        return this.scaleX;
+    }
+
+    getScaleY(){
+        return this.scaleY;
     }
 }
 export {Line};
- 
-

@@ -168,6 +168,14 @@
 	        this.c_svg = "";
 	        this.type = "line";
 
+	        this.offsetX = 0;
+	        this.offsetY = 0;
+	    
+	        this.scaleX = 1;
+	        this.scaleY = 1;
+	    
+	        this.angle = 0;
+
 	        this.children = [];
 
 	        this.vertex = [
@@ -176,12 +184,21 @@
 	        ];
 	    }
 
+	    addChild(child, scale, rotate){
+	        child.setOffsetX(this.x);
+	        child.setOffsetY(this.y);
+	        scale(this, child);
+	        rotate(this, child);
+	        child.draw(svg);
+	        this.children.push({child, scale, rotate});
+	    }
+	    
 	    drawVertex(){
-	        this.vertex[0].x = this.x;
-	        this.vertex[0].y = this.y;
+	        this.vertex[0].x = this.x + this.offsetX;
+	        this.vertex[0].y = this.y + this.offsetY;
 
-	        this.vertex[1].x = this.dest_x;
-	        this.vertex[1].y = this.dest_y;
+	        this.vertex[1].x = (this.dest_x + this.offsetX) * this.scaleX;
+	        this.vertex[1].y = (this.dest_y + this.offsetY) * this.scaleY;
 	    }
 
 
@@ -190,7 +207,7 @@
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
-	        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", p);
@@ -225,23 +242,71 @@
 	            vertex.redraw();
 	        });
 
-	        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 	        this.c_svg.setAttribute("d", p);
+
+	        this.children.map ( ({child, scale, rotate}) => {
+	            scale(this, child);
+	            rotate(this, child);
+	            child.redraw();
+	        });
 	    }
 
 	    resize(pos, dx, dy){
 	        if(pos == 0){
 	            this.x += dx;
 	            this.y += dy;
-	            this.c1.x += dx;
-	            this.c1.y += dy;
-	            this.c2.x += dx;
-	            this.c2.y += dy;
 	        }
 	        else {
 	            this.dest_x += dx;
 	            this.dest_y += dy;
 	        }
+	        this.children.map ( ({child, scale, rotate}) => {
+	            scale(this, child);
+	            rotate(this, child);
+	            child.redraw();
+	        });
+	    }
+
+	    setRotateCenter(centerX, centerY){
+	        this.centerX = centerX;
+	        this.centerY = centerY;
+	    }
+	    
+	    setRotateAngle(angle){
+	        this.angle = angle;
+	    }
+
+	    setOffsetX(x){
+	        this.offsetX = x;
+	    }
+
+	    setOffsetY(y){
+	        this.offsetY = y;
+	    }
+
+	    setScaleX(x){
+	        this.scaleX = x;
+	    }
+
+	    setScaleY(y){
+	        this.scaleY = y;
+	    }
+
+	    getOffsetX(){
+	        return this.offsetX;
+	    }
+
+	    getOffsetY(){
+	        return this.offsetY;
+	    }
+
+	    getScaleX(){
+	        return this.scaleX;
+	    }
+
+	    getScaleY(){
+	        return this.scaleY;
 	    }
 	}
 
@@ -491,7 +556,7 @@
 	     * @param {boolean} zoom 
 	     */
 
-	    constructor(uuid, x = 0, y = 0, r = 5, children = [], ratio = {}, zoom){
+	    constructor(uuid, x = 0, y = 0, r = 5){
 
 	        this.uuid = uuid;
 
@@ -501,14 +566,18 @@
 
 	        this.events = new EventManager();
 
-	        this.children = [];
-
 	        this.box = "";
 	        this.c_svg = "";
 	        this.type = "circle";
 
-	        this.ratio = ratio;
-	        this.zoom = zoom;
+	        this.scale = 1;
+
+	        this.offsetX = 0;
+	        this.offsetY = 0;
+	    
+	        this.angle = 0;
+	  
+	        this.children = [];
 	      
 	        this.c_points = [
 	            new Point(this.uuid,0, 0 ),
@@ -522,47 +591,46 @@
 	            new Point(this.uuid,0, 0 ),
 	            new Point(this.uuid,0, 0 )
 	        ];
-
-	        this.createChildren(children);
-	       
-	        _Register.add(this);
 	    }
 
-
+	    addChild(child, scale, rotate){
+	        child.setOffsetX(this.x);
+	        child.setOffsetY(this.y);
+	        scale(this, child);
+	        rotate(this, child);
+	        child.draw(svg);
+	        this.children.push({child, scale, rotate});
+	    }
 	  
 	    drawVertex(){
-	        this.vertex[0].x = this.x - this.r;
-	        this.vertex[0].y = this.y - this.r;
+	        this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
+	        this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
 	    
-	        this.vertex[1].x = this.x + this.r;
-	        this.vertex[1].y = this.y - this.r;
+	        this.vertex[1].x = this.x + this.offsetX + this.r * this.scale;
+	        this.vertex[1].y = this.y + this.offsetY - this.r * this.scale;
 
-	        this.vertex[2].x = this.x + this.r;
-	        this.vertex[2].y = this.y + this.r;
+	        this.vertex[2].x = this.x + this.offsetX + this.r * this.scale;
+	        this.vertex[2].y = this.y + this.offsetY + this.r * this.scale;
 	    
-	        this.vertex[3].x = this.x - this.r;
-	        this.vertex[3].y = this.y + this.r;
-
-	        
+	        this.vertex[3].x = this.x + this.offsetX - this.r * this.scale;
+	        this.vertex[3].y = this.y + this.offsetY + this.r * this.scale;
 	    }
 	    
 	    drawConnector() {
-	        this.c_points[0].x = this.x;
-	        this.c_points[0].y = this.y - this.r;
+	        this.c_points[0].x = this.x + this.offsetX;
+	        this.c_points[0].y = this.y + this.offsetY - this.r * this.scale;
 
-	        this.c_points[1].x = this.x + this.r;
-	        this.c_points[1].y = this.y;
+	        this.c_points[1].x = this.x + this.offsetX + this.r * this.scale;
+	        this.c_points[1].y = this.y + this.offsetY;
 
+	        this.c_points[2].x = this.x + this.offsetX;
+	        this.c_points[2].y = this.y + this.offsetY + this.r * this.scale;
 
-	        this.c_points[2].x = this.x;
-	        this.c_points[2].y = this.y + this.r;
-
-	        this.c_points[3].x = this.x - this.r;
-	        this.c_points[3].y = this.y;
+	        this.c_points[3].x = this.x + this.offsetX - this.r * this.scale;
+	        this.c_points[3].y = this.y + this.offsetY;
 	    }
 
 	    drawBox(){
-
 	        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
                   L ${this.c_points[0].x} ${this.c_points[0].y} 
                   L ${this.vertex[1].x}   ${this.vertex[1].y} 
@@ -573,7 +641,7 @@
                   L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
 	    
 	        this.box.setAttribute("d", p);
-	      }
+	    }
 	    
 	    /**
 	     * 
@@ -588,15 +656,14 @@
 
 	        this.c_svg.setAttribute("id", this.uuid);
 
-	        this.c_svg.setAttribute("cx", this.x);
+	        this.c_svg.setAttribute("cx", this.x + this.offsetX);
 
-	        this.c_svg.setAttribute("cy",this.y);
+	        this.c_svg.setAttribute("cy",this.y + this.offsetY);
 
-	        this.c_svg.setAttribute("r", this.r);
+	        this.c_svg.setAttribute("r", this.r * this.scale);
 	        
-	        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
 
-	        this.c_svg.setAttribute("fill", "rgb(224, 115, 115)");
+	        this.c_svg.setAttribute("fill", "white");
 
 	        this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
 
@@ -605,7 +672,6 @@
 	    
 	      
 	        /** draw box */
-	        this.drawBox();
 	        this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
 	        this.box.setAttributeNS(null, "stroke-width", "1px");
 	        this.box.setAttributeNS(null, "fill", "none");
@@ -617,15 +683,21 @@
 
 	        this.drawVertex();
 	        this.drawConnector();
+	        this.drawBox();
 
 	        this.c_points.map((point) => {
 	            point.draw(svgs);
-	          });
-	      
-	          this.vertex.map((point) => {
+	        });
+
+	        this.vertex.map((point) => {
 	            point.draw(svgs);
-	          });
-	      
+	        });
+
+	        this.children.map( ({child, scale, rotate}) => {
+	            scale(this, child);
+	            rotate(this, child);
+	            child.redraw();
+	        });
 
 	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
@@ -638,57 +710,108 @@
 	    }
 
 	    redraw(){
-	        this.c_svg.setAttribute("cx", this.x);
-	        this.c_svg.setAttribute("cy",this.y);
-	        this.c_svg.setAttribute("r", this.r);
+	        this.c_svg.setAttribute("cx", this.x + this.offsetX);
+	        this.c_svg.setAttribute("cy",this.y + this.offsetY);
+	        this.c_svg.setAttribute("r", this.r * this.scale);
 
 	        this.drawConnector();
 	        this.drawVertex();
 	        this.drawBox();
 
-
 	        this.vertex.map((vert) => {
 	            vert.redraw();
-	            });
+	        });
 
-	            this.c_points.map( (point) => {
+	        this.c_points.map( (point) => {
 	            point.redraw();
 	        });
 
-	    }
-
-	    resize(pos, dx, dy, param = {}){
-	        if(Object.keys(param).length > 0){
-	            if( this.zoom == false && Object.keys(this.ratio).length > 0 ){
-	                this.x = param.x + this.ratio.x * param.width;
-	                this.y = param.y + this.ratio.y * param.height;
-	            }
-	            else {
-	                this.x = param.x + this.ratio.x * param.width;
-	                this.y = param.y + this.ratio.y * param.height;
-	                (param.width <= param.height) ? this.r = this.ratio.r * param.width : this.r = this.ratio.r * param.height;
-	            }
-	        }
-	        else {
-	            if(pos == 0)
-	                this.r += -dx;
-	            else if(pos == 1)
-	                this.r += dx;
-	            else if(pos == 2)
-	                this.r += dx;
-	            else
-	                this.r -= dx;
-	        }
-
-	        
-	    }
-
-	    createChildren(children){
-	        children.map( (chd) => {
-
+	        this.children.map( ({child, scale, rotate}) => {
+	            scale(this, child);
+	            rotate(this, child);
+	            child.redraw();
 	        });
 	    }
 
+	    resize(pos, dx, dy){
+	        if(pos == 0)
+	            this.r += -dx;
+	        else if(pos == 1)
+	            this.r += dx;
+	        else if(pos == 2)
+	            this.r += dx;
+	        else
+	            this.r -= dx;
+
+	        this.children.map( ({child, scale, rotate}) => {
+	            scale(this, child);
+	            rotate(this, child);
+	            child.redraw();
+	        });
+	    }
+
+	    setRotateAngle(angle){
+	        this.angle = angle;
+	    }
+	    
+	    setOffsetX(x){
+	       this.offsetX = x;
+	    }
+
+	    setOffsetY(y){
+	        this.offsetY = y;
+	    }
+
+	    setScale(sc){
+	        this.scale = sc;
+	    }
+	    getOffsetX(){
+	        return this.offsetX;
+	    }
+
+	    getOffsetY(){
+	        return this.offsetY;
+	    }
+
+	    getScale(){
+	        return this.scale;
+	    }
+
+	    optimalPath(line){
+	        var _x, _y;
+	        var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+	        var b = line.y - a * line.x;
+	    
+	        for (var i = 0; i <= 3; i++){
+	            if(i % 2 == 0){
+	                _y = this.vertex[i].y;
+	                _x = (_y - b)/a;
+	            }
+	            else {
+	                _x = this.vertex[i].x;
+	                _y = a * _x + b;
+	            }
+	    
+	            if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+	              continue;
+	    
+	              if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	               ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	               ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	               ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	                return this.c_points[i];
+	               }
+	          }
+	        return null;
+	      }
 	}
 
 	/**
@@ -788,11 +911,6 @@
 
 	    this.vertex.map((point) => {
 	      point.draw(svgs);
-	    });
-
-
-	    this.children.map((child) => {
-	      child.draw(svgs);
 	    });
 
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
@@ -1196,80 +1314,65 @@
 
 	class Losange {
 
-	    /**
-	     * @param {string} uuid
-	     * @param {abscissa starting point} x1
-	     * @param {ordonne starting point} y1
-	     * @param {LineTo this abscisse point}x2
-	     * @param {LineTo this ordonne point} y2
-	     * @param {LineTo this abscisse point}x3
-	     * @param {LineTo this ordonne point} y3
-	     * @param {LineTo this ordonne point} x4
-	     * @param {LineTo this ordonne point} y4
-	     * @param {array of object} events
-	     */
+	/**
+	 * 
+	 * @param {string} uuid 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {number} width 
+	 * @param {number} height 
+	 */
 
-	    constructor(uuid, x1 = 0, y1 = 0, x2 = 0, y2 = 0)
-	    {
-	        this.uuid = uuid;
+	  constructor(uuid, x = 0, y = 0, width = 10, height = 30)
+	  {
+	      this.uuid = uuid;
 
-	        this.x1 = x1;
-	        this.y1 = y1;
+	      this.x = x;
+	      this.y = y;
 
-	        this.x2 = x2;
-	        this.y2 = y2;
+	      this.width = width;
+	      this.height =  height;
 
-	        this.scaleX = 1;
-	        this.scaleY = 1;
+	      this.events = new EventManager();
 
-	        this.offsetX = 0;
-	        this.offsetY = 0;
-	    
-	        this.angle = 0;
-	        this.centerX = 0;
-	        this.centerY = 0;
+	      this.c_svg = "";
+	      this.box = "";
+	      this.type = "losange";
 
-	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-	        this.height =  (this.y2 - this.y1) *2 * this.scaleY;
+	      this.scaleX = 1;
+	      this.scaleY = 1;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + this.height;
+	      this.offsetX = 0;
+	      this.offsetY = 0;
+	  
+	      this.angle = 0;
 
-	        this.x4 = this.x1 - this.width / 2;
-	        this.y4 = this.y2;
+	      this.children = [];
 
-	        this.c_svg = "";
-	        this.box = "";
-	        this.type = "losange";
+	      this.c_points = [
+	        new Point(this.uuid,0,0),
+	        new Point(this.uuid,0,0),
+	        new Point(this.uuid,0,0),
+	        new Point(this.uuid,0,0),
+	      ];
 
-	        this.children = [];
-
-	        this.events = new EventManager();
-
-	        this.c_points = [
-	          new Point(this.uuid,0,0),
-	          new Point(this.uuid,0,0),
-	          new Point(this.uuid,0,0),
-	          new Point(this.uuid,0,0),
-	        ];
-
-	        this.vertex = [
-	          new Point(this.uuid, 0, 0),
-	          new Point(this.uuid, 0, 0),
-	          new Point(this.uuid, 0, 0),
-	          new Point(this.uuid, 0, 0),
-	        ];
-	    }
+	      this.vertex = [
+	        new Point(this.uuid, 0, 0),
+	        new Point(this.uuid, 0, 0),
+	        new Point(this.uuid, 0, 0),
+	        new Point(this.uuid, 0, 0),
+	      ];
+	  }
 
 
-	    addChild(child, scale, rotate){
-	      child.setOffsetX(this.x1);
-	      child.setOffsetY(this.y1);
-	      scale(this, child);
-	      rotate(this, child);
-	      child.draw(svg);
-	      this.children.push({child, scale, rotate});
-	    }
+	  addChild(child, scale, rotate){
+	    child.setOffsetX(this.x);
+	    child.setOffsetY(this.y);
+	    scale(this, child);
+	    rotate(this, child);
+	    child.draw(svg);
+	    this.children.push({child, scale, rotate});
+	  }
 
 	    
 
@@ -1279,7 +1382,7 @@
 	    this.c_svg = document.createElementNS(ns, "path");
 	    this.box = document.createElementNS(ns, "path");
 
-	    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
+	    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
 
 	    this.box.setAttribute("id", this.uuid);
 	    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -1323,99 +1426,74 @@
 	  }
 
 	  drawVertex(){
-	    this.vertex[0].x = (this.x1 + this.offsetX) - ( (this.width) / 2) * this.scaleX ;
-	    this.vertex[0].y = (this.y1 + this.offsetY);
+	    this.vertex[0].x = this.x + this.offsetX - (this.width / 2 * this.scaleX) ;
+	    this.vertex[0].y = this.y + this.offsetY;
 
-	    this.vertex[1].x = (this.x1 + this.offsetX) +  ( (this.width) / 2) * this.scaleX;
-	    this.vertex[1].y = (this.y1 + this.offsetY);
+	    this.vertex[1].x = this.x + this.offsetX +  (this.width / 2 * this.scaleX);
+	    this.vertex[1].y = this.y + this.offsetY;
 
-	    this.vertex[2].x = (this.x2 + this.offsetX);
-	    this.vertex[2].y = (this.y3 + this.offsetY);
+	    this.vertex[2].x = this.x + this.offsetX + (this.width/2 * this.scaleX);
+	    this.vertex[2].y = this.y + this.offsetY + this.height * this.scaleY;
 
-	    this.vertex[3].x = (this.x4 + this.offsetX);
-	    this.vertex[3].y = (this.y3 + this.offsetY);
+	    this.vertex[3].x = this.x + this.offsetX - (this.width/2  * this.scaleX);
+	    this.vertex[3].y = this.y + this.offsetY + (this.height * this.scaleY);
 	  }
 
 	  drawConnector() {
-	    this.c_points[0].x = (this.x1 + this.offsetX);
-	    this.c_points[0].y = (this.y1 + this.offsetY);
+	    this.c_points[0].x = this.x + this.offsetX;
+	    this.c_points[0].y = this.y + this.offsetY;
 
-	    this.c_points[1].x = (this.x2 + this.offsetX);
-	    this.c_points[1].y = (this.y2 + this.offsetY);
+	    this.c_points[1].x = this.x + this.offsetX + (this.width/2 * this.scaleX);
+	    this.c_points[1].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 
-	    this.c_points[2].x = (this.x3 + this.offsetX);
-	    this.c_points[2].y = (this.y3 + this.offsetY);
+	    this.c_points[2].x = this.x + this.offsetX;
+	    this.c_points[2].y = this.y + this.offsetY + (this.height * this.scaleY);
 
-	    this.c_points[3].x = (this.x4 + this.offsetX);
-	    this.c_points[3].y = (this.y4 + this.offsetY);
+	    this.c_points[3].x = this.x + this.offsetX - (this.width/2 * this.scaleX);
+	    this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 	  }
 
 	  resize(pos, dx, dy) {
-	      if(pos == 0){
-	        this.x1 += dx;
-	        this.y1 += dy;
+	    if (pos == 0) {
 
-	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+	      this.shift(dx, dy);
 
+	      this.width += -dx;
+	      this.height += -dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + this.height;
+	    } 
+	    else if (pos == 1) {
 
-	        this.x4 = this.x1 - this.width / 2;
-	        this.y4 = this.y2;
-	      }
-	      else if(pos == 1){
+	      this.y += dy;
 
-	        this.x1 += dx;
-	        this.y1 += dy;
+	      this.width += dx;
+	      this.height += -dy;
 
-	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+	    } 
+	    else if (pos == 2) {
 
+	      this.width += dx;
+	      this.height += dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + this.height;
+	    } 
+	    else if (pos == 3) {
 
-	        this.x2 = this.x1 + this.width / 2;
-	        this.y2 = this.y4;
-	      }
-	      else if(pos == 2){
-	        this.x1 += dx;
-	        this.y1 += -dy;
+	      this.x += dx;
 
-	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
+	      this.width += -dx;
+	      this.height += dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + this.height;
+	    }
 
-	        this.x2 = this.x1 + this.width / 2;
-	        this.y2 = this.y4;
-	      }
-	      else if(pos == 3){
-	        this.x1 += dx;
-	        this.y1 += -dy;
-
-	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
-	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
-
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + this.height;
-
-	        this.x4 = this.x1 - this.width / 2;
-	        this.y4 = this.y2;
-	      }
-
-	      this.children.map( ({child, scale, rotate}) => {
-	        scale(this, child);
-	        rotate(this, child);
-	        child.redraw();
-	      });
+	    this.children.map( ({child, scale, rotate}) => {
+	      scale(this, child);
+	      rotate(this, child);
+	      child.redraw();
+	    });
 	  }
 
 	  redraw() {
-	    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
+	    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
 
 	    this.drawVertex();
 	    this.drawConnector();
@@ -1455,8 +1533,8 @@
 	  }
 
 	  shift(dx, dy) {
-	    this.x1 += dx;
-	    this.y1 += dy;
+	    this.x += dx;
+	    this.y += dy;
 
 	    this.x2 += dx;
 	    this.y2 += dy;
@@ -1578,7 +1656,7 @@
 	        else if(type == "triangle")
 	            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3);
 	        else if(type == "losange")
-	            return new Losange(uuid, props.x1, props.y1, props.x2, props.y2);
+	            return new Losange(uuid, props.x, props.y, props.width, props.height);
 	    }
 	}
 

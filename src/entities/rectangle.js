@@ -102,11 +102,6 @@ class Rectangle {
       point.draw(svgs);
     });
 
-
-    this.children.map((child) => {
-      child.draw(svgs);
-    });
-
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
     this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
     this.events.add(this.c_svg, "mouseover", events.mouseOverCb);

@@ -25,7 +25,7 @@
 	        Object.keys(store).map((id) => {
 	            var obj = _Register.find(id);
 	            if(obj.type == "link"){
-	                if(component == obj.source || component == obj.destination)
+	                if(component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
 	                    result.push(obj);
 	            }
 	        });
@@ -78,430 +78,6 @@
 	          }
 	      }
 	 }
-
-	/**
-	 * @class Line
-	 */
-
-	class Line 
-	{
-	    /**
-	     * 
-	     * @param {string} uuid 
-	     * @param {number} x 
-	     * @param {number} y 
-	     * @param {number} dest_x 
-	     * @param {number} dest_y 
-	     * @param {array of object} children 
-	     * @param {object} ratio 
-	     */
-
-	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
-
-	        this.uuid = uuid;
-
-	        this.x = x;
-	        this.y = y;
-	        
-	        this.dest_x = dest_x;
-	        this.dest_y = dest_y;
-
-	        this.events = new EventManager();
-
-	        this.c_svg = "";
-	        this.type = "line";
-
-	        this.children = [];
-	    }
-
-	    draw(svgs){
-
-	        const ns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(ns,'path');
-
-	        this.p = "M "+  this.x + ","+ this.y + " "+ "C " + this.x+ "," + this.y + " " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
-
-	        this.c_svg.setAttribute("id", this.uuid);
-	        this.c_svg.setAttribute("d", this.p);
-	        this.c_svg.setAttribute("fill", "none");
-	        this.c_svg.setAttribute("stroke", "indigo");
-	        this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-
-	        svgs.appendChild(this.c_svg);
-
-	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-
-	        this.events.create();
-
-	    }
-
-	    shift(dx,dy){
-	        this.x += dx;
-	        this.y += dy;
-	    }
-
-	    redraw(){
-	        this.p = "M "+  this.x + ","+ this.y + " "+ "C " + this.x+ "," + this.y + " " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
-	        this.c_svg.setAttribute("d", this.p);
-	    }
-
-	    resize(pos, dx, dy, param = {}){
-
-	        var p = _Register.find(this.parent);
-
-	        if(Object.keys(param).length > 0);
-	        else {
-	            if( pos == 0){
-	                var c_p = p.form.c_points[pos];
-	    
-	                // vertical line
-	                if( this.x == this.dest_x && this.y != this.dest_y){
-	                    if( (this.y - c_p.y) <   (this.dest_y - c_p.y)){
-	                        this.y += dy;
-	                    }
-	                    else {
-	                        this.dest_y += -dy;
-	                    }
-	                }
-	    
-	                // horizontal line
-	                else if( this.y == this.dest_y && this.x != this.dest_x){
-	                    if(  (this.x - c_p.x) <   (this.dest_x - c_p.x)  ){
-	    
-	                        this.x += dx;
-	                    }
-	                    else {
-	                        this.dest_x += dx;
-	                    }
-	                }
-	                else;
-	    
-	            }
-	            else if(pos == 1){
-	                var c_p = p.form.c_points[pos];
-	    
-	                // vertical line
-	                if( this.x == this.dest_x && this.y != this.dest_y){
-	                    if(  ( this.y - c_p.y  ) <= ( this.dest_y - c_p.y) ){
-	                        this.y += dy;
-	                    }
-	                    else {
-	                        this.dest_y += -dy;
-	                    }
-	                }
-	                // horizontal line
-	                else if( this.y == this.dest_y && this.x != this.dest_x){
-	                    if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
-	    
-	                        this.x += dx;
-	                    }
-	                    else {
-	                        this.dest_x += dx;
-	                    }
-	                }
-	                else;
-	    
-	            }
-	            else if(pos == 2){
-	                var c_p = p.form.c_points[pos];
-	    
-	                // vertical line
-	                if( this.x == this.dest_x && this.y != this.dest_y){
-	                    if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
-	                        this.y += dy;
-	                    }
-	                    else {
-	                        this.dest_y += dy;
-	                    }
-	                }
-	                // horizontal line
-	                else if( this.y == this.dest_y && this.x != this.dest_x){
-	                    if( ( c_p.x - this.x) <= ( c_p.x - this.dest_x) ){
-	    
-	                        this.x += dx;
-	                    }
-	                    else {
-	                        this.dest_x += dx;
-	                    }
-	                }
-	                else;
-	    
-	            }
-	            else if(pos == 3){
-	                var c_p = p.form.c_points[pos];
-	    
-	                // vertical line
-	                if( this.x == this.dest_x && this.y != this.dest_y){
-	                    if(  ( c_p.y - this.y ) <= ( c_p.y - this.dest_y ) ){
-	                        this.y += dy;
-	                    }
-	                    else {
-	                        this.dest_y += dy;
-	                    }
-	                }
-	                // horizontal line
-	                else if( this.y == this.dest_y && this.x != this.dest_x){
-	                    if( ( this.x - c_p.x ) <= ( this.dest_x - c_p.x) ){
-	    
-	                        this.x += dx;
-	                    }
-	                    else {
-	                        this.dest_x += dx;
-	                    }
-	                }
-	                else;
-	    
-	            }
-	        }
-	    }
-
-
-	    createChildren(children){
-	        children.map((chd) => {
-	            if(chd.type == "triangle"){
-	                var _x1 = this.x + (chd.ratio.p1.x * this.width);
-	                var _y1 = this.y + (chd.ratio.p1.y * this.height); 
-	              
-	                var _x2 = this.x + (chd.ratio.p2.x * this.width);
-	                var _y2 = this.y + (chd.ratio.p2.y * this.height); 
-	        
-	                var _x3 = this.x + (chd.ratio.p3.x * this.width);
-	                var _y3 = this.y + (chd.ratio.p3.y * this.height); 
-	        
-	                var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
-	                this.children.push(child);
-	            }
-	        });
-	    }
-	}
-
-	/**
-	 * @class Link 
-	 */
-
-	class Link
-	{
-	    constructor(source, destination, line = undefined) 
-	    {
-	       this.uuid = _uuid.generate();
-	       this.source = source;
-	       this.destination = destination;
-	       this.line = line;
-	       this.type = "link";
-	       _Register.add(this);
-	    }
-
-	    redraw(){
-	        this.line.redraw();
-	    }
-
-	}
-
-	function nativeEvents() {
-	  var id;
-	  var cp;
-	  var dx, dy;
-	  var state = "";
-	  var deltaX, deltaY;
-	  var line = "";
-	  var source;
-	  var lk;
-	  var pos;
-
-	  return {
-	    mouseDownCb: function mousedowncb(e) {
-
-	      dx = e.offsetX;
-	      dy = e.offsetY;
-
-	      id = e.srcElement.id;
-
-	      cp = _Register.find(id);
-
-	      console.log(cp);
-	      
-	      if (id != "svg")
-	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
-
-	      if(cp.form != undefined)
-	        lk = _Register.getAllLinksByComponent(cp);
-
-	      // une forme différente de Point n'a pas de propriété ref
-	      if ((cp != undefined && cp.ref == undefined) ) 
-	          state = "moving";
-	      else {
-	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
-	          state = "resizing";
-	          dx = e.offsetX;
-	          dy = e.offsetY;
-	        } 
-	        else {
-	          state = "drawing_link";
-	          id = _uuid.generate();
-	          if (cp != source) {
-	            line = new Line(id, cp.x, cp.y);
-	            line.draw(svg);
-	          }
-	        }
-	      }
-	    },
-	    mouseMoveCb: function movecb(e) {
-
-	      if (state == "moving") {
-	        
-	        deltaX = e.offsetX - dx;
-	        deltaY = e.offsetY - dy;
-
-	        dx = e.offsetX;
-	        dy = e.offsetY;
-
-	        if(cp.form != undefined){
-	          lk.map(({ source, line }) => {
-	            if (cp == source) {
-	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.x && pnt.y == line.y) {
-	                  line.x += deltaX;
-	                  line.y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            } 
-	            else {
-	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                  line.dest_x += deltaX;
-	                  line.dest_y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            }
-	          });
-
-	          cp.form.shift(deltaX, deltaY);
-	          cp.form.redraw();
-	        }
-	      } 
-	      else if (state == "drawing_link") {
-
-	        source.form.vertex.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
-	        source.form.c_points.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.style.color = "gray";
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
-	        line.dest_x = e.clientX;
-	        line.dest_y = e.clientY;
-	        line.redraw();
-	      } 
-	      else if (state == "resizing") {
-
-	        if (source) {
-	          deltaX = e.offsetX - dx;
-	          deltaY = e.offsetY - dy;
-
-	          dx = e.offsetX;
-	          dy = e.offsetY;
-
-	          lk = _Register.getAllLinksByComponent(source);
-	          var source_c = source;
-
-	          lk.map(({ source, line }) => {
-	            if (source_c == source) {
-	              source_c.form.c_points.map((pnt) => {
-	                if (pnt.x == line.x && pnt.y == line.y) {
-	                  line.x += deltaX;
-	                  line.y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            } 
-	            else {
-	              source_c.form.c_points.map((pnt) => {
-	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                  line.dest_x += deltaX;
-	                  line.dest_y += deltaY;
-	                  line.redraw();
-	                }
-	              });
-	            }
-	          });
-
-	          source.form.resize(pos, deltaX, deltaY);
-	          source.form.redraw();
-	        }
-	      }
-	    },
-	    mouseUpCb: function mouseupcb(e) {
-	      var destination;
-	      if (state == "drawing_link") {
-	        id = e.srcElement.id;
-	        var pnt = _Register.find(id);
-
-	        
-	        if (pnt != undefined && pnt.ref != undefined) {
-	          destination = _Register.find(pnt.ref);
-
-	          line.dest_x = pnt.x;
-	          line.dest_y = pnt.y;
-
-	          /* faire le calcul automatique ici*/
-
-	          // for automatic redrawing
-	          // line.redraw();
-	          new Link(source, destination, line).redraw();
-
-	        } 
-	        else if (id == "svg" || pnt.ref == undefined) {
-	          var ref = document.getElementById(line.uuid);
-	          ref.remove();
-	        }
-	      }
-	      state = "";
-	    },
-	  mouseOverCb: function mouseovercb(e) {
-	      // id = e.srcElement.id;
-
-	      // cp = _Register.find(id);
-
-	      // if (cp.type == "point") {
-	      //   cp.form.vertex.map((v) => {
-	      //     v.c_svg.classList.remove("vertex");
-	      //     v.c_svg.classList.add("vertex_hover");
-	      //   });
-
-	      //   cp.form.c_points.map((v) => {
-	      //     v.c_svg.style.color = "gray";
-	      //     v.c_svg.classList.remove("vertex");
-	      //     v.c_svg.classList.add("vertex_hover");
-	      //   });
-	      // }
-	  },
-	  mouseLeaveCb: function mouseleavecb(e) {
-	    // id = e.srcElement.id;
-	    // cp = _Register.find(id);
-	    // if (cp.ref == undefined) {
-	    //   cp.form.vertex.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    //   cp.form.c_points.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    // }
-	  }
-	}
-	}
-	var events = nativeEvents();
 
 	/**
 	 *
@@ -560,6 +136,344 @@
 	    
 	  }
 	}
+
+	/**
+	 * @class Line
+	 */
+
+	class Line 
+	{
+	    /**
+	     * 
+	     * @param {string} uuid 
+	     * @param {number} x 
+	     * @param {number} y 
+	     * @param {number} dest_x 
+	     * @param {number} dest_y 
+	     * @param {array of object} children 
+	     */
+
+	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
+
+	        this.uuid = uuid;
+
+	        this.x = x;
+	        this.y = y;
+	        
+	        this.dest_x = dest_x;
+	        this.dest_y = dest_y;
+
+	        this.events = new EventManager();
+
+	        this.c_svg = "";
+	        this.type = "line";
+
+	        this.children = [];
+
+	        this.vertex = [
+	            new Point(this.uuid, 0, 0),
+	            new Point(this.uuid, 0, 0),
+	        ];
+	    }
+
+	    drawVertex(){
+	        this.vertex[0].x = this.x;
+	        this.vertex[0].y = this.y;
+
+	        this.vertex[1].x = this.dest_x;
+	        this.vertex[1].y = this.dest_y;
+	    }
+
+
+	    draw(svgs){
+
+	        const ns = "http://www.w3.org/2000/svg";
+	        this.c_svg = document.createElementNS(ns,'path');
+
+	        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+
+	        this.c_svg.setAttribute("id", this.uuid);
+	        this.c_svg.setAttribute("d", p);
+	        this.c_svg.setAttribute("fill", "none");
+	        this.c_svg.setAttribute("stroke", "indigo");
+	        this.c_svg.setAttributeNS(null, "stroke-width", "2px");
+
+	        svgs.appendChild(this.c_svg);
+
+	        this.drawVertex();
+
+	        this.vertex.map( (vertex) => {
+	            vertex.draw(svgs);
+	        });
+
+	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+
+	        this.events.create();
+
+	    }
+
+	    shift(dx,dy){
+	        this.x += dx;
+	        this.y += dy;
+	        this.dest_x += dx;
+	        this.dest_y += dy;
+	    }
+
+	    redraw(){
+	        this.drawVertex();
+	        this.vertex.map( (vertex) => {
+	            vertex.redraw();
+	        });
+
+	        var p = "M "+  this.x + ","+ this.y + " "+ "Q " + this.x+ "," + this.y + " " + this.dest_x  + "," + this.dest_y;
+	        this.c_svg.setAttribute("d", p);
+	    }
+
+	    resize(pos, dx, dy){
+	        if(pos == 0){
+	            this.x += dx;
+	            this.y += dy;
+	            this.c1.x += dx;
+	            this.c1.y += dy;
+	            this.c2.x += dx;
+	            this.c2.y += dy;
+	        }
+	        else {
+	            this.dest_x += dx;
+	            this.dest_y += dy;
+	        }
+	    }
+	}
+
+	/**
+	 * @class Link
+	 */
+
+	class Link
+	{
+	    constructor(source, destination, line = undefined)
+	    {
+	       this.uuid = _uuid.generate();
+	       
+	       /* référence sur les points de connexions*/
+	       this.source = source;
+	       this.destination = destination;
+	       this.line = line;
+	       this.type = "link";
+	       _Register.add(this);
+	    }
+
+	    redraw(){
+	        var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
+
+	        var source_point = source.form.optimalPath(this.line);
+	        var dest_point = destination.form.optimalPath(this.line);
+
+
+	        if(source_point)
+	            this.source = source_point;
+	        if(dest_point)
+	            this.destination = dest_point;
+
+	        this.line.x = this.source.x;
+	        this.line.y = this.source.y;
+
+	        this.line.dest_x = this.destination.x;
+	        this.line.dest_y = this.destination.y;
+
+	        this.line.redraw();
+
+	    }
+
+	}
+
+	function nativeEvents() {
+	  var id;
+	  var cp;
+	  var dx, dy;
+	  var state = "";
+	  var deltaX, deltaY;
+	  var line = "";
+	  var source;
+	  var lk;
+	  var pos;
+
+	  return {
+	    mouseDownCb: function mousedowncb(e) {
+
+	      dx = e.offsetX;
+	      dy = e.offsetY;
+
+	      id = e.srcElement.id;
+
+	      cp = _Register.find(id);
+	      console.log(cp);
+
+	      if (id != "svg")
+	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
+
+	      if(cp.form != undefined)
+	        lk = _Register.getAllLinksByComponent(cp);
+
+
+	      // une forme différente de Point n'a pas de propriété ref
+	      if ((cp != undefined && cp.ref == undefined) )
+	          state = "moving";
+	      else {
+	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
+	          state = "resizing";
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+
+	          /* détermination du composant */
+	          cp = _Register.find(cp.ref);
+	          lk = _Register.getAllLinksByComponent(cp);
+	        }
+	        else {
+	          state = "drawing_link";
+	          id = _uuid.generate();
+	          if (cp != source) {
+	            line = new Line(id, cp.x, cp.y);
+	            line.draw(svg);
+	          }
+	        }
+	      }
+	    },
+	    mouseMoveCb: function movecb(e) {
+
+	      if (state == "moving") {
+
+	        deltaX = e.offsetX - dx;
+	        deltaY = e.offsetY - dy;
+
+	        dx = e.offsetX;
+	        dy = e.offsetY;
+
+	        /* test si cp est un compsant*/
+	        var src;
+	        if(cp.form != undefined){
+	          lk.map((link) => {
+	            cp.form.c_points.map( (point) => {
+	              if(point == link.source)
+	                src = point;
+	              else if(point == link.destination)
+	                ;
+	            });
+	            if(src){
+	              link.line.x += deltaX;
+	              link.line.y += deltaY;
+	              link.line.redraw();
+	            }
+	            else {
+	              link.line.dest_x += deltaX;
+	              link.line.dest_y += deltaY;
+	              link.line.redraw();
+	            }
+	          });
+
+	          cp.form.shift(deltaX, deltaY);
+	          cp.form.redraw();
+
+	          lk.map( (link) => {
+	            link.redraw();
+	          });
+
+	        }
+	      }
+	      else if (state == "drawing_link") {
+
+	        source.form.vertex.map((v) => {
+	          if (v.x == line.x && v.y == line.y) {
+	            v.c_svg.classList.remove("vertex");
+	            v.c_svg.classList.add("vertex_hover");
+	          }
+	        });
+
+	        source.form.c_points.map((v) => {
+	          if (v.x == line.x && v.y == line.y) {
+	            v.c_svg.style.color = "gray";
+	            v.c_svg.classList.remove("vertex");
+	            v.c_svg.classList.add("vertex_hover");
+	          }
+	        });
+
+	        line.dest_x = e.clientX;
+	        line.dest_y = e.clientY;
+	        line.redraw();
+	      }
+	      else if (state == "resizing") {
+	          deltaX = e.offsetX - dx;
+	          deltaY = e.offsetY - dy;
+
+	          dx = e.offsetX;
+	          dy = e.offsetY;
+
+	          source.form.resize(pos, deltaX, deltaY);
+	          source.form.redraw();
+
+	          lk.map( (link ) => {
+	            link.redraw();
+	          });
+	      }
+	    },
+	    mouseUpCb: function mouseupcb(e) {
+	      if (state == "drawing_link") {
+	        id = e.srcElement.id;
+	        var pnt = _Register.find(id);
+
+
+	        if (pnt != undefined && pnt.ref != undefined) {
+	          line.dest_x = pnt.x;
+	          line.dest_y = pnt.y;
+
+	          /* faire le calcul automatique ici*/
+
+	          // for automatic redrawing
+	          // line.redraw();
+	          new Link(cp, pnt, line).redraw();
+	        }
+	        else if (id == "svg" || pnt.ref == undefined) {
+	          var ref = document.getElementById(line.uuid);
+	          ref.remove();
+	        }
+	      }
+	      state = "";
+	    },
+	  mouseOverCb: function mouseovercb(e) {
+	      // id = e.srcElement.id;
+
+	      // cp = _Register.find(id);
+
+	      // if (cp.type == "point") {
+	      //   cp.form.vertex.map((v) => {
+	      //     v.c_svg.classList.remove("vertex");
+	      //     v.c_svg.classList.add("vertex_hover");
+	      //   });
+
+	      //   cp.form.c_points.map((v) => {
+	      //     v.c_svg.style.color = "gray";
+	      //     v.c_svg.classList.remove("vertex");
+	      //     v.c_svg.classList.add("vertex_hover");
+	      //   });
+	      // }
+	  },
+	  mouseLeaveCb: function mouseleavecb(e) {
+	    // id = e.srcElement.id;
+	    // cp = _Register.find(id);
+	    // if (cp.ref == undefined) {
+	    //   cp.form.vertex.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    //   cp.form.c_points.map((v) => {
+	    //     v.c_svg.classList.add("vertex");
+	    //     v.c_svg.classList.remove("vertex_hover");
+	    //   });
+	    // }
+	  }
+	}
+	}
+	var events = nativeEvents();
 
 	/**
 	 * @class Circle
@@ -1042,6 +956,44 @@
 	        child.redraw();
 	      });
 	  }
+
+
+	  optimalPath(line){
+	    var _x, _y;
+	    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+	    var b = line.y - a * line.x;
+
+	    for (var i = 0; i <= 3; i++){
+	        if(i % 2 == 0){
+	            _y = this.vertex[i].y;
+	            _x = (_y - b)/a;
+	        }
+	        else {
+	            _x = this.vertex[i].x;
+	            _y = a * _x + b;
+	        }
+
+	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+	          continue;
+
+	          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	            return this.c_points[i];
+	           }
+	      }
+	    return null;
+	  }
+
 	}
 
 	/**
@@ -1267,24 +1219,33 @@
 	        this.x2 = x2;
 	        this.y2 = y2;
 
+	        this.scaleX = 1;
+	        this.scaleY = 1;
+
+	        this.offsetX = 0;
+	        this.offsetY = 0;
+	    
+	        this.angle = 0;
+	        this.centerX = 0;
+	        this.centerY = 0;
+
+	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+	        this.height =  (this.y2 - this.y1) *2 * this.scaleY;
+
 	        this.x3 = this.x1;
-	        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+	        this.y3 = this.y1 + this.height;
 
-	        this.x4 = this.x1 - (this.x2 - this.x1);
+	        this.x4 = this.x1 - this.width / 2;
 	        this.y4 = this.y2;
-
-	        this.h_diagonal = this.x2 - this.x4;
-	        this.v_diagonal = this.y3 - this.y1;
 
 	        this.c_svg = "";
 	        this.box = "";
 	        this.type = "losange";
 
-
 	        this.children = [];
 
 	        this.events = new EventManager();
-	        
+
 	        this.c_points = [
 	          new Point(this.uuid,0,0),
 	          new Point(this.uuid,0,0),
@@ -1298,8 +1259,19 @@
 	          new Point(this.uuid, 0, 0),
 	          new Point(this.uuid, 0, 0),
 	        ];
-
 	    }
+
+
+	    addChild(child, scale, rotate){
+	      child.setOffsetX(this.x1);
+	      child.setOffsetY(this.y1);
+	      scale(this, child);
+	      rotate(this, child);
+	      child.draw(svg);
+	      this.children.push({child, scale, rotate});
+	    }
+
+	    
 
 	  draw(svgs) {
 	    const ns = "http://www.w3.org/2000/svg";
@@ -1307,7 +1279,7 @@
 	    this.c_svg = document.createElementNS(ns, "path");
 	    this.box = document.createElementNS(ns, "path");
 
-	    var p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+	    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
 
 	    this.box.setAttribute("id", this.uuid);
 	    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -1326,6 +1298,7 @@
 
 	    this.drawVertex();
 	    this.drawConnector();
+	    this.drawBox();
 
 	    this.c_points.map((point) => {
 	        point.draw(svgs);
@@ -1334,6 +1307,13 @@
 	    this.vertex.map((v) => {
 	        v.draw(svgs);
 	      });
+
+	    this.children.map( ({child, scale, rotate}) => {
+	      scale(this, child);
+	      rotate(this, child);
+	      child.redraw();
+	    });
+	  
 	    
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
@@ -1343,45 +1323,46 @@
 	  }
 
 	  drawVertex(){
-	    this.vertex[0].x = this.x1 - ( (this.x2 - this.x4) / 2);
-	    this.vertex[0].y = this.y1;
+	    this.vertex[0].x = (this.x1 + this.offsetX) - ( (this.width) / 2) * this.scaleX ;
+	    this.vertex[0].y = (this.y1 + this.offsetY);
 
-	    this.vertex[1].x = this.x1 + ( (this.x2 - this.x4) / 2);
-	    this.vertex[1].y = this.y1;
+	    this.vertex[1].x = (this.x1 + this.offsetX) +  ( (this.width) / 2) * this.scaleX;
+	    this.vertex[1].y = (this.y1 + this.offsetY);
 
-	    this.vertex[2].x = this.x2;
-	    this.vertex[2].y = this.y3;
+	    this.vertex[2].x = (this.x2 + this.offsetX);
+	    this.vertex[2].y = (this.y3 + this.offsetY);
 
-	    this.vertex[3].x = this.x4;
-	    this.vertex[3].y = this.y3;
+	    this.vertex[3].x = (this.x4 + this.offsetX);
+	    this.vertex[3].y = (this.y3 + this.offsetY);
 	  }
 
 	  drawConnector() {
-	    this.c_points[0].x = this.x1;
-	    this.c_points[0].y = this.y1;
+	    this.c_points[0].x = (this.x1 + this.offsetX);
+	    this.c_points[0].y = (this.y1 + this.offsetY);
 
-	    this.c_points[1].x = this.x2;
-	    this.c_points[1].y = this.y2;
+	    this.c_points[1].x = (this.x2 + this.offsetX);
+	    this.c_points[1].y = (this.y2 + this.offsetY);
 
-	    this.c_points[2].x = this.x3;
-	    this.c_points[2].y = this.y3;
+	    this.c_points[2].x = (this.x3 + this.offsetX);
+	    this.c_points[2].y = (this.y3 + this.offsetY);
 
-	    this.c_points[3].x = this.x4;
-	    this.c_points[3].y = this.y4;
+	    this.c_points[3].x = (this.x4 + this.offsetX);
+	    this.c_points[3].y = (this.y4 + this.offsetY);
 	  }
 
-	  resize(pos, dx, dy, param = {}) {
-
-	    if(Object.keys(param).length > 0);
-	    else {
+	  resize(pos, dx, dy) {
 	      if(pos == 0){
 	        this.x1 += dx;
 	        this.y1 += dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-	        this.x4 = this.x1 - (this.x2 - this.x1);
+
+	        this.x3 = this.x1;
+	        this.y3 = this.y1 + this.height;
+
+	        this.x4 = this.x1 - this.width / 2;
 	        this.y4 = this.y2;
 	      }
 	      else if(pos == 1){
@@ -1389,38 +1370,52 @@
 	        this.x1 += dx;
 	        this.y1 += dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-	        this.x2 = this.x1 + (this.x1 - this.x4);
+
+	        this.x3 = this.x1;
+	        this.y3 = this.y1 + this.height;
+
+	        this.x2 = this.x1 + this.width / 2;
 	        this.y2 = this.y4;
 	      }
 	      else if(pos == 2){
 	        this.x1 += dx;
 	        this.y1 += -dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-	        this.x2 = this.x1 + (this.x1 - this.x4);
+	        this.x3 = this.x1;
+	        this.y3 = this.y1 + this.height;
+
+	        this.x2 = this.x1 + this.width / 2;
 	        this.y2 = this.y4;
 	      }
 	      else if(pos == 3){
 	        this.x1 += dx;
 	        this.y1 += -dy;
 
-	        this.x3 = this.x1;
-	        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+	        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+	        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-	        this.x4 = this.x1 - (this.x2 - this.x1);
+	        this.x3 = this.x1;
+	        this.y3 = this.y1 + this.height;
+
+	        this.x4 = this.x1 - this.width / 2;
 	        this.y4 = this.y2;
 	      }
-	    }
+
+	      this.children.map( ({child, scale, rotate}) => {
+	        scale(this, child);
+	        rotate(this, child);
+	        child.redraw();
+	      });
 	  }
 
 	  redraw() {
-
-	    var p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+	    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
 
 	    this.drawVertex();
 	    this.drawConnector();
@@ -1431,9 +1426,16 @@
 	    this.c_points.map((p) => {
 	        p.redraw();
 	      });
+
 	      this.vertex.map((v) => {
-	        v.redraw();
-	      });
+	      v.redraw();
+	    });
+
+	    this.children.map( ({child, scale, rotate}) => {
+	      scale(this, child);
+	      rotate(this, child);
+	      child.redraw();
+	    });
 	  }
 
 	  drawBox(){
@@ -1441,13 +1443,13 @@
 	    /* dessin du contour de la forme sous forme de carré */
 
 	    var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-              L ${this.c_points[0].x} ${this.c_points[0].y} 
-              L ${this.vertex[1].x}   ${this.vertex[1].y} 
-              L ${this.c_points[1].x} ${this.c_points[1].y}
-              L ${this.vertex[2].x}   ${this.vertex[2].y}
-              L ${this.c_points[2].x} ${this.c_points[2].y} 
-              L ${this.vertex[3].x}   ${this.vertex[3].y} 
-              L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+              L ${this.c_points[0].x } ${this.c_points[0].y} 
+              L ${this.vertex[1].x }   ${this.vertex[1].y} 
+              L ${this.c_points[1].x } ${this.c_points[1].y}
+              L ${this.vertex[2].x }   ${this.vertex[2].y}
+              L ${this.c_points[2].x } ${this.c_points[2].y} 
+              L ${this.vertex[3].x }   ${this.vertex[3].y} 
+              L ${this.c_points[3].x } ${this.c_points[3].y} Z`;
 
 	    this.box.setAttribute("d", p);
 	  }
@@ -1474,12 +1476,77 @@
 	    });
 	  }
 
-	  createChildren(children){
-	    children.map( (chd) => {
-
-	    });
+	  setRotateAngle(angle){
+	    this.angle = angle;
 	  }
 
+	  setOffsetX(x){
+	    this.offsetX = x;
+	  }
+
+	  setOffsetY(y){
+	    this.offsetY = y;
+	  }
+
+	  setScaleX(x){
+	    this.scaleX = x;
+	  }
+
+	  setScaleY(y){
+	    this.scaleY = y;
+	  }
+
+	  getOffsetX(){
+	    return this.offsetX;
+	  }
+
+	  getOffsetY(){
+	    return this.offsetY;
+	  }
+
+	  getScaleX(){
+	    return this.scaleX;
+	  }
+
+	  getScaleY(){
+	    return this.scaleY;
+	  }
+
+	  optimalPath(line){
+	    var _x, _y;
+	    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+	    var b = line.y - a * line.x;
+
+	    for (var i = 0; i <= 3; i++){
+	        if(i % 2 == 0){
+	            _y = this.vertex[i].y;
+	            _x = (_y - b)/a;
+	        }
+	        else {
+	            _x = this.vertex[i].x;
+	            _y = a * _x + b;
+	        }
+
+	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+	          continue;
+
+	          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	            return this.c_points[i];
+	           }
+	      }
+	    return null;
+	  }
 	}
 
 	/**
@@ -1487,7 +1554,7 @@
 	 */
 
 
-	class FactoryForm$1
+	class FactoryForm
 	{
 	    /**
 	     * 
@@ -1527,7 +1594,7 @@
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
-	        this.form = FactoryForm$1.createForm(this.uuid, type, props);
+	        this.form = FactoryForm.createForm(this.uuid, type, props);
 	        _Register.add(this);
 	        this.form.draw(svg);
 	    }
@@ -1569,7 +1636,7 @@
 	exports.Circle = Circle;
 	exports.Component = Component;
 	exports.Connector = Connector;
-	exports.FactoryForm = FactoryForm$1;
+	exports.FactoryForm = FactoryForm;
 	exports.Line = Line;
 	exports.Losange = Losange;
 	exports.Point = Point;

@@ -19,7 +19,7 @@ class _Register
         Object.keys(store).map((id) => {
             var obj = _Register.find(id);
             if(obj.type == "link"){
-                if(component == obj.source || component == obj.destination)
+                if(component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
                     result.push(obj);
             }
         });

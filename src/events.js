@@ -24,24 +24,28 @@ function nativeEvents() {
       id = e.srcElement.id;
 
       cp = _Register.find(id);
-
       console.log(cp);
-      
+
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
       if(cp.form != undefined)
         lk = _Register.getAllLinksByComponent(cp);
 
+
       // une forme différente de Point n'a pas de propriété ref
-      if ((cp != undefined && cp.ref == undefined) ) 
+      if ((cp != undefined && cp.ref == undefined) )
           state = "moving";
       else {
         if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
           state = "resizing";
           dx = e.offsetX;
           dy = e.offsetY;
-        } 
+
+          /* détermination du composant */
+          cp = _Register.find(cp.ref);
+          lk = _Register.getAllLinksByComponent(cp);
+        }
         else {
           state = "drawing_link";
           id = _uuid.generate();
@@ -55,39 +59,44 @@ function nativeEvents() {
     mouseMoveCb: function movecb(e) {
 
       if (state == "moving") {
-        
+
         deltaX = e.offsetX - dx;
         deltaY = e.offsetY - dy;
 
         dx = e.offsetX;
         dy = e.offsetY;
 
+        /* test si cp est un compsant*/
+        var src, sink;
         if(cp.form != undefined){
-          lk.map(({ source, line }) => {
-            if (cp == source) {
-              cp.form.c_points.map((pnt) => {
-                if (pnt.x == line.x && pnt.y == line.y) {
-                  line.x += deltaX;
-                  line.y += deltaY;
-                  line.redraw();
-                }
-              });
-            } 
+          lk.map((link) => {
+            cp.form.c_points.map( (point) => {
+              if(point == link.source)
+                src = point;
+              else if(point == link.destination)
+                sink = point;
+            })
+            if(src){
+              link.line.x += deltaX;
+              link.line.y += deltaY;
+              link.line.redraw();
+            }
             else {
-              cp.form.c_points.map((pnt) => {
-                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-                  line.dest_x += deltaX;
-                  line.dest_y += deltaY;
-                  line.redraw();
-                }
-              });
+              link.line.dest_x += deltaX;
+              link.line.dest_y += deltaY;
+              link.line.redraw();
             }
           });
 
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
+
+          lk.map( (link) => {
+            link.redraw();
+          });
+
         }
-      } 
+      }
       else if (state == "drawing_link") {
 
         source.form.vertex.map((v) => {
@@ -108,55 +117,29 @@ function nativeEvents() {
         line.dest_x = e.clientX;
         line.dest_y = e.clientY;
         line.redraw();
-      } 
+      }
       else if (state == "resizing") {
-
-        if (source) {
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
 
           dx = e.offsetX;
           dy = e.offsetY;
 
-          lk = _Register.getAllLinksByComponent(source);
-          var source_c = source;
-
-          lk.map(({ source, line }) => {
-            if (source_c == source) {
-              source_c.form.c_points.map((pnt) => {
-                if (pnt.x == line.x && pnt.y == line.y) {
-                  line.x += deltaX;
-                  line.y += deltaY;
-                  line.redraw();
-                }
-              });
-            } 
-            else {
-              source_c.form.c_points.map((pnt) => {
-                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-                  line.dest_x += deltaX;
-                  line.dest_y += deltaY;
-                  line.redraw();
-                }
-              });
-            }
-          });
-
           source.form.resize(pos, deltaX, deltaY);
           source.form.redraw();
-        }
+
+          lk.map( (link ) => {
+            link.redraw();
+          });
       }
     },
     mouseUpCb: function mouseupcb(e) {
-      var destination;
       if (state == "drawing_link") {
         id = e.srcElement.id;
         var pnt = _Register.find(id);
 
-        
-        if (pnt != undefined && pnt.ref != undefined) {
-          destination = _Register.find(pnt.ref);
 
+        if (pnt != undefined && pnt.ref != undefined) {
           line.dest_x = pnt.x;
           line.dest_y = pnt.y;
 
@@ -164,9 +147,8 @@ function nativeEvents() {
 
           // for automatic redrawing
           // line.redraw();
-          new Link(source, destination, line).redraw();
-
-        } 
+          new Link(cp, pnt, line).redraw();
+        }
         else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);
           ref.remove();

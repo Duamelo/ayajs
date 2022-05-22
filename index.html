@@ -30,27 +30,54 @@
          height: 200
       });
 
-      var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
+      // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
-      var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
+      // var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
 
       
-      rect.form.addChild(rect2, (p, c)=> {
+      // rect.form.addChild(rect2, (p, c)=> {
+      //    console.log(c);
+      //    c.setOffsetX(p.x + 200);
+      //    c.setOffsetY(p.y + 100);
+      //    c.setScaleX(4);
+      //    c.setScaleY(3);
+      // }, (p, c) => {
+
+      // });
+
+      // rect.form.addChild(tri, (p, c)=> {
+      //    c.setOffsetX(p.x + 300);
+      //    c.setOffsetY(p.y);
+      // }, (p, c) => {
+      //    c.setRotateAngle(-10);
+      // });
+
+      // var line = new aya.Component("line",{
+      //    x: 10,
+      //    y: 10,
+      //    dest_x: 390,
+      //    dest_y:290
+      // });
+
+      var losange = new aya.Component("losange", {
+         x1: 500,
+         y1: 150,
+         x2: 600,
+         y2: 250
+      });
+
+      var los = new aya.Losange(aya._uuid.generate(), 50, 0,  100, 50);
+
+      losange.form.addChild(los, (p,c)=>{
+         c.setOffsetX(p.x1);
+         c.setOffsetY(p.y1);
+         // c.setScaleX(1/2);
+         // c.setScaleY(1/2);
          console.log(c);
-         c.setOffsetX(p.x + 200);
-         c.setOffsetY(p.y + 100);
-         c.setScaleX(4);
-         c.setScaleY(3);
       }, (p, c) => {
 
-      });
+      })
 
-      rect.form.addChild(tri, (p, c)=> {
-         c.setOffsetX(p.x + 300);
-         c.setOffsetY(p.y);
-      }, (p, c) => {
-         c.setRotateAngle(-10);
-      });
       document.body.append(svg);
    </script>
 

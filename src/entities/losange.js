@@ -33,24 +33,33 @@ class Losange {
         this.x2 = x2;
         this.y2 = y2;
 
+        this.scaleX = 1;
+        this.scaleY = 1;
+
+        this.offsetX = 0;
+        this.offsetY = 0;
+    
+        this.angle = 0;
+        this.centerX = 0;
+        this.centerY = 0;
+
+        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+        this.height =  (this.y2 - this.y1) *2 * this.scaleY;
+
         this.x3 = this.x1;
-        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+        this.y3 = this.y1 + this.height;
 
-        this.x4 = this.x1 - (this.x2 - this.x1);
+        this.x4 = this.x1 - this.width / 2;
         this.y4 = this.y2;
-
-        this.h_diagonal = this.x2 - this.x4;
-        this.v_diagonal = this.y3 - this.y1;
 
         this.c_svg = "";
         this.box = "";
         this.type = "losange";
 
-
         this.children = [];
 
         this.events = new EventManager();
-        
+
         this.c_points = [
           new Point(this.uuid,0,0),
           new Point(this.uuid,0,0),
@@ -64,8 +73,19 @@ class Losange {
           new Point(this.uuid, 0, 0),
           new Point(this.uuid, 0, 0),
         ];
-
     }
+
+
+    addChild(child, scale, rotate){
+      child.setOffsetX(this.x1);
+      child.setOffsetY(this.y1);
+      scale(this, child);
+      rotate(this, child);
+      child.draw(svg);
+      this.children.push({child, scale, rotate});
+    }
+
+    
 
   draw(svgs) {
     const ns = "http://www.w3.org/2000/svg";
@@ -73,7 +93,7 @@ class Losange {
     this.c_svg = document.createElementNS(ns, "path");
     this.box = document.createElementNS(ns, "path");
 
-    var p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
 
     this.box.setAttribute("id", this.uuid);
     this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -92,6 +112,7 @@ class Losange {
 
     this.drawVertex();
     this.drawConnector();
+    this.drawBox();
 
     this.c_points.map((point) => {
         point.draw(svgs);
@@ -100,6 +121,13 @@ class Losange {
     this.vertex.map((v) => {
         v.draw(svgs);
       });
+
+    this.children.map( ({child, scale, rotate}) => {
+      scale(this, child);
+      rotate(this, child);
+      child.redraw();
+    });
+  
     
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
     this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
@@ -109,47 +137,46 @@ class Losange {
   }
 
   drawVertex(){
-    this.vertex[0].x = this.x1 - ( (this.x2 - this.x4) / 2);
-    this.vertex[0].y = this.y1;
+    this.vertex[0].x = (this.x1 + this.offsetX) - ( (this.width) / 2) * this.scaleX ;
+    this.vertex[0].y = (this.y1 + this.offsetY);
 
-    this.vertex[1].x = this.x1 + ( (this.x2 - this.x4) / 2);
-    this.vertex[1].y = this.y1;
+    this.vertex[1].x = (this.x1 + this.offsetX) +  ( (this.width) / 2) * this.scaleX;
+    this.vertex[1].y = (this.y1 + this.offsetY);
 
-    this.vertex[2].x = this.x2;
-    this.vertex[2].y = this.y3;
+    this.vertex[2].x = (this.x2 + this.offsetX);
+    this.vertex[2].y = (this.y3 + this.offsetY);
 
-    this.vertex[3].x = this.x4;
-    this.vertex[3].y = this.y3;
+    this.vertex[3].x = (this.x4 + this.offsetX);
+    this.vertex[3].y = (this.y3 + this.offsetY);
   }
 
   drawConnector() {
-    this.c_points[0].x = this.x1;
-    this.c_points[0].y = this.y1;
+    this.c_points[0].x = (this.x1 + this.offsetX);
+    this.c_points[0].y = (this.y1 + this.offsetY);
 
-    this.c_points[1].x = this.x2;
-    this.c_points[1].y = this.y2;
+    this.c_points[1].x = (this.x2 + this.offsetX);
+    this.c_points[1].y = (this.y2 + this.offsetY);
 
-    this.c_points[2].x = this.x3;
-    this.c_points[2].y = this.y3;
+    this.c_points[2].x = (this.x3 + this.offsetX);
+    this.c_points[2].y = (this.y3 + this.offsetY);
 
-    this.c_points[3].x = this.x4;
-    this.c_points[3].y = this.y4;
+    this.c_points[3].x = (this.x4 + this.offsetX);
+    this.c_points[3].y = (this.y4 + this.offsetY);
   }
 
-  resize(pos, dx, dy, param = {}) {
-
-    if(Object.keys(param).length > 0){
-
-    }
-    else {
+  resize(pos, dx, dy) {
       if(pos == 0){
         this.x1 += dx;
         this.y1 += dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-        this.x4 = this.x1 - (this.x2 - this.x1);
+
+        this.x3 = this.x1;
+        this.y3 = this.y1 + this.height;
+
+        this.x4 = this.x1 - this.width / 2;
         this.y4 = this.y2;
       }
       else if(pos == 1){
@@ -157,38 +184,52 @@ class Losange {
         this.x1 += dx;
         this.y1 += dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-        this.x2 = this.x1 + (this.x1 - this.x4);
+
+        this.x3 = this.x1;
+        this.y3 = this.y1 + this.height;
+
+        this.x2 = this.x1 + this.width / 2;
         this.y2 = this.y4;
       }
       else if(pos == 2){
         this.x1 += dx;
         this.y1 += -dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-        this.x2 = this.x1 + (this.x1 - this.x4);
+        this.x3 = this.x1;
+        this.y3 = this.y1 + this.height;
+
+        this.x2 = this.x1 + this.width / 2;
         this.y2 = this.y4;
       }
       else if(pos == 3){
         this.x1 += dx;
         this.y1 += -dy;
 
-        this.x3 = this.x1;
-        this.y3 = this.y1 + (this.y2 - this.y1)*2;
+        this.width = (this.x2 - this.x1) * 2 * this.scaleX;
+        this.height =  (this.y2 - this.y1)*2 * this.scaleY;
 
-        this.x4 = this.x1 - (this.x2 - this.x1);
+        this.x3 = this.x1;
+        this.y3 = this.y1 + this.height;
+
+        this.x4 = this.x1 - this.width / 2;
         this.y4 = this.y2;
       }
-    }
+
+      this.children.map( ({child, scale, rotate}) => {
+        scale(this, child);
+        rotate(this, child);
+        child.redraw();
+      });
   }
 
   redraw() {
-
-    var p = `M ${this.x1} ${this.y1} L ${this.x2} ${this.y2} L ${this.x3} ${this.y3} L ${this.x4} ${this.y4} Z`;
+    var p = `M ${this.x1 + this.offsetX} ${this.y1 + this.offsetY} L ${this.x2 + this.offsetX} ${this.y2 + this.offsetY} L ${this.x3 + this.offsetX} ${this.y1 + this.offsetY + ((this.y2 - this.y1) *2 * this.scaleY)} L ${this.x1 + this.offsetX - ((this.x2 - this.x1) * 2 * this.scaleX)/2} ${this.y4 + this.offsetY} Z`;
 
     this.drawVertex();
     this.drawConnector();
@@ -199,9 +240,16 @@ class Losange {
     this.c_points.map((p) => {
         p.redraw();
       });
+
       this.vertex.map((v) => {
-        v.redraw();
-      });
+      v.redraw();
+    });
+
+    this.children.map( ({child, scale, rotate}) => {
+      scale(this, child);
+      rotate(this, child);
+      child.redraw();
+    })
   }
 
   drawBox(){
@@ -209,13 +257,13 @@ class Losange {
     /* dessin du contour de la forme sous forme de carré */
 
     var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-              L ${this.c_points[0].x} ${this.c_points[0].y} 
-              L ${this.vertex[1].x}   ${this.vertex[1].y} 
-              L ${this.c_points[1].x} ${this.c_points[1].y}
-              L ${this.vertex[2].x}   ${this.vertex[2].y}
-              L ${this.c_points[2].x} ${this.c_points[2].y} 
-              L ${this.vertex[3].x}   ${this.vertex[3].y} 
-              L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+              L ${this.c_points[0].x } ${this.c_points[0].y} 
+              L ${this.vertex[1].x }   ${this.vertex[1].y} 
+              L ${this.c_points[1].x } ${this.c_points[1].y}
+              L ${this.vertex[2].x }   ${this.vertex[2].y}
+              L ${this.c_points[2].x } ${this.c_points[2].y} 
+              L ${this.vertex[3].x }   ${this.vertex[3].y} 
+              L ${this.c_points[3].x } ${this.c_points[3].y} Z`;
 
     this.box.setAttribute("d", p);
   }
@@ -242,12 +290,77 @@ class Losange {
     });
   }
 
-  createChildren(children){
-    children.map( (chd) => {
-
-    });
+  setRotateAngle(angle){
+    this.angle = angle;
   }
 
+  setOffsetX(x){
+    this.offsetX = x;
+  }
+
+  setOffsetY(y){
+    this.offsetY = y;
+  }
+
+  setScaleX(x){
+    this.scaleX = x;
+  }
+
+  setScaleY(y){
+    this.scaleY = y;
+  }
+
+  getOffsetX(){
+    return this.offsetX;
+  }
+
+  getOffsetY(){
+    return this.offsetY;
+  }
+
+  getScaleX(){
+    return this.scaleX;
+  }
+
+  getScaleY(){
+    return this.scaleY;
+  }
+
+  optimalPath(line){
+    var _x, _y;
+    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+    var b = line.y - a * line.x;
+
+    for (var i = 0; i <= 3; i++){
+        if(i % 2 == 0){
+            _y = this.vertex[i].y;
+            _x = (_y - b)/a;
+        }
+        else{
+            _x = this.vertex[i].x;
+            _y = a * _x + b;
+        }
+
+        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+          continue;
+
+          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+            return this.c_points[i];
+           }
+      }
+    return null;
+  }
 }
 
 export { Losange };

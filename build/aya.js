@@ -1237,6 +1237,8 @@
 	      this.x3 = this.x3   * Math.cos(this.angle) - this.y3 * Math.sin(this.angle);
 	      this.y3 = this.x3   * Math.sin(this.angle) + this.y3 * Math.cos(this.angle);
 
+	      console.log(this.x1 + " " + this.y1 + " " + this.x2 + " " + this.y2 + " " + this.x3 + " " + this.y3);
+
 	      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 	    }
 	    else

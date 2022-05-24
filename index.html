@@ -23,34 +23,34 @@
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
     
-      // var rect = new aya.Component("rectangle", {
-      //    x: 100,
-      //    y: 100, 
-      //    width: 300,
-      //    height: 200
-      // });
+      var rect = new aya.Component("rectangle", {
+         x: 100,
+         y: 100, 
+         width: 300,
+         height: 200
+      });
 
-      // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
+      var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
-      // var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
+      var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
 
       
-      // rect.form.addChild(rect2, (p, c)=> {
-      //    console.log(c);
-      //    c.setOffsetX(p.x + 200);
-      //    c.setOffsetY(p.y + 100);
-      //    c.setScaleX(4);
-      //    c.setScaleY(3);
-      // }, (p, c) => {
+      rect.form.addChild(rect2, (p, c)=> {
+         console.log(c);
+         c.setOffsetX(p.x + 200);
+         c.setOffsetY(p.y + 100);
+         c.setScaleX(4);
+         c.setScaleY(3);
+      }, (p, c) => {
 
-      // });
+      });
 
-      // rect.form.addChild(tri, (p, c)=> {
-      //    c.setOffsetX(p.x + 300);
-      //    c.setOffsetY(p.y);
-      // }, (p, c) => {
-      //    c.setRotateAngle(-10);
-      // });
+      rect.form.addChild(tri, (p, c)=> {
+         c.setOffsetX(p.x);
+         c.setOffsetY(p.y + 100);
+      }, (p, c) => {
+         // c.setRotateAngle(-45 );
+      });
 
       // var losange = new aya.Component("losange", {
       //    x: 500,
@@ -82,21 +82,21 @@
 
       // })
 
-      var line = new aya.Component("line",{
-         x: 200,
-         y: 200,
-         dest_x: 390,
-         dest_y:290
-      });
+      // var line = new aya.Component("line",{
+      //    x: 200,
+      //    y: 200,
+      //    dest_x: 390,
+      //    dest_y:290
+      // });
 
-      var l = new aya.Line(aya._uuid.generate(), 0, 0, 50, 100);
+      // var l = new aya.Line(aya._uuid.generate(), 0, 0, 50, 100);
 
-      line.form.addChild(l, (p, c) => {
-         c.setOffsetX(p.x);
-         c.setOffsetY(p.y);
-      }, (p, c)=> {
+      // line.form.addChild(l, (p, c) => {
+      //    c.setOffsetX(p.x);
+      //    c.setOffsetY(p.y);
+      // }, (p, c)=> {
 
-      })
+      // });
       document.body.append(svg);
    </script>
 

@@ -52,13 +52,14 @@ class Line
         ];
     }
 
-    addChild(child, scale, rotate){
+    addChild(child, translate, rotate){
         child.setOffsetX(this.x);
         child.setOffsetY(this.y);
-        scale(this, child);
+        child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
+        translate(this, child);
         rotate(this, child);
         child.draw(svg);
-        this.children.push({child, scale, rotate});
+        this.children.push({child, translate, rotate});
     }
     
     drawVertex(){
@@ -113,14 +114,24 @@ class Line
         var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
         this.c_svg.setAttribute("d", p);
 
-        this.children.map ( ({child, scale, rotate}) => {
-            scale(this, child);
+        this.children.map ( ({child, translate, rotate}) => {
+            translate(this, child);
             rotate(this, child);
             child.redraw();
         });
     }
 
+    calculateAngle(pos, alpha = undefined, abc = undefined ){
+        if(pos == 0){
+            var alp =  alpha == undefined ? Math.acos( (Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.dest_y - this.y), 2))) ) : alpha;
+            var ab = abc == undefined ? Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) ) : abc;
+        }
+
+        return ((ab - alp) * 180) / Math.PI;
+    }
+
     resize(pos, dx, dy){
+
         if(pos == 0){
             this.x += dx;
             this.y += dy;
@@ -129,8 +140,13 @@ class Line
             this.dest_x += dx;
             this.dest_y += dy;
         }
-        this.children.map ( ({child, scale, rotate}) => {
-            scale(this, child);
+
+
+
+        this.children.map ( ({child, translate, rotate}) => {
+            translate(this, child);
+            console.log(this.calculateAngle(0) + ( Math.PI * 90)/180);
+            child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
             rotate(this, child);
             child.redraw();
         });
@@ -144,6 +160,7 @@ class Line
     setRotateAngle(angle){
         this.angle = angle;
     }
+
 
     setOffsetX(x){
         this.offsetX = x;
@@ -159,6 +176,10 @@ class Line
 
     setScaleY(y){
         this.scaleY = y;
+    }
+
+    getRotateAngle(){
+       return  this.angle;
     }
 
     getOffsetX(){

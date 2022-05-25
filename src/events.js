@@ -24,7 +24,7 @@ function nativeEvents() {
       id = e.srcElement.id;
 
       cp = _Register.find(id);
-      console.log(cp);
+      // console.log(cp);
 
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;

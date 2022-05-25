@@ -114,24 +114,29 @@ class Triangle {
     var p;
 
     if(this.angle != 0){
+      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
+
       this.angle = (this.angle * Math.PI) / 180;
 
-      this.x1 = this.x1 * Math.cos(this.angle) - this.y1  * Math.sin(this.angle) ;
-      this.y1 = this.x1 * Math.sin(this.angle) + this.y1  * Math.cos(this.angle) ;
+      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
+      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
 
-      this.x2 = this.x2  * Math.cos(this.angle) - this.y2  * Math.sin(this.angle) ;
-      this.y2 = this.x2  * Math.sin(this.angle) + this.y2  * Math.cos(this.angle) ;
+      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
+      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
 
+      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
+      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
 
-      this.x3 = this.x3   * Math.cos(this.angle) - this.y3 * Math.sin(this.angle);
-      this.y3 = this.x3   * Math.sin(this.angle) + this.y3 * Math.cos(this.angle);
+      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
 
-      console.log(this.x1 + " " + this.y1 + " " + this.x2 + " " + this.y2 + " " + this.x3 + " " + this.y3);
+      dx = _x - this.centerX;
+      dy = _y - this.centerY;
 
-      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
     }
     else
-    p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
 
     this.c_svg.setAttribute("id", this.uuid);
@@ -170,8 +175,34 @@ class Triangle {
     });
   }
 
+  
+
   redraw() {
-  var p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+    var p;
+    if(this.angle != 0){
+      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
+
+      // this.angle = (this.angle * Math.PI) / 180;
+
+      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
+      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
+
+      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
+      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
+
+      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
+      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
+
+      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+      dx = _x - this.centerX;
+      dy = _y - this.centerY;
+
+      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+    }
+    else
+      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
   this.c_svg.setAttribute("d", p);
   }

@@ -11,7 +11,7 @@ import {_uuid} from "./uuid.js";
  */
 
 class Point {
-  constructor(uuid, x = 0, y = 0, r = 3) {
+  constructor(uuid, x = 0, y = 0, r = 5) {
 
     this.ref = uuid;
     this.uuid = _uuid.generate();
@@ -36,12 +36,10 @@ class Point {
 
     this.c_svg.setAttribute("r", this.r);
 
-    // this.c_svg.setAttribute("class", "vertex");
+    this.c_svg.setAttribute("class", "vertex");
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-    //this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 
     svgs.appendChild(this.c_svg);
 

@@ -88,7 +88,7 @@
 	 */
 
 	class Point {
-	  constructor(uuid, x = 0, y = 0, r = 3) {
+	  constructor(uuid, x = 0, y = 0, r = 5) {
 
 	    this.ref = uuid;
 	    this.uuid = _uuid.generate();
@@ -113,12 +113,10 @@
 
 	    this.c_svg.setAttribute("r", this.r);
 
-	    // this.c_svg.setAttribute("class", "vertex");
+	    this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
-	    //this.c_svg.addEventListener("mousemove", events.mouseMoveCb);
-	    this.c_svg.addEventListener("mouseup", events.mouseUpCb);
 
 	    svgs.appendChild(this.c_svg);
 
@@ -163,6 +161,8 @@
 	        this.dest_x = dest_x;
 	        this.dest_y = dest_y;
 
+	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+
 	        this.events = new EventManager();
 
 	        this.c_svg = "";
@@ -182,12 +182,15 @@
 	            new Point(this.uuid, 0, 0),
 	            new Point(this.uuid, 0, 0),
 	        ];
+	        this.c_points = [
+	            new Point(this.uuid, 0, 0),
+	            new Point(this.uuid, 0, 0),
+	        ];
 	    }
 
 	    addChild(child, translate, rotate){
 	        child.setOffsetX(this.x);
 	        child.setOffsetY(this.y);
-	        child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
 	        translate(this, child);
 	        rotate(this, child);
 	        child.draw(svg);
@@ -204,7 +207,6 @@
 
 
 	    draw(svgs){
-
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
@@ -220,14 +222,20 @@
 
 	        this.drawVertex();
 
+	        this.c_points.map((point) => {
+	            point.draw(svgs);
+	        });
+
+	          
 	        this.vertex.map( (vertex) => {
 	            vertex.draw(svgs);
 	        });
 
 	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	        this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+	        this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
 	        this.events.create();
-
 	    }
 
 	    shift(dx,dy){
@@ -253,13 +261,23 @@
 	        });
 	    }
 
-	    calculateAngle(pos, alpha = undefined, abc = undefined ){
-	        if(pos == 0){
-	            var alp =  alpha == undefined ? Math.acos( (Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.dest_y - this.y), 2))) ) : alpha;
-	            var ab = abc == undefined ? Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) ) : abc;
-	        }
+	    calculateAngle(){
+	        var angle;
+	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-	        return ((ab - alp) * 180) / Math.PI;
+	        if(this.pente == 0)
+	            angle = 0;
+	        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+	            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+	        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+	            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+	        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+	            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+	        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+	            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+	        
+
+	        return angle;
 	    }
 
 	    resize(pos, dx, dy){
@@ -277,8 +295,7 @@
 
 	        this.children.map ( ({child, translate, rotate}) => {
 	            translate(this, child);
-	            console.log(this.calculateAngle(0) + ( Math.PI * 90)/180);
-	            child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
+	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
 	            rotate(this, child);
 	            child.redraw();
 	        });
@@ -526,36 +543,33 @@
 	      state = "";
 	    },
 	  mouseOverCb: function mouseovercb(e) {
-	      // id = e.srcElement.id;
+	      id = e.srcElement.id;
 
-	      // cp = _Register.find(id);
+	      cp = _Register.find(id);
 
-	      // if (cp.type == "point") {
-	      //   cp.form.vertex.map((v) => {
-	      //     v.c_svg.classList.remove("vertex");
-	      //     v.c_svg.classList.add("vertex_hover");
-	      //   });
+	        cp.form.vertex.map((v) => {
+	          v.c_svg.classList.remove("vertex");
+	          v.c_svg.classList.add("vertex_hover");
+	        });
 
-	      //   cp.form.c_points.map((v) => {
-	      //     v.c_svg.style.color = "gray";
-	      //     v.c_svg.classList.remove("vertex");
-	      //     v.c_svg.classList.add("vertex_hover");
-	      //   });
-	      // }
+	        cp.form.c_points.map((v) => {
+	          v.c_svg.classList.remove("vertex");
+	          v.c_svg.classList.add("vertex_hover");
+	        });
 	  },
 	  mouseLeaveCb: function mouseleavecb(e) {
-	    // id = e.srcElement.id;
-	    // cp = _Register.find(id);
-	    // if (cp.ref == undefined) {
-	    //   cp.form.vertex.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    //   cp.form.c_points.map((v) => {
-	    //     v.c_svg.classList.add("vertex");
-	    //     v.c_svg.classList.remove("vertex_hover");
-	    //   });
-	    // }
+	    id = e.srcElement.id;
+	    cp = _Register.find(id);
+	    if (cp.ref == undefined) {
+	      cp.form.vertex.map((v) => {
+	        v.c_svg.classList.add("vertex");
+	        v.c_svg.classList.remove("vertex_hover");
+	      });
+	      cp.form.c_points.map((v) => {
+	        v.c_svg.classList.add("vertex");
+	        v.c_svg.classList.remove("vertex_hover");
+	      });
+	    }
 	  }
 	}
 	}
@@ -1243,36 +1257,10 @@
 	    const ns = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(ns, "path");
 
-	    var p;
-
-	    if(this.angle != 0){
-	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-	      this.angle = (this.angle * Math.PI) / 180;
-
-	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
-	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
-
-	      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
-	      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
-
-	      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
-	      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
-
-	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
-	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
-
-	      dx = _x - this.centerX;
-	      dy = _y - this.centerY;
-
-	      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
-	    }
-	    else
-	      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
-
+	    this.redraw();
 
 	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.setAttribute("d", p);
+	    this.c_svg.setAttribute("d", this.p);
 	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
 	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
 	    this.c_svg.setAttribute("fill", "lavenderblush");
@@ -1282,8 +1270,6 @@
 
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-	    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
 	    this.events.create();
 	  }
@@ -1307,14 +1293,11 @@
 	    });
 	  }
 
-	  
+
 
 	  redraw() {
-	    var p;
 	    if(this.angle != 0){
 	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-	      // this.angle = (this.angle * Math.PI) / 180;
 
 	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
 	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
@@ -1331,21 +1314,21 @@
 	      dx = _x - this.centerX;
 	      dy = _y - this.centerY;
 
-	      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+	      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
 	    }
 	    else
-	      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+	      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
-	  this.c_svg.setAttribute("d", p);
+	  this.c_svg.setAttribute("d", this.p);
 	  }
-	  
+
 	  resize(pos, dx, dy) {
 	      if (pos == 0) {
 	        this.x1 = dx;
 	        this.y1 = dy;
 	        this.vertex[0].x = dx;
 	        this.vertex[0].y = dy;
-	      } 
+	      }
 	      else if (pos == 1) {
 	        this.x2 = dx;
 	        this.y2 = dy;

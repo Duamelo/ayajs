@@ -111,36 +111,10 @@ class Triangle {
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
 
-    var p;
-
-    if(this.angle != 0){
-      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-      this.angle = (this.angle * Math.PI) / 180;
-
-      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
-      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
-
-      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
-      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
-
-      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
-      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
-
-      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
-      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
-
-      dx = _x - this.centerX;
-      dy = _y - this.centerY;
-
-      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
-    }
-    else
-      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
-
+    this.redraw();
 
     this.c_svg.setAttribute("id", this.uuid);
-    this.c_svg.setAttribute("d", p);
+    this.c_svg.setAttribute("d", this.p);
     this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
     this.c_svg.setAttributeNS(null, "stroke-width", "2px");
     this.c_svg.setAttribute("fill", "lavenderblush");
@@ -150,8 +124,6 @@ class Triangle {
 
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
     this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
     this.events.create();
   }
@@ -175,14 +147,11 @@ class Triangle {
     });
   }
 
-  
+
 
   redraw() {
-    var p;
     if(this.angle != 0){
       var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-      // this.angle = (this.angle * Math.PI) / 180;
 
       _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
       _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
@@ -199,21 +168,21 @@ class Triangle {
       dx = _x - this.centerX;
       dy = _y - this.centerY;
 
-      p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
     }
     else
-      p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
-  this.c_svg.setAttribute("d", p);
+  this.c_svg.setAttribute("d", this.p);
   }
-  
+
   resize(pos, dx, dy) {
       if (pos == 0) {
         this.x1 = dx;
         this.y1 = dy;
         this.vertex[0].x = dx;
         this.vertex[0].y = dy;
-      } 
+      }
       else if (pos == 1) {
         this.x2 = dx;
         this.y2 = dy;

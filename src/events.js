@@ -157,36 +157,33 @@ function nativeEvents() {
       state = "";
     },
   mouseOverCb: function mouseovercb(e) {
-      // id = e.srcElement.id;
+      id = e.srcElement.id;
 
-      // cp = _Register.find(id);
+      cp = _Register.find(id);
 
-      // if (cp.type == "point") {
-      //   cp.form.vertex.map((v) => {
-      //     v.c_svg.classList.remove("vertex");
-      //     v.c_svg.classList.add("vertex_hover");
-      //   });
+        cp.form.vertex.map((v) => {
+          v.c_svg.classList.remove("vertex");
+          v.c_svg.classList.add("vertex_hover");
+        });
 
-      //   cp.form.c_points.map((v) => {
-      //     v.c_svg.style.color = "gray";
-      //     v.c_svg.classList.remove("vertex");
-      //     v.c_svg.classList.add("vertex_hover");
-      //   });
-      // }
+        cp.form.c_points.map((v) => {
+          v.c_svg.classList.remove("vertex");
+          v.c_svg.classList.add("vertex_hover");
+        });
   },
   mouseLeaveCb: function mouseleavecb(e) {
-    // id = e.srcElement.id;
-    // cp = _Register.find(id);
-    // if (cp.ref == undefined) {
-    //   cp.form.vertex.map((v) => {
-    //     v.c_svg.classList.add("vertex");
-    //     v.c_svg.classList.remove("vertex_hover");
-    //   });
-    //   cp.form.c_points.map((v) => {
-    //     v.c_svg.classList.add("vertex");
-    //     v.c_svg.classList.remove("vertex_hover");
-    //   });
-    // }
+    id = e.srcElement.id;
+    cp = _Register.find(id);
+    if (cp.ref == undefined) {
+      cp.form.vertex.map((v) => {
+        v.c_svg.classList.add("vertex");
+        v.c_svg.classList.remove("vertex_hover");
+      });
+      cp.form.c_points.map((v) => {
+        v.c_svg.classList.add("vertex");
+        v.c_svg.classList.remove("vertex_hover");
+      });
+    }
   }
 }
 }

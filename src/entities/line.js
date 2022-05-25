@@ -31,6 +31,8 @@ class Line
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
+        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+
         this.events = new EventManager();
 
         this.c_svg = "";
@@ -50,12 +52,15 @@ class Line
             new Point(this.uuid, 0, 0),
             new Point(this.uuid, 0, 0),
         ];
+        this.c_points = [
+            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0),
+        ];
     }
 
     addChild(child, translate, rotate){
         child.setOffsetX(this.x);
         child.setOffsetY(this.y);
-        child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
         translate(this, child);
         rotate(this, child);
         child.draw(svg);
@@ -72,7 +77,6 @@ class Line
 
 
     draw(svgs){
-
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
@@ -88,14 +92,20 @@ class Line
 
         this.drawVertex();
 
+        this.c_points.map((point) => {
+            point.draw(svgs);
+        });
+
+          
         this.vertex.map( (vertex) => {
             vertex.draw(svgs);
         });
 
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+        this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+        this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
         this.events.create();
-
     }
 
     shift(dx,dy){
@@ -121,13 +131,23 @@ class Line
         });
     }
 
-    calculateAngle(pos, alpha = undefined, abc = undefined ){
-        if(pos == 0){
-            var alp =  alpha == undefined ? Math.acos( (Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.dest_x - this.x), 2) + Math.pow((this.dest_y - this.y), 2))) ) : alpha;
-            var ab = abc == undefined ? Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) ) : abc;
-        }
+    calculateAngle(){
+        var angle;
+        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-        return ((ab - alp) * 180) / Math.PI;
+        if(this.pente == 0)
+            angle = 0;
+        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+        
+
+        return angle;
     }
 
     resize(pos, dx, dy){
@@ -145,8 +165,7 @@ class Line
 
         this.children.map ( ({child, translate, rotate}) => {
             translate(this, child);
-            console.log(this.calculateAngle(0) + ( Math.PI * 90)/180);
-            child.setRotateAngle((this.calculateAngle(0) + ( Math.PI * 90)/180));
+            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
             rotate(this, child);
             child.redraw();
         });

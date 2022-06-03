@@ -2,6 +2,7 @@ import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
 import { EventManager } from "../eventManager.js";
 import { Point } from "./point.js";
+import { config } from "../../config.js";
 
 /**
  * Rectangle class
@@ -83,9 +84,9 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "id", this.uuid);
     this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
     this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
-    this.c_svg.setAttributeNS(null, "stroke", "black");
-    this.c_svg.setAttributeNS(null, "stroke-width", "3px");
-    this.c_svg.setAttributeNS(null, "fill", "cornsilk");
+    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+    this.c_svg.setAttributeNS(null, "fill", config.form.fill);
 
 
     svgs.appendChild(this.c_svg);
@@ -160,6 +161,9 @@ class Rectangle {
   }
 
   drawVertex(){
+    if(this.vertex.length == 0)
+      return;
+    
     this.vertex[0].x = this.x + this.offsetX;
     this.vertex[0].y = this.y + this.offsetY;
 
@@ -174,6 +178,9 @@ class Rectangle {
   }
 
   drawConnector() {
+    if(this.c_points.length == 0)
+      return;
+    
     this.c_points[0].x = this.x +  this.offsetX  + (this.width / 2) * this.scaleX;
     this.c_points[0].y = this.y + this.offsetY ;
 

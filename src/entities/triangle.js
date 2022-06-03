@@ -97,9 +97,13 @@ class Triangle {
   }
 
   drawVertex(){
+    if(this.vertex.length == 0)
+      return;
   }
 
   drawConnector() {
+    if(this.c_points.length == 0)
+      return;
   }
 
   drawBox(){
@@ -107,7 +111,7 @@ class Triangle {
 
 
   draw(svgs) {
-
+      
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
 

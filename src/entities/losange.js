@@ -34,7 +34,7 @@ class Losange {
       this.c_svg = "";
       this.box = "";
       this.type = "losange";
-
+      this.p = "";
       this.scaleX = 1;
       this.scaleY = 1;
 
@@ -42,6 +42,9 @@ class Losange {
       this.offsetY = 0;
   
       this.angle = 0;
+
+      this.centerX = 0;
+      this.centerY = 0;
 
       this.children = [];
 
@@ -78,7 +81,7 @@ class Losange {
     this.c_svg = document.createElementNS(ns, "path");
     this.box = document.createElementNS(ns, "path");
 
-    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+    this.redraw();
 
     this.box.setAttribute("id", this.uuid);
     this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
@@ -87,32 +90,13 @@ class Losange {
     this.box.setAttribute("stroke-dasharray", "4");
 
     this.c_svg.setAttribute("id", this.uuid);
-    this.c_svg.setAttribute("d", p);
+    this.c_svg.setAttribute("d", this.p);
     this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
     this.c_svg.setAttributeNS(null, "stroke-width", "2px");
     this.c_svg.setAttribute("fill", "lavenderblush");
 
     svgs.appendChild(this.c_svg);
-    svg.appendChild(this.box);
-
-    this.drawVertex();
-    this.drawConnector();
-    this.drawBox();
-
-    this.c_points.map((point) => {
-        point.draw(svgs);
-      });
-
-    this.vertex.map((v) => {
-        v.draw(svgs);
-      });
-
-    this.children.map( ({child, scale, rotate}) => {
-      scale(this, child);
-      rotate(this, child);
-      child.redraw();
-    });
-  
+    svgs.appendChild(this.box);
     
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
     this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
@@ -122,6 +106,9 @@ class Losange {
   }
 
   drawVertex(){
+    if(this.vertex.length == 0)
+      return;
+
     this.vertex[0].x = this.x + this.offsetX - (this.width / 2 * this.scaleX) ;
     this.vertex[0].y = this.y + this.offsetY;
 
@@ -136,6 +123,9 @@ class Losange {
   }
 
   drawConnector() {
+    if(this.c_points.length == 0)
+      return;
+    
     this.c_points[0].x = this.x + this.offsetX;
     this.c_points[0].y = this.y + this.offsetY;
 
@@ -189,13 +179,31 @@ class Losange {
   }
 
   redraw() {
-    var p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+
+    if(this.angle != 0){
+      var x, y, _x, _y, dx, dy;
+
+      x = this.x  * Math.cos(this.angle) - this.y   * Math.sin(this.angle) ;
+      y = this.x  * Math.sin(this.angle) + this.y   * Math.cos(this.angle) ;
+
+
+      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+      dx = _x - this.centerX;
+      dy = _y - this.centerY;
+
+      this.p = `M ${x - dx + this.offsetX} ${y - dy + this.offsetY}  L ${x - dx  + this.offsetX + (this.width/2 * this.scaleX)} ${y - dy + this.offsetY + (this.height/2 * this.scaleY)}  L ${x - dx + this.offsetX} ${ y - dy + this.offsetY + (this.height * this.scaleY)}  L ${ x - dx + this.offsetX - (this.width/2 * this.scaleX)} ${ y - dy + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+    }
+    else
+      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+
 
     this.drawVertex();
     this.drawConnector();
     this.drawBox();
 
-    this.c_svg.setAttribute("d", p);
+    this.c_svg.setAttribute("d",this.p);
 
     this.c_points.map((p) => {
         p.redraw();
@@ -215,7 +223,9 @@ class Losange {
   drawBox(){
 
     /* dessin du contour de la forme sous forme de carré */
-
+    if(this.c_points.length == 0 || this.vertex.length == 0)
+      return;
+    
     var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
               L ${this.c_points[0].x } ${this.c_points[0].y} 
               L ${this.vertex[1].x }   ${this.vertex[1].y} 
@@ -248,6 +258,11 @@ class Losange {
     this.vertex.map((v) => {
       v.shift(dx, dy);
     });
+  }
+
+  setRotateCenter(centerX, centerY){
+    this.centerX = centerX;
+    this.centerY = centerY;
   }
 
   setRotateAngle(angle){

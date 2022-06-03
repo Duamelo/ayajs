@@ -67,6 +67,8 @@ class Circle
     }
   
     drawVertex(){
+        if(this.vertex.length == 0)
+            return;
         this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
         this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
     
@@ -81,6 +83,8 @@ class Circle
     }
     
     drawConnector() {
+        if(this.c_points.length == 0)
+            return;
         this.c_points[0].x = this.x + this.offsetX;
         this.c_points[0].y = this.y + this.offsetY - this.r * this.scale;
 

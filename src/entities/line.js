@@ -3,6 +3,8 @@ import { _Register } from "../register";
 import { EventManager } from "../eventManager";
 import {events} from "../events";
 import { Point } from "./point";
+import { config } from "../../config";
+import { FactoryForm } from "../factoryForm";
 
 
 /**
@@ -56,9 +58,39 @@ class Line
             new Point(this.uuid, 0, 0),
             new Point(this.uuid, 0, 0),
         ];
+
+        if(config.line != undefined && Object.keys(config.line.ends.left).length > 0){
+            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props)
+            this.addChild(child, (p, c) => {
+                c.setOffsetX(p.x - 5);
+                c.setOffsetY(p.y - 5);
+            },  (p, c) => {
+                c.setRotateCenter(c.x, c.y);
+                c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+                
+            } );
+        }
+        
+        if(config.line != undefined && Object.keys(config.line.ends.right).length > 0){
+            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props)
+            this.addChild(child, (p, c) => {
+                console.log(c);
+                console.log(config.line.ends.right.props.x3);
+                console.log(config.line.ends.right.props.x1);
+                c.setOffsetX(p.dest_x);
+                c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
+            },  (p, c) => {
+                console.log(c);
+                c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
+                c.setRotateAngle(p.calculateAngle());
+            } );
+            
+        }
     }
 
     addChild(child, translate, rotate){
+        child.vertex = [];
+        child.c_points = [];
         child.setOffsetX(this.x);
         child.setOffsetY(this.y);
         translate(this, child);
@@ -68,6 +100,9 @@ class Line
     }
     
     drawVertex(){
+        if(this.vertex.length == 0)
+            return;
+        
         this.vertex[0].x = this.x + this.offsetX;
         this.vertex[0].y = this.y + this.offsetY;
 

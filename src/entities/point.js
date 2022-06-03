@@ -1,3 +1,4 @@
+import { config } from "../../config.js";
 import {events} from "../events.js";
 import {_Register} from "../register.js";
 import {_uuid} from "./uuid.js";
@@ -34,7 +35,7 @@ class Point {
 
     this.c_svg.setAttribute("cy", this.y);
 
-    this.c_svg.setAttribute("r", this.r);
+    this.c_svg.setAttribute("r", config.point.radius);
 
     // this.c_svg.setAttribute("class", "vertex");
 

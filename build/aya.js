@@ -113,7 +113,7 @@
 
 	    this.c_svg.setAttribute("r", this.r);
 
-	    this.c_svg.setAttribute("class", "vertex");
+	    // this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
@@ -541,36 +541,36 @@
 	        }
 	      }
 	      state = "";
-	    },
-	  mouseOverCb: function mouseovercb(e) {
-	      id = e.srcElement.id;
-
-	      cp = _Register.find(id);
-
-	        cp.form.vertex.map((v) => {
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
-
-	        cp.form.c_points.map((v) => {
-	          v.c_svg.classList.remove("vertex");
-	          v.c_svg.classList.add("vertex_hover");
-	        });
-	  },
-	  mouseLeaveCb: function mouseleavecb(e) {
-	    id = e.srcElement.id;
-	    cp = _Register.find(id);
-	    if (cp.ref == undefined) {
-	      cp.form.vertex.map((v) => {
-	        v.c_svg.classList.add("vertex");
-	        v.c_svg.classList.remove("vertex_hover");
-	      });
-	      cp.form.c_points.map((v) => {
-	        v.c_svg.classList.add("vertex");
-	        v.c_svg.classList.remove("vertex_hover");
-	      });
 	    }
-	  }
+	  // mouseOverCb: function mouseovercb(e) {
+	  //     id = e.srcElement.id;
+
+	  //     cp = _Register.find(id);
+
+	  //       cp.form.vertex.map((v) => {
+	  //         v.c_svg.classList.remove("vertex");
+	  //         v.c_svg.classList.add("vertex_hover");
+	  //       });
+
+	  //       cp.form.c_points.map((v) => {
+	  //         v.c_svg.classList.remove("vertex");
+	  //         v.c_svg.classList.add("vertex_hover");
+	  //       });
+	  // },
+	  // mouseLeaveCb: function mouseleavecb(e) {
+	  //   id = e.srcElement.id;
+	  //   cp = _Register.find(id);
+	  //   if (cp.ref == undefined) {
+	  //     cp.form.vertex.map((v) => {
+	  //       v.c_svg.classList.add("vertex");
+	  //       v.c_svg.classList.remove("vertex_hover");
+	  //     });
+	  //     cp.form.c_points.map((v) => {
+	  //       v.c_svg.classList.add("vertex");
+	  //       v.c_svg.classList.remove("vertex_hover");
+	  //     });
+	  //   }
+	  // }
 	}
 	}
 	var events = nativeEvents();

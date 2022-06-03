@@ -23,12 +23,20 @@
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
     
-      // var rect = new aya.Component("rectangle", {
-      //    x: 100,
-      //    y: 100, 
-      //    width: 300,
-      //    height: 200
-      // });
+      var rect = new aya.Component("rectangle", {
+         x: 100,
+         y: 100, 
+         width: 300,
+         height: 200
+      });
+
+
+      var rect = new aya.Component("rectangle", {
+         x: 600,
+         y: 200, 
+         width: 300,
+         height: 200
+      })
 
       // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
@@ -53,8 +61,8 @@
       //    c.setRotateAngle(-90);
       // });
 
-      var point = new aya.Point(aya._uuid.generate(), 50, 50);
-      point.draw(svg);
+      // var point = new aya.Point(aya._uuid.generate(), 50, 50);
+      // point.draw(svg);
 
       // var losange = new aya.Component("losange", {
       //    x: 500,
@@ -86,34 +94,34 @@
 
       // })
 
-      var tri = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
+      // var tri = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
 
-      var tri2 = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
+      // var tri2 = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
 
-      var line = new aya.Component("line",{
-         x: 200,
-         y: 200,
-         dest_x: 390,
-         dest_y:200
-      });
+      // var line = new aya.Component("line",{
+      //    x: 200,
+      //    y: 200,
+      //    dest_x: 390,
+      //    dest_y:200
+      // });
 
-      var a = 115;
+      // var a = 115;
       
-      line.form.addChild(tri, (p, c) => {
-         c.setOffsetX(p.dest_x  - 15);
-         c.setOffsetY(p.dest_y  - 17);
-      }, (p, c) => {
-         c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
-         c.setRotateAngle((p.calculateAngle() + ( Math.PI * 90)/180));
-      });
+      // line.form.addChild(tri, (p, c) => {
+      //    c.setOffsetX(p.dest_x  - 15);
+      //    c.setOffsetY(p.dest_y  - 17);
+      // }, (p, c) => {
+      //    c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
+      //    c.setRotateAngle((p.calculateAngle() + ( Math.PI * 90)/180));
+      // });
 
-      line.form.addChild(tri2, (p, c) => {
-         c.setOffsetX(p.x  - 15);
-         c.setOffsetY(p.y  - 17);
-      }, (p, c) => {
-         c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
-         c.setRotateAngle((p.calculateAngle() - ( Math.PI * 90)/180));
-      });
+      // line.form.addChild(tri2, (p, c) => {
+      //    c.setOffsetX(p.x  - 15);
+      //    c.setOffsetY(p.y  - 17);
+      // }, (p, c) => {
+      //    c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
+      //    c.setRotateAngle((p.calculateAngle() - ( Math.PI * 90)/180));
+      // });
 
 
       document.body.append(svg);

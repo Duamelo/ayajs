@@ -20,9 +20,7 @@ class Line
      * @param {number} y 
      * @param {number} dest_x 
      * @param {number} dest_y 
-     * @param {array of object} children 
      */
-
     constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
         this.uuid = uuid;
@@ -62,8 +60,8 @@ class Line
         if(config.line != undefined && Object.keys(config.line.ends.left).length > 0){
             var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props)
             this.addChild(child, (p, c) => {
-                c.setOffsetX(p.x - 5);
-                c.setOffsetY(p.y - 5);
+                c.setOffsetX(p.x - config.line.ends.left.props.height/2);
+                c.setOffsetY(p.y - config.line.ends.left.props.height/2);
             },  (p, c) => {
                 c.setRotateCenter(c.x, c.y);
                 c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
@@ -74,13 +72,9 @@ class Line
         if(config.line != undefined && Object.keys(config.line.ends.right).length > 0){
             var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props)
             this.addChild(child, (p, c) => {
-                console.log(c);
-                console.log(config.line.ends.right.props.x3);
-                console.log(config.line.ends.right.props.x1);
                 c.setOffsetX(p.dest_x);
                 c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
             },  (p, c) => {
-                console.log(c);
                 c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
                 c.setRotateAngle(p.calculateAngle());
             } );
@@ -111,7 +105,7 @@ class Line
     }
 
 
-    draw(svgs){
+    draw(svg){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
@@ -123,23 +117,20 @@ class Line
         this.c_svg.setAttribute("stroke", "indigo");
         this.c_svg.setAttributeNS(null, "stroke-width", "2px");
 
-        svgs.appendChild(this.c_svg);
+        svg.appendChild(this.c_svg);
 
         this.drawVertex();
 
         this.c_points.map((point) => {
-            point.draw(svgs);
+            point.draw(svg);
         });
 
           
         this.vertex.map( (vertex) => {
-            vertex.draw(svgs);
+            vertex.draw(svg);
         });
 
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-        this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-        this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
         this.events.create();
     }
 
@@ -180,7 +171,6 @@ class Line
             angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
         else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
             angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        
 
         return angle;
     }
@@ -195,8 +185,6 @@ class Line
             this.dest_x += dx;
             this.dest_y += dy;
         }
-
-
 
         this.children.map ( ({child, translate, rotate}) => {
             translate(this, child);
@@ -214,7 +202,6 @@ class Line
     setRotateAngle(angle){
         this.angle = angle;
     }
-
 
     setOffsetX(x){
         this.offsetX = x;

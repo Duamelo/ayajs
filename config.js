@@ -31,5 +31,4 @@ var config =  {
         }
     }
 }
-
 export {config};

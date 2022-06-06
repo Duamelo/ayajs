@@ -224,8 +224,8 @@
 	        if(config.line != undefined && Object.keys(config.line.ends.left).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props);
 	            this.addChild(child, (p, c) => {
-	                c.setOffsetX(p.x - 5);
-	                c.setOffsetY(p.y - 5);
+	                c.setOffsetX(p.x - config.line.ends.left.props.height/2);
+	                c.setOffsetY(p.y - config.line.ends.left.props.height/2);
 	            },  (p, c) => {
 	                c.setRotateCenter(c.x, c.y);
 	                c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
@@ -236,13 +236,9 @@
 	        if(config.line != undefined && Object.keys(config.line.ends.right).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props);
 	            this.addChild(child, (p, c) => {
-	                console.log(c);
-	                console.log(config.line.ends.right.props.x3);
-	                console.log(config.line.ends.right.props.x1);
 	                c.setOffsetX(p.dest_x);
 	                c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
 	            },  (p, c) => {
-	                console.log(c);
 	                c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
 	                c.setRotateAngle(p.calculateAngle());
 	            } );
@@ -342,7 +338,6 @@
 	            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 	        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
 	            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        
 
 	        return angle;
 	    }
@@ -357,8 +352,6 @@
 	            this.dest_x += dx;
 	            this.dest_y += dy;
 	        }
-
-
 
 	        this.children.map ( ({child, translate, rotate}) => {
 	            translate(this, child);
@@ -376,7 +369,6 @@
 	    setRotateAngle(angle){
 	        this.angle = angle;
 	    }
-
 
 	    setOffsetX(x){
 	        this.offsetX = x;
@@ -1455,8 +1447,10 @@
 
 	      this.c_svg = "";
 	      this.box = "";
+
 	      this.type = "losange";
 	      this.p = "";
+
 	      this.scaleX = 1;
 	      this.scaleY = 1;
 
@@ -1485,47 +1479,15 @@
 	      ];
 	  }
 
-
-	  addChild(child, scale, rotate){
+	  addChild(child, translate, rotate){
 	    child.setOffsetX(this.x);
 	    child.setOffsetY(this.y);
-	    scale(this, child);
+	    translate(this, child);
 	    rotate(this, child);
 	    child.draw(svg);
-	    this.children.push({child, scale, rotate});
+	    this.children.push({child, translate, rotate});
 	  }
 
-	    
-
-	  draw(svgs) {
-	    const ns = "http://www.w3.org/2000/svg";
-
-	    this.c_svg = document.createElementNS(ns, "path");
-	    this.box = document.createElementNS(ns, "path");
-
-	    this.redraw();
-
-	    this.box.setAttribute("id", this.uuid);
-	    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
-	    this.box.setAttributeNS(null, "stroke-width", "1px");
-	    this.box.setAttributeNS(null, "fill", "none");
-	    this.box.setAttribute("stroke-dasharray", "4");
-
-	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.setAttribute("d", this.p);
-	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
-	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-	    this.c_svg.setAttribute("fill", "lavenderblush");
-
-	    svgs.appendChild(this.c_svg);
-	    svgs.appendChild(this.box);
-	    
-	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-
-	    this.events.create();
-	  }
 
 	  drawVertex(){
 	    if(this.vertex.length == 0)
@@ -1561,6 +1523,78 @@
 	    this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 	  }
 
+	  draw(svgs) {
+	    const ns = "http://www.w3.org/2000/svg";
+
+	    this.c_svg = document.createElementNS(ns, "path");
+	    this.box = document.createElementNS(ns, "path");
+
+	    this.redraw();
+
+	    this.box.setAttribute("id", this.uuid);
+	    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
+	    this.box.setAttributeNS(null, "stroke-width", "1px");
+	    this.box.setAttributeNS(null, "fill", "none");
+	    this.box.setAttribute("stroke-dasharray", "4");
+
+	    this.c_svg.setAttribute("id", this.uuid);
+	    this.c_svg.setAttribute("d", this.p);
+	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
+	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
+	    this.c_svg.setAttribute("fill", "lavenderblush");
+
+	    svgs.appendChild(this.c_svg);
+	    svgs.appendChild(this.box);
+	    
+	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+
+	    this.events.create();
+	  }
+
+	  redraw() {
+
+	    if(this.angle != 0){
+	      var __x, __y, _x, _y, dx, dy;
+
+	      __x = this.x  * Math.cos(this.angle) - this.y   * Math.sin(this.angle) ;
+	      __y = this.x  * Math.sin(this.angle) + this.y   * Math.cos(this.angle) ;
+
+
+	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+	      dx = _x - this.centerX;
+	      dy = _y - this.centerY;
+
+	      this.p = `M ${__x - dx + this.offsetX} ${__y - dy + this.offsetY}  L ${__x - dx  + this.offsetX + (this.width/2 * this.scaleX)} ${__y - dy + this.offsetY + (this.height/2 * this.scaleY)}  L ${__x - dx + this.offsetX} ${ __y - dy + this.offsetY + (this.height * this.scaleY)}  L ${ __x - dx + this.offsetX - (this.width/2 * this.scaleX)} ${ __y - dy + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+	    }
+	    else
+	      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+
+
+	    this.drawVertex();
+	    this.drawConnector();
+	    this.drawBox();
+
+	    this.c_svg.setAttribute("d",this.p);
+
+	    this.c_points.map((p) => {
+	        p.redraw();
+	      });
+
+	      this.vertex.map((v) => {
+	      v.redraw();
+	    });
+
+	    this.children.map( ({child, translate, rotate}) => {
+	      translate(this, child);
+	      rotate(this, child);
+	      child.redraw();
+	    });
+	  }
+
 	  resize(pos, dx, dy) {
 	    if (pos == 0) {
 
@@ -1593,50 +1627,8 @@
 
 	    }
 
-	    this.children.map( ({child, scale, rotate}) => {
-	      scale(this, child);
-	      rotate(this, child);
-	      child.redraw();
-	    });
-	  }
-
-	  redraw() {
-
-	    if(this.angle != 0){
-	      var x, y, _x, _y, dx, dy;
-
-	      x = this.x  * Math.cos(this.angle) - this.y   * Math.sin(this.angle) ;
-	      y = this.x  * Math.sin(this.angle) + this.y   * Math.cos(this.angle) ;
-
-
-	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
-	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
-
-	      dx = _x - this.centerX;
-	      dy = _y - this.centerY;
-
-	      this.p = `M ${x - dx + this.offsetX} ${y - dy + this.offsetY}  L ${x - dx  + this.offsetX + (this.width/2 * this.scaleX)} ${y - dy + this.offsetY + (this.height/2 * this.scaleY)}  L ${x - dx + this.offsetX} ${ y - dy + this.offsetY + (this.height * this.scaleY)}  L ${ x - dx + this.offsetX - (this.width/2 * this.scaleX)} ${ y - dy + this.offsetY + (this.height/2 * this.scaleY)}Z`;
-	    }
-	    else
-	      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
-
-
-	    this.drawVertex();
-	    this.drawConnector();
-	    this.drawBox();
-
-	    this.c_svg.setAttribute("d",this.p);
-
-	    this.c_points.map((p) => {
-	        p.redraw();
-	      });
-
-	      this.vertex.map((v) => {
-	      v.redraw();
-	    });
-
-	    this.children.map( ({child, scale, rotate}) => {
-	      scale(this, child);
+	    this.children.map( ({child, translate, rotate}) => {
+	      translate(this, child);
 	      rotate(this, child);
 	      child.redraw();
 	    });

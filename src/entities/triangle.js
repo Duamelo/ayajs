@@ -1,7 +1,7 @@
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
-import { EventManager } from "../eventManager.js";
 import { Point } from "./point.js";
+import { config } from "../../config.js";
 
 /**
  * @class Triangle
@@ -23,7 +23,7 @@ class Triangle {
     this.x3 = x3;
     this.y3 = y3;
 
-    this.events = new EventManager();
+    this.events = {};
 
     this.c_svg = "";
     this.type = "triangle";
@@ -37,6 +37,7 @@ class Triangle {
     this.scaleY = 0;
 
     this.angle = 0;
+    
     this.centerX = 0;
     this.centerY = 0;
 
@@ -54,6 +55,18 @@ class Triangle {
         new Point(this.uuid,0, 0 ),
     ];
   }
+
+  addEvent(event, callback){
+    this.c_svg.addEventListener(event, callback);
+    this.events[event] = callback;
+  }
+
+  deleteEvent(event){
+    var callback = this.events[event];
+    this.c_svg.removeEventListener(event, callback);
+    delete this.events[event];
+  }
+
 
   setOffsetX(x){
     this.offsetX = x;
@@ -110,7 +123,7 @@ class Triangle {
   }
 
 
-  draw(svgs) {
+  draw(svg) {
       
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
@@ -119,17 +132,15 @@ class Triangle {
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
-    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-    this.c_svg.setAttribute("fill", "lavenderblush");
+    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+    this.c_svg.setAttribute("fill", config.form.fill);
 
 
-    svgs.appendChild(this.c_svg);
+    svg.appendChild(this.c_svg);
 
-    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-
-    this.events.create();
+    this.addEvent("mousedown", events.mouseDownCb);
+    this.addEvent("mouseup", events.mouseUpCb);
   }
 
   shift(dx, dy) {

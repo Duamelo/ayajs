@@ -11,7 +11,7 @@ var config =  {
     },
   
     box : {
-        stroke : "black",
+        stroke : "rgb(82, 170, 214)",
         strokeWidth : "1px",
         fill : "none",
         strokeDasharray : "4"

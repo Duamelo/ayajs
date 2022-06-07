@@ -43,42 +43,6 @@
 	    }
 	}
 
-	/**
-	 * @class EventManager
-	 */
-	 class EventManager
-	 {
-	      constructor(){
-	  
-	          this.events = [];
-	      }
-	  
-	      add(target, event, callback){
-	          this.events.push([target, event, callback]);
-	      }
-	  
-	      clear(){
-	          this.destroy();
-	          this.events = [];
-	      }
-	  
-	      destroy(){
-	          for(var i = 0; i < this.events.length; i++)
-	          {
-	              var event = this.events[i];
-	              event[0].removeEventListener(event[1], event[2]);
-	          }
-	      }
-	  
-	      create(){
-	          for(var i = 0; i < this.events.length; i++)
-	          {
-	              var event = this.events[i];
-	              event[0].addEventListener(event[1], event[2]);
-	          }
-	      }
-	 }
-
 	var config =  {
 	    svg : {
 	        fill : "white",
@@ -92,7 +56,7 @@
 	    },
 	  
 	    box : {
-	        stroke : "black",
+	        stroke : "rgb(82, 170, 214)",
 	        strokeWidth : "1px",
 	        fill : "none",
 	        strokeDasharray : "4"
@@ -131,12 +95,35 @@
 	    this.y = y;
 	    this.r = r;
 
+	    this.scale = 1;
+
+	    this.events = {};
+
 	    this.c_svg = "";
 
 	    _Register.add(this);
 	  }
 
-	  draw(svgs) {
+	  addEvent(event, callback){
+	    this.c_svg.addEventListener(event, callback);
+	    this.events[event] = callback;
+	  }
+
+	  deleteEvent(event){
+	    var callback = this.events[event];
+	    this.c_svg.removeEventListener(event, callback);
+	    delete this.events[event];
+	  }
+	 
+	  setScale(sc){
+	    this.scale = sc;
+	  }
+
+	  getScale(){
+	    return this.scale;
+	  }
+
+	  draw(svg) {
 	    var ns = "http://www.w3.org/2000/svg";
 
 	    this.c_svg = document.createElementNS(ns, "circle");
@@ -145,14 +132,15 @@
 
 	    this.c_svg.setAttribute("cy", this.y);
 
-	    this.c_svg.setAttribute("r", config.point.radius);
+	    this.c_svg.setAttribute("r", config.point.radius * this.scale);
 
 	    // this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 
-	    svgs.appendChild(this.c_svg);
+	    this.addEvent("mousedown", events.mouseDownCb);
+
+	    svg.appendChild(this.c_svg);
 
 	  }
 
@@ -182,9 +170,7 @@
 	     * @param {number} y 
 	     * @param {number} dest_x 
 	     * @param {number} dest_y 
-	     * @param {array of object} children 
 	     */
-
 	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
 	        this.uuid = uuid;
@@ -197,7 +183,7 @@
 
 	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-	        this.events = new EventManager();
+	        this.events = {};
 
 	        this.c_svg = "";
 	        this.type = "line";
@@ -246,6 +232,17 @@
 	        }
 	    }
 
+	    addEvent(event, callback){
+	        this.c_svg.addEventListener(event, callback);
+	        this.events[event] = callback;
+	    }
+	    
+	    deleteEvent(event){
+	        var callback = this.events[event];
+	        this.c_svg.removeEventListener(event, callback);
+	        delete this.events[event];
+	    }
+
 	    addChild(child, translate, rotate){
 	        child.vertex = [];
 	        child.c_points = [];
@@ -269,7 +266,7 @@
 	    }
 
 
-	    draw(svgs){
+	    draw(svg){
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
@@ -277,28 +274,23 @@
 
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", p);
-	        this.c_svg.setAttribute("fill", "none");
-	        this.c_svg.setAttribute("stroke", "indigo");
-	        this.c_svg.setAttributeNS(null, "stroke-width", "2px");
+	        this.c_svg.setAttribute("fill", config.form.fill);
+	        this.c_svg.setAttribute("stroke", config.form.stroke);
+	        this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
 
-	        svgs.appendChild(this.c_svg);
+	        svg.appendChild(this.c_svg);
 
 	        this.drawVertex();
 
 	        this.c_points.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
-	          
 	        this.vertex.map( (vertex) => {
-	            vertex.draw(svgs);
+	            vertex.draw(svg);
 	        });
 
-	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	        this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-	        this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
-	        this.events.create();
+	        this.addEvent("mousedown", events.mouseDownCb);
 	    }
 
 	    shift(dx,dy){
@@ -645,9 +637,6 @@
 	     * @param {number} x 
 	     * @param {number} y 
 	     * @param {number} r 
-	     * @param {array of object} children 
-	     * @param {object} ratio 
-	     * @param {boolean} zoom 
 	     */
 
 	    constructor(uuid, x = 0, y = 0, r = 5){
@@ -658,10 +647,11 @@
 	        this.y = y;
 	        this.r = r;
 
-	        this.events = new EventManager();
+	        this.events = {};
 
 	        this.box = "";
 	        this.c_svg = "";
+
 	        this.type = "circle";
 
 	        this.scale = 1;
@@ -679,6 +669,7 @@
 	            new Point(this.uuid,0, 0 ),
 	            new Point(this.uuid,0, 0 )
 	        ];
+
 	        this.vertex = [
 	            new Point(this.uuid,0, 0 ),
 	            new Point(this.uuid,0, 0 ),
@@ -687,13 +678,24 @@
 	        ];
 	    }
 
-	    addChild(child, scale, rotate){
+	    addEvent(event, callback){
+	        this.c_svg.addEventListener(event, callback);
+	        this.events[event] = callback;
+	    }
+	    
+	    deleteEvent(event){
+	        var callback = this.events[event];
+	        this.c_svg.removeEventListener(event, callback);
+	        delete this.events[event];
+	    }
+
+	    addChild(child, translate, rotate){
 	        child.setOffsetX(this.x);
 	        child.setOffsetY(this.y);
-	        scale(this, child);
+	        translate(this, child);
 	        rotate(this, child);
 	        child.draw(svg);
-	        this.children.push({child, scale, rotate});
+	        this.children.push({child, translate, rotate});
 	    }
 	  
 	    drawVertex(){
@@ -743,10 +745,10 @@
 	    
 	    /**
 	     * 
-	     * @param {DOMElement} svgs 
+	     * @param {DOMElement} svg 
 	     */
 	    
-	    draw(svgs){
+	    draw(svg){
 	        var ns="http://www.w3.org/2000/svg";
 
 	        this.box = document.createElementNS(ns, "path");
@@ -761,45 +763,43 @@
 	        this.c_svg.setAttribute("r", this.r * this.scale);
 	        
 
-	        this.c_svg.setAttribute("fill", "white");
+	        this.c_svg.setAttribute("fill", config.form.fill);
 
-	        this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
+	        this.c_svg.setAttribute("stroke",config.form.stroke);
 
 	    
-	        this.c_svg.setAttribute("stroke-width", "1.5");
+	        this.c_svg.setAttribute("stroke-width", config.form.strokeWidth);
 	    
 	      
 	        /** draw box */
-	        this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
-	        this.box.setAttributeNS(null, "stroke-width", "1px");
-	        this.box.setAttributeNS(null, "fill", "none");
-	        this.box.setAttribute("stroke-dasharray", "4");
+	        this.box.setAttributeNS(null, "stroke", config.box.stroke);
+	        this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
+	        this.box.setAttributeNS(null, "fill", config.box.fill);
+	        this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
 
 	        
-	        svgs.appendChild(this.c_svg);
-	        svgs.appendChild(this.box);
+	        svg.appendChild(this.c_svg);
+	        svg.appendChild(this.box);
 
 	        this.drawVertex();
 	        this.drawConnector();
 	        this.drawBox();
 
 	        this.c_points.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
 	        this.vertex.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
-	        this.children.map( ({child, scale, rotate}) => {
-	            scale(this, child);
+	        this.children.map( ({child, translate, rotate}) => {
+	            translate(this, child);
 	            rotate(this, child);
 	            child.redraw();
 	        });
 
-	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-
-	        this.events.create();
+	        this.addEvent("mousedown", events.mouseDownCb);
 	    }
 
 	    shift(dx, dy){
@@ -824,8 +824,8 @@
 	            point.redraw();
 	        });
 
-	        this.children.map( ({child, scale, rotate}) => {
-	            scale(this, child);
+	        this.children.map( ({child, translate, rotate}) => {
+	            translate(this, child);
 	            rotate(this, child);
 	            child.redraw();
 	        });
@@ -841,8 +841,8 @@
 	        else
 	            this.r -= dx;
 
-	        this.children.map( ({child, scale, rotate}) => {
-	            scale(this, child);
+	        this.children.map( ({child, translate, rotate}) => {
+	            translate(this, child);
 	            rotate(this, child);
 	            child.redraw();
 	        });
@@ -925,8 +925,6 @@
 	   * @param {number} y 
 	   * @param {number} width 
 	   * @param {number} height 
-	   * @param {array of object} children 
-	   * @param {object} ratio 
 	   */
 
 	  constructor(uuid, x = 0, y = 0, width = 10, height = 10) {
@@ -939,7 +937,7 @@
 	    this.width = width;
 	    this.height = height;
 
-	    this.events = new EventManager();
+	    this.events = {};
 
 	    this.c_svg = "";
 
@@ -973,19 +971,29 @@
 	    ];
 	  }
 
-
-	  addChild(child, scale, rotate){
-	    child.setOffsetX(this.x);
-	    child.setOffsetY(this.y);
-	    scale(this, child);
-	    rotate(this, child);
-	    child.draw(svg);
-	    this.children.push({child, scale, rotate});
+	  addEvent(event, callback){
+	    this.c_svg.addEventListener(event, callback);
+	    this.events[event] = callback;
 	  }
 
-	  draw(svgs) {
-	    const svgns = "http://www.w3.org/2000/svg";
-	    this.c_svg = document.createElementNS(svgns, "rect");
+	  deleteEvent(event){
+	    var callback = this.events[event];
+	    this.c_svg.removeEventListener(event, callback);
+	    delete this.events[event];
+	  }
+
+	  addChild(child, translate, rotate){
+	    child.setOffsetX(this.x);
+	    child.setOffsetY(this.y);
+	    translate(this, child);
+	    rotate(this, child);
+	    child.draw(svg);
+	    this.children.push({child, translate, rotate});
+	  }
+
+	  draw(svg) {
+	    const sv = "http://www.w3.org/2000/svg";
+	    this.c_svg = document.createElementNS(sv, "rect");
 
 	    this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
 	    this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
@@ -997,26 +1005,23 @@
 	    this.c_svg.setAttributeNS(null, "fill", config.form.fill);
 
 
-	    svgs.appendChild(this.c_svg);
+	    svg.appendChild(this.c_svg);
 
 
 	    this.drawConnector();
 	    this.drawVertex();
 
 	    this.c_points.map((point) => {
-	      point.draw(svgs);
+	      point.draw(svg);
 	    });
 
 	    this.vertex.map((point) => {
-	      point.draw(svgs);
+	      point.draw(svg);
 	    });
 
-	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-	    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
-	    this.events.create();
+	    this.addEvent("mousedown", events.mouseDownCb);
+	    this.addEvent("mouseup", events.mouseUpCb);
+	    this.addEvent("mouseover", events.mouseMoveCb);
 	  }
 
 	  setRotateCenter(centerX, centerY){
@@ -1132,8 +1137,8 @@
 	      p.redraw();
 	    });
 
-	    this.children.map ( ({child, scale, rotate}) => {
-	        scale(this, child);
+	    this.children.map ( ({child, translate, rotate}) => {
+	        translate(this, child);
 	        rotate(this, child);
 	        child.redraw();
 	    });
@@ -1172,8 +1177,8 @@
 	  
 	      }
 
-	      this.children.map( ({child, scale, rotate}) => {
-	        scale(this, child);
+	      this.children.map( ({child, translate, rotate}) => {
+	        translate(this, child);
 	        rotate(this, child);
 	        child.redraw();
 	      });
@@ -1238,7 +1243,7 @@
 	    this.x3 = x3;
 	    this.y3 = y3;
 
-	    this.events = new EventManager();
+	    this.events = {};
 
 	    this.c_svg = "";
 	    this.type = "triangle";
@@ -1252,6 +1257,7 @@
 	    this.scaleY = 0;
 
 	    this.angle = 0;
+	    
 	    this.centerX = 0;
 	    this.centerY = 0;
 
@@ -1269,6 +1275,18 @@
 	        new Point(this.uuid,0, 0 ),
 	    ];
 	  }
+
+	  addEvent(event, callback){
+	    this.c_svg.addEventListener(event, callback);
+	    this.events[event] = callback;
+	  }
+
+	  deleteEvent(event){
+	    var callback = this.events[event];
+	    this.c_svg.removeEventListener(event, callback);
+	    delete this.events[event];
+	  }
+
 
 	  setOffsetX(x){
 	    this.offsetX = x;
@@ -1325,7 +1343,7 @@
 	  }
 
 
-	  draw(svgs) {
+	  draw(svg) {
 	      
 	    const ns = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(ns, "path");
@@ -1334,17 +1352,15 @@
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", this.p);
-	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
-	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-	    this.c_svg.setAttribute("fill", "lavenderblush");
+	    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
+	    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+	    this.c_svg.setAttribute("fill", config.form.fill);
 
 
-	    svgs.appendChild(this.c_svg);
+	    svg.appendChild(this.c_svg);
 
-	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-
-	    this.events.create();
+	    this.addEvent("mousedown", events.mouseDownCb);
+	    this.addEvent("mouseup", events.mouseUpCb);
 	  }
 
 	  shift(dx, dy) {
@@ -1443,7 +1459,7 @@
 	      this.width = width;
 	      this.height =  height;
 
-	      this.events = new EventManager();
+	      this.events = {};
 
 	      this.c_svg = "";
 	      this.box = "";
@@ -1478,6 +1494,18 @@
 	        new Point(this.uuid, 0, 0),
 	      ];
 	  }
+
+	  addEvent(event, callback){
+	    this.c_svg.addEventListener(event, callback);
+	    this.events[event] = callback;
+	  }
+
+	  deleteEvent(event){
+	    var callback = this.events[event];
+	    this.c_svg.removeEventListener(event, callback);
+	    delete this.events[event];
+	  }
+
 
 	  addChild(child, translate, rotate){
 	    child.setOffsetX(this.x);
@@ -1523,7 +1551,7 @@
 	    this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 	  }
 
-	  draw(svgs) {
+	  draw(svg) {
 	    const ns = "http://www.w3.org/2000/svg";
 
 	    this.c_svg = document.createElementNS(ns, "path");
@@ -1532,29 +1560,25 @@
 	    this.redraw();
 
 	    this.box.setAttribute("id", this.uuid);
-	    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
-	    this.box.setAttributeNS(null, "stroke-width", "1px");
-	    this.box.setAttributeNS(null, "fill", "none");
-	    this.box.setAttribute("stroke-dasharray", "4");
+	    this.box.setAttributeNS(null, "stroke", config.box.stroke);
+	    this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
+	    this.box.setAttributeNS(null, "fill", config.box.fill);
+	    this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", this.p);
-	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
-	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-	    this.c_svg.setAttribute("fill", "lavenderblush");
+	    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
+	    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+	    this.c_svg.setAttribute("fill", config.form.fill);
 
-	    svgs.appendChild(this.c_svg);
-	    svgs.appendChild(this.box);
+	    svg.appendChild(this.c_svg);
+	    svg.appendChild(this.box);
 	    
-	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-
-	    this.events.create();
+	    this.addEvent("mousedown", events.mouseDownCb);
+	    this.addEvent("mouseup", events.mouseUpCb);
 	  }
 
 	  redraw() {
-
 	    if(this.angle != 0){
 	      var __x, __y, _x, _y, dx, dy;
 
@@ -1572,7 +1596,6 @@
 	    }
 	    else
 	      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
-
 
 	    this.drawVertex();
 	    this.drawConnector();
@@ -1760,13 +1783,9 @@
 	class FactoryForm
 	{
 	    /**
-	     * 
 	     * @param {string} uuid 
 	     * @param {string} type 
 	     * @param {object} props 
-	     * @param {array of object} children 
-	     * @param {pbject} ratio 
-	     * @param {boolean} zoom 
 	     * @returns @form
 	     */
 
@@ -1803,42 +1822,8 @@
 	    }
 	}
 
-	class Connector {
-	  static create(type, uuid) {
-	    var cp = [];
-
-	    if (type == "rectangle") {
-	      cp = [];
-	      for (var i = 0; i < 4; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "triangle") {
-	      cp = [];
-	      for (var i = 0; i < 3; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "circle") {
-	      cp = [];
-	      for (var i = 0; i < 4; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "losange") {
-	      cp = [];
-	      for (var i = 0; i < 6; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    }
-	    else ;
-	    return cp;
-	  }
-	}
-
 	exports.Circle = Circle;
 	exports.Component = Component;
-	exports.Connector = Connector;
 	exports.FactoryForm = FactoryForm;
 	exports.Line = Line;
 	exports.Losange = Losange;

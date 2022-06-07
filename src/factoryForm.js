@@ -13,13 +13,9 @@ import  {Losange} from "./entities/losange.js";
 class FactoryForm
 {
     /**
-     * 
      * @param {string} uuid 
      * @param {string} type 
      * @param {object} props 
-     * @param {array of object} children 
-     * @param {pbject} ratio 
-     * @param {boolean} zoom 
      * @returns @form
      */
 

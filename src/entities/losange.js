@@ -1,4 +1,4 @@
-import { EventManager } from "../eventManager.js";
+import { config } from "../../config.js";
 import { events } from "../events.js";
 import { Point } from "./point.js";
 import { _uuid } from "./uuid.js";
@@ -29,7 +29,7 @@ class Losange {
       this.width = width;
       this.height =  height;
 
-      this.events = new EventManager();
+      this.events = {};
 
       this.c_svg = "";
       this.box = "";
@@ -64,6 +64,18 @@ class Losange {
         new Point(this.uuid, 0, 0),
       ];
   }
+
+  addEvent(event, callback){
+    this.c_svg.addEventListener(event, callback);
+    this.events[event] = callback;
+  }
+
+  deleteEvent(event){
+    var callback = this.events[event];
+    this.c_svg.removeEventListener(event, callback);
+    delete this.events[event];
+  }
+
 
   addChild(child, translate, rotate){
     child.setOffsetX(this.x);
@@ -118,28 +130,25 @@ class Losange {
     this.redraw();
 
     this.box.setAttribute("id", this.uuid);
-    this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
-    this.box.setAttributeNS(null, "stroke-width", "1px");
-    this.box.setAttributeNS(null, "fill", "none");
-    this.box.setAttribute("stroke-dasharray", "4");
+    this.box.setAttributeNS(null, "stroke", config.box.stroke);
+    this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
+    this.box.setAttributeNS(null, "fill", config.box.fill);
+    this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
-    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
-    this.c_svg.setAttribute("fill", "lavenderblush");
+    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+    this.c_svg.setAttribute("fill", config.form.fill);
 
     svg.appendChild(this.c_svg);
     svg.appendChild(this.box);
     
-    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-
-    this.events.create();
+    this.addEvent("mousedown", events.mouseDownCb);
+    this.addEvent("mouseup", events.mouseUpCb);
   }
 
   redraw() {
-
     if(this.angle != 0){
       var __x, __y, _x, _y, dx, dy;
 

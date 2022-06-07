@@ -1,8 +1,8 @@
 import { _Register } from "../register";
 import { _uuid } from "./uuid";
 import {events} from "../events";
-import { EventManager } from "../eventManager";
 import { Point } from "./point";
+import { config } from "../../config";
 
 /**
  * @class Circle
@@ -15,9 +15,6 @@ class Circle
      * @param {number} x 
      * @param {number} y 
      * @param {number} r 
-     * @param {array of object} children 
-     * @param {object} ratio 
-     * @param {boolean} zoom 
      */
 
     constructor(uuid, x = 0, y = 0, r = 5){
@@ -28,10 +25,11 @@ class Circle
         this.y = y;
         this.r = r;
 
-        this.events = new EventManager();
+        this.events = {};
 
         this.box = ""
         this.c_svg = "";
+
         this.type = "circle";
 
         this.scale = 1;
@@ -49,6 +47,7 @@ class Circle
             new Point(this.uuid,0, 0 ),
             new Point(this.uuid,0, 0 )
         ];
+
         this.vertex = [
             new Point(this.uuid,0, 0 ),
             new Point(this.uuid,0, 0 ),
@@ -57,13 +56,24 @@ class Circle
         ];
     }
 
-    addChild(child, scale, rotate){
+    addEvent(event, callback){
+        this.c_svg.addEventListener(event, callback);
+        this.events[event] = callback;
+    }
+    
+    deleteEvent(event){
+        var callback = this.events[event];
+        this.c_svg.removeEventListener(event, callback);
+        delete this.events[event];
+    }
+
+    addChild(child, translate, rotate){
         child.setOffsetX(this.x);
         child.setOffsetY(this.y);
-        scale(this, child);
+        translate(this, child);
         rotate(this, child);
         child.draw(svg);
-        this.children.push({child, scale, rotate});
+        this.children.push({child, translate, rotate});
     }
   
     drawVertex(){
@@ -113,10 +123,10 @@ class Circle
     
     /**
      * 
-     * @param {DOMElement} svgs 
+     * @param {DOMElement} svg 
      */
     
-    draw(svgs){
+    draw(svg){
         var ns="http://www.w3.org/2000/svg";
 
         this.box = document.createElementNS(ns, "path");
@@ -131,45 +141,43 @@ class Circle
         this.c_svg.setAttribute("r", this.r * this.scale);
         
 
-        this.c_svg.setAttribute("fill", "white");
+        this.c_svg.setAttribute("fill", config.form.fill);
 
-        this.c_svg.setAttribute("stroke", "rgb(82, 170, 214)");
+        this.c_svg.setAttribute("stroke",config.form.stroke);
 
     
-        this.c_svg.setAttribute("stroke-width", "1.5");
+        this.c_svg.setAttribute("stroke-width", config.form.strokeWidth);
     
       
         /** draw box */
-        this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
-        this.box.setAttributeNS(null, "stroke-width", "1px");
-        this.box.setAttributeNS(null, "fill", "none");
-        this.box.setAttribute("stroke-dasharray", "4");
+        this.box.setAttributeNS(null, "stroke", config.box.stroke);
+        this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
+        this.box.setAttributeNS(null, "fill", config.box.fill);
+        this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
 
         
-        svgs.appendChild(this.c_svg);
-        svgs.appendChild(this.box);
+        svg.appendChild(this.c_svg);
+        svg.appendChild(this.box);
 
         this.drawVertex();
         this.drawConnector();
         this.drawBox();
 
         this.c_points.map((point) => {
-            point.draw(svgs);
+            point.draw(svg);
         });
 
         this.vertex.map((point) => {
-            point.draw(svgs);
+            point.draw(svg);
         });
 
-        this.children.map( ({child, scale, rotate}) => {
-            scale(this, child);
+        this.children.map( ({child, translate, rotate}) => {
+            translate(this, child);
             rotate(this, child);
             child.redraw();
         });
 
-        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-
-        this.events.create();
+        this.addEvent("mousedown", events.mouseDownCb);
     }
 
     shift(dx, dy){
@@ -194,8 +202,8 @@ class Circle
             point.redraw();
         });
 
-        this.children.map( ({child, scale, rotate}) => {
-            scale(this, child);
+        this.children.map( ({child, translate, rotate}) => {
+            translate(this, child);
             rotate(this, child);
             child.redraw();
         });
@@ -211,8 +219,8 @@ class Circle
         else
             this.r -= dx;
 
-        this.children.map( ({child, scale, rotate}) => {
-            scale(this, child);
+        this.children.map( ({child, translate, rotate}) => {
+            translate(this, child);
             rotate(this, child);
             child.redraw();
         });

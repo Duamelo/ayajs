@@ -1,6 +1,5 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
-import { EventManager } from "../eventManager";
 import {events} from "../events";
 import { Point } from "./point";
 import { config } from "../../config";
@@ -33,7 +32,7 @@ class Line
 
         this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-        this.events = new EventManager();
+        this.events = {};
 
         this.c_svg = "";
         this.type = "line";
@@ -82,6 +81,17 @@ class Line
         }
     }
 
+    addEvent(event, callback){
+        this.c_svg.addEventListener(event, callback);
+        this.events[event] = callback;
+    }
+    
+    deleteEvent(event){
+        var callback = this.events[event];
+        this.c_svg.removeEventListener(event, callback);
+        delete this.events[event];
+    }
+
     addChild(child, translate, rotate){
         child.vertex = [];
         child.c_points = [];
@@ -113,9 +123,9 @@ class Line
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", p);
-        this.c_svg.setAttribute("fill", "none");
-        this.c_svg.setAttribute("stroke", "indigo");
-        this.c_svg.setAttributeNS(null, "stroke-width", "2px");
+        this.c_svg.setAttribute("fill", config.form.fill);
+        this.c_svg.setAttribute("stroke", config.form.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
 
         svg.appendChild(this.c_svg);
 
@@ -125,13 +135,11 @@ class Line
             point.draw(svg);
         });
 
-          
         this.vertex.map( (vertex) => {
             vertex.draw(svg);
         });
 
-        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-        this.events.create();
+        this.addEvent("mousedown", events.mouseDownCb);
     }
 
     shift(dx,dy){

@@ -1,6 +1,5 @@
 import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
-import { EventManager } from "../eventManager.js";
 import { Point } from "./point.js";
 import { config } from "../../config.js";
 
@@ -17,8 +16,6 @@ class Rectangle {
    * @param {number} y 
    * @param {number} width 
    * @param {number} height 
-   * @param {array of object} children 
-   * @param {object} ratio 
    */
 
   constructor(uuid, x = 0, y = 0, width = 10, height = 10) {
@@ -31,7 +28,7 @@ class Rectangle {
     this.width = width;
     this.height = height;
 
-    this.events = new EventManager();
+    this.events = {};
 
     this.c_svg = "";
 
@@ -65,19 +62,29 @@ class Rectangle {
     ];
   }
 
-
-  addChild(child, scale, rotate){
-    child.setOffsetX(this.x);
-    child.setOffsetY(this.y);
-    scale(this, child);
-    rotate(this, child);
-    child.draw(svg);
-    this.children.push({child, scale, rotate});
+  addEvent(event, callback){
+    this.c_svg.addEventListener(event, callback);
+    this.events[event] = callback;
   }
 
-  draw(svgs) {
-    const svgns = "http://www.w3.org/2000/svg";
-    this.c_svg = document.createElementNS(svgns, "rect");
+  deleteEvent(event){
+    var callback = this.events[event];
+    this.c_svg.removeEventListener(event, callback);
+    delete this.events[event];
+  }
+
+  addChild(child, translate, rotate){
+    child.setOffsetX(this.x);
+    child.setOffsetY(this.y);
+    translate(this, child);
+    rotate(this, child);
+    child.draw(svg);
+    this.children.push({child, translate, rotate});
+  }
+
+  draw(svg) {
+    const sv = "http://www.w3.org/2000/svg";
+    this.c_svg = document.createElementNS(sv, "rect");
 
     this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
     this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
@@ -89,26 +96,23 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "fill", config.form.fill);
 
 
-    svgs.appendChild(this.c_svg);
+    svg.appendChild(this.c_svg);
 
 
     this.drawConnector();
     this.drawVertex();
 
     this.c_points.map((point) => {
-      point.draw(svgs);
+      point.draw(svg);
     });
 
     this.vertex.map((point) => {
-      point.draw(svgs);
+      point.draw(svg);
     });
 
-    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
-    this.events.create();
+    this.addEvent("mousedown", events.mouseDownCb);
+    this.addEvent("mouseup", events.mouseUpCb);
+    this.addEvent("mouseover", events.mouseMoveCb);
   }
 
   setRotateCenter(centerX, centerY){
@@ -224,8 +228,8 @@ class Rectangle {
       p.redraw();
     });
 
-    this.children.map ( ({child, scale, rotate}) => {
-        scale(this, child);
+    this.children.map ( ({child, translate, rotate}) => {
+        translate(this, child);
         rotate(this, child);
         child.redraw();
     });
@@ -264,8 +268,8 @@ class Rectangle {
   
       }
 
-      this.children.map( ({child, scale, rotate}) => {
-        scale(this, child);
+      this.children.map( ({child, translate, rotate}) => {
+        translate(this, child);
         rotate(this, child);
         child.redraw();
       })

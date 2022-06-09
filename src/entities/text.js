@@ -69,4 +69,4 @@ class Text{
 
 }
 
-export {Text}
+export {Text};

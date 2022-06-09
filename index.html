@@ -31,16 +31,24 @@
       });
 
 
-      rect.form.deleteEvent("mousedown");
+      // rect.form.deleteEvent("mousedown");
 
-      console.log(rect);
-      var rect2 = new aya.Component("rectangle", {
-         x: 600,
-         y: 200, 
-         width: 300,
-         height: 200
-      })
+      // console.log(rect);
+      // var rect2 = new aya.Component("rectangle", {
+      //    x: 600,
+      //    y: 200, 
+      //    width: 300,
+      //    height: 200
+      // })
 
+      var text = new aya.Text(aya._uuid.generate(), 0, 0);
+      
+      rect.form.addChild(text, (p, c) => {
+         c.setOffsetX(p.x + p.width/2);
+         c.setOffsetY(p.y + p.height/2);
+      }, (p, c) => {
+
+      });
       // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
       // var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);

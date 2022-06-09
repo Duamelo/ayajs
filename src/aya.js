@@ -9,3 +9,5 @@ export  {Triangle} from "./entities/triangle.js"
 export  {Line} from "./entities/line";
 export  {events} from "./events";
 export  {Losange} from "./entities/losange";
+export {config} from "../config";
+export {Text} from "./entities/text";

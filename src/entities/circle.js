@@ -180,6 +180,12 @@ class Circle
         this.addEvent("mousedown", events.mouseDownCb);
     }
 
+
+    remove(){
+        svg.removeChild(this.box);
+        svg.removeChild(this.c_svg);
+    }
+    
     shift(dx, dy){
         this.x += dx;
         this.y += dy;

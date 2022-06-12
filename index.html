@@ -15,9 +15,10 @@
    <script>
       var svg;
       console.log(aya);
-      svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-      svg.setAttribute("width", 1300);
-      svg.setAttribute("height", 600);
+    
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+      svg.setAttribute("width", 1600);
+      svg.setAttribute("height", 900);
       svg.setAttribute("id", "svg");
 
       svg.addEventListener("mousemove", aya.events.mouseMoveCb);
@@ -86,16 +87,16 @@
       // var point = new aya.Point(aya._uuid.generate(), 50, 50);
       // point.draw(svg);
 
-      // var losange = new aya.Component("losange", {
+      // var lozenge = new aya.Component("lozenge", {
       //    x: 500,
       //    y: 150,
       //    width: 200,
       //    height:300
       // });
 
-      // var los = new aya.Losange(aya._uuid.generate(), 50, 0,  100, 50);
+      // var los = new aya.Lozenge(aya._uuid.generate(), 50, 0,  100, 50);
 
-      // losange.form.addChild(los, (p,c)=>{
+      // lozenge.form.addChild(los, (p,c)=>{
       //    c.setOffsetX(p.x);
       //    c.setOffsetY(p.y);
       //    c.setScaleX(2);

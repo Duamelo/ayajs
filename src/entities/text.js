@@ -105,6 +105,10 @@ class Text{
         this.tspan.textContent = subString;
         this.title.textContent = this.text;
     }
+    
+    removeFromDom(){
+        svg.removeChild(this.c_svg);
+    }
 
     redraw(){
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
@@ -151,9 +155,6 @@ class Text{
     setParentY(y){
         this.parentY = y;
     }
-
-    
-
 }
 
 export {Text};

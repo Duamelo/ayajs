@@ -24,8 +24,9 @@ function nativeEvents() {
       id = e.srcElement.id;
 
       cp = _Register.find(id);
-      // console.log(cp);
 
+      // Only the points have the ref property to refer to form that instantiates them.
+      // In source we have the component instance created.
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -33,20 +34,25 @@ function nativeEvents() {
         lk = _Register.getAllLinksByComponent(cp);
 
 
-      // une forme différente de Point n'a pas de propriété ref
+      // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
       if ((cp != undefined && cp.ref == undefined) )
           state = "moving";
       else {
+        // Resizing is triggered when the mousedown takes place on one of the summits.
         if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
           state = "resizing";
           dx = e.offsetX;
           dy = e.offsetY;
 
-          /* détermination du composant */
+          // component determination 
           cp = _Register.find(cp.ref);
           lk = _Register.getAllLinksByComponent(cp);
         }
         else {
+          /**
+           * If the mousedown was not done on the svg, neither on a top nor on the form, then it was certainly done on a connection point.
+           * In this case, we start tracing a link.
+           */
           state = "drawing_link";
           id = _uuid.generate();
           if (cp != source) {
@@ -66,7 +72,7 @@ function nativeEvents() {
         dx = e.offsetX;
         dy = e.offsetY;
 
-        /* test si cp est un compsant*/
+        // Ensure cp is a component
         var src, sink;
         if(cp.form != undefined){
           lk.map((link) => {
@@ -99,21 +105,6 @@ function nativeEvents() {
       }
       else if (state == "drawing_link") {
 
-        source.form.vertex.map((v) => {
-          if (v.x == line.x && v.y == line.y) {
-            v.c_svg.classList.remove("vertex");
-            v.c_svg.classList.add("vertex_hover");
-          }
-        });
-
-        source.form.c_points.map((v) => {
-          if (v.x == line.x && v.y == line.y) {
-            v.c_svg.style.color = "gray";
-            v.c_svg.classList.remove("vertex");
-            v.c_svg.classList.add("vertex_hover");
-          }
-        });
-
         line.dest_x = e.clientX;
         line.dest_y = e.clientY;
         line.redraw();
@@ -143,10 +134,6 @@ function nativeEvents() {
           line.dest_x = pnt.x;
           line.dest_y = pnt.y;
 
-          /* faire le calcul automatique ici*/
-
-          // for automatic redrawing
-          // line.redraw();
           new Link(cp, pnt, line).redraw();
         }
         else if (id == "svg" || pnt.ref == undefined) {
@@ -156,35 +143,6 @@ function nativeEvents() {
       }
       state = "";
     }
-  // mouseOverCb: function mouseovercb(e) {
-  //     id = e.srcElement.id;
-
-  //     cp = _Register.find(id);
-
-  //       cp.form.vertex.map((v) => {
-  //         v.c_svg.classList.remove("vertex");
-  //         v.c_svg.classList.add("vertex_hover");
-  //       });
-
-  //       cp.form.c_points.map((v) => {
-  //         v.c_svg.classList.remove("vertex");
-  //         v.c_svg.classList.add("vertex_hover");
-  //       });
-  // },
-  // mouseLeaveCb: function mouseleavecb(e) {
-  //   id = e.srcElement.id;
-  //   cp = _Register.find(id);
-  //   if (cp.ref == undefined) {
-  //     cp.form.vertex.map((v) => {
-  //       v.c_svg.classList.add("vertex");
-  //       v.c_svg.classList.remove("vertex_hover");
-  //     });
-  //     cp.form.c_points.map((v) => {
-  //       v.c_svg.classList.add("vertex");
-  //       v.c_svg.classList.remove("vertex_hover");
-  //     });
-  //   }
-  // }
 }
 }
 var events = nativeEvents();

@@ -3,12 +3,12 @@ import { _uuid } from "./uuid";
 import {events} from "../events";
 import { Point } from "./point";
 import { config } from "../../config";
+import { Form } from "../abstraction/form";
 
 /**
  * @class Circle
  */
-class Circle
-{
+class Circle extends Form {
     /**
      * 
      * @param {string} uuid 
@@ -18,6 +18,8 @@ class Circle
      */
 
     constructor(uuid, x = 0, y = 0, r = 5){
+
+        super();
 
         this.uuid = uuid;
 
@@ -181,7 +183,7 @@ class Circle
     }
 
 
-    remove(){
+    removeFromDOM(){
         svg.removeChild(this.box);
         svg.removeChild(this.c_svg);
     }

@@ -1,5 +1,5 @@
 {
-  "name": "ayajs",
+  "name": "aya.js",
   "version": "1.0.0",
   "description": "librairie javascript de création de forme géométrique",
   "type": "module",
@@ -14,7 +14,7 @@
     "js",
     "node"
   ],
-  "author": "emack",
+  "author": "emack.io",
   "license": "ISC",
   "dependencies": {
     "jsdom": "^19.0.0",

@@ -154,6 +154,10 @@
 
 	  }
 
+	  removeFromDOM(){
+	    svg.removeChild(this.c_svg);
+	  }
+
 	  shift(dx, dy) {
 	    this.x += dx;
 	    this.y += dy;
@@ -168,11 +172,111 @@
 	}
 
 	/**
+	 * Abstract class representing a generic prototype for all forms
+	 * 
+	 * @abstract 
+	 * 
+	 * @class Form
+	 *  
+	 */
+	class Form
+	{
+	    addEvent(event, callback) {
+
+	    };
+
+	    deleteEvent(event){
+
+	    }
+
+	    addChild(child, translate, rotate){
+
+	    }
+
+	    setOffsetX(x){
+	        
+	    }
+
+	    setOffsetY(y){
+
+	    }
+
+	    setScaleX(x){
+
+	    }
+
+	    setScaleY(y){
+
+	    }
+
+	    getOffsetX(){
+
+	    }
+
+	    getOffsetY(){
+
+	    }
+
+	    getScaleX(){
+
+	    }
+
+	    getScaleY(){
+
+	    }
+
+	    setRotateCenter(centerX, centerY){
+
+	    }
+
+	    setRotateAngle(angle){
+
+	    }
+
+
+	    drawVertex(){
+
+	    }
+
+	    drawConnector() {
+
+	    }
+
+	    drawBox(){
+
+	    }
+
+	    draw(svg){
+
+	    };
+
+	    removeFromDOM(){
+
+	    }
+
+
+	    redraw(){
+
+	    };
+
+	    shift(dx, dy){
+
+	    }
+
+	    resize(pos, dx, dy){
+
+	    };
+
+	    optimalPath(line){
+
+	    };
+	}
+
+	/**
 	 * @class Line
 	 */
 
-	class Line 
-	{
+	class Line extends Form {
 	    /**
 	     * 
 	     * @param {string} uuid 
@@ -182,6 +286,8 @@
 	     * @param {number} dest_y 
 	     */
 	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
+
+	        super();
 
 	        this.uuid = uuid;
 
@@ -275,6 +381,13 @@
 	        this.vertex[1].y = (this.dest_y + this.offsetY) * this.scaleY;
 	    }
 
+	    drawConnector(){
+
+	    }
+
+	    drawBox(){
+
+	    }
 
 	    draw(svg){
 	        const ns = "http://www.w3.org/2000/svg";
@@ -302,6 +415,11 @@
 
 	        this.addEvent("mousedown", events.mouseDownCb);
 	    }
+
+	    removeFromDOM(){
+	        svg.removeChild(this.c_svg);
+	    }
+
 
 	    shift(dx,dy){
 	        this.x += dx;
@@ -407,6 +525,11 @@
 	    getScaleY(){
 	        return this.scaleY;
 	    }
+
+
+	    optimalPath(){
+
+	    }
 	}
 
 	/**
@@ -471,8 +594,9 @@
 	      id = e.srcElement.id;
 
 	      cp = _Register.find(id);
-	      // console.log(cp);
 
+	      // Only the points have the ref property to refer to form that instantiates them.
+	      // In source we have the component instance created.
 	      if (id != "svg")
 	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -480,20 +604,25 @@
 	        lk = _Register.getAllLinksByComponent(cp);
 
 
-	      // une forme différente de Point n'a pas de propriété ref
+	      // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
 	      if ((cp != undefined && cp.ref == undefined) )
 	          state = "moving";
 	      else {
+	        // Resizing is triggered when the mousedown takes place on one of the summits.
 	        if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
 	          state = "resizing";
 	          dx = e.offsetX;
 	          dy = e.offsetY;
 
-	          /* détermination du composant */
+	          // component determination 
 	          cp = _Register.find(cp.ref);
 	          lk = _Register.getAllLinksByComponent(cp);
 	        }
 	        else {
+	          /**
+	           * If the mousedown was not done on the svg, neither on a top nor on the form, then it was certainly done on a connection point.
+	           * In this case, we start tracing a link.
+	           */
 	          state = "drawing_link";
 	          id = _uuid.generate();
 	          if (cp != source) {
@@ -513,7 +642,7 @@
 	        dx = e.offsetX;
 	        dy = e.offsetY;
 
-	        /* test si cp est un compsant*/
+	        // Ensure cp is a component
 	        var src;
 	        if(cp.form != undefined){
 	          lk.map((link) => {
@@ -546,21 +675,6 @@
 	      }
 	      else if (state == "drawing_link") {
 
-	        source.form.vertex.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
-	        source.form.c_points.map((v) => {
-	          if (v.x == line.x && v.y == line.y) {
-	            v.c_svg.style.color = "gray";
-	            v.c_svg.classList.remove("vertex");
-	            v.c_svg.classList.add("vertex_hover");
-	          }
-	        });
-
 	        line.dest_x = e.clientX;
 	        line.dest_y = e.clientY;
 	        line.redraw();
@@ -590,10 +704,6 @@
 	          line.dest_x = pnt.x;
 	          line.dest_y = pnt.y;
 
-	          /* faire le calcul automatique ici*/
-
-	          // for automatic redrawing
-	          // line.redraw();
 	          new Link(cp, pnt, line).redraw();
 	        }
 	        else if (id == "svg" || pnt.ref == undefined) {
@@ -603,35 +713,6 @@
 	      }
 	      state = "";
 	    }
-	  // mouseOverCb: function mouseovercb(e) {
-	  //     id = e.srcElement.id;
-
-	  //     cp = _Register.find(id);
-
-	  //       cp.form.vertex.map((v) => {
-	  //         v.c_svg.classList.remove("vertex");
-	  //         v.c_svg.classList.add("vertex_hover");
-	  //       });
-
-	  //       cp.form.c_points.map((v) => {
-	  //         v.c_svg.classList.remove("vertex");
-	  //         v.c_svg.classList.add("vertex_hover");
-	  //       });
-	  // },
-	  // mouseLeaveCb: function mouseleavecb(e) {
-	  //   id = e.srcElement.id;
-	  //   cp = _Register.find(id);
-	  //   if (cp.ref == undefined) {
-	  //     cp.form.vertex.map((v) => {
-	  //       v.c_svg.classList.add("vertex");
-	  //       v.c_svg.classList.remove("vertex_hover");
-	  //     });
-	  //     cp.form.c_points.map((v) => {
-	  //       v.c_svg.classList.add("vertex");
-	  //       v.c_svg.classList.remove("vertex_hover");
-	  //     });
-	  //   }
-	  // }
 	}
 	}
 	var events = nativeEvents();
@@ -639,8 +720,7 @@
 	/**
 	 * @class Circle
 	 */
-	class Circle
-	{
+	class Circle extends Form {
 	    /**
 	     * 
 	     * @param {string} uuid 
@@ -650,6 +730,8 @@
 	     */
 
 	    constructor(uuid, x = 0, y = 0, r = 5){
+
+	        super();
 
 	        this.uuid = uuid;
 
@@ -813,7 +895,7 @@
 	    }
 
 
-	    remove(){
+	    removeFromDOM(){
 	        svg.removeChild(this.box);
 	        svg.removeChild(this.c_svg);
 	    }
@@ -929,21 +1011,28 @@
 	}
 
 	/**
-	 * Rectangle class
+	 *  Class representing a rectangle form.
+	 * 
+	 * @class
+	 * 
+	 * @classdesc The rectangle object draws a rectangular shape in the Dom element svg.
+	 * 
 	 */
 
-	class Rectangle {
+	class Rectangle extends Form {
 
 	  /**
+	   * Create a rectangular shape.
 	   * 
-	   * @param {string} uuid 
-	   * @param {number} x 
-	   * @param {number} y 
-	   * @param {number} width 
-	   * @param {number} height 
+	   * @param { String } uuid - The unique id of the shape in the svg.
+	   * @param { Number } x - The abscissa of the beginning of the shape drawing, located at the left end of the navigator.
+	   * @param { Number } y - The ordinate of the beginning of the shape drawing, located at the left end of the navigator.
+	   * @param { Number } width - The width of the rectangular shape.
+	   * @param { Number } height - The height of the rectangular shape.
 	   */
-
 	  constructor(uuid, x = 0, y = 0, width = 10, height = 10) {
+
+	    super();
 
 	    this.uuid = uuid;
 
@@ -953,25 +1042,111 @@
 	    this.width = width;
 	    this.height = height;
 
+	    /**
+	     * @description
+	     * Dictionary object to record events and their respective callbacks associated with the form.
+	     * 
+	     * @type { Object }
+	     */
 	    this.events = {};
 
+
+	    /**
+	     * @description
+	     * Represents the svg dom element created.
+	     * 
+	     * @type { String }
+	     */
 	    this.c_svg = "";
 
 	    this.type = "rectangle";
 
+	    /**
+	     * @description
+	     * A table listing all children of the form.
+	     * 
+	     * @type { Array.<(Form | null)>}
+	     */
 	    this.children = [];
 
-	    this.offsetX = 0;
+
+	    /**
+	     * @description
+	     * The offsetX represents the x-offset to be applied to the rectangle.
+	     * to position it at {this. x + this.offSetX} on the x-axis.
+	     * 
+	     @type { Number }
+	     */
+	     this.offsetX = 0;
+
+	    /**
+	     * @description
+	     * The offsetY represents the y-offset to be applied to the rectangle.
+	     * to position it at {this. y + this.offSetX} on the y-axis.
+	     * 
+	     @type { Number }
+	     */
 	    this.offsetY = 0;
 
+
+	    /**
+	     * @description
+	     * The ScaleX represents the scale to be applied to the size of the
+	     * shape on the x-axis.
+	     * 
+	     * @type { Number }
+	     */
 	    this.scaleX = 1;
+
+
+	    /**
+	     * @description
+	     * The ScaleX represents the scale to be applied to the size of the
+	     * shape on the x-axis.
+	     * 
+	     * @type { Number }
+	     */
 	    this.scaleY = 1;
 
+
+
+	    /**
+	     * @description
+	     * .This variable represents the value of the rotation angle to be
+	     *  applied to rotate the shape.
+	     * 
+	     * @type { Number } - The angle is given in radian.
+	     */
 	    this.angle = 0;
+
+
+
+	    /**
+	     * @description
+	     * The center of rotation is defined by defining centerX.
+	     * 
+	     * @type { Number } - centerX
+	     */
 	    this.centerX = 0;
+
+	    /**
+	     * @description
+	     * The center of rotation is defined by defining centerY.
+	     * 
+	     * @type { Number } - centerY
+	     */
 	    this.centerY = 0;
 
 
+	    /**
+	     * @description
+	     * The variable c_points represents all the connection 
+	     * points of the form. These are the points from which one 
+	     * can establish a link with other forms having also these 
+	     * connection points.
+	     * 
+	     * @type { Array<(Point | Null)> }
+	     */
 	    this.c_points = [
 	      new Point(this.uuid, 0, 0),
 	      new Point(this.uuid, 0, 0),
@@ -979,6 +1154,15 @@
 	      new Point(this.uuid, 0, 0),
 	    ];
 
+
+	    /**
+	     * 
+	     * @description
+	     * The vertex variable represents the set of points from 
+	     * which we can resize the shape.
+	     * 
+	     * @type { Array<(Point | Null)> }
+	     */
 	    this.vertex = [
 	      new Point(this.uuid, 0, 0),
 	      new Point(this.uuid, 0, 0),
@@ -987,17 +1171,44 @@
 	    ];
 	  }
 
+
+	  /**
+	   * @description 
+	   * This method allows us to add an event to this form.
+	   * We record the event and the associated callback for easy removal after.
+	   * 
+	   * @param { String } event - the event
+	   * @param { Function } callback - {} This callback is either defined by the user when
+	   * adding other custom events, or a callback already defined in event.js.
+	   */
 	  addEvent(event, callback){
 	    this.c_svg.addEventListener(event, callback);
 	    this.events[event] = callback;
 	  }
 
+
+	  /**
+	   * *@description
+	   * This method allows us to delete a specific event passed as a string parameter.
+	   * 
+	   * @param { String } event - The event.
+	   */
 	  deleteEvent(event){
 	    var callback = this.events[event];
 	    this.c_svg.removeEventListener(event, callback);
 	    delete this.events[event];
 	  }
 
+	  /**
+	   * @description
+	   * We can build any shape by adding to a basic component children form.
+	   * 
+	   * @param { (Rectangle | Lozenge | Triangle | Circle | Line | Text) } child - This form ( @extend Form) is added 
+	   * as a child to a component with a form.
+	   * @param { Function } translate - { parent, child } This function allows us to position the child relative to its parent.
+	   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
+	   * account its relative position and the center of rotation.
+	   */
 	  addChild(child, translate, rotate){
 	    child.setOffsetX(this.x);
 	    child.setOffsetY(this.y);
@@ -1007,6 +1218,13 @@
 	    this.children.push({child, translate, rotate});
 	  }
 
+
+	  /**
+	   * @description
+	   * 
+	   * 
+	   * @param {DomElement} svg 
+	   */
 	  draw(svg) {
 	    const sv = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(sv, "rect");
@@ -1038,6 +1256,10 @@
 	    this.addEvent("mousedown", events.mouseDownCb);
 	    this.addEvent("mouseup", events.mouseUpCb);
 	    this.addEvent("mouseover", events.mouseMoveCb);
+	  }
+
+	  removeFromDOM(){
+	    svg.removeChild(this.c_svg);
 	  }
 
 	  setRotateCenter(centerX, centerY){
@@ -1089,6 +1311,10 @@
 	    return this.height;
 	  }
 
+	  /**
+	   * @description
+	   * The drawVertex function simply calculates the position of each vertex according to the specificity of the shape.
+	   */
 	  drawVertex(){
 	    if(this.vertex.length == 0)
 	      return;
@@ -1106,6 +1332,13 @@
 	    this.vertex[3].y = this.y + this.offsetY + this.height * this.scaleY;
 	  }
 
+	  /**
+	   * @description
+	   * The drawConnector function simply calculates the position of each
+	   * connection point according to the specificity of the shape.
+	   * 
+	   * @returns { void }
+	   */
 	  drawConnector() {
 	    if(this.c_points.length == 0)
 	      return;
@@ -1123,6 +1356,13 @@
 	    this.c_points[3].y = this.y + this.offsetY + (this.height / 2) * this.scaleY;
 	  }
 
+	  /**
+	   * @description
+	   * The shift function allows to apply a decalage of the shape during the mousemove or the resize.
+	   * 
+	   * @param { Number } dx
+	   * @param { Number } dy 
+	   */
 	  shift(dx, dy) {
 	    this.x += dx;
 	    this.y += dy;
@@ -1160,6 +1400,10 @@
 	    });
 	  }
 
+	  /**
+	   * To resize a shape, we base it on the position of the top on which the
+	   * mousedown was triggered, and the offsets dx and dy.
+	   */
 	  resize(pos, dx, dy) {
 
 	      if (pos == 0) {
@@ -1193,6 +1437,9 @@
 	  
 	      }
 
+	      /**
+	       * After resizing, we redraw the children and apply translation or rotation if necessary.
+	       */
 	      this.children.map( ({child, translate, rotate}) => {
 	        translate(this, child);
 	        rotate(this, child);
@@ -1201,11 +1448,33 @@
 	  }
 
 
+	  /**
+	   * 
+	   * @param { Line } line - It represents an instance of line form.
+	   * @returns 
+	   */
 	  optimalPath(line){
 	    var _x, _y;
+	    /**
+	     * We determine the equation of the line passed as a parameter.
+	     * @var { Number } a - The slope of the line.
+	     * @var { Number } b - The ordinate at the origin.
+	     */
 	    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
 	    var b = line.y - a * line.x;
 
+
+	    /**
+	     * A basic shape has 4 vertices.
+	     * And the vertices are indexed from 0 to 3, starting with the top left extremity and counting clockwise.
+	     * The equation is determined on each side of the form. _y = a * _x + b
+	     * The junction points of the line and forms are not important.
+	     * We use a and b of the line to calculate _x or _y because this is the possible intersection point of the
+	     * line and a specific side of the form.
+	     * We check that the top point belongs to the segment of the form and the line segment.
+	     * In addition, we base on the slope of the line to locate more precisely the correct intersection.
+	     * We finally return the corresponding connection point.
+	     */
 	    for (var i = 0; i <= 3; i++){
 	        if(i % 2 == 0){
 	            _y = this.vertex[i].y;
@@ -1219,7 +1488,7 @@
 	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
 	          continue;
 
-	          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	        if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
 	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
 	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
 	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
@@ -1230,23 +1499,25 @@
 	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
 	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
 	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
+	        ){
 	            return this.c_points[i];
-	           }
-	      }
+	        }
+	    }
 	    return null;
 	  }
-
 	}
 
 	/**
 	 * @class Triangle
 	 */
 
-	class Triangle {
+	class Triangle extends Form {
 
 	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
 	  {
+
+	    super();
 
 	    this.uuid = uuid;
 
@@ -1301,6 +1572,10 @@
 	    var callback = this.events[event];
 	    this.c_svg.removeEventListener(event, callback);
 	    delete this.events[event];
+	  }
+
+	  addChild(child, translate, rotate){
+
 	  }
 
 
@@ -1379,6 +1654,10 @@
 	    this.addEvent("mouseup", events.mouseUpCb);
 	  }
 
+	  removeFromDOM(){
+	    svg.removeChild(this.c_svg);
+	  }
+
 	  shift(dx, dy) {
 	    this.x1 += dx;
 	    this.y1 += dy;
@@ -1447,14 +1726,50 @@
 	        this.vertex[2].y = dy;
 	      }
 	  }
+
+	  optimalPath(line){
+	    var _x, _y;
+	    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+	    var b = line.y - a * line.x;
+
+	    for (var i = 0; i <= 3; i++){
+	        if(i % 2 == 0){
+	            _y = this.vertex[i].y;
+	            _x = (_y - b)/a;
+	        }
+	        else {
+	            _x = this.vertex[i].x;
+	            _y = a * _x + b;
+	        }
+
+	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+	          continue;
+
+	          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	            return this.c_points[i];
+	           }
+	      }
+	    return null;
+	  }
 	}
 
 	/**
-	 * @class Losange
+	 * @class Lozenge
 	 */
 
 
-	class Losange {
+	class Lozenge extends Form{
 
 	/**
 	 * 
@@ -1467,6 +1782,8 @@
 
 	  constructor(uuid, x = 0, y = 0, width = 10, height = 30)
 	  {
+	      super();
+	  
 	      this.uuid = uuid;
 
 	      this.x = x;
@@ -1480,7 +1797,7 @@
 	      this.c_svg = "";
 	      this.box = "";
 
-	      this.type = "losange";
+	      this.type = "Lozenge";
 	      this.p = "";
 
 	      this.scaleX = 1;
@@ -1592,6 +1909,11 @@
 	    
 	    this.addEvent("mousedown", events.mouseDownCb);
 	    this.addEvent("mouseup", events.mouseUpCb);
+	  }
+
+	  removeFromDOM(){
+	    svg.removeChild(this.box);
+	    svg.removeChild(this.c_svg);
 	  }
 
 	  redraw() {
@@ -1815,8 +2137,8 @@
 	            return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y);
 	        else if(type == "triangle")
 	            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3);
-	        else if(type == "losange")
-	            return new Losange(uuid, props.x, props.y, props.width, props.height);
+	        else if(type == "lozenge")
+	            return new Lozenge(uuid, props.x, props.y, props.width, props.height);
 	    }
 	}
 
@@ -1884,6 +2206,10 @@
 	        svg.appendChild(this.c_svg);
 	    }
 
+	    removeFromDom(){
+	        svg.removeChild(this.c_svg);
+	    }
+
 	    redraw(){
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
@@ -1907,11 +2233,25 @@
 
 	}
 
+	function initSvg(id, width, height){
+
+	    var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+	    svg.setAttribute("width", width);
+	    svg.setAttribute("height", height);
+	    svg.setAttribute("id", id);
+
+	    svg.addEventListener("mousemove", events.mouseMoveCb);
+	    svg.addEventListener("mouseup", events.mouseUpCb);
+	    
+	    return svg;
+	}
+
 	exports.Circle = Circle;
 	exports.Component = Component;
 	exports.FactoryForm = FactoryForm;
+	exports.Form = Form;
 	exports.Line = Line;
-	exports.Losange = Losange;
+	exports.Lozenge = Lozenge;
 	exports.Point = Point;
 	exports.Rectangle = Rectangle;
 	exports.Text = Text;
@@ -1920,6 +2260,7 @@
 	exports._uuid = _uuid;
 	exports.config = config;
 	exports.events = events;
+	exports.initSvg = initSvg;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

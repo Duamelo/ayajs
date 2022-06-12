@@ -70,6 +70,10 @@ class Point {
 
   }
 
+  removeFromDOM(){
+    svg.removeChild(this.c_svg);
+  }
+
   shift(dx, dy) {
     this.x += dx;
     this.y += dy;

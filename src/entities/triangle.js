@@ -2,15 +2,18 @@ import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
 import { config } from "../../config.js";
+import { Form } from "../abstraction/form.js";
 
 /**
  * @class Triangle
  */
 
-class Triangle {
+class Triangle extends Form {
 
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
   {
+
+    super();
 
     this.uuid = uuid;
 
@@ -65,6 +68,10 @@ class Triangle {
     var callback = this.events[event];
     this.c_svg.removeEventListener(event, callback);
     delete this.events[event];
+  }
+
+  addChild(child, translate, rotate){
+
   }
 
 
@@ -143,6 +150,10 @@ class Triangle {
     this.addEvent("mouseup", events.mouseUpCb);
   }
 
+  removeFromDOM(){
+    svg.removeChild(this.c_svg);
+  }
+
   shift(dx, dy) {
     this.x1 += dx;
     this.y1 += dy;
@@ -210,6 +221,42 @@ class Triangle {
         this.vertex[2].x = dx;
         this.vertex[2].y = dy;
       }
+  }
+
+  optimalPath(line){
+    var _x, _y;
+    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+    var b = line.y - a * line.x;
+
+    for (var i = 0; i <= 3; i++){
+        if(i % 2 == 0){
+            _y = this.vertex[i].y;
+            _x = (_y - b)/a;
+        }
+        else{
+            _x = this.vertex[i].x;
+            _y = a * _x + b;
+        }
+
+        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+          continue;
+
+          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+            return this.c_points[i];
+           }
+      }
+    return null;
   }
 }
 export { Triangle };

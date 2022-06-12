@@ -46,6 +46,10 @@ class Text{
         svg.appendChild(this.c_svg);
     }
 
+    removeFromDom(){
+        svg.removeChild(this.c_svg);
+    }
+
     redraw(){
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);

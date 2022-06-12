@@ -1,14 +1,15 @@
 import { config } from "../../config.js";
+import { Form } from "../abstraction/form.js";
 import { events } from "../events.js";
 import { Point } from "./point.js";
 import { _uuid } from "./uuid.js";
 
 /**
- * @class Losange
+ * @class Lozenge
  */
 
 
-class Losange {
+class Lozenge extends Form{
 
 /**
  * 
@@ -21,6 +22,8 @@ class Losange {
 
   constructor(uuid, x = 0, y = 0, width = 10, height = 30)
   {
+      super();
+  
       this.uuid = uuid;
 
       this.x = x;
@@ -34,7 +37,7 @@ class Losange {
       this.c_svg = "";
       this.box = "";
 
-      this.type = "losange";
+      this.type = "Lozenge";
       this.p = "";
 
       this.scaleX = 1;
@@ -146,6 +149,11 @@ class Losange {
     
     this.addEvent("mousedown", events.mouseDownCb);
     this.addEvent("mouseup", events.mouseUpCb);
+  }
+
+  removeFromDOM(){
+    svg.removeChild(this.box);
+    svg.removeChild(this.c_svg);
   }
 
   redraw() {
@@ -345,4 +353,4 @@ class Losange {
   }
 }
 
-export { Losange };
+export { Lozenge };

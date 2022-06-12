@@ -4,14 +4,14 @@ import {events} from "../events";
 import { Point } from "./point";
 import { config } from "../../config";
 import { FactoryForm } from "../factoryForm";
+import { Form } from "../abstraction/form";
 
 
 /**
  * @class Line
  */
 
-class Line 
-{
+class Line extends Form {
     /**
      * 
      * @param {string} uuid 
@@ -21,6 +21,8 @@ class Line
      * @param {number} dest_y 
      */
     constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
+
+        super();
 
         this.uuid = uuid;
 
@@ -114,6 +116,13 @@ class Line
         this.vertex[1].y = (this.dest_y + this.offsetY) * this.scaleY;
     }
 
+    drawConnector(){
+
+    }
+
+    drawBox(){
+
+    }
 
     draw(svg){
         const ns = "http://www.w3.org/2000/svg";
@@ -141,6 +150,11 @@ class Line
 
         this.addEvent("mousedown", events.mouseDownCb);
     }
+
+    removeFromDOM(){
+        svg.removeChild(this.c_svg);
+    }
+
 
     shift(dx,dy){
         this.x += dx;
@@ -245,6 +259,11 @@ class Line
 
     getScaleY(){
         return this.scaleY;
+    }
+
+
+    optimalPath(){
+
     }
 }
 export {Line};

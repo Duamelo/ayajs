@@ -13,7 +13,6 @@
 <body>
 
    <script>
-      var svg;
       console.log(aya);
     
       var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
@@ -36,12 +35,12 @@
       // rect.form.deleteEvent("mousedown");
 
       // console.log(rect);
-      // var rect2 = new aya.Component("rectangle", {
-      //    x: 600,
-      //    y: 200, 
-      //    width: 300,
-      //    height: 200
-      // })
+      var rect2 = new aya.Component("rectangle", {
+         x: 600,
+         y: 200, 
+         width: 300,
+         height: 200
+      });
 
       var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
       

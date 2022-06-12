@@ -37,7 +37,7 @@ class Lozenge extends Form{
       this.c_svg = "";
       this.box = "";
 
-      this.type = "Lozenge";
+      this.type = "lozenge";
       this.p = "";
 
       this.scaleX = 1;

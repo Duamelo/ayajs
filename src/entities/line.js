@@ -59,27 +59,43 @@ class Line extends Form {
         ];
 
         if(config.line != undefined && Object.keys(config.line.ends.left).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props)
-            this.addChild(child, (p, c) => {
-                c.setOffsetX(p.x - config.line.ends.left.props.height/2);
-                c.setOffsetY(p.y - config.line.ends.left.props.height/2);
-            },  (p, c) => {
-                c.setRotateCenter(c.x, c.y);
-                c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                
-            } );
+            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props);
+            if(config.line.ends.left.type == 'triangle')
+                this.addChild(child, (p, c) => {
+                    c.setOffsetX(p.dest_x);
+                    c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
+                },  (p, c) => {
+                    c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
+                    c.setRotateAngle(p.calculateAngle());
+                } );
+            else
+                this.addChild(child, (p, c) => {
+                    c.setOffsetX(p.x - config.line.ends.left.props.height/2);
+                    c.setOffsetY(p.y - config.line.ends.left.props.height/2);
+                },  (p, c) => {
+                    c.setRotateCenter(c.x, c.y);
+                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+                } );
         }
-        
+
         if(config.line != undefined && Object.keys(config.line.ends.right).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props)
-            this.addChild(child, (p, c) => {
-                c.setOffsetX(p.dest_x);
-                c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
-            },  (p, c) => {
-                c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
-                c.setRotateAngle(p.calculateAngle());
-            } );
-            
+            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props);
+            if(config.line.ends.right.type == 'triangle')
+                this.addChild(child, (p, c) => {
+                    c.setOffsetX(p.dest_x);
+                    c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
+                },  (p, c) => {
+                    c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
+                    c.setRotateAngle(p.calculateAngle());
+                } );
+            else
+                this.addChild(child, (p, c) => {
+                    c.setOffsetX(p.x - config.line.ends.left.props.height/2);
+                    c.setOffsetY(p.y - config.line.ends.left.props.height/2);
+                },  (p, c) => {
+                    c.setRotateCenter(c.x, c.y);
+                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+                } );
         }
     }
 

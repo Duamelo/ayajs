@@ -7,8 +7,7 @@ class Component
     /**
      * 
      * @param {string} type 
-     * @param {array} events 
-     * @param {object} params 
+     * @param {object} props 
      */
     constructor( type, props)
     {

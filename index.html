@@ -11,6 +11,7 @@
 </head>
 
 <body>
+
    <script>
       var svg;
       console.log(aya);
@@ -42,14 +43,24 @@
       //    height: 200
       // })
 
-      var text = new aya.Text(aya._uuid.generate(), 0, 0);
+      var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
       
       rect.form.addChild(text, (p, c) => {
-         c.setOffsetX(p.x + p.width/2);
-         c.setOffsetY(p.y + p.height/2);
-      }, (p, c) => {
+            // c.setOffsetX(p.x + p.width/2);
+            // c.setOffsetY(p.y + p.height/2);
+            // c.setOffsetX(p.x + 10);
+            // c.setOffsetY(p.y + 15);
+            c.setOffsetX(p.x + p.width/3);
+            c.setOffsetY(p.y + p.height/3);
+            c.setParentWidth(p.width);
+            c.setParentHeight(p.Height);
+            c.setParentX(p.x);
+            c.setParentY(p.y);
+         }, (p, c) => {
 
       });
+
+
       // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
 
       // var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);

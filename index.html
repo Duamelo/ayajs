@@ -32,15 +32,29 @@
       });
 
 
+      var poly = new aya.Component("polyline", {points : [100,100,150,136, 300,350, 200,300,230,120]});
+
+      var pt = new aya.Point(aya._uuid.generate(), 300,300,10);
+      pt.draw(svg);
+
+      var pt2 = new aya.Point(aya._uuid.generate(), 500,300,10);
+      pt2.draw(svg);
+
+      var pt3 = new aya.Point(aya._uuid.generate(), 300,100,10);
+      pt3.draw(svg);
+
+
+      var arc = new aya.Component("arc", {x0: 300, y0: 300, x: 500, y: 300, angle : 90});
+
       // rect.form.deleteEvent("mousedown");
 
       // console.log(rect);
-      var rect2 = new aya.Component("rectangle", {
-         x: 600,
-         y: 200, 
-         width: 300,
-         height: 200
-      });
+      // var rect2 = new aya.Component("rectangle", {
+      //    x: 600,
+      //    y: 200, 
+      //    width: 300,
+      //    height: 200
+      // });
 
       var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
       

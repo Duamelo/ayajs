@@ -3,6 +3,8 @@ import  {Rectangle}  from "./entities/rectangle.js";
 import  {Line}  from "./entities/line.js";
 import  {Triangle}  from "./entities/triangle.js";
 import  {Lozenge} from "./entities/lozenge.js";
+import { Polyline } from "./entities/polyline.js";
+import { Arc } from "./aya.js";
 
 
 /**
@@ -31,6 +33,11 @@ class FactoryForm
             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3);
         else if(type == "lozenge")
             return new Lozenge(uuid, props.x, props.y, props.width, props.height);
+        else if(type == "polyline")
+            return new Polyline(uuid, props.points);
+        else if(type == "arc")
+            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle);
+
     }
 }
 export {FactoryForm};

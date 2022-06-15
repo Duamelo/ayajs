@@ -13,3 +13,6 @@ export  {Lozenge} from "./entities/lozenge";
 export {config} from "../config";
 export {Text} from "./entities/text";
 export {initSvg} from "./svg";
+export {Polyline} from "./entities/polyline";
+export {Arc} from "./entities/arc";
+export {Group} from "./entities/group";

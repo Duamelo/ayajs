@@ -130,7 +130,37 @@ class Lozenge extends Form{
     this.c_svg = document.createElementNS(ns, "path");
     this.box = document.createElementNS(ns, "path");
 
-    this.redraw();
+    if(this.angle != 0){
+      var __x, __y, _x, _y, dx, dy;
+
+      __x = this.x  * Math.cos(this.angle) - this.y   * Math.sin(this.angle) ;
+      __y = this.x  * Math.sin(this.angle) + this.y   * Math.cos(this.angle) ;
+
+
+      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+      dx = _x - this.centerX;
+      dy = _y - this.centerY;
+
+      this.p = `M ${__x - dx + this.offsetX} ${__y - dy + this.offsetY}  L ${__x - dx  + this.offsetX + (this.width/2 * this.scaleX)} ${__y - dy + this.offsetY + (this.height/2 * this.scaleY)}  L ${__x - dx + this.offsetX} ${ __y - dy + this.offsetY + (this.height * this.scaleY)}  L ${ __x - dx + this.offsetX - (this.width/2 * this.scaleX)} ${ __y - dy + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+    }
+    else
+      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
+
+    this.drawVertex();
+    this.drawConnector();
+    this.drawBox();
+
+    this.c_svg.setAttribute("d",this.p);
+
+    this.vertex.map((v) => {
+      v.draw(svg);
+    });
+
+    this.c_points.map((p) => {
+        p.draw(svg);
+    });
 
     this.box.setAttribute("id", this.uuid);
     this.box.setAttributeNS(null, "stroke", config.box.stroke);
@@ -181,13 +211,13 @@ class Lozenge extends Form{
 
     this.c_svg.setAttribute("d",this.p);
 
+    this.vertex.map((v) => {
+      v.redraw();
+    });
+
     this.c_points.map((p) => {
         p.redraw();
       });
-
-      this.vertex.map((v) => {
-      v.redraw();
-    });
 
     this.children.map( ({child, translate, rotate}) => {
       translate(this, child);
@@ -256,15 +286,6 @@ class Lozenge extends Form{
   shift(dx, dy) {
     this.x += dx;
     this.y += dy;
-
-    this.x2 += dx;
-    this.y2 += dy;
-
-    this.x3 += dx;
-    this.y3 += dy;
-
-    this.x4 += dx;
-    this.y4 += dy;
 
     this.c_points.map((p) => {
       p.shift(dx, dy);

@@ -24,27 +24,27 @@
       svg.addEventListener("mouseup", aya.events.mouseUpCb);
 
     
-      var rect = new aya.Component("rectangle", {
-         x: 100,
-         y: 100, 
-         width: 300,
-         height: 200
-      });
+      // var rect = new aya.Component("rectangle", {
+      //    x: 100,
+      //    y: 100, 
+      //    width: 300,
+      //    height: 200
+      // });
 
 
-      var poly = new aya.Component("polyline", {points : [100,100,150,136, 300,350, 200,300,230,120]});
+      // var poly = new aya.Component("polyline", {points : [100,100,150,136, 300,350, 200,300,230,120]});
 
-      var pt = new aya.Point(aya._uuid.generate(), 300,300,10);
-      pt.draw(svg);
+      // var pt = new aya.Point(aya._uuid.generate(), 300,300,10);
+      // pt.draw(svg);
 
-      var pt2 = new aya.Point(aya._uuid.generate(), 500,300,10);
-      pt2.draw(svg);
+      // var pt2 = new aya.Point(aya._uuid.generate(), 500,300,10);
+      // pt2.draw(svg);
 
-      var pt3 = new aya.Point(aya._uuid.generate(), 300,100,10);
-      pt3.draw(svg);
+      // var pt3 = new aya.Point(aya._uuid.generate(), 300,100,10);
+      // pt3.draw(svg);
 
 
-      var arc = new aya.Component("arc", {x0: 300, y0: 300, x: 500, y: 300, angle : 90});
+      // var arc = new aya.Component("arc", {x0: 300, y0: 300, x: 500, y: 300, angle : 90});
 
       // rect.form.deleteEvent("mousedown");
 
@@ -56,22 +56,22 @@
       //    height: 200
       // });
 
-      var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
+      // var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
       
-      rect.form.addChild(text, (p, c) => {
-            // c.setOffsetX(p.x + p.width/2);
-            // c.setOffsetY(p.y + p.height/2);
-            // c.setOffsetX(p.x + 10);
-            // c.setOffsetY(p.y + 15);
-            c.setOffsetX(p.x + p.width/3);
-            c.setOffsetY(p.y + p.height/3);
-            c.setParentWidth(p.width);
-            c.setParentHeight(p.Height);
-            c.setParentX(p.x);
-            c.setParentY(p.y);
-         }, (p, c) => {
+      // rect.form.addChild(text, (p, c) => {
+      //       // c.setOffsetX(p.x + p.width/2);
+      //       // c.setOffsetY(p.y + p.height/2);
+      //       // c.setOffsetX(p.x + 10);
+      //       // c.setOffsetY(p.y + 15);
+      //       c.setOffsetX(p.x + p.width/3);
+      //       c.setOffsetY(p.y + p.height/3);
+      //       c.setParentWidth(p.width);
+      //       c.setParentHeight(p.Height);
+      //       c.setParentX(p.x);
+      //       c.setParentY(p.y);
+      //    }, (p, c) => {
 
-      });
+      // });
 
 
       // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
@@ -163,6 +163,9 @@
       // });
 
 
+      var los = new aya.Component('lozenge', {x: 100, y: 100, width: 300, height: 200});
+
+      console.log(los);
       
       document.body.append(svg);
    </script>

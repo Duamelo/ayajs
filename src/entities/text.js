@@ -1,7 +1,11 @@
-import { config } from "../../config";
-
+/**
+ * @class
+ * 
+ * @description
+ * 
+ */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text"){
+    constructor(uuid, x = 0, y = 0, text = "text", svg, event, config){
 
         this.uuid = uuid;
 
@@ -9,6 +13,12 @@ class Text{
         this.y = y;
 
         this.text = text;
+
+        this.svg = svg;
+
+        this.nativeEvent = event;
+
+        this.config = config;
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -37,19 +47,19 @@ class Text{
         this.angle = angle;
     }
 
-    draw(svg){
+    draw(){
         const svgns = "http://www.w3.org/2000/svg";
 
         this.c_svg = document.createElementNS(svgns, "text");
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
         this.c_svg.setAttributeNS(null, "id", this.uuid);
-        this.c_svg.setAttributeNS(null, "fill",config.text.fill);
-        this.c_svg.setAttributeNS(null, "stroke",config.text.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width",config.text.strokeWidth);
-        this.c_svg.setAttributeNS(null, "fill-opacity",config.text.fillOpacity);
-        this.c_svg.setAttributeNS(null, "stroke-dasharray",config.text.strokeDasharray);
-        this.c_svg.setAttributeNS(null, "stroke-dashoffset",config.text.strokeDashoffset);
+        this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
+        this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.text.strokeWidth);
+        this.c_svg.setAttributeNS(null, "fill-opacity", this.config.text.fillOpacity);
+        this.c_svg.setAttributeNS(null, "stroke-dasharray", this.config.text.strokeDasharray);
+        this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
 
         this.tspan = document.createElementNS(svgns, "tspan");
         this.title = document.createElementNS(svgns, "title");
@@ -58,7 +68,7 @@ class Text{
         this.c_svg.appendChild(this.title);
 
         this.updateWidthText();
-        svg.appendChild(this.c_svg);
+        this.svg.appendChild(this.c_svg);
     }
 
     updateWidthText(marge =  5){
@@ -84,7 +94,7 @@ class Text{
     }
     
     removeFromDom(){
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.c_svg);
     }
 
     redraw(){

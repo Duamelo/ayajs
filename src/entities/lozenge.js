@@ -1,6 +1,4 @@
-import { config } from "../../config.js";
 import { Form } from "../abstraction/form.js";
-import { events } from "../events.js";
 import { Point } from "./point.js";
 import { _uuid } from "./uuid.js";
 
@@ -20,7 +18,7 @@ class Lozenge extends Form{
  * @param {number} height 
  */
 
-  constructor(uuid, x = 0, y = 0, width = 10, height = 30)
+  constructor(uuid, x = 0, y = 0, width = 10, height = 30, svg, event, config)
   {
       super();
   
@@ -33,8 +31,13 @@ class Lozenge extends Form{
       this.height =  height;
 
       this.events = {};
+      
+      this.nativeEvent = event;
+      
+      this.config = config;
 
       this.c_svg = "";
+      this.svg = svg;
       this.box = "";
 
       this.type = "lozenge";
@@ -54,17 +57,17 @@ class Lozenge extends Form{
       this.children = [];
 
       this.c_points = [
-        new Point(this.uuid,0,0),
-        new Point(this.uuid,0,0),
-        new Point(this.uuid,0,0),
-        new Point(this.uuid,0,0),
+        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
       ];
 
       this.vertex = [
-        new Point(this.uuid, 0, 0),
-        new Point(this.uuid, 0, 0),
-        new Point(this.uuid, 0, 0),
-        new Point(this.uuid, 0, 0),
+        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
       ];
   }
 
@@ -85,7 +88,7 @@ class Lozenge extends Form{
     child.setOffsetY(this.y);
     translate(this, child);
     rotate(this, child);
-    child.draw(svg);
+    child.draw();
     this.children.push({child, translate, rotate});
   }
 
@@ -124,7 +127,7 @@ class Lozenge extends Form{
     this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
   }
 
-  draw(svg) {
+  draw() {
     const ns = "http://www.w3.org/2000/svg";
 
     this.c_svg = document.createElementNS(ns, "path");
@@ -155,35 +158,35 @@ class Lozenge extends Form{
     this.c_svg.setAttribute("d",this.p);
 
     this.vertex.map((v) => {
-      v.draw(svg);
+      v.draw();
     });
 
     this.c_points.map((p) => {
-        p.draw(svg);
+        p.draw();
     });
 
     this.box.setAttribute("id", this.uuid);
-    this.box.setAttributeNS(null, "stroke", config.box.stroke);
-    this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
-    this.box.setAttributeNS(null, "fill", config.box.fill);
-    this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
+    this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
+    this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
+    this.box.setAttributeNS(null, "fill", this.config.box.fill);
+    this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
-    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
-    this.c_svg.setAttribute("fill", config.form.fill);
+    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+    this.c_svg.setAttribute("fill", this.config.form.fill);
 
-    svg.appendChild(this.c_svg);
-    svg.appendChild(this.box);
+    this.svg.appendChild(this.c_svg);
+    this.svg.appendChild(this.box);
     
-    this.addEvent("mousedown", events.mouseDownCb);
-    this.addEvent("mouseup", events.mouseUpCb);
+    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
   }
 
   removeFromDOM(){
-    svg.removeChild(this.box);
-    svg.removeChild(this.c_svg);
+    this.svg.removeChild(this.box);
+    this.svg.removeChild(this.c_svg);
   }
 
   redraw() {
@@ -258,6 +261,13 @@ class Lozenge extends Form{
 
     }
 
+    if(this.width < this.config.form.limitWidth)
+      this.width = this.config.form.limitWidth;
+
+     if(this.height < this.config.form.limitHeight)
+      this.height = this.config.form.limitHeight;
+
+
     this.children.map( ({child, translate, rotate}) => {
       translate(this, child);
       rotate(this, child);
@@ -266,8 +276,6 @@ class Lozenge extends Form{
   }
 
   drawBox(){
-
-    /* dessin du contour de la forme sous forme de carré */
     if(this.c_points.length == 0 || this.vertex.length == 0)
       return;
     

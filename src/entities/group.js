@@ -1,6 +1,4 @@
-import { events } from "../events";
 import { _uuid } from "./uuid";
-import {config} from "../../config";
 
 
 class Group{
@@ -10,14 +8,18 @@ class Group{
      * @param {string} uuid 
      */
 
-    constructor(uuid){
+    constructor(uuid, svg, event, config){
 
         this.uuid = uuid;
 
-        this.events = "";
+        this.events = {};
+        this.nativeEvent = event;
+        this.config = config;
 
 
         this.c_svg = "";
+        this.svg = svg;
+
         this.type = "group";
 
           /**
@@ -70,7 +72,7 @@ class Group{
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw(this.c_svg);
+        child.draw();
         this.children.push({child, translate, rotate});
     }
 
@@ -88,25 +90,22 @@ class Group{
         this.offsetX = x;
     }
 
-    /**
-     * @param {DOMElement} svgs 
-     */
-    draw(svgs){
+    draw(){
         const svgns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(svgns, "g");
 
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", "black");
-        this.c_svg.setAttribute("stroke", config.form.stroke);
-        this.c_svg.setAttribute("transform", "rotate(0, 0, 0)");
-        this.c_svg.setAttribute("transform", "translate(0, 0)");
+        this.c_svg.setAttribute("fill", this.config.group.fill);
+        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+        // this.c_svg.setAttribute("transform", "rotate(0, 0, 0)");
+        // this.c_svg.setAttribute("transform", "translate(0, 0)");
 
-        svgs.appendChild(this.c_svg);
-        this.addEvent("mousedown", events.mouseDownCb);
+        this.svg.appendChild(this.c_svg);
+        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
     removeFromDOM(){
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.c_svg);
     }
 
     shift(dx, dy){

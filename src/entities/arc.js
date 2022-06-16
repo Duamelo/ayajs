@@ -1,8 +1,5 @@
 import { _uuid } from "./uuid";
-import { _Register } from "../register";
-import {events} from "../events";
 import { Point } from "./point";
-import { config } from "../../config";
 import { Form } from "../abstraction/form";
 
 
@@ -15,7 +12,7 @@ class Arc extends Form {
      * 
      * @param {string} uuid 
      */
-    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90){
+    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, svg, event, config){
 
         super();
 
@@ -34,7 +31,14 @@ class Arc extends Form {
 
         this.events = {};
 
+        this.nativeEvent = event;
+
+        this.config = config;
+
+
         this.c_svg = "";
+        this.svg = svg;
+
         this.type = "arc";
 
         this.offsetX = 0;
@@ -48,12 +52,12 @@ class Arc extends Form {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
         ];
     }
 
@@ -75,7 +79,7 @@ class Arc extends Form {
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw(svg);
+        child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -92,35 +96,35 @@ class Arc extends Form {
     drawBox(){
     }
 
-    draw(svg){
+    draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
         this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", config.form.fill);
-        this.c_svg.setAttribute("stroke", config.form.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+        this.c_svg.setAttribute("fill", this.config.form.fill);
+        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
         this.c_svg.setAttribute("d", this.p);
 
-        svg.appendChild(this.c_svg);
+        this.svg.appendChild(this.c_svg);
 
         this.drawVertex();
         this.drawConnector();
 
         this.c_points.map((point) => {
-            point.draw(svg);
+            point.draw();
         });
 
         this.vertex.map( (vertex) => {
-            vertex.draw(svg);
+            vertex.draw();
         });
 
-        this.addEvent("mousedown", events.mouseDownCb);
+        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
     removeFromDOM(){
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.c_svg);
     }
 
     shift(dx,dy){
@@ -129,12 +133,6 @@ class Arc extends Form {
 
         this.x += dx;
         this.y += dy;
-
-
-        // this.dest_x = Math.round (this.x0 + (this.x - this.x0) * Math.cos ((this.angle * Math.PI )/ 180) + (this.y - this.y0) * Math.sin ((this.angle * Math.PI) / 180));
-        // this.dest_y = Math.round (this.y0 - (this.x - this.x0) * Math.sin ((this.angle * Math.PI) / 180) + (this.y - this.y0) * Math.cos ((this.angle * Math.PI) / 180));
-
-        // this.radius = Math.sqrt ((this.x - this.x0) * (this.x - this.x0) + (this.y - this.y0) * (this.y - this.y0));
     }
 
 

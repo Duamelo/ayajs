@@ -1,4 +1,3 @@
-  
 import  {_uuid}  from "./uuid.js";
 import {_Register}  from "../register.js"
 
@@ -39,8 +38,6 @@ class Link
         this.line.dest_y = this.destination.y;
 
         this.line.redraw();
-
     }
-
 }
 export {Link};

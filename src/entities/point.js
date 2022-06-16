@@ -1,5 +1,3 @@
-import { config } from "../../config.js";
-import {events} from "../events.js";
 import {_Register} from "../register.js";
 import {_uuid} from "./uuid.js";
 
@@ -12,7 +10,7 @@ import {_uuid} from "./uuid.js";
  */
 
 class Point {
-  constructor(uuid, x = 0, y = 0, r = 5) {
+  constructor(uuid, x = 0, y = 0, r = 5, svg, event, config) {
 
     this.ref = uuid;
     this.uuid = _uuid.generate();
@@ -24,8 +22,12 @@ class Point {
     this.scale = 1;
 
     this.events = {};
+    this.nativeEvent = event;
+    this.config = config;
+
 
     this.c_svg = "";
+    this.svg = svg;
 
     _Register.add(this);
   }
@@ -49,7 +51,7 @@ class Point {
     return this.scale;
   }
 
-  draw(svg) {
+  draw() {
     var ns = "http://www.w3.org/2000/svg";
 
     this.c_svg = document.createElementNS(ns, "circle");
@@ -58,20 +60,19 @@ class Point {
 
     this.c_svg.setAttribute("cy", this.y);
 
-    this.c_svg.setAttribute("r", config.point.radius * this.scale);
+    this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 
     // this.c_svg.setAttribute("class", "vertex");
 
     this.c_svg.setAttribute("id", this.uuid);
 
-    this.addEvent("mousedown", events.mouseDownCb);
+    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 
-    svg.appendChild(this.c_svg);
-
+    this.svg.appendChild(this.c_svg);
   }
 
   removeFromDOM(){
-    svg.removeChild(this.c_svg);
+    this.svg.removeChild(this.c_svg);
   }
 
   shift(dx, dy) {
@@ -80,7 +81,6 @@ class Point {
   }
 
   redraw() {
-
     this.c_svg.setAttribute("cx", this.x);
     this.c_svg.setAttribute("cy", this.y);
     

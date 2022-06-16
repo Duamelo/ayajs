@@ -1,8 +1,6 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
-import {events} from "../events";
 import { Point } from "./point";
-import { config } from "../../config";
 import { Form } from "../abstraction/form";
 
 
@@ -15,7 +13,7 @@ class Polyline extends Form {
      * 
      * @param {string} uuid 
      */
-    constructor(uuid, points = []){
+    constructor(uuid, points = [], svg, event, config){
 
         super();
 
@@ -30,8 +28,13 @@ class Polyline extends Form {
         this.points = points;
 
         this.events = {};
+        
+        this.nativeEvent = event;
+        
+        this.config = config;
 
         this.c_svg = "";
+        this.svg = svg;
         this.type = "polyline";
 
         this.offsetX = 0;
@@ -45,15 +48,13 @@ class Polyline extends Form {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
         ];
-
-        console.log(this);
     }
 
     addEvent(event, callback){
@@ -74,7 +75,7 @@ class Polyline extends Form {
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw(svg);
+        child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -89,10 +90,9 @@ class Polyline extends Form {
     drawBox(){
     }
 
-    draw(svg){
+    draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'polyline');
-        console.log(this.points);
 
         var path = "";
         for(var i = 0; i < this.points.length; i++){
@@ -102,9 +102,9 @@ class Polyline extends Form {
                     path += this.points[i] + " ";
         }
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", config.form.fill);
-        this.c_svg.setAttribute("stroke", config.form.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+        this.c_svg.setAttribute("fill", this.config.form.fill);
+        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
         this.c_svg.setAttribute("points", path);
 
         svg.appendChild(this.c_svg);
@@ -112,18 +112,18 @@ class Polyline extends Form {
         this.drawVertex();
 
         this.c_points.map((point) => {
-            point.draw(svg);
+            point.draw();
         });
 
         this.vertex.map( (vertex) => {
-            vertex.draw(svg);
+            vertex.draw();
         });
 
-        this.addEvent("mousedown", events.mouseDownCb);
+        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
     removeFromDOM(){
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.c_svg);
     }
 
 

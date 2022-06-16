@@ -1,10 +1,9 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
-import {events} from "../events";
 import { Point } from "./point";
-import { config } from "../../config";
 import { FactoryForm } from "../factoryForm";
 import { Form } from "../abstraction/form";
+import { Events } from "../events";
 
 
 /**
@@ -20,7 +19,7 @@ class Line extends Form {
      * @param {number} dest_x 
      * @param {number} dest_y 
      */
-    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
+    constructor(id_svg, svg, event, config, uuid, x=0, y=0, dest_x = x, dest_y = y){
 
         super();
 
@@ -36,6 +35,14 @@ class Line extends Form {
 
         this.events = {};
 
+        this.config = config;
+
+        this.svg = svg;
+
+        this.id_svg = id_svg;
+
+        this.nativeEvent = event || Events.setup(this.svg, this.id_svg, this.config);
+
         this.c_svg = "";
         this.type = "line";
 
@@ -50,48 +57,48 @@ class Line extends Form {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0),
-            new Point(this.uuid, 0, 0),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
 
-        if(config.line != undefined && Object.keys(config.line.ends.left).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.left.type, config.line.ends.left.props);
-            if(config.line.ends.left.type == 'triangle')
+        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
+            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, this.config.line.ends.start.props, this.svg, this.nativeEvent, this.config);
+            if(this.config.line.ends.start.type == 'triangle')
                 this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.dest_x);
-                    c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
+                    c.setOffsetX(p.x);
+                    c.setOffsetY(p.y - (this.config.line.ends.start.props.y3 - this.config.line.ends.start.props.y1)/2);
                 },  (p, c) => {
                     c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
                     c.setRotateAngle(p.calculateAngle());
                 } );
             else
                 this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - config.line.ends.left.props.height/2);
-                    c.setOffsetY(p.y - config.line.ends.left.props.height/2);
+                    c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
+                    c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
                 },  (p, c) => {
                     c.setRotateCenter(c.x, c.y);
                     c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
                 } );
         }
 
-        if(config.line != undefined && Object.keys(config.line.ends.right).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), config.line.ends.right.type, config.line.ends.right.props);
-            if(config.line.ends.right.type == 'triangle')
+        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
+            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, this.config.line.ends.dest.props, this.svg, this.nativeEvent, this.config);
+            if(this.config.line.ends.dest.type == 'triangle')
                 this.addChild(child, (p, c) => {
                     c.setOffsetX(p.dest_x);
-                    c.setOffsetY(p.dest_y - (config.line.ends.right.props.y3 - config.line.ends.right.props.y1)/2);
+                    c.setOffsetY(p.dest_y - (this.config.line.ends.dest.props.y3 - this.config.line.ends.dest.props.y1)/2);
                 },  (p, c) => {
                     c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
                     c.setRotateAngle(p.calculateAngle());
                 } );
             else
                 this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - config.line.ends.left.props.height/2);
-                    c.setOffsetY(p.y - config.line.ends.left.props.height/2);
+                    c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
+                    c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
                 },  (p, c) => {
                     c.setRotateCenter(c.x, c.y);
                     c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
@@ -117,7 +124,7 @@ class Line extends Form {
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw(svg);
+        child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -140,35 +147,36 @@ class Line extends Form {
 
     }
 
-    draw(svg){
+    draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
+        console.log(this.config);
         var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", p);
-        this.c_svg.setAttribute("fill", config.form.fill);
-        this.c_svg.setAttribute("stroke", config.form.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
+        this.c_svg.setAttribute("fill", this.config.form.fill);
+        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
 
-        svg.appendChild(this.c_svg);
+        this.svg.appendChild(this.c_svg);
 
         this.drawVertex();
 
         this.c_points.map((point) => {
-            point.draw(svg);
+            point.draw();
         });
 
         this.vertex.map( (vertex) => {
-            vertex.draw(svg);
+            vertex.draw();
         });
 
-        this.addEvent("mousedown", events.mouseDownCb);
+        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
     removeFromDOM(){
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.c_svg);
     }
 
 

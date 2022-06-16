@@ -1,7 +1,5 @@
-import { events } from "../events.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
-import { config } from "../../config.js";
 import { Form } from "../abstraction/form.js";
 
 /**
@@ -10,7 +8,7 @@ import { Form } from "../abstraction/form.js";
 
 class Triangle extends Form {
 
-  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
+  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, svg, event, config)
   {
 
     super();
@@ -27,8 +25,14 @@ class Triangle extends Form {
     this.y3 = y3;
 
     this.events = {};
+    
+    this.nativeEvent = event;
+
+    this.config = config;
 
     this.c_svg = "";
+    this.svg = svg;
+
     this.type = "triangle";
 
     this.children = [];
@@ -45,17 +49,17 @@ class Triangle extends Form {
     this.centerY = 0;
 
     this.c_points = [
-      new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
+      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
 
     this.vertex = [
-        new Point(this.uuid,0, 0 ),
-        new Point(this.uuid,0, 0 ),
-        new Point(this.uuid,0, 0 ),
-        new Point(this.uuid,0, 0 ),
+        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
   }
 
@@ -70,9 +74,7 @@ class Triangle extends Form {
     delete this.events[event];
   }
 
-  addChild(child, translate, rotate){
-
-  }
+  addChild(child, translate, rotate){  }
 
 
   setOffsetX(x){
@@ -130,28 +132,49 @@ class Triangle extends Form {
   }
 
 
-  draw(svg) {
+  draw() {
       
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
 
-    this.redraw();
+    if(this.angle != 0){
+      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
+
+      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
+      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
+
+      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
+      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
+
+      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
+      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
+
+      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+      dx = _x - this.centerX;
+      dy = _y - this.centerY;
+
+      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+    }
+    else
+      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
-    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
-    this.c_svg.setAttribute("fill", config.form.fill);
+    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+    this.c_svg.setAttribute("fill", this.config.form.fill);
 
 
-    svg.appendChild(this.c_svg);
+    this.svg.appendChild(this.c_svg);
 
-    this.addEvent("mousedown", events.mouseDownCb);
-    this.addEvent("mouseup", events.mouseUpCb);
+    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
   }
 
   removeFromDOM(){
-    svg.removeChild(this.c_svg);
+    this.svg.removeChild(this.c_svg);
   }
 
   shift(dx, dy) {

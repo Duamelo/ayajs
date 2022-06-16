@@ -6,16 +6,19 @@ class Component
 {
     /**
      * 
-     * @param {string} type 
-     * @param {object} props 
+     * @param {*} type 
+     * @param {*} props 
+     * @param {*} svg 
+     * @param {*} events 
+     * @param {*} config 
      */
-    constructor( type, props)
+    constructor( type, props, svg, events, config)
     {
         this.uuid = _uuid.generate();
         this.type = type;
-        this.form = FactoryForm.createForm(this.uuid, type, props);
+        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
         _Register.add(this);
-        this.form.draw(svg);
+        this.form.draw();
     }
 }
 export  {Component};

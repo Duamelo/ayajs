@@ -1,8 +1,6 @@
 import { _Register } from "../register";
 import { _uuid } from "./uuid";
-import {events} from "../events";
 import { Point } from "./point";
-import { config } from "../../config";
 import { Form } from "../abstraction/form";
 
 /**
@@ -17,7 +15,7 @@ class Circle extends Form {
      * @param {number} r 
      */
 
-    constructor(uuid, x = 0, y = 0, r = 5){
+    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
 
         super();
 
@@ -28,9 +26,12 @@ class Circle extends Form {
         this.r = r;
 
         this.events = {};
+        this.nativeEvent = event;
+        this.config = config;
 
         this.box = ""
         this.c_svg = "";
+        this.svg = svg;
 
         this.type = "circle";
 
@@ -44,17 +45,17 @@ class Circle extends Form {
         this.children = [];
       
         this.c_points = [
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 )
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
         ];
 
         this.vertex = [
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 ),
-            new Point(this.uuid,0, 0 )
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
         ];
     }
 
@@ -74,7 +75,7 @@ class Circle extends Form {
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw(svg);
+        child.draw();
         this.children.push({child, translate, rotate});
     }
   
@@ -123,12 +124,7 @@ class Circle extends Form {
         this.box.setAttribute("d", p);
     }
     
-    /**
-     * 
-     * @param {DOMElement} svg 
-     */
-    
-    draw(svg){
+    draw(){
         var ns="http://www.w3.org/2000/svg";
 
         this.box = document.createElementNS(ns, "path");
@@ -143,12 +139,12 @@ class Circle extends Form {
         this.c_svg.setAttribute("r", this.r * this.scale);
         
 
-        this.c_svg.setAttribute("fill", config.form.fill);
+        this.c_svg.setAttribute("fill", this.config.form.fill);
 
-        this.c_svg.setAttribute("stroke",config.form.stroke);
+        this.c_svg.setAttribute("stroke", this.config.form.stroke);
 
     
-        this.c_svg.setAttribute("stroke-width", config.form.strokeWidth);
+        this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
     
       
         /** draw box */
@@ -158,19 +154,19 @@ class Circle extends Form {
         this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
 
         
-        svg.appendChild(this.c_svg);
-        svg.appendChild(this.box);
+        this.svg.appendChild(this.c_svg);
+        this.svg.appendChild(this.box);
 
         this.drawVertex();
         this.drawConnector();
         this.drawBox();
 
         this.c_points.map((point) => {
-            point.draw(svg);
+            point.draw();
         });
 
         this.vertex.map((point) => {
-            point.draw(svg);
+            point.draw();
         });
 
         this.children.map( ({child, translate, rotate}) => {
@@ -179,13 +175,13 @@ class Circle extends Form {
             child.redraw();
         });
 
-        this.addEvent("mousedown", events.mouseDownCb);
+        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
 
     removeFromDOM(){
-        svg.removeChild(this.box);
-        svg.removeChild(this.c_svg);
+        this.svg.removeChild(this.box);
+        this.svg.removeChild(this.c_svg);
     }
     
     shift(dx, dy){

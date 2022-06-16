@@ -15,159 +15,27 @@
    <script>
       console.log(aya);
     
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-      svg.setAttribute("width", 1600);
-      svg.setAttribute("height", 900);
-      svg.setAttribute("id", "svg");
+      var aya = new aya.Application();
 
-      svg.addEventListener("mousemove", aya.events.mouseMoveCb);
-      svg.addEventListener("mouseup", aya.events.mouseUpCb);
+      console.log(aya);
 
-    
-      // var rect = new aya.Component("rectangle", {
-      //    x: 100,
-      //    y: 100, 
-      //    width: 300,
-      //    height: 200
-      // });
+      var cp =  aya.createComponent("rectangle", {x: 100, y: 100, width: 300, height: 200});
 
 
-      // var poly = new aya.Component("polyline", {points : [100,100,150,136, 300,350, 200,300,230,120]});
+      var cp2 =  aya.createComponent("lozenge", {x: 200, y: 200, width: 300, height: 200});
 
-      // var pt = new aya.Point(aya._uuid.generate(), 300,300,10);
-      // pt.draw(svg);
+      // var los = aya.createComponent("lozenge", {x: 500, y: 300, width: 200, height: 200});
 
-      // var pt2 = new aya.Point(aya._uuid.generate(), 500,300,10);
-      // pt2.draw(svg);
+      var los = aya.createLozenge(0, 0, 50, 50);
 
-      // var pt3 = new aya.Point(aya._uuid.generate(), 300,100,10);
-      // pt3.draw(svg);
+      cp.form.addChild(los, (p, c)=> {
+         c.setOffsetX(p.x + p.width/2);
+         c.setOffsetY(p.y + p.height/2)
+      }, (p, c)=>{
 
+      });
 
-      // var arc = new aya.Component("arc", {x0: 300, y0: 300, x: 500, y: 300, angle : 90});
-
-      // rect.form.deleteEvent("mousedown");
-
-      // console.log(rect);
-      // var rect2 = new aya.Component("rectangle", {
-      //    x: 600,
-      //    y: 200, 
-      //    width: 300,
-      //    height: 200
-      // });
-
-      // var text = new aya.Text(aya._uuid.generate(), 0, 0, "I 'm text in svg componentsf,oerireioeriszzezioioeioezoieeio ");
-      
-      // rect.form.addChild(text, (p, c) => {
-      //       // c.setOffsetX(p.x + p.width/2);
-      //       // c.setOffsetY(p.y + p.height/2);
-      //       // c.setOffsetX(p.x + 10);
-      //       // c.setOffsetY(p.y + 15);
-      //       c.setOffsetX(p.x + p.width/3);
-      //       c.setOffsetY(p.y + p.height/3);
-      //       c.setParentWidth(p.width);
-      //       c.setParentHeight(p.Height);
-      //       c.setParentX(p.x);
-      //       c.setParentY(p.y);
-      //    }, (p, c) => {
-
-      // });
-
-
-      // var rect2 = new aya.Rectangle(aya._uuid.generate(), 0, 0, 20, 20 );
-
-      // var tri = new aya.Triangle(aya._uuid.generate(), 0, 0, 0, 100, 50, 100);
-
-      
-      // rect.form.addChild(rect2, (p, c)=> {
-      //    c.setOffsetX(p.x + 200);
-      //    c.setOffsetY(p.y + 100);
-      //    c.setScaleX(4);
-      //    c.setScaleY(3);
-      // }, (p, c) => {
-
-      // });
-
-
-      // rect.form.addChild(tri, (p, c)=> {
-      //    // c.setOffsetX(p.x);
-      //    // c.setOffsetY(p.y);
-      // }, (p, c) => {
-      //    c.setRotateCenter(50, 50);
-      //    c.setRotateAngle(-90);
-      // });
-
-      // var point = new aya.Point(aya._uuid.generate(), 50, 50);
-      // point.draw(svg);
-
-      // var lozenge = new aya.Component("lozenge", {
-      //    x: 500,
-      //    y: 150,
-      //    width: 200,
-      //    height:300
-      // });
-
-      // var los = new aya.Lozenge(aya._uuid.generate(), 50, 0,  100, 50);
-
-      // lozenge.form.addChild(los, (p,c)=>{
-      //    c.setOffsetX(p.x);
-      //    c.setOffsetY(p.y);
-      //    c.setScaleX(2);
-      //    c.setScaleY(2);
-      // }, (p, c) => {
-
-      // })
-
-      // var circle = new aya.Component("circle", { x: 100, y: 100, r: 50});
-
-      // var cir = new aya.Circle(aya._uuid.generate(), 0, 0, 25);
-
-      // circle.form.addChild(cir, (p, c)=> {
-      //    c.setOffsetX(p.x);
-      //    c.setOffsetY(p.y);
-      //    c.setScale(4);
-      // }, (p, c) => {
-
-      // })
-
-      // var tri = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
-
-      // var tri2 = new aya.Triangle(aya._uuid.generate(), 15, 0, 0, 15, 30, 15);
-
-      // var line = new aya.Component("line",{
-      //    x: 200,
-      //    y: 200,
-      //    dest_x: 390,
-      //    dest_y:200
-      // });
-
-      // var a = 115;
-      
-      // line.form.addChild(tri, (p, c) => {
-      //    // c.setOffsetX(p.dest_x  - 15);
-      //    // c.setOffsetY(p.dest_y  - 17);
-      // }, (p, c) => {
-      //    // c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
-      //    // c.setRotateAngle((p.calculateAngle() + ( Math.PI * 90)/180));
-      // });
-
-      // line.form.addChild(tri2, (p, c) => {
-      //    c.setOffsetX(p.x  - 15);
-      //    c.setOffsetY(p.y  - 17);p, c) => {
-         // c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
-         // c.setRotateAngle((p.calculateAngle() + ( Math.PI * 90)/180));
-      
-      // }, (p, c) => {
-      //    c.setRotateCenter((c.x2 + c.x3) / 2, (c.y2 + c.y3) / 2);
-      //    c.setRotateAngle((p.calculateAngle() - ( Math.PI * 90)/180));
-      // });
-
-
-      var los = new aya.Component('lozenge', {x: 100, y: 100, width: 300, height: 200});
-
-      console.log(los);
-      
-      document.body.append(svg);
+      document.body.append(aya.svg);
    </script>
 
 </body>

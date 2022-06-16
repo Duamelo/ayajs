@@ -1,8 +1,6 @@
 import { Form } from "../abstraction/form.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
-import { events } from "../events.js";
-import { config } from "../../config.js";
 
 /**
  *  Class representing a rectangle form.
@@ -24,7 +22,7 @@ class Rectangle extends Form {
    * @param { Number } width - The width of the rectangular shape.
    * @param { Number } height - The height of the rectangular shape.
    */
-  constructor(uuid, x = 0, y = 0, width = 10, height = 10) {
+  constructor(uuid, x = 0, y = 0, width = 10, height = 10, svg, event, config) {
 
     super();
 
@@ -44,6 +42,10 @@ class Rectangle extends Form {
      */
     this.events = {};
 
+    this.nativeEvent = event;
+
+    this.config = config;
+
 
     /**
      * @description
@@ -52,6 +54,13 @@ class Rectangle extends Form {
      * @type { String }
      */
     this.c_svg = "";
+
+    /**
+     * @description
+     * 
+     * @type { DomElement}
+     */
+    this.svg = svg;
 
     this.type = "rectangle";
 
@@ -142,10 +151,10 @@ class Rectangle extends Form {
      * @type { Array<(Point | Null)> }
      */
     this.c_points = [
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
 
 
@@ -158,10 +167,10 @@ class Rectangle extends Form {
      * @type { Array<(Point | Null)> }
      */
     this.vertex = [
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
-      new Point(this.uuid, 0, 0),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
   }
 
@@ -208,7 +217,7 @@ class Rectangle extends Form {
     child.setOffsetY(this.y);
     translate(this, child);
     rotate(this, child);
-    child.draw(svg);
+    child.draw();
     this.children.push({child, translate, rotate});
   }
 
@@ -216,10 +225,8 @@ class Rectangle extends Form {
   /**
    * @description
    * 
-   * 
-   * @param {DomElement} svg 
    */
-  draw(svg) {
+  draw() {
     const sv = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(sv, "rect");
 
@@ -228,32 +235,32 @@ class Rectangle extends Form {
     this.c_svg.setAttributeNS(null, "id", this.uuid);
     this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
     this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
-    this.c_svg.setAttributeNS(null, "stroke", config.form.stroke);
-    this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
-    this.c_svg.setAttributeNS(null, "fill", config.form.fill);
+    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
+    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
 
-    svg.appendChild(this.c_svg);
+    this.svg.appendChild(this.c_svg);
 
 
     this.drawConnector();
     this.drawVertex();
 
     this.c_points.map((point) => {
-      point.draw(svg);
+      point.draw();
     });
 
     this.vertex.map((point) => {
-      point.draw(svg);
+      point.draw();
     });
 
-    this.addEvent("mousedown", events.mouseDownCb);
-    this.addEvent("mouseup", events.mouseUpCb);
-    this.addEvent("mouseover", events.mouseMoveCb);
+    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+    this.addEvent("mouseover", this.nativeEvent.mouseMoveCb);
   }
 
   removeFromDOM(){
-    svg.removeChild(this.c_svg);
+    this.svg.removeChild(this.c_svg);
   }
 
   setRotateCenter(centerX, centerY){
@@ -428,8 +435,13 @@ class Rectangle extends Form {
   
         this.width += -dx;
         this.height += dy;
-  
       }
+
+      if(this.width < this.config.form.limitWidth)
+        this.width = this.config.form.limitWidth;
+
+      if(this.height < this.config.form.limitHeight)
+        this.height = this.config.form.limitHeight;
 
       /**
        * After resizing, we redraw the children and apply translation or rotation if necessary.

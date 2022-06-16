@@ -98,7 +98,7 @@ class Arc extends Form {
 
         this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", "indigo");
+        this.c_svg.setAttribute("fill", config.form.fill);
         this.c_svg.setAttribute("stroke", config.form.stroke);
         this.c_svg.setAttributeNS(null, "stroke-width", config.form.strokeWidth);
         this.c_svg.setAttribute("d", this.p);

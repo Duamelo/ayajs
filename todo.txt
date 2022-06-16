@@ -1,8 +1,0 @@
-- définir un fichier de configuration de style par svg
-- définir les différents types d'extrémités pour la line
-- permettre au développeur de préciser le type d'extrémités pour la line
-- documenter le code
-- revoir la structure du code en fonction de la classe line
-- définition des textes dans les composants
-- possibilité de faire un resize de la form en fonction de la longueur du texte
-- finir l'implémentation de optimal path en gérant les lines couchées sur les formes

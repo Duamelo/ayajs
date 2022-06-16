@@ -4,7 +4,7 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.aya = {}));
 })(this, (function (exports) { 'use strict';
 
-	var config$1 =  {
+	var config =  {
 	    svg : {
 	        fill : "white",
 	    },
@@ -34,8 +34,8 @@
 	    line : {
 	        fill : "black",
 	        ends : {
-	            // start : { type : "lozenge", props : {x : 0 , y : 0 , width : 10, height : 10}},
-	            start : { type : "triangle", props : {x1 : 0 , y1 : 0 , x2 : -10, y2 : 5, x3 : 0, y3 : 10}},
+	            start : { type : "circle", props : {x : 0 , y : 0, r: 6}},
+	            // start : { type : "triangle", props : {x1 : 0 , y1 : 0 , x2 : -10, y2 : 5, x3 : 0, y3 : 10}},
 	            dest : { type : "triangle", props : {x1 : 0 , y1 : 0 , x2 : 10, y2 : 5, x3 : 0, y3 : 10}}
 	        }
 	    },
@@ -303,11 +303,15 @@
 	        this.r = r;
 
 	        this.events = {};
+
 	        this.nativeEvent = event;
+
 	        this.config = config;
 
 	        this.box = "";
+
 	        this.c_svg = "";
+
 	        this.svg = svg;
 
 	        this.type = "circle";
@@ -322,17 +326,17 @@
 	        this.children = [];
 	      
 	        this.c_points = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
 	        ];
 
 	        this.vertex = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
 	        ];
 	    }
 
@@ -389,16 +393,18 @@
 	    }
 
 	    drawBox(){
-	        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-                  L ${this.c_points[0].x} ${this.c_points[0].y} 
-                  L ${this.vertex[1].x}   ${this.vertex[1].y} 
-                  L ${this.c_points[1].x} ${this.c_points[1].y}
-                  L ${this.vertex[2].x}   ${this.vertex[2].y}
-                  L ${this.c_points[2].x} ${this.c_points[2].y} 
-                  L ${this.vertex[3].x}   ${this.vertex[3].y} 
-                  L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
-	    
-	        this.box.setAttribute("d", p);
+	        if(this.vertex.length > 0 && this.c_points.length >0){
+	            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+            L ${this.c_points[0].x} ${this.c_points[0].y} 
+            L ${this.vertex[1].x}   ${this.vertex[1].y} 
+            L ${this.c_points[1].x} ${this.c_points[1].y}
+            L ${this.vertex[2].x}   ${this.vertex[2].y}
+            L ${this.c_points[2].x} ${this.c_points[2].y} 
+            L ${this.vertex[3].x}   ${this.vertex[3].y} 
+            L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+
+	            this.box.setAttribute("d", p);
+	        }
 	    }
 	    
 	    draw(){
@@ -409,11 +415,12 @@
 
 	        this.c_svg.setAttribute("id", this.uuid);
 
-	        this.c_svg.setAttribute("cx", this.x + this.offsetX);
+	        console.log(this.offsetX + " " + this.offsetY );
+	        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
 
-	        this.c_svg.setAttribute("cy",this.y + this.offsetY);
+	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
-	        this.c_svg.setAttribute("r", this.r * this.scale);
+	        this.c_svg.setAttribute("r", (this.r * this.scale));
 	        
 
 	        this.c_svg.setAttribute("fill", this.config.form.fill);
@@ -425,10 +432,10 @@
 	    
 	      
 	        /** draw box */
-	        this.box.setAttributeNS(null, "stroke", config.box.stroke);
-	        this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
-	        this.box.setAttributeNS(null, "fill", config.box.fill);
-	        this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
+	        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
+	        this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
+	        this.box.setAttributeNS(null, "fill", this.config.box.fill);
+	        this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
 	        
 	        this.svg.appendChild(this.c_svg);
@@ -467,9 +474,9 @@
 	    }
 
 	    redraw(){
-	        this.c_svg.setAttribute("cx", this.x + this.offsetX);
-	        this.c_svg.setAttribute("cy",this.y + this.offsetY);
-	        this.c_svg.setAttribute("r", this.r * this.scale);
+	        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
+	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
+	        this.c_svg.setAttribute("r", (this.r * this.scale));
 
 	        this.drawConnector();
 	        this.drawVertex();
@@ -1347,6 +1354,14 @@
 	                },  (p, c) => {
 	                    c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
 	                    c.setRotateAngle(p.calculateAngle());
+	                } );
+	            else if(this.config.line.ends.start.type == 'circle')
+	                this.addChild(child, (p, c) => {
+	                    c.setOffsetX(p.x);
+	                    c.setOffsetY(p.y);
+	                },  (p, c) => {
+	                    c.setRotateCenter(c.x, c.y);
+	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
 	                } );
 	            else
 	                this.addChild(child, (p, c) => {
@@ -3029,7 +3044,7 @@
 	        this.svg.setAttribute("height", this.svg_height);
 	        this.svg.setAttribute("id", this.uuid);
 
-	        this.config = config$1;
+	        this.config = config;
 	        this.events = Events.setup(this.svg, this.uuid,this.config);
 
 	        this.svg.addEventListener("mousemove", this.events.mouseMoveCb);

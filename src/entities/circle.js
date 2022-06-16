@@ -26,11 +26,15 @@ class Circle extends Form {
         this.r = r;
 
         this.events = {};
+
         this.nativeEvent = event;
+
         this.config = config;
 
         this.box = ""
+
         this.c_svg = "";
+
         this.svg = svg;
 
         this.type = "circle";
@@ -45,17 +49,17 @@ class Circle extends Form {
         this.children = [];
       
         this.c_points = [
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
         ];
 
         this.vertex = [
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent)
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
         ];
     }
 
@@ -112,16 +116,18 @@ class Circle extends Form {
     }
 
     drawBox(){
-        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-                  L ${this.c_points[0].x} ${this.c_points[0].y} 
-                  L ${this.vertex[1].x}   ${this.vertex[1].y} 
-                  L ${this.c_points[1].x} ${this.c_points[1].y}
-                  L ${this.vertex[2].x}   ${this.vertex[2].y}
-                  L ${this.c_points[2].x} ${this.c_points[2].y} 
-                  L ${this.vertex[3].x}   ${this.vertex[3].y} 
-                  L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
-    
-        this.box.setAttribute("d", p);
+        if(this.vertex.length > 0 && this.c_points.length >0){
+            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+            L ${this.c_points[0].x} ${this.c_points[0].y} 
+            L ${this.vertex[1].x}   ${this.vertex[1].y} 
+            L ${this.c_points[1].x} ${this.c_points[1].y}
+            L ${this.vertex[2].x}   ${this.vertex[2].y}
+            L ${this.c_points[2].x} ${this.c_points[2].y} 
+            L ${this.vertex[3].x}   ${this.vertex[3].y} 
+            L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+
+            this.box.setAttribute("d", p);
+        }
     }
     
     draw(){
@@ -132,11 +138,12 @@ class Circle extends Form {
 
         this.c_svg.setAttribute("id", this.uuid);
 
-        this.c_svg.setAttribute("cx", this.x + this.offsetX);
+        console.log(this.offsetX + " " + this.offsetY )
+        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
 
-        this.c_svg.setAttribute("cy",this.y + this.offsetY);
+        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
-        this.c_svg.setAttribute("r", this.r * this.scale);
+        this.c_svg.setAttribute("r", (this.r * this.scale));
         
 
         this.c_svg.setAttribute("fill", this.config.form.fill);
@@ -148,10 +155,10 @@ class Circle extends Form {
     
       
         /** draw box */
-        this.box.setAttributeNS(null, "stroke", config.box.stroke);
-        this.box.setAttributeNS(null, "stroke-width", config.box.strokeWidth);
-        this.box.setAttributeNS(null, "fill", config.box.fill);
-        this.box.setAttribute("stroke-dasharray", config.box.strokeDasharray);
+        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
+        this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
+        this.box.setAttributeNS(null, "fill", this.config.box.fill);
+        this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
         
         this.svg.appendChild(this.c_svg);
@@ -190,9 +197,9 @@ class Circle extends Form {
     }
 
     redraw(){
-        this.c_svg.setAttribute("cx", this.x + this.offsetX);
-        this.c_svg.setAttribute("cy",this.y + this.offsetY);
-        this.c_svg.setAttribute("r", this.r * this.scale);
+        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
+        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
+        this.c_svg.setAttribute("r", (this.r * this.scale));
 
         this.drawConnector();
         this.drawVertex();

@@ -75,6 +75,14 @@ class Line extends Form {
                     c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
                     c.setRotateAngle(p.calculateAngle());
                 } );
+            else if(this.config.line.ends.start.type == 'circle')
+                this.addChild(child, (p, c) => {
+                    c.setOffsetX(p.x);
+                    c.setOffsetY(p.y);
+                },  (p, c) => {
+                    c.setRotateCenter(c.x, c.y);
+                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+                } );
             else
                 this.addChild(child, (p, c) => {
                     c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);

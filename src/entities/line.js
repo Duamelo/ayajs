@@ -45,6 +45,7 @@ class Line extends Form {
 
         this.c_svg = "";
         this.type = "line";
+        // this.type_line = type_line;
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -159,7 +160,6 @@ class Line extends Form {
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        console.log(this.config);
         var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);

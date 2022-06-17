@@ -15,7 +15,7 @@ import { Arc } from "./entities/arc";
 
 
 class Application{
-    constructor(width = 1300, height = 1000){
+    constructor(width = 1300, height = 1300){
 
         this.uuid = _uuid.generate();
 
@@ -30,6 +30,81 @@ class Application{
 
         this.config = config;
         this.events = Events.setup(this.svg, this.uuid,this.config);
+
+        this.tail_px = 50;
+        this.nc = this.svg_width / this.tail_px; 
+        this.nl = this.svg_height / this.tail_px;
+        
+        this.box = this.createComponent("rectangle", {
+            x: 0,
+            y: 0,
+            height: this.svg_height,
+            width: this.svg_width
+        });
+
+        this.box.form.c_svg.setAttributeNS(null, "fill", "#F4F1DE");
+        this.box.form.c_svg.setAttribute("stroke", "#57564F");
+        this.box.form.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+
+        this.box.form.vertex.map( (vt) => {
+            vt.removeFromDOM();
+        });
+
+        this.box.form.c_points.map( (cp) => {
+            cp.removeFromDOM();
+        });
+
+        Object.keys(this.box.form.events).map((ev) => {
+            this.box.form.deleteEvent(ev);
+        });
+
+        for(var j = 1; j <= this.nl - 1; j++){
+            var line = this.createLine(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
+
+            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
+
+            line.c_svg.setAttribute("fill", "#57564F");
+            line.c_svg.setAttribute("stroke", "#57564F");
+            line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+
+            line.children.map( ({child}) => {
+                child.removeFromDOM();
+                child = null;
+            });
+            
+            line.vertex.map( (point) => {
+                point.removeFromDOM();
+                point = null;
+            });
+
+            Object.keys(line.events).map((ev) => {
+                line.deleteEvent(ev);
+            });
+        }
+
+        for(var j = 1; j <= this.nc - 1; j++){
+            var line = this.createLine(j * this.tail_px, 0, this.tail_px * j, this.nc * this.tail_px);
+
+            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
+
+            line.c_svg.setAttribute("fill", "#57564F");
+            line.c_svg.setAttribute("stroke", "#57564F");
+            line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+
+
+            line.children.map( ({child}) => {
+                child.removeFromDOM();
+                child = null;
+            });
+            line.vertex.map( (point) => {
+                point.removeFromDOM();
+                point = null;
+            });
+
+            Object.keys(line.events).map((ev) => {
+                line.deleteEvent(ev);
+            });
+        }
 
         this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);

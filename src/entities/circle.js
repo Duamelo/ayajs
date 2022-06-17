@@ -138,7 +138,6 @@ class Circle extends Form {
 
         this.c_svg.setAttribute("id", this.uuid);
 
-        console.log(this.offsetX + " " + this.offsetY )
         this.c_svg.setAttribute("cx", (this.x + this.offsetX));
 
         this.c_svg.setAttribute("cy", (this.y + this.offsetY));

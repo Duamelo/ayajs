@@ -69,12 +69,10 @@ class Application{
 
             line.children.map( ({child}) => {
                 child.removeFromDOM();
-                child = null;
             });
-            
+
             line.vertex.map( (point) => {
                 point.removeFromDOM();
-                point = null;
             });
 
             Object.keys(line.events).map((ev) => {
@@ -94,11 +92,9 @@ class Application{
 
             line.children.map( ({child}) => {
                 child.removeFromDOM();
-                child = null;
             });
             line.vertex.map( (point) => {
                 point.removeFromDOM();
-                point = null;
             });
 
             Object.keys(line.events).map((ev) => {

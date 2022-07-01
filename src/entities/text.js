@@ -64,10 +64,13 @@ class Text{
         this.tspan = document.createElementNS(svgns, "tspan");
         this.title = document.createElementNS(svgns, "title");
 
+        this.title.textContent = this.text;
+        this.tspan.textContent = this.text;
+
         this.c_svg.appendChild(this.tspan);
         this.c_svg.appendChild(this.title);
 
-        this.updateWidthText();
+        // this.updateWidthText();
         this.svg.appendChild(this.c_svg);
     }
 
@@ -100,7 +103,7 @@ class Text{
     redraw(){
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-        this.updateWidthText();
+        // this.updateWidthText();
     }
 
     setOffsetX(x){

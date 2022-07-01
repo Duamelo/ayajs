@@ -48,12 +48,12 @@ class Polyline extends Form {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
     }
 
@@ -107,7 +107,7 @@ class Polyline extends Form {
         this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
         this.c_svg.setAttribute("points", path);
 
-        svg.appendChild(this.c_svg);
+        this.svg.appendChild(this.c_svg);
 
         this.drawVertex();
 

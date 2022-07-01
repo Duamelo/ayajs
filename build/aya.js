@@ -2283,12 +2283,12 @@
 	        this.children = [];
 
 	        this.vertex = [
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
 	        ];
 	        this.c_points = [
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
 	        ];
 	    }
 
@@ -2342,7 +2342,7 @@
 	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
 	        this.c_svg.setAttribute("points", path);
 
-	        svg.appendChild(this.c_svg);
+	        this.svg.appendChild(this.c_svg);
 
 	        this.drawVertex();
 
@@ -2830,10 +2830,13 @@
 	        this.tspan = document.createElementNS(svgns, "tspan");
 	        this.title = document.createElementNS(svgns, "title");
 
+	        this.title.textContent = this.text;
+	        this.tspan.textContent = this.text;
+
 	        this.c_svg.appendChild(this.tspan);
 	        this.c_svg.appendChild(this.title);
 
-	        this.updateWidthText();
+	        // this.updateWidthText();
 	        this.svg.appendChild(this.c_svg);
 	    }
 
@@ -2866,7 +2869,7 @@
 	    redraw(){
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-	        this.updateWidthText();
+	        // this.updateWidthText();
 	    }
 
 	    setOffsetX(x){
@@ -3030,7 +3033,7 @@
 	}
 
 	class Application{
-	    constructor(width = 1300, height = 1300){
+	    constructor(width = 1340, height = 1340){
 
 	        this.uuid = _uuid.generate();
 
@@ -3084,11 +3087,10 @@
 
 	            line.children.map( ({child}) => {
 	                child.removeFromDOM();
-	                child = null;
 	            });
+
 	            line.vertex.map( (point) => {
 	                point.removeFromDOM();
-	                point = null;
 	            });
 
 	            Object.keys(line.events).map((ev) => {
@@ -3108,11 +3110,9 @@
 
 	            line.children.map( ({child}) => {
 	                child.removeFromDOM();
-	                child = null;
 	            });
 	            line.vertex.map( (point) => {
 	                point.removeFromDOM();
-	                point = null;
 	            });
 
 	            Object.keys(line.events).map((ev) => {
@@ -3141,7 +3141,7 @@
 	    }
 
 	    createCircle( x = 0, y = 0, r = 5){
-	        return new Circle(_uuid.generate(), x, y, this.svg, this.events, this.config);
+	        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
 	    }
 
 	    createText(x = 0, y = 0, text = "text"){

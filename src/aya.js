@@ -15,7 +15,7 @@ import { Arc } from "./entities/arc";
 
 
 class Application{
-    constructor(width = 1300, height = 1300){
+    constructor(width = 1340, height = 1340){
 
         this.uuid = _uuid.generate();
 
@@ -123,7 +123,7 @@ class Application{
     }
 
     createCircle( x = 0, y = 0, r = 5){
-        return new Circle(_uuid.generate(), x, y, this.svg, this.events, this.config);
+        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
     }
 
     createText(x = 0, y = 0, text = "text"){

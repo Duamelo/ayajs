@@ -16,7 +16,7 @@ class _Register
         delete store[uuid];
     }
     
-    static getAllLinksByComponent(component){
+    static findAllLink(component){
         var result = [];
         Object.keys(store).map((id) => {
             var obj = _Register.find(id);
@@ -28,7 +28,7 @@ class _Register
         return result;
     }
 
-    static getAllComponent(){
+    static findAllComponents(){
         var result = [];
         Object.keys(store).map((id) => {
             var obj = _Register.find(id);

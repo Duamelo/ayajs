@@ -71,7 +71,7 @@
 	        delete store[uuid];
 	    }
 	    
-	    static getAllLinksByComponent(component){
+	    static findAllLinksByComponent(component){
 	        var result = [];
 	        Object.keys(store).map((id) => {
 	            var obj = _Register.find(id);
@@ -83,7 +83,7 @@
 	        return result;
 	    }
 
-	    static getAllComponent(){
+	    static findAllComponents(){
 	        var result = [];
 	        Object.keys(store).map((id) => {
 	            var obj = _Register.find(id);
@@ -1178,7 +1178,7 @@
 	          source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 	  
 	        if(cp.form != undefined)
-	          lk = _Register.getAllLinksByComponent(cp);
+	          lk = _Register.findAllLinksByComponent(cp);
 	  
 	  
 	        // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
@@ -1193,7 +1193,7 @@
 	  
 	            // component determination 
 	            cp = _Register.find(cp.ref);
-	            lk = _Register.getAllLinksByComponent(cp);
+	            lk = _Register.findAllLinksByComponent(cp);
 	          }
 	          else {
 	            /**
@@ -1328,7 +1328,7 @@
 	      },
 	      mouseLeaveCb: function mouseleavecb(e){
 
-	          var components = _Register.getAllComponent();
+	          var components = _Register.findAllComponents();
 
 	          components.map( async (component) => {
 	            setTimeout(()=> {

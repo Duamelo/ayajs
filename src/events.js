@@ -37,7 +37,7 @@ class Events {
           source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
   
         if(cp.form != undefined)
-          lk = _Register.getAllLinksByComponent(cp);
+          lk = _Register.findAllLink(cp);
   
   
         // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
@@ -52,7 +52,7 @@ class Events {
   
             // component determination 
             cp = _Register.find(cp.ref);
-            lk = _Register.getAllLinksByComponent(cp);
+            lk = _Register.findAllLink(cp);
           }
           else {
             /**
@@ -187,7 +187,7 @@ class Events {
       },
       mouseLeaveCb: function mouseleavecb(e){
 
-          var components = _Register.getAllComponent();
+          var components = _Register.findAllComponents();
 
           components.map( async (component) => {
             setTimeout(()=> {

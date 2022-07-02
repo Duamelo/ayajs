@@ -20,6 +20,9 @@ class Link
     }
 
     redraw(){
+        console.log(this.destination.ref);
+        console.log(this.source.ref);
+
         var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
 
         var source_point = source.form.optimalPath(this.line);

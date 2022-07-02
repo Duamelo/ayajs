@@ -19,6 +19,7 @@ class Events {
     var svg = svg;
     var id_svg = id_svg
     var config = config;
+    var id_store = [];
   
     return {
       mouseDownCb: function mousedowncb(e) {
@@ -155,6 +156,49 @@ class Events {
           }
         }
         state = "";
+      },
+      mouseOverCb: function mouseovercb(e){
+
+        id = e.srcElement.id;
+
+        id_store.push(id);
+  
+        cp = _Register.find(id);
+
+        if(cp.form != undefined){
+          cp.form.c_svg.setAttribute("class", "move");
+          cp.form.c_points.map( (point) => {
+            point.c_svg.setAttribute("class", "show_point");
+            point.c_svg.setAttribute("class", "drawing");
+          });
+          cp.form.vertex.map( (vertex, index) => {
+            vertex.c_svg.setAttribute("class", "show_point");
+            if(index == 0)
+              vertex.c_svg.setAttribute("class", "resize_left_top");
+            else if(index == 1)
+              vertex.c_svg.setAttribute("class", "resize_right_top");
+            else if(index == 2)
+              vertex.c_svg.setAttribute("class", "resize_right_bottom");
+            else if(index == 3)
+              vertex.c_svg.setAttribute("class", "resize_left_bottom");
+          });
+
+        }
+      },
+      mouseLeaveCb: function mouseleavecb(e){
+
+          var components = _Register.getAllComponent();
+
+          components.map( async (component) => {
+            setTimeout(()=> {
+              component.form.c_points.map( (point) => {
+                point.c_svg.setAttribute("class", "hidden_point");
+              });
+              component.form.vertex.map( (vertex) => {
+                vertex.c_svg.setAttribute("class", "hidden_point");
+              });
+            }, 10000);
+          })
       }
     }
   }

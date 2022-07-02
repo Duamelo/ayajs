@@ -16,6 +16,14 @@
       var aya = new aya.Application();
       console.log(aya);
 
+      // var circle = aya.Circle(100,100,10);
+      // circle.draw();
+      // circle.svg.removeChild(circle.box);
+
+
+      var rect = aya.Component("rectangle", {x: 300, y: 300, width: 100, height: 100});
+      var rect = aya.Component("rectangle", {x: 100, y: 100, width: 100, height: 100});
+
       document.body.append(aya.svg);
    </script>
 

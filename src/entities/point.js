@@ -56,16 +56,18 @@ class Point {
 
     this.c_svg = document.createElementNS(ns, "circle");
 
+    this.c_svg.setAttribute("id", this.uuid);
+
     this.c_svg.setAttribute("cx", this.x);
 
     this.c_svg.setAttribute("cy", this.y);
 
     this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 
-    // this.c_svg.setAttribute("class", "vertex");
+    this.c_svg.setAttribute("class", "point");
+    this.c_svg.setAttribute("class", "hidden_point");
 
-    this.c_svg.setAttribute("id", this.uuid);
-
+    
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 
     this.svg.appendChild(this.c_svg);

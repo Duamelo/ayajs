@@ -3,16 +3,42 @@
     height: auto;
 }
 
-.vertex {
+.point{
+    cursor: pointer;
+}
+
+.hidden_point{
     visibility: hidden;
 }
 
-.vertex_hover{
+.show_point{
     visibility: visible;
 }
 
+.zoom {
+    cursor: zoom-in;
+}
 
-.test{
-    border:1px solid rgb(224, 115, 115);
-    margin: 5Opx;
+.move{
+    cursor: move;
+}
+
+.resize_right_top{
+    cursor: sw-resize;
+}
+
+.resize_right_bottom{
+    cursor: nw-resize;
+}
+
+.resize_left_top{
+    cursor: se-resize;
+}
+
+.resize_left_bottom{
+    cursor: ne-resize;
+}
+
+.drawing{
+    cursor: crosshair;
 }

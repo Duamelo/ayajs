@@ -1,3 +1,5 @@
+import { Component } from "./component";
+
 var store = {};
 
 class _Register
@@ -25,6 +27,15 @@ class _Register
         });
         return result;
     }
-}
 
+    static getAllComponent(){
+        var result = [];
+        Object.keys(store).map((id) => {
+            var obj = _Register.find(id);
+            if(obj instanceof Component)
+                result.push(obj);
+        });
+        return result;
+    }
+}
 export  {_Register};

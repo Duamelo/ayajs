@@ -82,6 +82,16 @@
 	        });
 	        return result;
 	    }
+
+	    static getAllComponent(){
+	        var result = [];
+	        Object.keys(store).map((id) => {
+	            var obj = _Register.find(id);
+	            if(obj instanceof Component)
+	                result.push(obj);
+	        });
+	        return result;
+	    }
 	}
 
 	class _uuid
@@ -148,16 +158,18 @@
 
 	    this.c_svg = document.createElementNS(ns, "circle");
 
+	    this.c_svg.setAttribute("id", this.uuid);
+
 	    this.c_svg.setAttribute("cx", this.x);
 
 	    this.c_svg.setAttribute("cy", this.y);
 
 	    this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 
-	    // this.c_svg.setAttribute("class", "vertex");
+	    this.c_svg.setAttribute("class", "point");
+	    this.c_svg.setAttribute("class", "hidden_point");
 
-	    this.c_svg.setAttribute("id", this.uuid);
-
+	    
 	    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 
 	    this.svg.appendChild(this.c_svg);
@@ -831,7 +843,8 @@
 
 	    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
-	    this.addEvent("mouseover", this.nativeEvent.mouseMoveCb);
+	    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+	    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
 	  }
 
 	  removeFromDOM(){
@@ -1108,6 +1121,9 @@
 	    }
 
 	    redraw(){
+	        console.log(this.destination.ref);
+	        console.log(this.source.ref);
+
 	        var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
 
 	        var source_point = source.form.optimalPath(this.line);
@@ -1144,6 +1160,7 @@
 	    var svg = svg;
 	    var id_svg = id_svg;
 	    var config = config;
+	    var id_store = [];
 	  
 	    return {
 	      mouseDownCb: function mousedowncb(e) {
@@ -1280,6 +1297,49 @@
 	          }
 	        }
 	        state = "";
+	      },
+	      mouseOverCb: function mouseovercb(e){
+
+	        id = e.srcElement.id;
+
+	        id_store.push(id);
+	  
+	        cp = _Register.find(id);
+
+	        if(cp.form != undefined){
+	          cp.form.c_svg.setAttribute("class", "move");
+	          cp.form.c_points.map( (point) => {
+	            point.c_svg.setAttribute("class", "show_point");
+	            point.c_svg.setAttribute("class", "drawing");
+	          });
+	          cp.form.vertex.map( (vertex, index) => {
+	            vertex.c_svg.setAttribute("class", "show_point");
+	            if(index == 0)
+	              vertex.c_svg.setAttribute("class", "resize_left_top");
+	            else if(index == 1)
+	              vertex.c_svg.setAttribute("class", "resize_right_top");
+	            else if(index == 2)
+	              vertex.c_svg.setAttribute("class", "resize_right_bottom");
+	            else if(index == 3)
+	              vertex.c_svg.setAttribute("class", "resize_left_bottom");
+	          });
+
+	        }
+	      },
+	      mouseLeaveCb: function mouseleavecb(e){
+
+	          var components = _Register.getAllComponent();
+
+	          components.map( async (component) => {
+	            setTimeout(()=> {
+	              component.form.c_points.map( (point) => {
+	                point.c_svg.setAttribute("class", "hidden_point");
+	              });
+	              component.form.vertex.map( (vertex) => {
+	                vertex.c_svg.setAttribute("class", "hidden_point");
+	              });
+	            }, 10000);
+	          });
 	      }
 	    }
 	  }
@@ -1380,7 +1440,7 @@
 	                    c.setOffsetY(p.dest_y - (this.config.line.ends.dest.props.y3 - this.config.line.ends.dest.props.y1)/2);
 	                },  (p, c) => {
 	                    c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
-	                    c.setRotateAngle(p.calculateAngle()+ ( Math.PI * 90)/180);
+	                    c.setRotateAngle(p.calculateAngle());
 	                } );
 	            }
 	            else {
@@ -1493,10 +1553,11 @@
 	    }
 
 	    calculateAngle(){
-	        var angle;
-	        this.pente = (this.dest_x - this.x) != 0 ? (this.dest_y - this.y) / (this.dest_x - this.x) : undefined;
+	        var angle = 0;
+	        // this.pente = (this.dest_x - this.x) != 0 ? (this.dest_y - this.y) / (this.dest_x - this.x) : undefined;
+	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-	        if(this.pente == 0 || this.pente == undefined)
+	        if(this.pente == 0)
 	            angle = 0;
 	        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
 	            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
@@ -2979,15 +3040,10 @@
 	        delete this.events[event];
 	    }
 
-	    addChild(child, translate, rotate){
-	        child.vertex = [];
-	        child.c_points = [];
-	        child.setOffsetX(this.x);
-	        child.setOffsetY(this.y);
-	        translate(this, child);
-	        rotate(this, child);
-	        child.draw();
-	        this.children.push({child, translate, rotate});
+	    addShape(children = []){
+	        children.map( (child) =>{
+	            this.children.push(child);
+	        });
 	    }
 
 
@@ -3011,6 +3067,11 @@
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("fill", this.config.group.fill);
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+
+	        this.children.map((child) => {
+	            this.c_svg.appendChild(child.c_svg);
+	        });
+
 	        // this.c_svg.setAttribute("transform", "rotate(0, 0, 0)");
 	        // this.c_svg.setAttribute("transform", "translate(0, 0)");
 
@@ -3175,7 +3236,7 @@
 	    }
 
 	    Group(){
-	        return new Group(_uuid.generate(), this.svg, this.events, this.config);
+	        return new Group(_uuid.generate(),this.svg, this.events, this.config);
 	    }
 	}
 

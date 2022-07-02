@@ -65,15 +65,10 @@ class Group{
         delete this.events[event];
     }
 
-    addChild(child, translate, rotate){
-        child.vertex = [];
-        child.c_points = [];
-        child.setOffsetX(this.x);
-        child.setOffsetY(this.y);
-        translate(this, child);
-        rotate(this, child);
-        child.draw();
-        this.children.push({child, translate, rotate});
+    addShape(children = []){
+        children.map( (child) =>{
+            this.children.push(child)
+        });
     }
 
 
@@ -97,6 +92,11 @@ class Group{
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("fill", this.config.group.fill);
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
+
+        this.children.map((child) => {
+            this.c_svg.appendChild(child.c_svg);
+        });
+
         // this.c_svg.setAttribute("transform", "rotate(0, 0, 0)");
         // this.c_svg.setAttribute("transform", "translate(0, 0)");
 

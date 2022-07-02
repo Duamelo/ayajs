@@ -155,7 +155,7 @@ class Application{
     }
 
     Group(){
-        return new Group(_uuid.generate(), this.svg, this.events, this.config);
+        return new Group(_uuid.generate(),this.svg, this.events, this.config);
     }
 }
 export {Application};

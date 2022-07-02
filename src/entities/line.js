@@ -101,7 +101,7 @@ class Line extends Form {
                     c.setOffsetY(p.dest_y - (this.config.line.ends.dest.props.y3 - this.config.line.ends.dest.props.y1)/2);
                 },  (p, c) => {
                     c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
-                    c.setRotateAngle(p.calculateAngle());
+                    c.setRotateAngle(p.calculateAngle()+ ( Math.PI * 90)/180);
                 } );
             }
             else {
@@ -215,9 +215,9 @@ class Line extends Form {
 
     calculateAngle(){
         var angle;
-        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+        this.pente = (this.dest_x - this.x) != 0 ? (this.dest_y - this.y) / (this.dest_x - this.x) : undefined;
 
-        if(this.pente == 0)
+        if(this.pente == 0 || this.pente == undefined)
             angle = 0;
         if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
             angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );

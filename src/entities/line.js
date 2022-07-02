@@ -45,7 +45,6 @@ class Line extends Form {
 
         this.c_svg = "";
         this.type = "line";
-        // this.type_line = type_line;
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -96,7 +95,7 @@ class Line extends Form {
 
         if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
             var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, this.config.line.ends.dest.props, this.svg, this.nativeEvent, this.config);
-            if(this.config.line.ends.dest.type == 'triangle')
+            if(this.config.line.ends.dest.type == 'triangle'){
                 this.addChild(child, (p, c) => {
                     c.setOffsetX(p.dest_x);
                     c.setOffsetY(p.dest_y - (this.config.line.ends.dest.props.y3 - this.config.line.ends.dest.props.y1)/2);
@@ -104,7 +103,8 @@ class Line extends Form {
                     c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
                     c.setRotateAngle(p.calculateAngle());
                 } );
-            else
+            }
+            else {
                 this.addChild(child, (p, c) => {
                     c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
                     c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
@@ -112,6 +112,7 @@ class Line extends Form {
                     c.setRotateCenter(c.x, c.y);
                     c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
                 } );
+            }
         }
     }
 
@@ -149,7 +150,8 @@ class Line extends Form {
     }
 
     drawConnector(){
-
+        if(this.c_points.length == 0)
+            return;
     }
 
     drawBox(){

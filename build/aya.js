@@ -1324,7 +1324,6 @@
 
 	        this.c_svg = "";
 	        this.type = "line";
-	        // this.type_line = type_line;
 
 	        this.offsetX = 0;
 	        this.offsetY = 0;
@@ -1375,7 +1374,7 @@
 
 	        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, this.config.line.ends.dest.props, this.svg, this.nativeEvent, this.config);
-	            if(this.config.line.ends.dest.type == 'triangle')
+	            if(this.config.line.ends.dest.type == 'triangle'){
 	                this.addChild(child, (p, c) => {
 	                    c.setOffsetX(p.dest_x);
 	                    c.setOffsetY(p.dest_y - (this.config.line.ends.dest.props.y3 - this.config.line.ends.dest.props.y1)/2);
@@ -1383,7 +1382,8 @@
 	                    c.setRotateCenter((c.x1 +c.x3) /2, (c.y1 + c.y3)  / 2);
 	                    c.setRotateAngle(p.calculateAngle());
 	                } );
-	            else
+	            }
+	            else {
 	                this.addChild(child, (p, c) => {
 	                    c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
 	                    c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
@@ -1391,6 +1391,7 @@
 	                    c.setRotateCenter(c.x, c.y);
 	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
 	                } );
+	            }
 	        }
 	    }
 
@@ -1428,7 +1429,8 @@
 	    }
 
 	    drawConnector(){
-
+	        if(this.c_points.length == 0)
+	            return;
 	    }
 
 	    drawBox(){
@@ -3053,7 +3055,7 @@
 	        this.nc = this.svg_width / this.tail_px; 
 	        this.nl = this.svg_height / this.tail_px;
 	        
-	        this.box = this.createComponent("rectangle", {
+	        this.box = this.Component("rectangle", {
 	            x: 0,
 	            y: 0,
 	            height: this.svg_height,
@@ -3077,7 +3079,7 @@
 	        });
 
 	        for(var j = 1; j <= this.nl - 1; j++){
-	            var line = this.createLine(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
+	            var line = this.Line(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
 
 	            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
@@ -3089,7 +3091,11 @@
 	                child.removeFromDOM();
 	            });
 
-	            line.vertex.map( (point) => {
+	            line.vertex.map( (vt) => {
+	                vt.removeFromDOM();
+	            });
+
+	            line.c_points.map( (point) => {
 	                point.removeFromDOM();
 	            });
 
@@ -3099,7 +3105,7 @@
 	        }
 
 	        for(var j = 1; j <= this.nc - 1; j++){
-	            var line = this.createLine(j * this.tail_px, 0, this.tail_px * j, this.nc * this.tail_px);
+	            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.nc * this.tail_px);
 
 	            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
 
@@ -3107,11 +3113,15 @@
 	            line.c_svg.setAttribute("stroke", "#57564F");
 	            line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
 
-
 	            line.children.map( ({child}) => {
 	                child.removeFromDOM();
 	            });
-	            line.vertex.map( (point) => {
+
+	            line.vertex.map( (vt) => {
+	                vt.removeFromDOM();
+	            });
+
+	            line.c_points.map( (point) => {
 	                point.removeFromDOM();
 	            });
 
@@ -3124,47 +3134,47 @@
 	        this.svg.addEventListener("mouseup", this.events.mouseUpCb);
 	    }
 
-	    createComponent(type, props){
+	    Component(type, props){
 	        return new Component(type, props, this.svg, this.events, this.config);
 	    }
 
-	    createRectangle(x = 0, y = 0, width = 10, height = 10){
+	    Rectangle(x = 0, y = 0, width = 10, height = 10){
 	        return new Rectangle(_uuid.generate(), x, y, width, height, this.svg, this.events, this.config);
 	    }
 
-	    createLozenge(x = 0, y = 0, width = 10, height = 10){
+	    Lozenge(x = 0, y = 0, width = 10, height = 10){
 	        return new Lozenge(_uuid.generate(), x, y, width, height, this.svg, this.events, this.config);
 	    }
 
-	    createTriangle(x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10){
+	    Triangle(x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10){
 	        return new Triangle(_uuid.generate(), x1, y1, x2, y2, x3, y3, this.svg, this.events, this.config);
 	    }
 
-	    createCircle( x = 0, y = 0, r = 5){
+	    Circle( x = 0, y = 0, r = 5){
 	        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
 	    }
 
-	    createText(x = 0, y = 0, text = "text"){
+	    Text(x = 0, y = 0, text = "text"){
 	        return new Text(_uuid.generate(), x, y, text, this.svg, this.events, this.config);
 	    }
 
-	    createLine(x=0, y=0, dest_x = x, dest_y = y){
+	    Line(x=0, y=0, dest_x = x, dest_y = y){
 	        return new Line( this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
 	    }
 
-	    createPolyline( points = []){
+	    Polyline( points = []){
 	        return new Polyline(_uuid.generate(), points, this.svg, this.events, this.config);
 	    }
 
-	    createPoint( x = 0, y = 0, r = 5){
+	    Point( x = 0, y = 0, r = 5){
 	        return new Point(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
 	    }
 
-	    createArc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90){
+	    Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90){
 	        return new Arc(_uuid.generate(), x0, y0, x, y, angle, this.svg, this,this.events, this.config);
 	    }
 
-	    createGroup(){
+	    Group(){
 	        return new Group(_uuid.generate(), this.svg, this.events, this.config);
 	    }
 	}

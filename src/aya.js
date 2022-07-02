@@ -15,7 +15,7 @@ import { Arc } from "./entities/arc";
 
 
 class Application{
-    constructor(width = 1330, height = 1330){
+    constructor(width = 1343, height = 1343){
 
         this.uuid = _uuid.generate();
 
@@ -32,8 +32,8 @@ class Application{
         this.events = Events.setup(this.svg, this.uuid,this.config);
 
         this.tail_px = 50;
-        this.nc = this.svg_width / this.tail_px; 
-        this.nl = this.svg_height / this.tail_px;
+        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
+        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
         
         this.box = this.Component("rectangle", {
             x: 0,

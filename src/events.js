@@ -169,7 +169,7 @@ class Events {
           cp.form.c_svg.setAttribute("class", "move");
           cp.form.c_points.map( (point) => {
             point.c_svg.setAttribute("class", "show_point");
-            point.c_svg.setAttribute("class", "drawing");
+            // point.c_svg.setAttribute("class", "drawing");
           });
           cp.form.vertex.map( (vertex, index) => {
             vertex.c_svg.setAttribute("class", "show_point");

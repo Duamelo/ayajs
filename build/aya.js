@@ -71,7 +71,7 @@
 	        delete store[uuid];
 	    }
 	    
-	    static findAllLinksByComponent(component){
+	    static findAllLink(component){
 	        var result = [];
 	        Object.keys(store).map((id) => {
 	            var obj = _Register.find(id);
@@ -1121,14 +1121,10 @@
 	    }
 
 	    redraw(){
-	        console.log(this.destination.ref);
-	        console.log(this.source.ref);
-
 	        var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
 
 	        var source_point = source.form.optimalPath(this.line);
 	        var dest_point = destination.form.optimalPath(this.line);
-
 
 	        if(source_point)
 	            this.source = source_point;
@@ -1178,7 +1174,7 @@
 	          source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 	  
 	        if(cp.form != undefined)
-	          lk = _Register.findAllLinksByComponent(cp);
+	          lk = _Register.findAllLink(cp);
 	  
 	  
 	        // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
@@ -1193,7 +1189,7 @@
 	  
 	            // component determination 
 	            cp = _Register.find(cp.ref);
-	            lk = _Register.findAllLinksByComponent(cp);
+	            lk = _Register.findAllLink(cp);
 	          }
 	          else {
 	            /**
@@ -1310,7 +1306,7 @@
 	          cp.form.c_svg.setAttribute("class", "move");
 	          cp.form.c_points.map( (point) => {
 	            point.c_svg.setAttribute("class", "show_point");
-	            point.c_svg.setAttribute("class", "drawing");
+	            // point.c_svg.setAttribute("class", "drawing");
 	          });
 	          cp.form.vertex.map( (vertex, index) => {
 	            vertex.c_svg.setAttribute("class", "show_point");

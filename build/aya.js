@@ -1334,7 +1334,7 @@
 	              component.form.vertex.map( (vertex) => {
 	                vertex.c_svg.setAttribute("class", "hidden_point");
 	              });
-	            }, 10000);
+	            }, 20000);
 	          });
 	      }
 	    }
@@ -3108,9 +3108,13 @@
 	        this.config = config;
 	        this.events = Events.setup(this.svg, this.uuid,this.config);
 
-	        this.tail_px = 50;
+	        this.tail_px = 25;
 	        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
 	        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
+
+	        this.u_tail_px = 10;
+	        this.u_nc = Math.floor(this.tail_px / this.u_tail_px); 
+	        this.u_nl = Math.floor(this.tail_px / this.u_tail_px);
 	        
 	        this.box = this.Component("rectangle", {
 	            x: 0,
@@ -3119,7 +3123,7 @@
 	            width: this.svg_width
 	        });
 
-	        this.box.form.c_svg.setAttributeNS(null, "fill", "#F4F1DE");
+	        this.box.form.c_svg.setAttributeNS(null, "fill", "#FFFF");
 	        this.box.form.c_svg.setAttribute("stroke", "#57564F");
 	        this.box.form.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
 
@@ -3138,11 +3142,37 @@
 	        for(var j = 1; j <= this.nl - 1; j++){
 	            var line = this.Line(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
 
+	            // for(var k = 1; k <=( this.u_nl - 1) + this.tail_px; k++){
+	            //     var u_line = this.Line(0, k * this.u_tail_px, this.nl * this.tail_px, k * this.u_tail_px);
+
+	            //     this.box.form.addChild(u_line, (p, c)=> {}, (p,c)=>{});
+
+	            //     u_line.c_svg.setAttribute("fill", "white");
+	            //     u_line.c_svg.setAttribute("stroke", "#57564F");
+	            //     u_line.c_svg.setAttributeNS(null, "stroke-width", "0.1pt");
+	    
+	            //     u_line.children.map( ({child}) => {
+	            //         child.removeFromDOM();
+	            //     });
+	    
+	            //     u_line.vertex.map( (vt) => {
+	            //         vt.removeFromDOM();
+	            //     });
+	    
+	            //     u_line.c_points.map( (point) => {
+	            //         point.removeFromDOM();
+	            //     });
+	    
+	            //     Object.keys(u_line.events).map((ev) => {
+	            //         u_line.deleteEvent(ev);
+	            //     });
+	            // }
+
 	            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
-	            line.c_svg.setAttribute("fill", "#57564F");
+	            line.c_svg.setAttribute("fill", "#B266FF");
 	            line.c_svg.setAttribute("stroke", "#57564F");
-	            line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+	            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
 
 	            line.children.map( ({child}) => {
 	                child.removeFromDOM();
@@ -3166,9 +3196,9 @@
 
 	            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
 
-	            line.c_svg.setAttribute("fill", "#57564F");
+	            line.c_svg.setAttribute("fill", "#B266FF");
 	            line.c_svg.setAttribute("stroke", "#57564F");
-	            line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+	            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
 
 	            line.children.map( ({child}) => {
 	                child.removeFromDOM();

@@ -2969,6 +2969,10 @@
 	        this.svg.removeChild(this.box);
 	        this.svg.removeChild(this.c_svg);
 	    }
+
+	    removeBoxFromDOM(){
+	        this.svg.removeChild(this.box);
+	    }
 	    
 	    shift(dx, dy){
 	        this.x += dx;
@@ -3582,7 +3586,7 @@
 	    }
 
 	    Ressource(x = 0, y = 0, r = 5){
-	        return new Ressource(_uuid.generate(), x = 0, y = 0, r = 5, this.svg, this.events, this.config);
+	        return new Ressource(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
 	    }
 	}
 

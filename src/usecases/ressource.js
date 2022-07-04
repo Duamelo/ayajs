@@ -1,6 +1,7 @@
 import { _Register } from "../register";
 import { Point } from "../entities/point";
 import { Form } from "../abstraction/form";
+import { Arc } from "../entities/arc";
 
 /**
  * @class Ressource
@@ -13,7 +14,7 @@ class Ressource extends Form {
      * @param {number} y 
      * @param {number} r 
      */
-    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
+    constructor(uuid, x = 0, y = 0, r = 5, nb_method = 4, svg, event, config){
 
         super();
 
@@ -22,6 +23,7 @@ class Ressource extends Form {
         this.x = x;
         this.y = y;
         this.r = r;
+        this.nb_method = nb_method;
 
         this.events = {};
 
@@ -60,6 +62,9 @@ class Ressource extends Form {
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
         ];
 
+        for(var j = 0; j < this.nb_method ; j++ ){
+            // var arc = new Arc(this.x, this.y, this.x, this.y)
+        }
     }
 
     addEvent(event, callback){
@@ -187,6 +192,10 @@ class Ressource extends Form {
     removeFromDOM(){
         this.svg.removeChild(this.box);
         this.svg.removeChild(this.c_svg);
+    }
+
+    removeBoxFromDOM(){
+        this.svg.removeChild(this.box);
     }
     
     shift(dx, dy){

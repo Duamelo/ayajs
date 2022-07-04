@@ -426,11 +426,10 @@
       }
 
 
-      // var res = aya.Ressource(100,100,15);
-      // res.draw();
+      var res = aya.Ressource(200,100, 50);
+      res.draw();
+      res.removeBoxFromDOM();
 
-      var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
-      var rec = aya.Component("rectangle", {x: 300, y: 100, width: 200, height: 100});
 
       document.body.append(aya.svg);
    </script>

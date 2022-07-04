@@ -26,8 +26,12 @@ class Arc extends Form {
 
         this.angle = angle;
 
-        this.dest_x = Math.round (this.x0 + (this.x - this.x0) * Math.cos ((this.angle * Math.PI )/ 180) + (this.y - this.y0) * Math.sin ((this.angle * Math.PI) / 180));
-        this.dest_y = Math.round (this.y0 - (this.x - this.x0) * Math.sin ((this.angle * Math.PI) / 180) + (this.y - this.y0) * Math.cos ((this.angle * Math.PI) / 180));
+        this.offsetX = 0;
+        this.offsetY = 0;
+
+
+        this.dest_x = Math.round ((this.x0 + this.offsetX) + (this.x - (this.x0 + this.offsetX)) * Math.cos ((this.angle * Math.PI )/ 180) + (this.y - (this.y0 + this.offsetY)) * Math.sin ((this.angle * Math.PI) / 180));
+        this.dest_y = Math.round ((this.y0 + this.offsetY) - (this.x - (this.x0 + this.offsetX)) * Math.sin ((this.angle * Math.PI) / 180) + (this.y - (this.y0 + this.offsetY)) * Math.cos ((this.angle * Math.PI) / 180));
 
         this.events = {};
 
@@ -41,23 +45,21 @@ class Arc extends Form {
 
         this.type = "arc";
 
-        this.offsetX = 0;
-        this.offsetY = 0;
 
         this.scaleX = 1;
         this.scaleY = 1;
 
-        this.radius = Math.sqrt ((this.x - this.x0) * (this.x - this.x0) + (this.y - this.y0) * (this.y - this.y0));
+        this.radius = Math.sqrt ((this.x - (this.x0 + this.offsetX)) * (this.x - (this.x0  + this.offsetX)) + (this.y - (this.y0 + this.offsetY)) * (this.y - (this.y0 + this.offsetY)));
 
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
     }
 
@@ -102,9 +104,9 @@ class Arc extends Form {
 
         this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", this.config.form.fill);
-        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+        this.c_svg.setAttribute("fill", this.config.arc.fill);
+        this.c_svg.setAttribute("stroke", this.config.arc.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.arc.strokeWidth);
         this.c_svg.setAttribute("d", this.p);
 
         this.svg.appendChild(this.c_svg);

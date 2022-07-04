@@ -5,6 +5,7 @@ import  {Triangle}  from "./entities/triangle.js";
 import  {Lozenge} from "./entities/lozenge.js";
 import { Polyline } from "./entities/polyline.js";
 import { Arc } from "./entities/arc";
+import { Ressource } from "./usecases/ressource.js";
 
 
 /**
@@ -32,7 +33,7 @@ class FactoryForm
         else if(type == "rectangle")
             return new Rectangle(uuid, props.x, props.y, props.width, props.height, svg, events, config);
         else if(type == "line")
-            return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y, svg, events, config);
+            return new Line(0,svg, events, config, uuid, props.x, props.y, props.dest_x, props.dest_y);
         else if(type == "triangle")
             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, svg, events, config);
         else if(type == "lozenge")
@@ -41,6 +42,8 @@ class FactoryForm
             return new Polyline(uuid, props.points, svg, events, config);
         else if(type == "arc")
             return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, svg, events, config);
+        else if(type == "ressource")
+            return new Ressource(uuid, props.x, props.y, props.r, svg, events, config);
     }
 }
 export {FactoryForm};

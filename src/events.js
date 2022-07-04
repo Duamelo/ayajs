@@ -165,6 +165,9 @@ class Events {
   
         cp = _Register.find(id);
 
+        if(cp.form.type == "line")
+          cp.form.c_svg.setAttribute("class", "move");
+
         if(cp.form != undefined){
           cp.form.c_svg.setAttribute("class", "move");
           cp.form.c_points.map( (point) => {

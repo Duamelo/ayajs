@@ -12,6 +12,7 @@ import { Polyline } from "./entities/polyline";
 import { Point } from "./entities/point";
 import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
+import { Ressource } from "./usecases/ressource";
 
 
 class Application{
@@ -169,7 +170,7 @@ class Application{
     }
 
     Line(x=0, y=0, dest_x = x, dest_y = y){
-        return new Line( this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
+        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
     }
 
     Polyline( points = []){
@@ -181,11 +182,15 @@ class Application{
     }
 
     Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90){
-        return new Arc(_uuid.generate(), x0, y0, x, y, angle, this.svg, this,this.events, this.config);
+        return new Arc(_uuid.generate(), x0, y0, x, y, angle, this.svg, this.events, this.config);
     }
 
     Group(){
         return new Group(_uuid.generate(),this.svg, this.events, this.config);
+    }
+
+    Ressource(x = 0, y = 0, r = 5){
+        return new Ressource(_uuid.generate(), x = 0, y = 0, r = 5, this.svg, this.events, this.config);
     }
 }
 export {Application};

@@ -155,17 +155,17 @@ class Line extends Form {
     }
 
     drawBox(){
-
+        return;
     }
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("d", p);
+        this.c_svg.setAttribute("d", this.p);
         this.c_svg.setAttribute("fill", this.config.form.fill);
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
         this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
@@ -183,6 +183,8 @@ class Line extends Form {
         });
 
         this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+
     }
 
     removeFromDOM(){

@@ -11,7 +11,17 @@ var config =  {
         limitWidth: 20,
         limitHeight: 20
     },
-  
+
+    arc : {
+        stroke : "black",
+        fill : "none",
+        strokeOpacity : "1",
+        strokeWidth : "1.5pt",
+        fillOpacity : "1",
+        limitWidth: 20,
+        limitHeight: 20
+    },
+
     box : {
         stroke : "black",
         strokeWidth : "1px",

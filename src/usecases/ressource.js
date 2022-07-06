@@ -1,18 +1,19 @@
 import { _Register } from "../register";
 import { Point } from "../entities/point";
 import { Form } from "../abstraction/form";
-import { Arc } from "../entities/arc";
+import { _uuid } from "../entities/uuid";
+import { FactoryForm } from "../factoryForm";
 
 /**
  * @class Ressource
  */
 class Ressource extends Form {
     /**
-     * 
-     * @param {string} uuid 
-     * @param {number} x 
-     * @param {number} y 
-     * @param {number} r 
+     *
+     * @param {string} uuid
+     * @param {number} x
+     * @param {number} y
+     * @param {number} r
      */
     constructor(uuid, x = 0, y = 0, r = 5, nb_method = 4, svg, event, config){
 
@@ -43,11 +44,13 @@ class Ressource extends Form {
 
         this.offsetX = 0;
         this.offsetY = 0;
-    
-        this.angle = 0;
-  
+
+        this.angle = 40;
+
         this.children = [];
-      
+        this.method = {};
+        this.pattern = {};
+
         this.c_points = [
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
@@ -61,9 +64,74 @@ class Ressource extends Form {
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
         ];
+        this.addMethod();
+        _Register.add(this);
+    }
 
-        for(var j = 0; j < this.nb_method ; j++ ){
-            // var arc = new Arc(this.x, this.y, this.x, this.y)
+    addMethod(){
+        for(var j = 0; j < this.nb_method; j++){
+            if(this.children.length == 0){
+                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.x - 3/2 + this.r - 100, y: this.y - 3/2 + this.r, angle: this.angle}, this.svg, this.nativeEvent, this.config);
+                var dest_x = (this.x + arc.x) / 2;
+                var dest_y = (this.y + arc.y) /2; 
+
+                var i_dest_x = (arc.x + dest_x) / 2;
+                var i_dest_y = (arc.y + dest_y) /2; 
+                
+                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.x, y: arc.y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+                line1.children.map(({child}) => {
+                   child.removeFromDOM();
+                });
+
+                dest_x = (this.x + arc.dest_x) / 2;
+                dest_y = (this.y + arc.dest_y) /2; 
+
+                i_dest_x = (arc.dest_x + dest_x) / 2;
+                i_dest_y = (arc.dest_y + dest_y) /2; 
+
+
+                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+                line2.children.map(({child}) => {
+                   child.removeFromDOM();
+                });
+
+                var method = FactoryForm.createForm(_uuid.generate(), "group", {}, this.svg, this.nativeEvent, this.config);
+                var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
+                method.setRotateAngle(this.angle);
+                method.addShape([text]);
+                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+            }
+            else{
+                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.children[j-1].arc.dest_x + 1.5, y: this.children[j-1].arc.dest_y, angle: this.angle}, this.svg, this.nativeEvent, this.config);
+                var dest_x = (this.x + arc.x) / 2;
+                var dest_y = (this.y + arc.y) /2; 
+
+                var i_dest_x = (arc.x + dest_x) / 2;
+                var i_dest_y = (arc.y + dest_y) /2; 
+
+                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: this.children[j-1].arc.dest_x, y: this.children[j-1].arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.nativeEvent, this.config);
+                line1.children.map(({child}) => {
+                   child.removeFromDOM();
+                });
+
+                dest_x = (this.x + arc.dest_x) / 2;
+                dest_y = (this.y + arc.dest_y) /2; 
+
+                i_dest_x = (arc.dest_x + dest_x) / 2;
+                i_dest_y = (arc.dest_y + dest_y) /2; 
+
+                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+                line2.children.map(({child}) => {
+                   child.removeFromDOM();
+                });
+
+                var method = FactoryForm.createForm(_uuid.generate(), "group", {}, this.svg, this.nativeEvent, this.config);
+                var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
+                method.setRotateAngle(this.angle);
+                method.addShape([text]);
+
+                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+            }
         }
     }
 
@@ -71,7 +139,7 @@ class Ressource extends Form {
         this.c_svg.addEventListener(event, callback);
         this.events[event] = callback;
     }
-    
+
     deleteEvent(event){
         var callback = this.events[event];
         this.c_svg.removeEventListener(event, callback);
@@ -86,23 +154,23 @@ class Ressource extends Form {
         child.draw();
         this.children.push({child, translate, rotate});
     }
-  
+
     drawVertex(){
         if(this.vertex.length == 0)
             return;
         this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
         this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
-    
+
         this.vertex[1].x = this.x + this.offsetX + this.r * this.scale;
         this.vertex[1].y = this.y + this.offsetY - this.r * this.scale;
 
         this.vertex[2].x = this.x + this.offsetX + this.r * this.scale;
         this.vertex[2].y = this.y + this.offsetY + this.r * this.scale;
-    
+
         this.vertex[3].x = this.x + this.offsetX - this.r * this.scale;
         this.vertex[3].y = this.y + this.offsetY + this.r * this.scale;
     }
-    
+
     drawConnector() {
         if(this.c_points.length == 0)
             return;
@@ -122,20 +190,21 @@ class Ressource extends Form {
     drawBox(){
         if(this.vertex.length > 0 && this.c_points.length >0){
             var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-            L ${this.c_points[0].x} ${this.c_points[0].y} 
-            L ${this.vertex[1].x}   ${this.vertex[1].y} 
+            L ${this.c_points[0].x} ${this.c_points[0].y}
+            L ${this.vertex[1].x}   ${this.vertex[1].y}
             L ${this.c_points[1].x} ${this.c_points[1].y}
             L ${this.vertex[2].x}   ${this.vertex[2].y}
-            L ${this.c_points[2].x} ${this.c_points[2].y} 
-            L ${this.vertex[3].x}   ${this.vertex[3].y} 
+            L ${this.c_points[2].x} ${this.c_points[2].y}
+            L ${this.vertex[3].x}   ${this.vertex[3].y}
             L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
 
             this.box.setAttribute("d", p);
         }
     }
-    
+
     draw(){
         var ns="http://www.w3.org/2000/svg";
+        var cpt = 0;
 
         this.box = document.createElementNS(ns, "path");
         this.c_svg = document.createElementNS(ns,"circle");
@@ -147,23 +216,21 @@ class Ressource extends Form {
         this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
         this.c_svg.setAttribute("r", (this.r * this.scale));
-        
 
         this.c_svg.setAttribute("fill", this.config.form.fill);
 
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
 
-    
         this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
-    
-      
+
+
         /** draw box */
         this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
         this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
         this.box.setAttributeNS(null, "fill", this.config.box.fill);
         this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
-        
+
         this.svg.appendChild(this.c_svg);
         this.svg.appendChild(this.box);
 
@@ -179,25 +246,103 @@ class Ressource extends Form {
             vertex.draw();
         });
 
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
-            child.redraw();
+        // this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+        this.addEvent("mouseover", ()=>{
+            cpt++;
+           if(cpt == 1){
+            this.children.map( ({arc, line1, line2, text}) => {
+                arc != undefined ? arc.draw() : null;
+                line1.draw();
+                line2.draw();
+                text != undefined ? text.draw() : null;
+            });
+           }
+        });
+        this.addEvent("mouseleave", ()=>{
+                this.children.map( ({arc, line1, line2, text}, index) => {
+                    setTimeout(() => {
+                        if(arc != undefined && text != undefined){
+                            arc.removeFromDOM()
+                            line1.removeFromDOM();
+                            line2.removeFromDOM();
+                            text.removeFromDOM();
+                        }
+                        if(text == undefined){
+                            line1.removeFromDOM();
+                            line2.removeFromDOM();
+                        }
+                        cpt = 0;
+                    }, (10000));
+                });
         });
 
-        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+        setTimeout(() =>{
+            this.children.map( async ({arc, line1, line2,  text}, index) =>{
+                console.log("ready");
+                var ct = 0;
+                if(arc != undefined && text != undefined){
+                   if(true){
+                    arc.addEvent("mousedown", () => {
+                        arc.removeFromDOM();
+                        line1.removeFromDOM();
+                        line2.removeFromDOM();
+                        text.c_svg.setAttribute("fill", "blue");
+                        var pt = [index == 3 ? line2.dest_x : line1.dest_x, index == 3 ? line2.dest_y : line1.dest_x, index == 3 ? line2.x : line1.x, index == 3 ? line2.y : line1.y];
+                        this.method[index] = {text : text, point: pt};
+                        this.children.splice( index == 0 ? index : index - 1, 1);
+                        ct++;
+                        console.log(this.method);
+                        text.c_svg.setAttribute("class", "move");
+                        Object.keys(this.method).map((idx) => {
+                            console.log(text);
+                            var alias = this.method[idx].point;
+                            if(idx == 0){
+                                console.log("0");
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] - 50, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x - 30, y: pat.dest_y - 15, width: 100, height: 100}, this.svg, this.nativeEvent, this.config);
+                                box.draw();
+                                pat.draw();
+                                pat.c_svg.setAttribute("fill", "none");
+                            }
+                            else if(idx == 1){
+                                console.log("1");
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                pat.draw();
+                                pat.c_svg.setAttribute("fill", "none");
+
+                            }
+                            else if(idx == 2){
+                                console.log("2");
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                pat.draw();
+                                pat.c_svg.setAttribute("fill", "none");
+                            }
+                            else{
+                                console.log("3");
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                pat.draw();
+                                pat.c_svg.setAttribute("fill", "none");
+                            }
+                        })
+                    });
+                   }
+                }
+            });
+        }, (3000));
     }
 
 
     removeFromDOM(){
-        this.svg.removeChild(this.box);
         this.svg.removeChild(this.c_svg);
     }
 
     removeBoxFromDOM(){
         this.svg.removeChild(this.box);
     }
-    
+
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
@@ -219,12 +364,6 @@ class Ressource extends Form {
         this.c_points.map( (point) => {
             point.redraw();
         });
-
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
-            child.redraw();
-        });
     }
 
     resize(pos, dx, dy){
@@ -236,18 +375,12 @@ class Ressource extends Form {
             this.r += dx;
         else
             this.r -= dx;
-
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
-            child.redraw();
-        });
     }
 
     setRotateAngle(angle){
         this.angle = angle;
     }
-    
+
     setOffsetX(x){
        this.offsetX = x;
     }
@@ -275,7 +408,7 @@ class Ressource extends Form {
         var _x, _y;
         var a = (line.dest_y - line.y)/(line.dest_x - line.x);
         var b = line.y - a * line.x;
-    
+
         for (var i = 0; i <= 3; i++){
             if(i % 2 == 0){
                 _y = this.vertex[i].y;
@@ -285,21 +418,21 @@ class Ressource extends Form {
                 _x = this.vertex[i].x;
                 _y = a * _x + b;
             }
-    
+
             if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
               continue;
-    
+
               if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
                   ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
                ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
+                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
                ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )||
                   ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
                ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
                   ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
                 return this.c_points[i];
                }

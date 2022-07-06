@@ -14,7 +14,7 @@ var config =  {
 
     arc : {
         stroke : "black",
-        fill : "none",
+        fill : "white",
         strokeOpacity : "1",
         strokeWidth : "1.5pt",
         fillOpacity : "1",
@@ -45,17 +45,13 @@ var config =  {
     },
 
     text : {
-        fill : "blue",
+        fill : "black",
         fillOpacity : "100",
         stroke : "black",
         strokeWidth : "0.5pt",
         strokeOpacity : 100,
         strokeDasharray : 10.5,
         strokeDashoffset : 10.5,
-    },
-
-    group : {
-        fill : "blue"
     }
 }
 

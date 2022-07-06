@@ -20,7 +20,7 @@
 
 	    arc : {
 	        stroke : "black",
-	        fill : "none",
+	        fill : "white",
 	        strokeOpacity : "1",
 	        strokeWidth : "1.5pt",
 	        fillOpacity : "1",
@@ -51,17 +51,13 @@
 	    },
 
 	    text : {
-	        fill : "blue",
+	        fill : "black",
 	        fillOpacity : "100",
 	        stroke : "black",
 	        strokeWidth : "0.5pt",
 	        strokeOpacity : 100,
 	        strokeDasharray : 10.5,
 	        strokeDashoffset : 10.5,
-	    },
-
-	    group : {
-	        fill : "blue"
 	    }
 	};
 
@@ -176,7 +172,7 @@
 
 	    this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 
-	    this.c_svg.setAttribute("class", "point");
+	    // this.c_svg.setAttribute("class", "point");
 	    this.c_svg.setAttribute("class", "hidden_point");
 
 	    
@@ -197,7 +193,7 @@
 	  redraw() {
 	    this.c_svg.setAttribute("cx", this.x);
 	    this.c_svg.setAttribute("cy", this.y);
-	    
+	    this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 	  }
 	}
 
@@ -348,17 +344,17 @@
 	        this.children = [];
 	      
 	        this.c_points = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config)
 	        ];
 
 	        this.vertex = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config)
 	        ];
 	    }
 
@@ -481,6 +477,8 @@
 	        });
 
 	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+	        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+	        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
 	    }
 
 
@@ -1347,7 +1345,7 @@
 	              component.form.vertex.map( (vertex) => {
 	                vertex.c_svg.setAttribute("class", "hidden_point");
 	              });
-	            }, 20000);
+	            }, 5000);
 	          });
 	      }
 	    }
@@ -1532,7 +1530,7 @@
 
 	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
-
+	        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
 	    }
 
 	    removeFromDOM(){
@@ -1821,6 +1819,9 @@
 
 	    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+	    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+	    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
 	  }
 
 	  removeFromDOM(){
@@ -2113,6 +2114,9 @@
 	    
 	    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+	    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+	    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
 	  }
 
 	  removeFromDOM(){
@@ -2568,12 +2572,15 @@
 
 	        this.angle = angle;
 
+	        this.offsetX0 = 0;
+	        this.offsetY0 = 0;
+
 	        this.offsetX = 0;
 	        this.offsetY = 0;
 
 
-	        this.dest_x = Math.round ((this.x0 + this.offsetX) + (this.x - (this.x0 + this.offsetX)) * Math.cos ((this.angle * Math.PI )/ 180) + (this.y - (this.y0 + this.offsetY)) * Math.sin ((this.angle * Math.PI) / 180));
-	        this.dest_y = Math.round ((this.y0 + this.offsetY) - (this.x - (this.x0 + this.offsetX)) * Math.sin ((this.angle * Math.PI) / 180) + (this.y - (this.y0 + this.offsetY)) * Math.cos ((this.angle * Math.PI) / 180));
+	        this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
+	        this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
 
 	        this.events = {};
 
@@ -2591,7 +2598,7 @@
 	        this.scaleX = 1;
 	        this.scaleY = 1;
 
-	        this.radius = Math.sqrt ((this.x - (this.x0 + this.offsetX)) * (this.x - (this.x0  + this.offsetX)) + (this.y - (this.y0 + this.offsetY)) * (this.y - (this.y0 + this.offsetY)));
+	        this.radius = Math.sqrt (((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * ((this.x + this.offsetX) - (this.x0  + this.offsetX0)) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * ((this.y + this.offsetY) - (this.y0 + this.offsetY0)));
 
 	        this.children = [];
 
@@ -2644,12 +2651,16 @@
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
+	        this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
+	        this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
+
 	        this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("fill", this.config.arc.fill);
 	        this.c_svg.setAttribute("stroke", this.config.arc.stroke);
 	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.arc.strokeWidth);
 	        this.c_svg.setAttribute("d", this.p);
+
 
 	        this.svg.appendChild(this.c_svg);
 
@@ -2663,8 +2674,9 @@
 	        this.vertex.map( (vertex) => {
 	            vertex.draw();
 	        });
-
-	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+	        this.addEvent("mouseover", () =>{
+	            this.c_svg.setAttribute("class", "move");
+	        });
 	    }
 
 	    removeFromDOM(){
@@ -2685,6 +2697,9 @@
 	        this.vertex.map( (vertex) => {
 	            vertex.redraw();
 	        });
+
+	        this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
+	        this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
 
 	        this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
 	        this.c_svg.setAttribute("d", this.p);
@@ -2749,6 +2764,14 @@
 	        this.offsetY = y;
 	    }
 
+	    setOffsetX0(x){
+	        this.offsetX0 = x;
+	    }
+
+	    setOffsetY0(y){
+	        this.offsetY0 = y;
+	    }
+
 	    setScaleX(x){
 	        this.scaleX = x;
 	    }
@@ -2767,6 +2790,14 @@
 
 	    getOffsetY(){
 	        return this.offsetY;
+	    }
+
+	    getOffsetX0(){
+	        return this.offsetX0;
+	    }
+
+	    getOffsetY0(){
+	        return this.offsetY0;
 	    }
 
 	    getScaleX(){
@@ -2788,13 +2819,13 @@
 	 */
 	class Ressource extends Form {
 	    /**
-	     * 
-	     * @param {string} uuid 
-	     * @param {number} x 
-	     * @param {number} y 
-	     * @param {number} r 
+	     *
+	     * @param {string} uuid
+	     * @param {number} x
+	     * @param {number} y
+	     * @param {number} r
 	     */
-	    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
+	    constructor(uuid, x = 0, y = 0, r = 5, nb_method = 4, svg, event, config){
 
 	        super();
 
@@ -2803,6 +2834,7 @@
 	        this.x = x;
 	        this.y = y;
 	        this.r = r;
+	        this.nb_method = nb_method;
 
 	        this.events = {};
 
@@ -2822,11 +2854,13 @@
 
 	        this.offsetX = 0;
 	        this.offsetY = 0;
-	    
-	        this.angle = 0;
-	  
+
+	        this.angle = 40;
+
 	        this.children = [];
-	      
+	        this.method = {};
+	        this.pattern = {};
+
 	        this.c_points = [
 	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
 	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
@@ -2840,14 +2874,82 @@
 	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
 	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
 	        ];
+	        this.addMethod();
+	        _Register.add(this);
+	    }
 
+	    addMethod(){
+	        for(var j = 0; j < this.nb_method; j++){
+	            if(this.children.length == 0){
+	                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.x - 3/2 + this.r - 100, y: this.y - 3/2 + this.r, angle: this.angle}, this.svg, this.nativeEvent, this.config);
+	                var dest_x = (this.x + arc.x) / 2;
+	                var dest_y = (this.y + arc.y) /2; 
+
+	                var i_dest_x = (arc.x + dest_x) / 2;
+	                var i_dest_y = (arc.y + dest_y) /2; 
+	                
+	                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.x, y: arc.y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+	                line1.children.map(({child}) => {
+	                   child.removeFromDOM();
+	                });
+
+	                dest_x = (this.x + arc.dest_x) / 2;
+	                dest_y = (this.y + arc.dest_y) /2; 
+
+	                i_dest_x = (arc.dest_x + dest_x) / 2;
+	                i_dest_y = (arc.dest_y + dest_y) /2; 
+
+
+	                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+	                line2.children.map(({child}) => {
+	                   child.removeFromDOM();
+	                });
+
+	                var method = FactoryForm.createForm(_uuid.generate(), "group", {}, this.svg, this.nativeEvent, this.config);
+	                var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
+	                method.setRotateAngle(this.angle);
+	                method.addShape([text]);
+	                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+	            }
+	            else {
+	                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.children[j-1].arc.dest_x + 1.5, y: this.children[j-1].arc.dest_y, angle: this.angle}, this.svg, this.nativeEvent, this.config);
+	                var dest_x = (this.x + arc.x) / 2;
+	                var dest_y = (this.y + arc.y) /2; 
+
+	                var i_dest_x = (arc.x + dest_x) / 2;
+	                var i_dest_y = (arc.y + dest_y) /2; 
+
+	                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: this.children[j-1].arc.dest_x, y: this.children[j-1].arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.nativeEvent, this.config);
+	                line1.children.map(({child}) => {
+	                   child.removeFromDOM();
+	                });
+
+	                dest_x = (this.x + arc.dest_x) / 2;
+	                dest_y = (this.y + arc.dest_y) /2; 
+
+	                i_dest_x = (arc.dest_x + dest_x) / 2;
+	                i_dest_y = (arc.dest_y + dest_y) /2; 
+
+	                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
+	                line2.children.map(({child}) => {
+	                   child.removeFromDOM();
+	                });
+
+	                var method = FactoryForm.createForm(_uuid.generate(), "group", {}, this.svg, this.nativeEvent, this.config);
+	                var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
+	                method.setRotateAngle(this.angle);
+	                method.addShape([text]);
+
+	                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+	            }
+	        }
 	    }
 
 	    addEvent(event, callback){
 	        this.c_svg.addEventListener(event, callback);
 	        this.events[event] = callback;
 	    }
-	    
+
 	    deleteEvent(event){
 	        var callback = this.events[event];
 	        this.c_svg.removeEventListener(event, callback);
@@ -2862,23 +2964,23 @@
 	        child.draw();
 	        this.children.push({child, translate, rotate});
 	    }
-	  
+
 	    drawVertex(){
 	        if(this.vertex.length == 0)
 	            return;
 	        this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
 	        this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
-	    
+
 	        this.vertex[1].x = this.x + this.offsetX + this.r * this.scale;
 	        this.vertex[1].y = this.y + this.offsetY - this.r * this.scale;
 
 	        this.vertex[2].x = this.x + this.offsetX + this.r * this.scale;
 	        this.vertex[2].y = this.y + this.offsetY + this.r * this.scale;
-	    
+
 	        this.vertex[3].x = this.x + this.offsetX - this.r * this.scale;
 	        this.vertex[3].y = this.y + this.offsetY + this.r * this.scale;
 	    }
-	    
+
 	    drawConnector() {
 	        if(this.c_points.length == 0)
 	            return;
@@ -2898,20 +3000,21 @@
 	    drawBox(){
 	        if(this.vertex.length > 0 && this.c_points.length >0){
 	            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-            L ${this.c_points[0].x} ${this.c_points[0].y} 
-            L ${this.vertex[1].x}   ${this.vertex[1].y} 
+            L ${this.c_points[0].x} ${this.c_points[0].y}
+            L ${this.vertex[1].x}   ${this.vertex[1].y}
             L ${this.c_points[1].x} ${this.c_points[1].y}
             L ${this.vertex[2].x}   ${this.vertex[2].y}
-            L ${this.c_points[2].x} ${this.c_points[2].y} 
-            L ${this.vertex[3].x}   ${this.vertex[3].y} 
+            L ${this.c_points[2].x} ${this.c_points[2].y}
+            L ${this.vertex[3].x}   ${this.vertex[3].y}
             L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
 
 	            this.box.setAttribute("d", p);
 	        }
 	    }
-	    
+
 	    draw(){
 	        var ns="http://www.w3.org/2000/svg";
+	        var cpt = 0;
 
 	        this.box = document.createElementNS(ns, "path");
 	        this.c_svg = document.createElementNS(ns,"circle");
@@ -2923,23 +3026,21 @@
 	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
 	        this.c_svg.setAttribute("r", (this.r * this.scale));
-	        
 
 	        this.c_svg.setAttribute("fill", this.config.form.fill);
 
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
 
-	    
 	        this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
-	    
-	      
+
+
 	        /** draw box */
 	        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
 	        this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
 	        this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	        this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
-	        
+
 	        this.svg.appendChild(this.c_svg);
 	        this.svg.appendChild(this.box);
 
@@ -2955,25 +3056,101 @@
 	            vertex.draw();
 	        });
 
-	        this.children.map( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
-	            child.redraw();
+	        // this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+	        this.addEvent("mouseover", ()=>{
+	            cpt++;
+	           if(cpt == 1){
+	            this.children.map( ({arc, line1, line2, text}) => {
+	                arc != undefined ? arc.draw() : null;
+	                line1.draw();
+	                line2.draw();
+	                text != undefined ? text.draw() : null;
+	            });
+	           }
+	        });
+	        this.addEvent("mouseleave", ()=>{
+	                this.children.map( ({arc, line1, line2, text}, index) => {
+	                    setTimeout(() => {
+	                        if(arc != undefined && text != undefined){
+	                            arc.removeFromDOM();
+	                            line1.removeFromDOM();
+	                            line2.removeFromDOM();
+	                            text.removeFromDOM();
+	                        }
+	                        if(text == undefined){
+	                            line1.removeFromDOM();
+	                            line2.removeFromDOM();
+	                        }
+	                        cpt = 0;
+	                    }, (10000));
+	                });
 	        });
 
-	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+	        setTimeout(() =>{
+	            this.children.map( async ({arc, line1, line2,  text}, index) =>{
+	                console.log("ready");
+	                if(arc != undefined && text != undefined){
+	                   {
+	                    arc.addEvent("mousedown", () => {
+	                        arc.removeFromDOM();
+	                        line1.removeFromDOM();
+	                        line2.removeFromDOM();
+	                        text.c_svg.setAttribute("fill", "blue");
+	                        var pt = [index == 3 ? line2.dest_x : line1.dest_x, index == 3 ? line2.dest_y : line1.dest_x, index == 3 ? line2.x : line1.x, index == 3 ? line2.y : line1.y];
+	                        this.method[index] = {text : text, point: pt};
+	                        this.children.splice( index == 0 ? index : index - 1, 1);
+	                        console.log(this.method);
+	                        text.c_svg.setAttribute("class", "move");
+	                        Object.keys(this.method).map((idx) => {
+	                            console.log(text);
+	                            var alias = this.method[idx].point;
+	                            if(idx == 0){
+	                                console.log("0");
+	                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] - 50, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+	                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x - 30, y: pat.dest_y - 15, width: 100, height: 100}, this.svg, this.nativeEvent, this.config);
+	                                box.draw();
+	                                pat.draw();
+	                                pat.c_svg.setAttribute("fill", "none");
+	                            }
+	                            else if(idx == 1){
+	                                console.log("1");
+	                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+	                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+	                                pat.draw();
+	                                pat.c_svg.setAttribute("fill", "none");
+
+	                            }
+	                            else if(idx == 2){
+	                                console.log("2");
+	                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+	                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+	                                pat.draw();
+	                                pat.c_svg.setAttribute("fill", "none");
+	                            }
+	                            else {
+	                                console.log("3");
+	                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+	                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+	                                pat.draw();
+	                                pat.c_svg.setAttribute("fill", "none");
+	                            }
+	                        });
+	                    });
+	                   }
+	                }
+	            });
+	        }, (3000));
 	    }
 
 
 	    removeFromDOM(){
-	        this.svg.removeChild(this.box);
 	        this.svg.removeChild(this.c_svg);
 	    }
 
 	    removeBoxFromDOM(){
 	        this.svg.removeChild(this.box);
 	    }
-	    
+
 	    shift(dx, dy){
 	        this.x += dx;
 	        this.y += dy;
@@ -2995,12 +3172,6 @@
 	        this.c_points.map( (point) => {
 	            point.redraw();
 	        });
-
-	        this.children.map( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
-	            child.redraw();
-	        });
 	    }
 
 	    resize(pos, dx, dy){
@@ -3012,18 +3183,12 @@
 	            this.r += dx;
 	        else
 	            this.r -= dx;
-
-	        this.children.map( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
-	            child.redraw();
-	        });
 	    }
 
 	    setRotateAngle(angle){
 	        this.angle = angle;
 	    }
-	    
+
 	    setOffsetX(x){
 	       this.offsetX = x;
 	    }
@@ -3051,7 +3216,7 @@
 	        var _x, _y;
 	        var a = (line.dest_y - line.y)/(line.dest_x - line.x);
 	        var b = line.y - a * line.x;
-	    
+
 	        for (var i = 0; i <= 3; i++){
 	            if(i % 2 == 0){
 	                _y = this.vertex[i].y;
@@ -3061,21 +3226,21 @@
 	                _x = this.vertex[i].x;
 	                _y = a * _x + b;
 	            }
-	    
+
 	            if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
 	              continue;
-	    
+
 	              if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
 	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
 	               ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
+	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
 	               ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )||
 	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
 	               ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
 	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
 	                return this.c_points[i];
 	               }
@@ -3084,62 +3249,115 @@
 	      }
 	}
 
-	/**
-	 * @class FactoryForm
-	 */
-
-
-	class FactoryForm
-	{
-	   
+	class Group{
 	    /**
 	     * 
-	     * @param {*} uuid 
-	     * @param {*} type 
-	     * @param {*} props 
-	     * @param {*} svg 
-	     * @param {*} events 
-	     * @param {*} config 
-	     * @returns 
+	     * @param {string} uuid 
 	     */
-	   static createForm(uuid, type, props = {}, svg, events, config)
-	    {
-	        if(type == "circle")
-	            return new Circle(uuid, props.x, props.y, props.r, svg, events, config);
-	        else if(type == "rectangle")
-	            return new Rectangle(uuid, props.x, props.y, props.width, props.height, svg, events, config);
-	        else if(type == "line")
-	            return new Line(0,svg, events, config, uuid, props.x, props.y, props.dest_x, props.dest_y);
-	        else if(type == "triangle")
-	            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, svg, events, config);
-	        else if(type == "lozenge")
-	            return new Lozenge(uuid, props.x, props.y, props.width, props.height, svg, events, config);
-	        else if(type == "polyline")
-	            return new Polyline(uuid, props.points, svg, events, config);
-	        else if(type == "arc")
-	            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, svg, events, config);
-	        else if(type == "ressource")
-	            return new Ressource(uuid, props.x, props.y, props.r, svg, events, config);
+
+	    constructor(uuid, svg, event, config){
+
+	        this.uuid = uuid;
+
+	        this.events = {};
+	        this.nativeEvent = event;
+	        this.config = config;
+
+	        this.c_svg = "";
+	        this.svg = svg;
+
+	        this.type = "group";
+
+	        /**
+	         * @description
+	         * .This variable represents the value of the rotation angle to be
+	         *  applied to rotate the group.
+	         * 
+	         * @type { Number } - The angle is given in radian.
+	         */
+	        this.angle = 0;
+
+
+	        /**
+	         * @description
+	         * The center of rotation is defined by defining centerX.
+	         * 
+	         * @type { Number } - centerX
+	         */
+	        this.centerX = 0;
+
+	        /**
+	         * @description
+	         * The center of rotation is defined by defining centerY.
+	         * 
+	         * @type { Number } - centerY
+	         */
+	        this.centerY = 0;
+
+	        this.c_svg = "";
+
+	        this.children = [];
 	    }
-	}
 
-	class Component
-	{
-	    /**
-	     * 
-	     * @param {*} type 
-	     * @param {*} props 
-	     * @param {*} svg 
-	     * @param {*} events 
-	     * @param {*} config 
-	     */
-	    constructor( type, props, svg, events, config)
-	    {
-	        this.uuid = _uuid.generate();
-	        this.type = type;
-	        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
-	        _Register.add(this);
-	        this.form.draw();
+	    addEvent(event, callback){
+	        this.c_svg.addEventListener(event, callback);
+	        this.events[event] = callback;
+	    }
+	    
+	    deleteEvent(event){
+	        var callback = this.events[event];
+	        this.c_svg.removeEventListener(event, callback);
+	        delete this.events[event];
+	    }
+
+	    addShape(children = []){
+	        children.map( (child) =>{
+	            this.children.push(child);
+	        });
+	    }
+
+	    setRotateCenter(centerX, centerY){
+	        this.centerX = centerX;
+	        this.centerY = centerY;
+	    }
+
+
+	    setRotateAngle(angle){
+	        this.angle = angle;
+	    }
+
+	    setOffsetX(x){
+	        this.offsetX = x;
+	    }
+
+	    draw(){
+	        const svgns = "http://www.w3.org/2000/svg";
+	        this.c_svg = document.createElementNS(svgns, "g");
+
+	        this.c_svg.setAttribute("id", this.uuid);
+	        this.c_svg.setAttribute("fill", this.config.form.fill);
+	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+
+	        this.children.map((child) => {
+	            this.c_svg.appendChild(child.c_svg);
+	        });
+	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+
+	        this.svg.appendChild(this.c_svg);
+	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+	    }
+
+	    redraw(){
+	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+	        // this.c_svg.setAttribute("transform", "translate(0, 0)");
+	    }
+
+	    removeFromDOM(){
+	        this.children.map( (child) =>{
+	            console.log(child);
+	            child.removeFromDOM();
+	        });
+	        this.svg.removeChild(this.c_svg);
 	    }
 	}
 
@@ -3160,7 +3378,9 @@
 	        this.text = text;
 
 	        this.svg = svg;
+	        this.c_svg = "";
 
+	        this.events = {};
 	        this.nativeEvent = event;
 
 	        this.config = config;
@@ -3182,6 +3402,19 @@
 	        this.tspan = "";
 	        this.title = "";
 	    };
+
+
+	    addEvent(event, callback){
+	        this.c_svg.addEventListener(event, callback);
+	        this.events[event] = callback;
+	    }
+	    
+	    deleteEvent(event){
+	        var callback = this.events[event];
+	        this.c_svg.removeEventListener(event, callback);
+	        delete this.events[event];
+	    }
+
 
 	    setRotateCenter(centerX, centerY){
 	        this.centerX = centerX;
@@ -3205,15 +3438,17 @@
 	        this.c_svg.setAttributeNS(null, "fill-opacity", this.config.text.fillOpacity);
 	        this.c_svg.setAttributeNS(null, "stroke-dasharray", this.config.text.strokeDasharray);
 	        this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
+	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
 
-	        this.tspan = document.createElementNS(svgns, "tspan");
-	        this.title = document.createElementNS(svgns, "title");
+	        // this.tspan = document.createElementNS(svgns, "tspan");
+	        // this.title = document.createElementNS(svgns, "title");
 
-	        this.title.textContent = this.text;
-	        this.tspan.textContent = this.text;
+	        // this.title.textContent = this.text;
+	        // this.tspan.textContent = this.text;
 
-	        this.c_svg.appendChild(this.tspan);
-	        this.c_svg.appendChild(this.title);
+	        this.c_svg.textContent = this.text;
+	        // this.c_svg.appendChild(this.tspan);
+	        // this.c_svg.appendChild(this.title);
 
 	        // this.updateWidthText();
 	        this.svg.appendChild(this.c_svg);
@@ -3241,13 +3476,16 @@
 	        this.title.textContent = this.text;
 	    }
 	    
-	    removeFromDom(){
-	        this.svg.removeChild(this.c_svg);
+	    removeFromDOM(){
+	        // this.title.textContent = "";
+	        // this.tspan.textContent = "";
+	        this.c_svg.textContent = "";
 	    }
 
 	    redraw(){
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
 	        // this.updateWidthText();
 	    }
 
@@ -3292,122 +3530,66 @@
 	    }
 	}
 
-	class Group{
+	/**
+	 * @class FactoryForm
+	 */
 
+
+	class FactoryForm
+	{
+	   
 	    /**
 	     * 
-	     * @param {string} uuid 
+	     * @param {*} uuid 
+	     * @param {*} type 
+	     * @param {*} props 
+	     * @param {*} svg 
+	     * @param {*} events 
+	     * @param {*} config 
+	     * @returns 
 	     */
+	   static createForm(uuid, type, props = {}, svg, events, config)
+	    {
+	        if(type == "circle")
+	            return new Circle(uuid, props.x, props.y, props.r, svg, events, config);
+	        else if(type == "rectangle")
+	            return new Rectangle(uuid, props.x, props.y, props.width, props.height, svg, events, config);
+	        else if(type == "line")
+	            return new Line(0,svg, events, config, uuid, props.x, props.y, props.dest_x, props.dest_y);
+	        else if(type == "triangle")
+	            return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3, svg, events, config);
+	        else if(type == "lozenge")
+	            return new Lozenge(uuid, props.x, props.y, props.width, props.height, svg, events, config);
+	        else if(type == "polyline")
+	            return new Polyline(uuid, props.points, svg, events, config);
+	        else if(type == "arc")
+	            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, svg, events, config);
+	        else if(type == "ressource")
+	            return new Ressource(uuid, props.x, props.y, props.r,props.nb_method, svg, events, config);
+	        else if(type == "group")
+	            return new Group(uuid, svg, events, config);
+	        else if(type == "text")
+	            return new Text(uuid, props.x, props.y, props.text, svg, events, config);
+	    }
+	}
 
-	    constructor(uuid, svg, event, config){
-
-	        this.uuid = uuid;
-
-	        this.events = {};
-	        this.nativeEvent = event;
-	        this.config = config;
-
-
-	        this.c_svg = "";
-	        this.svg = svg;
-
-	        this.type = "group";
-
-	          /**
-	     * @description
-	     * .This variable represents the value of the rotation angle to be
-	     *  applied to rotate the group.
-	     * 
-	     * @type { Number } - The angle is given in radian.
-	     */
-	    this.angle = 0;
-
-
-
+	class Component
+	{
 	    /**
-	     * @description
-	     * The center of rotation is defined by defining centerX.
 	     * 
-	     * @type { Number } - centerX
+	     * @param {*} type 
+	     * @param {*} props 
+	     * @param {*} svg 
+	     * @param {*} events 
+	     * @param {*} config 
 	     */
-	    this.centerX = 0;
-
-	    /**
-	     * @description
-	     * The center of rotation is defined by defining centerY.
-	     * 
-	     * @type { Number } - centerY
-	     */
-	    this.centerY = 0;
-
-	    this.c_svg = "";
-
-	    this.children = [];
-	    }
-
-	    addEvent(event, callback){
-	        this.c_svg.addEventListener(event, callback);
-	        this.events[event] = callback;
-	    }
-	    
-	    deleteEvent(event){
-	        var callback = this.events[event];
-	        this.c_svg.removeEventListener(event, callback);
-	        delete this.events[event];
-	    }
-
-	    addShape(children = []){
-	        children.map( (child) =>{
-	            this.children.push(child);
-	        });
-	    }
-
-
-	    setRotateCenter(centerX, centerY){
-	        this.centerX = centerX;
-	        this.centerY = centerY;
-	    }
-
-	    setRotateAngle(angle){
-	        this.angle = angle;
-	    }
-
-	    setOffsetX(x){
-	        this.offsetX = x;
-	    }
-
-	    draw(){
-	        const svgns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(svgns, "g");
-
-	        this.c_svg.setAttribute("id", this.uuid);
-	        this.c_svg.setAttribute("fill", this.config.group.fill);
-	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-
-	        this.children.map((child) => {
-	            this.c_svg.appendChild(child.c_svg);
-	        });
-
-	        // this.c_svg.setAttribute("transform", "rotate(0, 0, 0)");
-	        // this.c_svg.setAttribute("transform", "translate(0, 0)");
-
-	        this.svg.appendChild(this.c_svg);
-	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-	    }
-
-	    removeFromDOM(){
-	        this.svg.removeChild(this.c_svg);
-	    }
-
-	    shift(dx, dy){
-	        this.x += dx;
-	        this.y += dy;
-	    }
-
-	    redraw(){
-	    }
-
-	    resize(pos, dx, dy, param = {}){
+	    constructor( type, props, svg, events, config)
+	    {
+	        this.uuid = _uuid.generate();
+	        this.type = type;
+	        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
+	        _Register.add(this);
+	        this.form.draw();
 	    }
 	}
 
@@ -3585,8 +3767,8 @@
 	        return new Group(_uuid.generate(),this.svg, this.events, this.config);
 	    }
 
-	    Ressource(x = 0, y = 0, r = 5){
-	        return new Ressource(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
+	    Ressource(x = 0, y = 0, r = 5, nb_method = 4){
+	        return new Ressource(_uuid.generate(), x, y, r, nb_method, this.svg, this.events, this.config);
 	    }
 	}
 

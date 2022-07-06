@@ -189,8 +189,8 @@ class Application{
         return new Group(_uuid.generate(),this.svg, this.events, this.config);
     }
 
-    Ressource(x = 0, y = 0, r = 5, nb_methode = 4){
-        return new Ressource(_uuid.generate(), x, y, r, nb_method = 4, this.svg, this.events, this.config);
+    Ressource(x = 0, y = 0, r = 5, nb_method = 4){
+        return new Ressource(_uuid.generate(), x, y, r, nb_method, this.svg, this.events, this.config);
     }
 }
 export {Application};

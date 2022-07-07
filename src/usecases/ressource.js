@@ -9,11 +9,15 @@ import { FactoryForm } from "../factoryForm";
  */
 class Ressource extends Form {
     /**
-     *
-     * @param {string} uuid
-     * @param {number} x
-     * @param {number} y
-     * @param {number} r
+     * 
+     * @param {String} uuid 
+     * @param {Number} x 
+     * @param {Number} y 
+     * @param {Number} r 
+     * @param {Number} nb_method 
+     * @param {DomElement} svg 
+     * @param {Object} event 
+     * @param {Object} config 
      */
     constructor(uuid, x = 0, y = 0, r = 5, nb_method = 4, svg, event, config){
 
@@ -48,6 +52,7 @@ class Ressource extends Form {
         this.angle = 40;
 
         this.children = [];
+        this.verb = [];
         this.method = {};
         this.pattern = {};
 
@@ -70,7 +75,7 @@ class Ressource extends Form {
 
     addMethod(){
         for(var j = 0; j < this.nb_method; j++){
-            if(this.children.length == 0){
+            if(this.verb.length == 0){
                 var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.x - 3/2 + this.r - 100, y: this.y - 3/2 + this.r, angle: this.angle}, this.svg, this.nativeEvent, this.config);
                 var dest_x = (this.x + arc.x) / 2;
                 var dest_y = (this.y + arc.y) /2; 
@@ -99,17 +104,17 @@ class Ressource extends Form {
                 var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
                 method.setRotateAngle(this.angle);
                 method.addShape([text]);
-                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+                this.verb[j] =  {arc: arc, line1: line1, line2: line2, text: text};
             }
             else{
-                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.children[j-1].arc.dest_x + 1.5, y: this.children[j-1].arc.dest_y, angle: this.angle}, this.svg, this.nativeEvent, this.config);
+                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.verb[j-1].arc.dest_x + 1.5, y: this.verb[j-1].arc.dest_y, angle: this.angle}, this.svg, this.nativeEvent, this.config);
                 var dest_x = (this.x + arc.x) / 2;
                 var dest_y = (this.y + arc.y) /2; 
 
                 var i_dest_x = (arc.x + dest_x) / 2;
                 var i_dest_y = (arc.y + dest_y) /2; 
 
-                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: this.children[j-1].arc.dest_x, y: this.children[j-1].arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.nativeEvent, this.config);
+                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: this.verb[j-1].arc.dest_x, y: this.verb[j-1].arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.nativeEvent, this.config);
                 line1.children.map(({child}) => {
                    child.removeFromDOM();
                 });
@@ -130,7 +135,7 @@ class Ressource extends Form {
                 method.setRotateAngle(this.angle);
                 method.addShape([text]);
 
-                this.children[j] =  {arc: arc, line1: line1, line2: line2, text: text};
+                this.verb[j] =  {arc: arc, line1: line1, line2: line2, text: text};
             }
         }
     }
@@ -246,11 +251,18 @@ class Ressource extends Form {
             vertex.draw();
         });
 
+        var child = FactoryForm.createForm(_uuid.generate(), "text", {x: 0, y: 0, text: "empty"}, this.svg, this.nativeEvent, this.config);
+        this.addChild(child, (p,c) => {
+            c.setOffsetX(p.x - p.r/2);
+            c.setOffsetY(p.y + 5)
+        }, (p,c) => {});
+
+
         // this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
         this.addEvent("mouseover", ()=>{
             cpt++;
            if(cpt == 1){
-            this.children.map( ({arc, line1, line2, text}) => {
+            this.verb.map( ({arc, line1, line2, text}) => {
                 arc != undefined ? arc.draw() : null;
                 line1.draw();
                 line2.draw();
@@ -259,7 +271,7 @@ class Ressource extends Form {
            }
         });
         this.addEvent("mouseleave", ()=>{
-                this.children.map( ({arc, line1, line2, text}, index) => {
+                this.verb.map( ({arc, line1, line2, text}, index) => {
                     setTimeout(() => {
                         if(arc != undefined && text != undefined){
                             arc.removeFromDOM()
@@ -277,53 +289,75 @@ class Ressource extends Form {
         });
 
         setTimeout(() =>{
-            this.children.map( async ({arc, line1, line2,  text}, index) =>{
+            this.verb.map( async ({arc, line1, line2, text}, index) =>{
                 console.log("ready");
-                var ct = 0;
                 if(arc != undefined && text != undefined){
                    if(true){
                     arc.addEvent("mousedown", () => {
+                        var pt;
+                        this.method = [];
                         arc.removeFromDOM();
                         line1.removeFromDOM();
                         line2.removeFromDOM();
                         text.c_svg.setAttribute("fill", "blue");
-                        var pt = [index == 3 ? line2.dest_x : line1.dest_x, index == 3 ? line2.dest_y : line1.dest_x, index == 3 ? line2.x : line1.x, index == 3 ? line2.y : line1.y];
+                        if(index == 1 || index == 2 || index == 3)
+                            pt = [line2.dest_x, line2.dest_y, line2.x, line2.y];
+                        else
+                            pt = [line1.x, line1.y, line1.dest_x, line1.dest_y];
                         this.method[index] = {text : text, point: pt};
                         this.children.splice( index == 0 ? index : index - 1, 1);
-                        ct++;
-                        console.log(this.method);
-                        text.c_svg.setAttribute("class", "move");
                         Object.keys(this.method).map((idx) => {
                             console.log(text);
                             var alias = this.method[idx].point;
                             if(idx == 0){
                                 console.log("0");
-                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] - 50, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
-                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x - 30, y: pat.dest_y - 15, width: 100, height: 100}, this.svg, this.nativeEvent, this.config);
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [ alias[0] - 50, alias[1], ...alias]}, this.svg, this.nativeEvent, this.config);
+                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.x - 50, y: pat.y - 10, width: 50, height: 20}, this.svg, this.nativeEvent, this.config);
                                 box.draw();
                                 pat.draw();
+                                this.method[idx].text.removeFromDOM();
+                                this.method[idx].text.x = pat.x + 10;
+                                this.method[idx].text.y = pat.y - 5;
+                                this.method[idx].text.draw();
                                 pat.c_svg.setAttribute("fill", "none");
                             }
                             else if(idx == 1){
                                 console.log("1");
-                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
-                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 60, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x, y: pat.dest_y - 10, width: 50, height: 20}, this.svg, this.nativeEvent, this.config);
+                                box.draw();
                                 pat.draw();
+                                console.log(this.method[idx]);
+                                this.method[idx].text.removeFromDOM();
+                                this.method[idx].text.x = alias[2] + 30;
+                                this.method[idx].text.y = alias[3] - 5;
+                                this.method[idx].text.draw();
                                 pat.c_svg.setAttribute("fill", "none");
-
                             }
                             else if(idx == 2){
                                 console.log("2");
                                 var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
-                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x, y: pat.dest_y - 10, width: 50, height: 20}, this.svg, this.nativeEvent, this.config);
+                                box.draw();
                                 pat.draw();
+                                console.log(this.method[idx]);
+                                this.method[idx].text.removeFromDOM();
+                                this.method[idx].text.x = alias[2];
+                                this.method[idx].text.y = alias[3] - 5;
+                                this.method[idx].text.draw();
                                 pat.c_svg.setAttribute("fill", "none");
                             }
                             else{
                                 console.log("3");
-                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 30, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
-                                // var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: })
+                                var pat = FactoryForm.createForm(_uuid.generate(),"polyline", {points: [this.method[idx].point, ...[alias[alias.length - 2] + 35, alias[alias.length - 1]]]}, this.svg, this.nativeEvent, this.config);
+                                var box = FactoryForm.createForm(_uuid.generate(), "rectangle", {x: pat.dest_x, y: pat.dest_y - 10, width: 50, height: 20}, this.svg, this.nativeEvent, this.config);
+                                box.draw();
                                 pat.draw();
+                                console.log(this.method[idx]);
+                                this.method[idx].text.removeFromDOM();
+                                this.method[idx].text.x = alias[2];
+                                this.method[idx].text.y = alias[3] - 5;
+                                this.method[idx].text.draw();
                                 pat.c_svg.setAttribute("fill", "none");
                             }
                         })

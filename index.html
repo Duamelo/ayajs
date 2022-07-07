@@ -18,14 +18,13 @@
 
       var arrow = aya.Line(200,100,400-50 - 10,100);
       arrow.draw();
+      arrow.children.map( ({child, translate, rotate}, index) => {
+         child.c_svg.setAttribute("fill", "black");
+      });
+
       var res = aya.Component("ressource", {x:400, y: 100, r: 50, nb_method: 4});
       res.form.removeBoxFromDOM();
 
-      var los = aya.Component("lozenge", {x: 600, y: 100, width: 200, height: 200});
-
-      var tri = aya.Component("triangle", {x1: 100, y1: 100, x2 : 200, y2: 200, x3: 300, y: 300});
-
-      var circle = aya.Component("circle", {x: 400, y: 400, r: 50});
 
       document.body.append(aya.svg);
    </script>

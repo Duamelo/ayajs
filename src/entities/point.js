@@ -69,6 +69,14 @@ class Point {
 
     
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+    this.addEvent("mouseover", (e)=>{
+      this.r += 4;
+      this.c_svg.setAttribute("r", this.r);
+    });
+    this.addEvent("mouseleave", (e)=>{
+      this.r = this.config.point.radius;
+      this.c_svg.setAttribute("r", this.r);
+    });
 
     this.svg.appendChild(this.c_svg);
   }
@@ -85,7 +93,6 @@ class Point {
   redraw() {
     this.c_svg.setAttribute("cx", this.x);
     this.c_svg.setAttribute("cy", this.y);
-    
   }
 }
 

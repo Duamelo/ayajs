@@ -134,13 +134,15 @@ class Events {
         if (state == "drawing_link") {
           id = e.srcElement.id;
           var pnt = _Register.find(id);
-  
-  
+          
           if (pnt != undefined && pnt.ref != undefined) {
+          console.log("temp1 load and ");
             line.dest_x = pnt.x;
             line.dest_y = pnt.y;
   
-            new Link(cp, pnt, line).redraw();
+            var link = new Link(cp, pnt, line);
+            link.redraw();
+            // console.log(cp);            
           }
           else if (id == id_svg || pnt.ref == undefined) {
             var ref = document.getElementById(line.uuid);
@@ -163,18 +165,18 @@ class Events {
 
         id_store.push(id);
   
-        cp = _Register.find(id);
+        var local_cp = _Register.find(id);
 
-        if(cp.form.type == "line")
-          cp.form.c_svg.setAttribute("class", "move");
+        if(local_cp.form.type == "line")
+          local_cp.form.c_svg.setAttribute("class", "move");
 
-        if(cp.form != undefined){
-          cp.form.c_svg.setAttribute("class", "move");
-          cp.form.c_points.map( (point) => {
+        if(local_cp.form != undefined){
+          local_cp.form.c_svg.setAttribute("class", "move");
+          local_cp.form.c_points.map( (point) => {
             point.c_svg.setAttribute("class", "show_point");
             // point.c_svg.setAttribute("class", "drawing");
           });
-          cp.form.vertex.map( (vertex, index) => {
+          local_cp.form.vertex.map( (vertex, index) => {
             vertex.c_svg.setAttribute("class", "show_point");
             if(index == 0)
               vertex.c_svg.setAttribute("class", "resize_left_top");

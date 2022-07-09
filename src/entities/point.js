@@ -64,7 +64,7 @@ class Point {
 
     this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
 
-    this.c_svg.setAttribute("class", "point");
+    // this.c_svg.setAttribute("class", "point");
     this.c_svg.setAttribute("class", "hidden_point");
 
     
@@ -93,6 +93,7 @@ class Point {
   redraw() {
     this.c_svg.setAttribute("cx", this.x);
     this.c_svg.setAttribute("cy", this.y);
+    this.c_svg.setAttribute("r", this.config.point.radius * this.scale);
   }
 }
 

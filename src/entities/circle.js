@@ -49,17 +49,17 @@ class Circle extends Form {
         this.children = [];
       
         this.c_points = [
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config)
         ];
 
         this.vertex = [
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid,0, 0, 3, this.svg, this.nativeEvent, this.config)
         ];
     }
 
@@ -182,6 +182,8 @@ class Circle extends Form {
         });
 
         this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
     }
 
 

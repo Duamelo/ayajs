@@ -202,7 +202,7 @@ class Events {
               component.form.vertex.map( (vertex) => {
                 vertex.c_svg.setAttribute("class", "hidden_point");
               });
-            }, 20000);
+            }, 5000);
           })
       }
     }

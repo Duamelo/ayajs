@@ -171,6 +171,9 @@ class Triangle extends Form {
 
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
   }
 
   removeFromDOM(){

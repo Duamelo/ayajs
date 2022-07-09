@@ -508,7 +508,8 @@ class Rectangle extends Form {
               (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
               ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
         ){
-            return this.c_points[i];
+            // return this.c_points[i];
+            return i;
         }
     }
     return null;

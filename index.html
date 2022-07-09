@@ -13,8 +13,13 @@
 <body>
 
    <script>
-    var aya = new aya.Application();
-    console.log(aya);
+      var aya = new aya.Application();
+      console.log(aya);
+
+      var rec = aya.Component("rectangle", {x: 300, y: 100, width: 200, height: 100});
+      var rec = aya.Component("rectangle", {x: 300, y: 400, width: 200, height: 100});
+      var rec = aya.Component("rectangle", {x: 700, y: 450, width: 200, height: 100});
+
 
     var arrow = aya.Line(200,100,400-50 - 10,100);
     arrow.draw();

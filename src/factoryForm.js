@@ -43,7 +43,7 @@ class FactoryForm
         else if(type == "polyline")
             return new Polyline(uuid, props.points, svg, events, config);
         else if(type == "arc")
-            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, svg, events, config);
+            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, props.ratio, svg, events, config);
         else if(type == "ressource")
             return new Ressource(uuid, props.x, props.y, props.r,props.nb_method, svg, events, config);
         else if(type == "group")

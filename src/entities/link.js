@@ -4,7 +4,6 @@ import {_Register}  from "../register.js"
 /**
  * @class Link
  */
-
 class Link
 {
     constructor(source, destination, line = undefined)
@@ -40,63 +39,44 @@ class Link
         this.line.dest_x = this.destination.x;
         this.line.dest_y = this.destination.y;
 
-        
-        if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
-            this.line.c1.x = this.line.x;
-            this.line.c1.y = this.line.y - dy;
-
+        if(this.line.x <= this.line.dest_x){
+            i_src != 1 ? this.line.c1.x = this.line.x : this.line.c1.x = this.line.x + dx;
+            i_dest != 3 ? this.line.c4.x = this.line.dest_x : this.line.c4.x = this.line.dest_x - dx;
+            if(i_src == 0)
+                this.line.c1.y = this.line.y - dy;
+            if(i_src == 1)
+                this.line.c1.y = this.line.y;
+            if(i_src == 2)
+                this.line.c1.y = this.line.y + dy;
+            if(i_dest == 0)
+                this.line.c4.y = this.line.dest_y - dy;
+            if(i_dest == 2)
+                this.line.c4.y = this.line.dest_y + dy;
+            if(i_dest == 3)
+                this.line.c4.y = this.line.dest_y;
             this.line.c2.x = (this.line.dest_x + this.line.x)/2;
             this.line.c2.y = this.line.c1.y;
-
-            this.line.c4.x = this.line.dest_x;
-            this.line.c4.y = this.line.dest_y + dy;
-
             this.line.c3.x = this.line.c2.x;
             this.line.c3.y = this.line.c4.y;
         }
-        else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
-            this.line.c1.x = this.line.x;
-            this.line.c1.y = this.line.y + dy;
+        else if(this.line.dest_x <= this.line.x){
+            i_src != 3 ? this.line.c1.x = this.line.x : this.line.c1.x = this.line.x - dx;
+            (i_dest == 0 || i_dest == 2) ? this.line.c4.x = this.line.dest_x : this.line.c4.x = this.line.dest_x + dx;
+            (i_dest == 1 || i_dest == 3) ? this.line.c4.y = this.line.dest_y : i_dest == 0 ? this.line.c4.y = this.line.dest_y - dy : this.line.c4.y = this.line.dest_y + dy;
 
-            this.line.c2.x = (this.line.x + this.line.dest_x) / 2; 
-            this.line.c2.y = this.line.c1.y;
-
-            this.line.c4.x = this.line.dest_x;
-            this.line.c4.y = this.line.dest_y - dy;
-
-            this.line.c3.x = this.line.c2.x;
-            this.line.c3.y = this.line.c4.y;
-        }
-
-        else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
-            this.line.c1.x = this.line.x;
-            this.line.c1.y = this.line.y + dy;
+            if(i_src == 0)
+                this.line.c1.y = this.line.y - dy;
+            if(i_src == 2)
+                this.line.c1.y = this.line.y + dy;
+            if(i_src == 3)
+                this.line.c1.y = this.line.y;
 
             this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
             this.line.c2.y = this.line.c1.y;
-
-            this.line.c4.x = this.line.dest_x;
-            this.line.c4.y = this.line.dest_y - dy;
-
             this.line.c3.x = this.line.c2.x;
             this.line.c3.y = this.line.c4.y;
         }
-        else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){            
-            this.line.c1.x = this.line.x;
-            this.line.c1.y = this.line.y - dy;
-
-            this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
-            this.line.c2.y = this.line.c1.y;
-
-            if(i_dest == 1){
-                this.line.c4.x = this.line.dest_x;
-                this.line.c4.y = this.line.dest_y + dy;
-            }
-
-            this.line.c3.x = this.line.c2.x;
-            this.line.c3.y = this.line.c4.y;
-        }
-
+     
         this.line.c_svg.setAttribute("fill", "none");
         this.line.redraw();
     }

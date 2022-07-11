@@ -36,10 +36,11 @@ class Events {
         if (id != this.id_svg)
           source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
   
+        if(cp == undefined)
+          return;
         if(cp.form != undefined)
           lk = _Register.findAllLink(cp);
-  
-  
+
         // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
         if ((cp != undefined && cp.ref == undefined) )
             state = "moving";
@@ -62,14 +63,14 @@ class Events {
             state = "drawing_link";
             id = _uuid.generate();
             if (cp != source) {
-              line = new Line( id_svg, svg, null, config, id, cp.x, cp.y);
+              line = new Line( id_svg, svg, null, config, id, cp.x, cp.y, "breaking");
               line.draw();
             }
           }
         }
       },
       mouseMoveCb: function movecb(e) {
-  
+
         if (state == "moving") {
   
           deltaX = e.offsetX - dx;
@@ -77,7 +78,7 @@ class Events {
   
           dx = e.offsetX;
           dy = e.offsetY;
-  
+
           // Ensure cp is a component
           var src, sink;
           if(cp.form != undefined){
@@ -87,30 +88,28 @@ class Events {
                   src = point;
                 else if(point == link.destination)
                   sink = point;
-              })
+              });
               if(src){
                 link.line.x += deltaX;
                 link.line.y += deltaY;
-                link.line.redraw();
+                
+                link.redraw();
               }
               else {
                 link.line.dest_x += deltaX;
                 link.line.dest_y += deltaY;
-                link.line.redraw();
+                link.redraw();
               }
             });
-  
             cp.form.shift(deltaX, deltaY);
             cp.form.redraw();
-  
+
             lk.map( (link) => {
               link.redraw();
             });
-  
           }
         }
         else if (state == "drawing_link") {
-  
           line.dest_x = e.clientX;
           line.dest_y = e.clientY;
           line.redraw();
@@ -136,13 +135,11 @@ class Events {
           var pnt = _Register.find(id);
           
           if (pnt != undefined && pnt.ref != undefined) {
-          console.log("temp1 load and ");
             line.dest_x = pnt.x;
             line.dest_y = pnt.y;
   
             var link = new Link(cp, pnt, line);
             link.redraw();
-            // console.log(cp);            
           }
           else if (id == id_svg || pnt.ref == undefined) {
             var ref = document.getElementById(line.uuid);
@@ -167,6 +164,8 @@ class Events {
   
         var local_cp = _Register.find(id);
 
+        if(local_cp == undefined)
+          return;
         if(local_cp.form.type == "line")
           local_cp.form.c_svg.setAttribute("class", "move");
 
@@ -174,7 +173,6 @@ class Events {
           local_cp.form.c_svg.setAttribute("class", "move");
           local_cp.form.c_points.map( (point) => {
             point.c_svg.setAttribute("class", "show_point");
-            // point.c_svg.setAttribute("class", "drawing");
           });
           local_cp.form.vertex.map( (vertex, index) => {
             vertex.c_svg.setAttribute("class", "show_point");
@@ -187,7 +185,6 @@ class Events {
             else if(index == 3)
               vertex.c_svg.setAttribute("class", "resize_left_bottom");
           });
-
         }
       },
       mouseLeaveCb: function mouseleavecb(e){

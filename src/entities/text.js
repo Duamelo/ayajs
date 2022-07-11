@@ -134,6 +134,10 @@ class Text{
         this.offsetY = y;
     }
 
+    setText(text){
+        this.text = text;
+    }
+
     getOffsetX(){
         return this.offsetX;
     }

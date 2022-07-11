@@ -6,7 +6,7 @@ var config =  {
         stroke : "black",
         fill : "white",
         strokeOpacity : "1",
-        strokeWidth : "1.5pt",
+        strokeWidth : "1px",
         fillOpacity : "1",
         limitWidth: 20,
         limitHeight: 20
@@ -16,7 +16,7 @@ var config =  {
         stroke : "black",
         fill : "white",
         strokeOpacity : "1",
-        strokeWidth : "1.5pt",
+        strokeWidth : "1px",
         fillOpacity : "1",
         limitWidth: 20,
         limitHeight: 20

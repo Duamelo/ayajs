@@ -1,19 +1,7 @@
 {
-  "name": "ayajs",
-  "version": "0.0.1",
-  "description": "geometric shape creation library",
+  "name": "docs_ayajs",
+  "version": "1.0.0",
   "main": "index.js",
-  "authors": {
-    "name": "Duamelo",
-    "email": "franckdosseh17@gmail.com"
-  },
-  "repository": "https://github.com/Duamelo/ayajs/ayajs",
-  "scripts": {
-    "dev": "vuepress dev src",
-    "build": "vuepress build src"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "vuepress": "^1.5.3"
-  }
+  "author": "Duamelo",
+  "license": "MIT"
 }

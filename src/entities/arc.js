@@ -13,7 +13,7 @@ class Arc extends Form {
      * 
      * @param {string} uuid 
      */
-    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, svg, event, config){
+    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2, svg, event, config){
 
         super();
 
@@ -54,6 +54,7 @@ class Arc extends Form {
         this.scaleY = 1;
 
         this.radius = Math.sqrt (((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * ((this.x + this.offsetX) - (this.x0  + this.offsetX0)) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * ((this.y + this.offsetY) - (this.y0 + this.offsetY0)));
+        this.ratio = ratio;
 
         this.children = [];
 
@@ -78,14 +79,15 @@ class Arc extends Form {
         delete this.events[event];
     }
 
-    addChild(child, translate, rotate){
+    addChild(child, translate, rotate, draw = true){
         child.vertex = [];
         child.c_points = [];
         child.setOffsetX(this.x);
         child.setOffsetY(this.y);
         translate(this, child);
         rotate(this, child);
-        child.draw();
+        if(draw == true)
+            child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -109,7 +111,7 @@ class Arc extends Form {
         this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
         this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
 
-        this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
+        this.p = "M" + (this.x0 + this.ratio * this.radius) + " " + this.y0 + " " +  " L" + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y  + " L " +  (this.x0 + this.ratio * this.radius) + " " + this.y0 ;
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("fill", this.config.arc.fill);
         this.c_svg.setAttribute("stroke", this.config.arc.stroke);
@@ -129,6 +131,10 @@ class Arc extends Form {
         this.vertex.map( (vertex) => {
             vertex.draw();
         });
+
+        this.children.map(({child, translate, rotate}) => {
+            child.draw();
+        });
         this.addEvent("mouseover", () =>{
             this.c_svg.setAttribute("class", "move");
         });
@@ -136,6 +142,9 @@ class Arc extends Form {
 
     removeFromDOM(){
         this.svg.removeChild(this.c_svg);
+        this.children.map( ({child, translate, rotate}) =>{
+            child.removeFromDOM();
+        });
     }
 
     shift(dx,dy){

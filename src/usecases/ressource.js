@@ -28,7 +28,12 @@ class Ressource extends Form {
         this.x = x;
         this.y = y;
         this.r = r;
-        this.nb_method = nb_method;
+        this.methods = [
+            {name: "get", selected: false},
+            {name: "post", selected: false},
+            {name: "put", selected: false},
+            {name: "delete", selected: false}
+        ];
 
         this.events = {};
 
@@ -49,12 +54,9 @@ class Ressource extends Form {
         this.offsetX = 0;
         this.offsetY = 0;
 
-        this.angle = 40;
+        this.angle = 30;
 
         this.children = [];
-        this.verb = [];
-        this.method = {};
-        this.pattern = {};
 
         this.c_points = [
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
@@ -70,89 +72,26 @@ class Ressource extends Form {
             new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
         ];
         this.addMethod();
-        _Register.add(this);
     }
 
     addMethod(){
-        for(var j = 0; j < this.nb_method; j++){
-            if(this.verb.length == 0){
-                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.x - 3/2 + this.r - 100, y: this.y - 3/2 + this.r, angle: this.angle}, this.svg, this.nativeEvent, this.config);
-                var dest_x = (this.x + arc.x) / 2;
-                var dest_y = (this.y + arc.y) /2; 
-
-                var i_dest_x = (arc.x + dest_x) / 2;
-                var i_dest_y = (arc.y + dest_y) /2; 
-                
-                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.x, y: arc.y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
-                line1.children.map(({child}) => {
-                   child.removeFromDOM();
-                });
-
-                dest_x = (this.x + arc.dest_x) / 2;
-                dest_y = (this.y + arc.dest_y) /2; 
-
-                i_dest_x = (arc.dest_x + dest_x) / 2;
-                i_dest_y = (arc.dest_y + dest_y) /2; 
-
-
-                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
-                line2.children.map(({child}) => {
-                   child.removeFromDOM();
-                });
-
-                var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: "get"}, this.svg, this.nativeEvent, this.config);
-                text.setRotateCenter(text.x, text.y);
-                text.setRotateAngle(30);
-                this.verb[j] =  {arc: arc, line1: line1, line2: line2, text: text};
-            }
-            else{
-                var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: this.verb[j-1].arc.dest_x + 1.5, y: this.verb[j-1].arc.dest_y, angle: this.angle}, this.svg, this.nativeEvent, this.config);
-                var dest_x = (this.x + arc.x) / 2;
-                var dest_y = (this.y + arc.y) /2; 
-
-                var i_dest_x = (arc.x + dest_x) / 2;
-                var i_dest_y = (arc.y + dest_y) /2; 
-
-                var line1 = FactoryForm.createForm(_uuid.generate(), "line", {x: this.verb[j-1].arc.dest_x, y: this.verb[j-1].arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.nativeEvent, this.config);
-                line1.children.map(({child}) => {
-                   child.removeFromDOM();
-                });
-
-                dest_x = (this.x + arc.dest_x) / 2;
-                dest_y = (this.y + arc.dest_y) /2; 
-
-                i_dest_x = (arc.dest_x + dest_x) / 2;
-                i_dest_y = (arc.dest_y + dest_y) /2; 
-
-                var line2 = FactoryForm.createForm(_uuid.generate(), "line", {x: arc.dest_x, y: arc.dest_y, dest_x: i_dest_x, dest_y: i_dest_y}, this.svg, this.events, this.config);
-                line2.children.map(({child}) => {
-                   child.removeFromDOM();
-                });
-
-                if(j == 1){
-                    var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: "post"}, this.svg, this.nativeEvent, this.config);
-                    text.x = text.x - 5;
-                    text.y = text.y -5;
-                    text.setRotateCenter(text.x, text.y);
-                    text.setRotateAngle(-15);
+        var x = this.x ,  y = this.y + this.r + 20;
+        for(var m of this.methods){
+                if(m.selected == false){
+                    var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: x, y: y, angle: this.angle, ratio : 0}, this.svg, this.nativeEvent, this.config);
+                    var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: m.name}, this.svg, this.nativeEvent, this.config);
+                    arc.addChild(text, (p,c) =>{
+                        c.setOffsetX(0);
+                        c.setOffsetY(0);
+                        c.setText(m.name);
+                    }, (p,c) =>{
+                        c.setRotateCenter(c.x, c.y);
+                        c.setRotateAngle(30);
+                    }, false);
+                    m.arc = arc;
+                    x = arc.dest_x;
+                    y = arc.dest_y;
                 }
-                else if(j == 2){
-                    var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: "put"}, this.svg, this.nativeEvent, this.config);
-                    text.x = text.x - 10;
-                    text.y = text.y - 10;
-                    text.setRotateCenter(text.x, text.y);
-                    text.setRotateAngle(-50);
-                }
-                else if(j == 3){
-                    var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: "del"}, this.svg, this.nativeEvent, this.config);
-                    text.x = text.x - 15;
-                    text.y = text.y - 10;
-                    text.setRotateCenter(text.x, text.y);
-                    text.setRotateAngle(-85);
-                }
-
-                this.verb[j] =  {arc: arc, line1: line1, line2: line2, text: text};
-            }
         }
     }
 
@@ -224,9 +163,8 @@ class Ressource extends Form {
     }
 
     draw(){
+        var state = "";
         var ns="http://www.w3.org/2000/svg";
-
-        this.box = document.createElementNS(ns, "path");
         this.c_svg = document.createElementNS(ns,"circle");
 
         this.c_svg.setAttribute("id", this.uuid);
@@ -243,26 +181,7 @@ class Ressource extends Form {
 
         this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
 
-        /** draw box */
-        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
-        this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
-        this.box.setAttributeNS(null, "fill", this.config.box.fill);
-        this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
-
         this.svg.appendChild(this.c_svg);
-        this.svg.appendChild(this.box);
-
-        this.drawVertex();
-        this.drawConnector();
-        this.drawBox();
-
-        this.c_points.map((point) => {
-            point.draw();
-        });
-
-        this.vertex.map((vertex) => {
-            vertex.draw();
-        });
 
         var child = FactoryForm.createForm(_uuid.generate(), "text", {x: 0, y: 0, text: "empty"}, this.svg, this.nativeEvent, this.config);
         this.addChild(child, (p,c) => {
@@ -271,8 +190,48 @@ class Ressource extends Form {
         }, (p,c) => {});
 
 
-        // this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-
+        this.addEvent("mouseover", ()=>{ 
+            if(state == "mouseover")
+                return;
+            state = "mouseover";
+            this.methods.map( (m, index) => {
+                if(m.selected == false){
+                    m.arc.draw();
+                    m.arc.addEvent("mouseover", ()=>{
+                        m.arc.c_svg.setAttribute("fill", "black");
+                    });
+                    m.arc.addEvent("mousedown", () => {
+                        state = "";
+                        var x1, x2, x3, y1, y2, y3, i, temp;
+                        for(i = 0; i < this.methods.length; i++){
+                            if( this.methods[i].selected == false)
+                                break;
+                        }
+                        temp = this.methods[i].name;
+                        this.methods[i].name = m.name;
+                        this.methods[i].arc.children[0].child.text = m.name;
+                        this.methods[index].arc.children[0].child.text = temp;
+                        m.name = temp; 
+                        x1 =  Math.cos( ( (60 - i * 30 ) * Math.PI) / 180) * this.r + this.x;
+                        y1 =  Math.sin( ( (60 - i * 30 ) *  Math.PI) / 180) * this.r + this.y; 
+                        y2 =  this.y + 100 - i * 50;
+                        x2 =  this.x + this.r + 5;
+                        x3 = x2 + 50;
+                        y3 = y2;
+                        this.methods.map( (m) =>{
+                            if(m.selected == false)
+                                m.arc.removeFromDOM();
+                        });
+                        this.methods[i].selected = true;
+                        var polyline = aya.Polyline([x1, y1, x2, y2, x3, y3]);
+                        var box = aya.Rectangle(polyline.dest_x, polyline.dest_y - 15, 125, 30);
+                        polyline.draw();
+                        box.draw();
+                        polyline.c_svg.setAttribute("fill", "none");
+                    });
+                }
+            });
+        });
     }
 
 

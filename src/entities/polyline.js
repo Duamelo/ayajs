@@ -68,14 +68,15 @@ class Polyline extends Form {
         delete this.events[event];
     }
 
-    addChild(child, translate, rotate){
+    addChild(child, translate = null, rotate = null, drawing = true){
         child.vertex = [];
         child.c_points = [];
-        child.setOffsetX(this.x);
-        child.setOffsetY(this.y);
-        translate(this, child);
-        rotate(this, child);
-        child.draw();
+        if(translate != null)
+            translate(this, child);
+        if(rotate != null)
+            rotate(this, child);
+        if(drawing == true)
+            child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -124,6 +125,9 @@ class Polyline extends Form {
 
     removeFromDOM(){
         this.svg.removeChild(this.c_svg);
+        this.children.map(({child}) =>{
+            child.removeFromDOM();
+        });
     }
 
 
@@ -146,8 +150,10 @@ class Polyline extends Form {
         this.c_svg.setAttribute("point", path);
 
         this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+            if(translate != null)
+                translate(this, child);
+            if(rotate != null)
+                rotate(this, child);
             child.redraw();
         });
     }

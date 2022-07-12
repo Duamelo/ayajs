@@ -16,16 +16,30 @@
       var aya = new aya.Application();
       console.log(aya);
 
+      aya.box.form.children.map(({child}) =>{
+         child.removeFromDOM();
+      });
    //  var arrow = aya.Line(200,100,400-50 - 10,100);
    //  arrow.draw();
    //  arrow.children.map( ({child, translate, rotate}, index) => {
    //      child.c_svg.setAttribute("fill", "black");
    //  });
 
-   var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
-   var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+   // var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
+   // var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-   //  var res = aya.Component("ressource", {x:400, y: 100, r: 50, nb_method: 4});
+    var res = aya.Ressource(400, 150, 50, 40, aya.svg, aya.config);
+
+   // var poly = aya.Polyline([100,100, 200,100, 300, 300, 100, 100]);
+   // poly.draw();
+
+   // poly.addEvent("mouseover", ()=>{
+   //    poly.c_svg.setAttribute("fill", "indigo");
+   // });
+
+   // poly.addEvent("mouseleave", ()=>{
+   //    poly.c_svg.setAttribute("fill", "white");
+   // });
 
     document.body.append(aya.svg);
    </script>

@@ -170,7 +170,7 @@ class Application{
     }
 
     Line(x=0, y=0, dest_x = x, dest_y = y, type_line = "droit"){
-        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y, type_line);
+        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y, type_line    );
     }
 
     Polyline( points = []){
@@ -189,8 +189,8 @@ class Application{
         return new Group(_uuid.generate(),this.svg, this.events, this.config);
     }
 
-    Ressource(x = 0, y = 0, r = 5, nb_method = 4){
-        return new Ressource(_uuid.generate(), x, y, r, nb_method, this.svg, this.events, this.config);
+    Ressource(x = 0, y = 0, r = 5, angle = 40){
+        return new Ressource(x, y, r, angle, this.svg, this.config);
     }
 }
 export {Application};

@@ -376,12 +376,15 @@
 	        delete this.events[event];
 	    }
 
-	    addChild(child, translate, rotate){
-	        child.setOffsetX(this.x);
-	        child.setOffsetY(this.y);
-	        translate(this, child);
-	        rotate(this, child);
-	        child.draw();
+	    addChild(child, translate = null, rotate = null, drawing = false){
+	        // child.setOffsetX(this.x);
+	        // child.setOffsetY(this.y);
+	        if(translate != null)
+	            translate(this, child);
+	        if(rotate != null)
+	            rotate(this, child);
+	        if(drawing == true)
+	            child.draw();
 	        this.children.push({child, translate, rotate});
 	    }
 	  
@@ -488,10 +491,16 @@
 	        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
 	    }
 
+	    removeBoxFromDOM(){
+	        this.svg.removeChild(this.box);
+	    }
 
 	    removeFromDOM(){
 	        this.svg.removeChild(this.box);
 	        this.svg.removeChild(this.c_svg);
+	        this.children.map(({child}) => {
+	            child.removeFromDOM();
+	        });
 	    }
 	    
 	    shift(dx, dy){
@@ -814,12 +823,15 @@
 	   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
 	   * account its relative position and the center of rotation.
 	   */
-	  addChild(child, translate, rotate){
-	    child.setOffsetX(this.x);
-	    child.setOffsetY(this.y);
-	    translate(this, child);
-	    rotate(this, child);
-	    child.draw();
+	  addChild(child, translate = null, rotate = null, draw = true){
+	    // child.setOffsetX(this.x);
+	    // child.setOffsetY(this.y);
+	    if(translate != null)
+	      translate(this, child);
+	    if(rotate != null)
+	      rotate(this, child);
+	    if(draw == true)
+	      child.draw();
 	    this.children.push({child, translate, rotate});
 	  }
 
@@ -1384,18 +1396,18 @@
 	      },
 	      mouseLeaveCb: function mouseleavecb(e){
 
-	          var components = _Register.findAllComponents();
+	          // var components = _Register.findAllComponents();
 
-	          components.map( async (component) => {
-	            setTimeout(()=> {
-	              component.form.c_points.map( (point) => {
-	                point.c_svg.setAttribute("class", "hidden_point");
-	              });
-	              component.form.vertex.map( (vertex) => {
-	                vertex.c_svg.setAttribute("class", "hidden_point");
-	              });
-	            }, 5000);
-	          });
+	          // components.map( async (component) => {
+	          //   setTimeout(()=> {
+	          //     component.form.c_points.map( (point) => {
+	          //       point.c_svg.setAttribute("class", "hidden_point");
+	          //     });
+	          //     component.form.vertex.map( (vertex) => {
+	          //       vertex.c_svg.setAttribute("class", "hidden_point");
+	          //     });
+	          //   }, 5000);
+	          // })
 	      }
 	    }
 	  }
@@ -2516,14 +2528,15 @@
 	        delete this.events[event];
 	    }
 
-	    addChild(child, translate, rotate){
+	    addChild(child, translate = null, rotate = null, drawing = true){
 	        child.vertex = [];
 	        child.c_points = [];
-	        child.setOffsetX(this.x);
-	        child.setOffsetY(this.y);
-	        translate(this, child);
-	        rotate(this, child);
-	        child.draw();
+	        if(translate != null)
+	            translate(this, child);
+	        if(rotate != null)
+	            rotate(this, child);
+	        if(drawing == true)
+	            child.draw();
 	        this.children.push({child, translate, rotate});
 	    }
 	    
@@ -2572,6 +2585,9 @@
 
 	    removeFromDOM(){
 	        this.svg.removeChild(this.c_svg);
+	        this.children.map(({child}) =>{
+	            child.removeFromDOM();
+	        });
 	    }
 
 
@@ -2590,8 +2606,10 @@
 	        this.c_svg.setAttribute("point", path);
 
 	        this.children.map ( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
+	            if(translate != null)
+	                translate(this, child);
+	            if(rotate != null)
+	                rotate(this, child);
 	            child.redraw();
 	        });
 	    }
@@ -2958,343 +2976,6 @@
 	    }
 	}
 
-	/**
-	 * @class Ressource
-	 */
-	class Ressource extends Form {
-	    /**
-	     * 
-	     * @param {String} uuid 
-	     * @param {Number} x 
-	     * @param {Number} y 
-	     * @param {Number} r 
-	     * @param {Number} nb_method 
-	     * @param {DomElement} svg 
-	     * @param {Object} event 
-	     * @param {Object} config 
-	     */
-	    constructor(uuid, x = 0, y = 0, r = 5, nb_method = 4, svg, event, config){
-
-	        super();
-
-	        this.uuid = uuid;
-
-	        this.x = x;
-	        this.y = y;
-	        this.r = r;
-	        this.methods = [
-	            {name: "get", selected: false},
-	            {name: "post", selected: false},
-	            {name: "put", selected: false},
-	            {name: "delete", selected: false}
-	        ];
-
-	        this.events = {};
-
-	        this.nativeEvent = event;
-
-	        this.config = config;
-
-	        this.box = "";
-
-	        this.c_svg = "";
-
-	        this.svg = svg;
-
-	        this.type = "ressource";
-
-	        this.scale = 1;
-
-	        this.offsetX = 0;
-	        this.offsetY = 0;
-
-	        this.angle = 30;
-
-	        this.children = [];
-
-	        this.c_points = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
-	        ];
-
-	        this.vertex = [
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config)
-	        ];
-	        this.addMethod();
-	    }
-
-	    addMethod(){
-	        var x = this.x ,  y = this.y + this.r + 20;
-	        for(var m of this.methods){
-	                if(m.selected == false){
-	                    var arc = FactoryForm.createForm(_uuid.generate(), "arc", {x0: this.x, y0: this.y, x: x, y: y, angle: this.angle, ratio : 0}, this.svg, this.nativeEvent, this.config);
-	                    var text = FactoryForm.createForm(_uuid.generate(), "text", {x: arc.x + 10, y: arc.y, text: m.name}, this.svg, this.nativeEvent, this.config);
-	                    arc.addChild(text, (p,c) =>{
-	                        c.setOffsetX(0);
-	                        c.setOffsetY(0);
-	                        c.setText(m.name);
-	                    }, (p,c) =>{
-	                        c.setRotateCenter(c.x, c.y);
-	                        c.setRotateAngle(30);
-	                    }, false);
-	                    m.arc = arc;
-	                    x = arc.dest_x;
-	                    y = arc.dest_y;
-	                }
-	        }
-	    }
-
-	    addEvent(event, callback){
-	        this.c_svg.addEventListener(event, callback);
-	        this.events[event] = callback;
-	    }
-
-	    deleteEvent(event){
-	        var callback = this.events[event];
-	        this.c_svg.removeEventListener(event, callback);
-	        delete this.events[event];
-	    }
-
-	    addChild(child, translate, rotate){
-	        child.setOffsetX(this.x);
-	        child.setOffsetY(this.y);
-	        translate(this, child);
-	        rotate(this, child);
-	        child.draw();
-	        this.children.push({child, translate, rotate});
-	    }
-
-	    drawVertex(){
-	        if(this.vertex.length == 0)
-	            return;
-	        this.vertex[0].x = this.x + this.offsetX - this.r * this.scale;
-	        this.vertex[0].y = this.y + this.offsetY - this.r * this.scale;
-
-	        this.vertex[1].x = this.x + this.offsetX + this.r * this.scale;
-	        this.vertex[1].y = this.y + this.offsetY - this.r * this.scale;
-
-	        this.vertex[2].x = this.x + this.offsetX + this.r * this.scale;
-	        this.vertex[2].y = this.y + this.offsetY + this.r * this.scale;
-
-	        this.vertex[3].x = this.x + this.offsetX - this.r * this.scale;
-	        this.vertex[3].y = this.y + this.offsetY + this.r * this.scale;
-	    }
-
-	    drawConnector() {
-	        if(this.c_points.length == 0)
-	            return;
-	        this.c_points[0].x = this.x + this.offsetX;
-	        this.c_points[0].y = this.y + this.offsetY - this.r * this.scale;
-
-	        this.c_points[1].x = this.x + this.offsetX + this.r * this.scale;
-	        this.c_points[1].y = this.y + this.offsetY;
-
-	        this.c_points[2].x = this.x + this.offsetX;
-	        this.c_points[2].y = this.y + this.offsetY + this.r * this.scale;
-
-	        this.c_points[3].x = this.x + this.offsetX - this.r * this.scale;
-	        this.c_points[3].y = this.y + this.offsetY;
-	    }
-
-	    drawBox(){
-	        if(this.vertex.length > 0 && this.c_points.length >0){
-	            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-            L ${this.c_points[0].x} ${this.c_points[0].y}
-            L ${this.vertex[1].x}   ${this.vertex[1].y}
-            L ${this.c_points[1].x} ${this.c_points[1].y}
-            L ${this.vertex[2].x}   ${this.vertex[2].y}
-            L ${this.c_points[2].x} ${this.c_points[2].y}
-            L ${this.vertex[3].x}   ${this.vertex[3].y}
-            L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
-
-	            this.box.setAttribute("d", p);
-	        }
-	    }
-
-	    draw(){
-	        var state = "";
-	        var ns="http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(ns,"circle");
-
-	        this.c_svg.setAttribute("id", this.uuid);
-
-	        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
-
-	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
-
-	        this.c_svg.setAttribute("r", (this.r * this.scale));
-
-	        this.c_svg.setAttribute("fill", this.config.form.fill);
-
-	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-
-	        this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
-
-	        this.svg.appendChild(this.c_svg);
-
-	        var child = FactoryForm.createForm(_uuid.generate(), "text", {x: 0, y: 0, text: "empty"}, this.svg, this.nativeEvent, this.config);
-	        this.addChild(child, (p,c) => {
-	            c.setOffsetX(p.x - p.r/2);
-	            c.setOffsetY(p.y + 5);
-	        }, (p,c) => {});
-
-
-	        this.addEvent("mouseover", ()=>{ 
-	            if(state == "mouseover")
-	                return;
-	            state = "mouseover";
-	            this.methods.map( (m, index) => {
-	                if(m.selected == false){
-	                    m.arc.draw();
-	                    m.arc.addEvent("mouseover", ()=>{
-	                        m.arc.c_svg.setAttribute("fill", "black");
-	                    });
-	                    m.arc.addEvent("mousedown", () => {
-	                        state = "";
-	                        var x1, x2, x3, y1, y2, y3, i, temp;
-	                        for(i = 0; i < this.methods.length; i++){
-	                            if( this.methods[i].selected == false)
-	                                break;
-	                        }
-	                        temp = this.methods[i].name;
-	                        this.methods[i].name = m.name;
-	                        this.methods[i].arc.children[0].child.text = m.name;
-	                        this.methods[index].arc.children[0].child.text = temp;
-	                        m.name = temp; 
-	                        x1 =  Math.cos( ( (60 - i * 30 ) * Math.PI) / 180) * this.r + this.x;
-	                        y1 =  Math.sin( ( (60 - i * 30 ) *  Math.PI) / 180) * this.r + this.y; 
-	                        y2 =  this.y + 100 - i * 50;
-	                        x2 =  this.x + this.r + 5;
-	                        x3 = x2 + 50;
-	                        y3 = y2;
-	                        this.methods.map( (m) =>{
-	                            if(m.selected == false)
-	                                m.arc.removeFromDOM();
-	                        });
-	                        this.methods[i].selected = true;
-	                        var polyline = aya.Polyline([x1, y1, x2, y2, x3, y3]);
-	                        var box = aya.Rectangle(polyline.dest_x, polyline.dest_y - 15, 125, 30);
-	                        polyline.draw();
-	                        box.draw();
-	                        polyline.c_svg.setAttribute("fill", "none");
-	                    });
-	                }
-	            });
-	        });
-	    }
-
-
-	    removeFromDOM(){
-	        this.svg.removeChild(this.c_svg);
-	    }
-
-	    removeBoxFromDOM(){
-	        this.svg.removeChild(this.box);
-	    }
-
-	    shift(dx, dy){
-	        this.x += dx;
-	        this.y += dy;
-	    }
-
-	    redraw(){
-	        this.c_svg.setAttribute("cx", (this.x + this.offsetX));
-	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
-	        this.c_svg.setAttribute("r", (this.r * this.scale));
-
-	        this.drawConnector();
-	        this.drawVertex();
-	        this.drawBox();
-
-	        this.vertex.map((vert) => {
-	            vert.redraw();
-	        });
-
-	        this.c_points.map( (point) => {
-	            point.redraw();
-	        });
-	    }
-
-	    resize(pos, dx, dy){
-	        if(pos == 0)
-	            this.r += -dx;
-	        else if(pos == 1)
-	            this.r += dx;
-	        else if(pos == 2)
-	            this.r += dx;
-	        else
-	            this.r -= dx;
-	    }
-
-	    setRotateAngle(angle){
-	        this.angle = angle;
-	    }
-
-	    setOffsetX(x){
-	       this.offsetX = x;
-	    }
-
-	    setOffsetY(y){
-	        this.offsetY = y;
-	    }
-
-	    setScale(sc){
-	        this.scale = sc;
-	    }
-	    getOffsetX(){
-	        return this.offsetX;
-	    }
-
-	    getOffsetY(){
-	        return this.offsetY;
-	    }
-
-	    getScale(){
-	        return this.scale;
-	    }
-
-	    optimalPath(line){
-	        var _x, _y;
-	        var a = (line.dest_y - line.y)/(line.dest_x - line.x);
-	        var b = line.y - a * line.x;
-
-	        for (var i = 0; i <= 3; i++){
-	            if(i % 2 == 0){
-	                _y = this.vertex[i].y;
-	                _x = (_y - b)/a;
-	            }
-	            else {
-	                _x = this.vertex[i].x;
-	                _y = a * _x + b;
-	            }
-
-	            if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
-	              continue;
-
-	              if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
-	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-	               ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
-	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-	               ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )||
-	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
-	               ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-	                  (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) ||
-	                  ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
-	                return this.c_points[i];
-	               }
-	          }
-	        return null;
-	      }
-	}
-
 	class Group{
 	    /**
 	     * 
@@ -3587,7 +3268,6 @@
 
 	class FactoryForm
 	{
-	   
 	    /**
 	     * 
 	     * @param {*} uuid 
@@ -3614,8 +3294,6 @@
 	            return new Polyline(uuid, props.points, svg, events, config);
 	        else if(type == "arc")
 	            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, props.ratio, svg, events, config);
-	        else if(type == "ressource")
-	            return new Ressource(uuid, props.x, props.y, props.r,props.nb_method, svg, events, config);
 	        else if(type == "group")
 	            return new Group(uuid, svg, events, config);
 	        else if(type == "text")
@@ -3641,6 +3319,315 @@
 	        _Register.add(this);
 	        this.form.draw();
 	    }
+	}
+
+	var state = "";
+	class EventCircle{
+
+	    static mouseovercb(self){
+	        if(state == "mouseover")
+	            return;
+	        state = "mouseover";
+	        self.active_component = self;
+	        self.circle.form.children.map(({child}, index) =>{
+	            if(index >= 1){
+	                child.draw();
+	                child.addEvent("mouseover", ()=>{
+	                    EventArc.mouseovercb(child);
+	                });
+	                child.addEvent("mouseleave", ()=>{
+	                    EventArc.mouseleavecb(child);
+	                });
+	                child.addEvent("mousedown", ()=>{
+	                    EventArc.mousedowncb({self: self, arc: child});
+	                });
+	            }
+	        });
+	        console.log("over on circle");
+	        self.svg.addEventListener("mouseover", ()=>{
+	            console.log(state);
+	            if(state == "mouseover" )
+	                return;
+	            console.log("over on svg");
+
+	            if(self.active_component)
+	                self.active_component.removeArtefact();
+	            console.log(self.active_component);
+	            self.active_component = null;
+	        });
+	        console.log(self.active_component);
+	    }
+	    static mouseleavecb(self){
+	        state = "";
+	        console.log(self.active_component);
+	    }
+
+	    // static call(self){
+	    //     var state = "", state2 = "";
+
+	    //     self.circle.form.addEvent("mouseover", ()=>{ 
+	    //         if(state == "mouseover")
+	    //             return;
+	    //         state = "mouseover";
+	    //         self.methods.map( (m, index) => {
+	    //             if(m.selected == false){
+	    //                 m.arc.draw();
+	    //                 // m.arc.children.map(({child}) =>{
+	    //                 //     child.draw();
+	    //                 // });
+	    //                 m.arc.addEvent("mouseover", ()=>{
+	    //                     m.arc.c_svg.setAttribute("fill", "black");
+	    //                 });
+	    //                 m.arc.addEvent("mousedown", () => {
+	    //                     state = "";
+	    //                     var x1, x2, x3, y1, y2, y3, i, temp;
+	    //                     for(i = 0; i < self.methods.length; i++){
+	    //                         if( self.methods[i].selected == false)
+	    //                             break;
+	    //                     }
+	    //                     temp = self.methods[i].name;
+	    //                     self.methods[i].name = m.name;
+	    //                     self.methods[i].arc.children[0].child.text = m.name;
+	    //                     self.methods[index].arc.children[0].child.text = temp;
+	    //                     m.name = temp; 
+
+	    //                     x1 =  Math.cos( ( (60 - i * 30 ) * Math.PI) / 180) * self.r + self.x;
+	    //                     y1 =  Math.sin( ( (60 - i * 30 ) *  Math.PI) / 180) * self.r + self.y; 
+	    //                     y2 =  self.y + 100 - i * 50;
+	    //                     x2 =  self.x + self.r + 5;
+	    //                     x3 = x2 + 50;
+	    //                     y3 = y2;
+	                        
+	    //                     self.methods.map( (m) =>{
+	    //                         if(m.selected == false)
+	    //                             m.arc.removeFromDOM();
+	    //                     });
+	    //                     self.methods[i].selected = true;
+
+	    //                     var polyline = aya.Polyline([x1, y1, x2, y2, x3, y3]);
+	    //                     var box = aya.Rectangle(polyline.dest_x, polyline.dest_y - 15, 125, 30);
+
+	    //                     var a1x = box.x + (3 * box.width) / 4;
+	    //                     var a1y = box.y;
+	    //                     var a2x = box.x + box.width + 50;
+	    //                     var a2y = box.y;
+	    //                     var a3x = a2x;
+	    //                     var a3y = a2y - 50;
+	    //                     var a4x = a3x + 100;
+	    //                     var a4y = a3y;
+	    //                     var a5x = a4x;
+	    //                     var a5y = a4y + 130;
+	    //                     var a6x = a2x;
+	    //                     var a6y = a5y;
+	    //                     var a7x = a6x;
+	    //                     var a7y = a6y - 50;
+	    //                     var a8x = a1x;
+	    //                     var a8y = a7y;
+	                
+	    //                     var pattern = aya.Polyline([ a1x, a1y, a2x, a2y, a3x, a3y, a4x, a4y, a5x, a5y, a6x, a6y, a7x, a7y, a8x, a8y]);
+	                
+	    //                     self.design_pattern.map( (pat) =>{
+	    //                         pattern.addChild(pat, null, null, false);
+	    //                     });
+	    //                     self.design_pattern.map ( (pattern, index) =>{
+	    //                         box.addChild(pattern, (p,c) => {
+	    //                             if(index == 0){
+	    //                                 c.setOffsetX(p.x + p.width + 75);
+	    //                                 c.setOffsetY(p.y - p.height - 5);
+	    //                             }
+	    //                             if(index == 1){
+	    //                                 c.setOffsetX(p.x + p.width + 50);
+	    //                                 c.setOffsetY(p.y - p.height / 2 + 5);
+	    //                             }
+	    //                             if(index == 2){
+	    //                                 c.setOffsetX(p.x + p.width + 25);
+	    //                                 c.setOffsetY(p.y + p.height / 2);
+	    //                             }
+	    //                             if(index == 3){
+	    //                                 c.setOffsetX(p.x + p.width + 50);
+	    //                                 c.setOffsetY(p.y + p.height + 10);
+	    //                             }
+	    //                             if(index == 4){
+	    //                                 c.setOffsetX(p.x + p.width + 75);
+	    //                                 c.setOffsetY(p.y + p.height + 35);
+	    //                             }
+	    //                         }, (p,c) => {}, false);
+	    //                     })
+
+	    //                     polyline.draw();
+	    //                     box.draw();
+	    //                     self.box_store.push({box: box, pattern: pattern});
+	    //                     polyline.c_svg.setAttribute("fill", "none");
+	                        
+	    //                     self.svg.addEventListener("mouseover", ()=> {
+	    //                         state2 = "";
+	    //                         console.log("svg enter");
+	    //                     });
+	    //                     // self.box_store.map((m) =>{
+	    //                     //     m.box.addEvent("mouseover", ()=>{
+	    //                     //         if(state2 == "mouseover")
+	    //                     //             return;
+	    //                     //         state2 = "mouseover";
+	    //                     //         m.pattern.draw();
+	    //                     //         m.pattern.c_svg.setAttribute("fill", "blue");
+	    //                     //         m.pattern.children.map(({child}) =>{
+	    //                     //             child.draw();
+	    //                     //         });
+	    //                     //     });
+	    //                     //     m.box.addEvent("mouseleave", () =>{
+	    //                     //         state2 = "mouseover"
+	    //                     //     });
+	    //                     //     m.pattern.addEvent("mouseover", () =>{
+	    //                     //         console.log("pattern");
+	    //                     //         m.pattern.c_svg.setAttribute("fill", "white");
+	    //                     //     });
+	    //                     // });
+	    //                 });
+	    //             }
+	    //         });
+	    //     });
+	    // }
+	}
+	class EventArc{
+	    static mouseovercb(arc){
+	        state = "mouseover";
+	        arc.c_svg.setAttribute("fill", "black");
+	    }
+
+	    static mouseleavecb(arc){
+	        arc.c_svg.setAttribute("fill", "white");
+	        state = "";
+	    }
+
+	    static mousedowncb(self){
+	        var min = -1;
+	        var x1, x2, x3, y1, y2, y3;
+	        // self.arc.removeFromDOM();
+	        self.self.methods.map((m, index) =>{
+	                if( m.selected == false)
+	                    min = index;
+	                if(self.arc == m.arc)
+	                    ;
+	        });
+	            // temp = self.self.methods[min].name;
+	            // self.self.methods[min].name = m.name;
+	            // self.self.methods[min].arc.children[0].child.text = m.name;
+	            // self.self.methods[cur].arc.children[0].child.text = temp;
+	            // m.name = temp; 
+	    
+	            x1 =  Math.cos( ( (60 - min * 30 ) * Math.PI) / 180) * self.self.r + self.x;
+	            y1 =  Math.sin( ( (60 - min * 30 ) *  Math.PI) / 180) * self.self.r + self.self.y; 
+	            y2 =  self.self.y + 100 - min * 50;
+	            x2 =  self.self.x + self.self.r + 5;
+	            x3 = x2 + 50;
+	            y3 = y2;
+	            
+	            self.self.methods[min].selected = true;
+	    
+	            var polyline = aya.Polyline([x1, y1, x2, y2, x3, y3]);
+	            var box = aya.Rectangle(polyline.dest_x, polyline.dest_y - 15, 125, 30);
+	    
+	            polyline.draw();
+	            box.draw();
+	            polyline.c_svg.setAttribute("fill", "none");
+	    
+	        self.self.methods.map( (m) =>{
+	            if(m.selected == false)
+	                m.arc.removeFromDOM();
+	        });
+	    }
+	}
+
+	class Ressource{
+	    constructor(x = 0, y = 0, r = 5, angle = 40, svg, config){
+	        this.x = x;
+	        this.y = y;
+	        this.r = r;
+	        this.circle = "";
+
+	        this.arc_ange = angle;
+
+	        this.active_component = "";
+
+	        this.methods = [
+	            {name: "get", selected: false},
+	            {name: "post", selected: false},
+	            {name: "put", selected: false},
+	            {name: "delete", selected: false}
+	        ];
+
+	        this.design_pattern = [
+	            "adapter",
+	            "composite",
+	            "chain of responsability",
+	            "decorator",
+	            "strategy"
+	        ];
+
+	        this.events = {};
+
+	        this.config = config;
+
+	        this.c_svg = "";
+
+	        this.svg = svg;
+
+	        this.type = "ressource";
+
+	        this.draw();
+	    }
+
+	    draw(){
+	        var x = this.x ,  y = this.y + this.r + 20;
+	        var text = aya.Text(0,0,"empty");
+	        this.circle = aya.Component("circle", {x: this.x, y: this.y, r: this.r});
+	        this.circle.form.removeBoxFromDOM();
+	        this.circle.form.deleteEvent("mousedown");
+	        this.circle.form.deleteEvent("mouseover");
+	        this.circle.form.deleteEvent("mouseleave");
+	        this.circle.form.addChild(text, (p,c) => {
+	            c.setOffsetX(p.x - p.r/2);
+	            c.setOffsetY(p.y + 5);
+	        }, (p,c) => {}, true);
+	        for(var m of this.methods){
+	                if(m.selected == false){
+	                    var arc = aya.Arc(this.x, this.y, x, y, this.arc_ange, 0);
+	                    this.circle.form.addChild(arc, (p,c)=>{}, (p,c) =>{}, false);
+	                    // var text = aya.Text(arc.x + 10, arc.y, m.name);
+	                    // arc.addChild(text, (p,c) =>{
+	                    //     c.setOffsetX(0);
+	                    //     c.setOffsetY(0);
+	                    //     c.setText(m.name);
+	                    // }, (p,c) =>{
+	                    //     c.setRotateCenter(c.x, c.y);
+	                    //     c.setRotateAngle(30);
+	                    // }, false);
+	                    m.arc = arc;
+	                    x = arc.dest_x;
+	                    y = arc.dest_y;
+	                }
+	        }
+
+	        this.circle.form.addEvent("mouseover", ()=>{
+	            EventCircle.mouseovercb(this);
+
+	        });
+	        this.circle.form.addEvent("mouseleave", ()=>{
+	            EventCircle.mouseleavecb(this);
+	        });
+	    }
+
+	    removeArtefact(){
+	        console.log("artefact");
+	        this.circle.form.children.map(({child}) =>{
+	            if(child.type == 'arc')
+	                child.removeFromDOM();
+	        });
+	        this.svg.removeEventListener("mouseover", ()=>{});
+	    }
+
+
+	    
 	}
 
 	class Application{
@@ -3798,7 +3785,7 @@
 	    }
 
 	    Line(x=0, y=0, dest_x = x, dest_y = y, type_line = "droit"){
-	        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y, type_line);
+	        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y, type_line    );
 	    }
 
 	    Polyline( points = []){
@@ -3817,8 +3804,8 @@
 	        return new Group(_uuid.generate(),this.svg, this.events, this.config);
 	    }
 
-	    Ressource(x = 0, y = 0, r = 5, nb_method = 4){
-	        return new Ressource(_uuid.generate(), x, y, r, nb_method, this.svg, this.events, this.config);
+	    Ressource(x = 0, y = 0, r = 5, angle = 40){
+	        return new Ressource(x, y, r, angle, this.svg, this.config);
 	    }
 	}
 

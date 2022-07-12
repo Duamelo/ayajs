@@ -189,18 +189,18 @@ class Events {
       },
       mouseLeaveCb: function mouseleavecb(e){
 
-          var components = _Register.findAllComponents();
+          // var components = _Register.findAllComponents();
 
-          components.map( async (component) => {
-            setTimeout(()=> {
-              component.form.c_points.map( (point) => {
-                point.c_svg.setAttribute("class", "hidden_point");
-              });
-              component.form.vertex.map( (vertex) => {
-                vertex.c_svg.setAttribute("class", "hidden_point");
-              });
-            }, 5000);
-          })
+          // components.map( async (component) => {
+          //   setTimeout(()=> {
+          //     component.form.c_points.map( (point) => {
+          //       point.c_svg.setAttribute("class", "hidden_point");
+          //     });
+          //     component.form.vertex.map( (vertex) => {
+          //       vertex.c_svg.setAttribute("class", "hidden_point");
+          //     });
+          //   }, 5000);
+          // })
       }
     }
   }

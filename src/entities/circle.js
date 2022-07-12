@@ -74,12 +74,15 @@ class Circle extends Form {
         delete this.events[event];
     }
 
-    addChild(child, translate, rotate){
-        child.setOffsetX(this.x);
-        child.setOffsetY(this.y);
-        translate(this, child);
-        rotate(this, child);
-        child.draw();
+    addChild(child, translate = null, rotate = null, drawing = false){
+        // child.setOffsetX(this.x);
+        // child.setOffsetY(this.y);
+        if(translate != null)
+            translate(this, child);
+        if(rotate != null)
+            rotate(this, child);
+        if(drawing == true)
+            child.draw();
         this.children.push({child, translate, rotate});
     }
   
@@ -186,10 +189,16 @@ class Circle extends Form {
         this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
     }
 
+    removeBoxFromDOM(){
+        this.svg.removeChild(this.box);
+    }
 
     removeFromDOM(){
         this.svg.removeChild(this.box);
         this.svg.removeChild(this.c_svg);
+        this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
     }
     
     shift(dx, dy){

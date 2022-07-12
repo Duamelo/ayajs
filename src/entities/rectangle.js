@@ -212,12 +212,15 @@ class Rectangle extends Form {
    * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
    * account its relative position and the center of rotation.
    */
-  addChild(child, translate, rotate){
-    child.setOffsetX(this.x);
-    child.setOffsetY(this.y);
-    translate(this, child);
-    rotate(this, child);
-    child.draw();
+  addChild(child, translate = null, rotate = null, draw = true){
+    // child.setOffsetX(this.x);
+    // child.setOffsetY(this.y);
+    if(translate != null)
+      translate(this, child);
+    if(rotate != null)
+      rotate(this, child);
+    if(draw == true)
+      child.draw();
     this.children.push({child, translate, rotate});
   }
 

@@ -63,7 +63,7 @@ class Events {
             state = "drawing_link";
             id = _uuid.generate();
             if (cp != source) {
-              line = new Line( id_svg, svg, null, config, id, cp.x, cp.y, "breaking");
+              line = new Line( id_svg, svg, null, config, id, cp.x, cp.y);
               line.draw();
             }
           }

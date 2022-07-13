@@ -15,15 +15,18 @@
    <script>
       var aya = new aya.Application();
       console.log(aya);
+      var active_component = "";
+      var state = "";
+
 
       aya.box.form.children.map(({child}) =>{
          child.removeFromDOM();
       });
-   //  var arrow = aya.Line(200,100,400-50 - 10,100);
-   //  arrow.draw();
-   //  arrow.children.map( ({child, translate, rotate}, index) => {
-   //      child.c_svg.setAttribute("fill", "black");
-   //  });
+    var arrow = aya.Line(200,100,400-50 - 10,100);
+    arrow.draw();
+    arrow.children.map( ({child, translate, rotate}, index) => {
+        child.c_svg.setAttribute("fill", "black");
+    });
 
    // var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
    // var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});

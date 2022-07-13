@@ -169,8 +169,8 @@ class Application{
         return new Text(_uuid.generate(), x, y, text, this.svg, this.events, this.config);
     }
 
-    Line(x=0, y=0, dest_x = x, dest_y = y, type_line = "droit"){
-        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y, type_line    );
+    Line(x=0, y=0, dest_x = x, dest_y = y){
+        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
     }
 
     Polyline( points = []){

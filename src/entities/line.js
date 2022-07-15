@@ -19,7 +19,7 @@ class Line extends Form {
      * @param {number} dest_x 
      * @param {number} dest_y 
      */
-    constructor(id_svg, svg, event, config, uuid, x=0, y=0, dest_x = x, dest_y = y, type_line = "droit"){
+    constructor(id_svg, svg, event, config, uuid, x=0, y=0, dest_x = x, dest_y = y){
 
         super();
 
@@ -31,19 +31,12 @@ class Line extends Form {
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
+        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+
         this.c1 = {x : this.x, y : this.y};
         this.c2 = {x : this.x, y : this.y};
         this.c3 = {x : this.x, y : this.y};
         this.c4 = {x : this.x, y : this.y};
-
-        this.type_line = type_line;
-
-       if( this.type_line == "droit") 
-            this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
-       else{
-            this.start_pente = (this.c1.y - this.y) / (this.c1.x - this.x);
-            this.ends_pente = (this.c4.y - this.dest_y) / (this.c4.x - this.dest_x);
-        }
 
         this.events = {};
 
@@ -78,42 +71,42 @@ class Line extends Form {
         ];
 
 
-        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
-            if(this.config.line.ends.start.type == 'triangle'){
-                this.addChild(child, (p, c) => {
-                    c.x2 = this.x;
-                    c.y2 = this.y;
+        // if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
+        //     var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
+        //     if(this.config.line.ends.start.type == 'triangle'){
+        //         this.addChild(child, (p, c) => {
+        //             c.x2 = this.x;
+        //             c.y2 = this.y;
 
-                    c.x1 = this.x - 8;
-                    c.y1 = this.y - 3;
+        //             c.x1 = this.x - 8;
+        //             c.y1 = this.y - 3;
 
-                    c.x3 = this.x - 8;
-                    c.y3 = this.y + 3;
+        //             c.x3 = this.x - 8;
+        //             c.y3 = this.y + 3;
 
-                },  (p, c) => {
-                    c.setRotateCenter(c.x2, c.y2);
-                    c.setRotateAngle(p.calculateAngle() - Math.PI);
-                } );
-            }
+        //         },  (p, c) => {
+        //             c.setRotateCenter(c.x2, c.y2);
+        //             c.setRotateAngle(p.calculateAngle() - Math.PI);
+        //         } );
+        //     }
                 
-            else if(this.config.line.ends.start.type == 'circle')
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x);
-                    c.setOffsetY(p.y);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-            else
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
-                    c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-        }
+        //     else if(this.config.line.ends.start.type == 'circle')
+        //         this.addChild(child, (p, c) => {
+        //             c.setOffsetX(p.x - 5);
+        //             c.setOffsetY(p.y);
+        //         },  (p, c) => {
+        //             c.setRotateCenter(c.x, c.y);
+        //             c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+        //         } );
+        //     else
+        //         this.addChild(child, (p, c) => {
+        //             c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
+        //             c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
+        //         },  (p, c) => {
+        //             c.setRotateCenter(c.x, c.y);
+        //             c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+        //         } );
+        // }
 
         if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
             var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, { x1 :this.dest_x - 8, y1: this.dest_y - 2, x2 : this.dest_x, y2 : this.dest_y, x3 : this.dest_x - 8, y3 :this.dest_y + 2}, this.svg, this.nativeEvent, this.config);
@@ -192,14 +185,14 @@ class Line extends Form {
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 
-        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", this.p);
@@ -219,7 +212,7 @@ class Line extends Form {
             vertex.draw();
         });
 
-        this.children.map( ({child, translate, rotate}) =>{
+        this.children.map( ({child}) =>{
             if(child.type == 'triangle')
                 child.c_svg.setAttribute("fill", "black");
             child.c_svg.setAttribute("fill", "black");
@@ -238,24 +231,24 @@ class Line extends Form {
         this.x += dx;
         this.y += dy;
 
-
         this.dest_x += dx;
         this.dest_y += dy;
     }
 
     redraw(){
         this.drawVertex();
+
         this.vertex.map( (vertex) => {
             vertex.redraw();
         });
 
-        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
         this.c_svg.setAttribute("d", p);
 
         this.children.map ( ({child, translate, rotate}) => {
@@ -287,8 +280,8 @@ class Line extends Form {
 
     resize(pos, dx, dy){
         if(pos == 0){
-            this.c4.x += dx;
-            this.c4.y += dy;
+            this.x += dx;
+            this.y += dy;
         }
         else{
             this.dest_x += dx;

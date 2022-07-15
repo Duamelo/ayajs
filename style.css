@@ -3,6 +3,18 @@
     height: auto;
 }
 
+.hidden{
+    visibility: hidden;
+}
+
+.show{
+    visibility: visible;
+}
+
+.scroll {
+    cursor: all-scroll;
+}
+
 .point{
     cursor: pointer;
 }
@@ -13,6 +25,10 @@
 
 .show_point{
     visibility: visible;
+}
+
+.defaut{
+    visibility: default;
 }
 
 .zoom {

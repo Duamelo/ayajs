@@ -38,7 +38,7 @@ var config =  {
     line : {
         fill : "black",
         ends : {
-            start : { type : "triangle"},
+            start : { type : "circle"},
             dest : { type : "triangle"}
         }
     },

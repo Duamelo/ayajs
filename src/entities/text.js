@@ -112,6 +112,11 @@ class Text{
         this.tspan.textContent = subString;
         this.title.textContent = this.text;
     }
+
+    shift(dx, dy){
+        this.x += dx;
+        this.y += dy;
+    }
     
     removeFromDOM(){
         // this.title.textContent = "";

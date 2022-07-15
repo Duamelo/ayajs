@@ -13,6 +13,7 @@ import { Point } from "./entities/point";
 import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
+import { Image } from "./entities/Image";
 
 
 class Application{
@@ -189,8 +190,12 @@ class Application{
         return new Group(_uuid.generate(),this.svg, this.events, this.config);
     }
 
-    Ressource(x = 0, y = 0, r = 5, angle = 40){
-        return new Ressource(x, y, r, angle, this.svg, this.config);
+    Ressource(x = 0, y = 0, r = 5, angle = 40, data = {}){
+        return new Ressource(x, y, r, angle, data, this.svg, this.config);
+    }
+
+    Image(x,y, width, height, path = ""){
+        return new Image(x, y, width, height, path, this.svg);
     }
 }
 export {Application};

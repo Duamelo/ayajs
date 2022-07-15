@@ -15,23 +15,147 @@
    <script>
       var aya = new aya.Application();
       console.log(aya);
-      var active_component = "";
+      var active_component = "", active_method = "";
       var state = "";
 
+   // aya.box.form.children.map(({child}) =>{
+   //    child.removeFromDOM();
+   // });
 
-      aya.box.form.children.map(({child}) =>{
-         child.removeFromDOM();
-      });
-    var arrow = aya.Line(200,100,400-50 - 10,100);
-    arrow.draw();
-    arrow.children.map( ({child, translate, rotate}, index) => {
-        child.c_svg.setAttribute("fill", "black");
-    });
+   // var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
+   // var text = aya.Text(0,0,"{text}");
+   // los.form.addChild(text, (p,c)=>{
+   //    c.setOffsetX(p.x - p.width/4);
+   //    c.setOffsetY(p.y + p.height/2);
+   // }, (p,c)=>{}, true);
+
+
+   // var circle = aya.Component("circle", {x: 200, y: 200, r: 80});
+
+   // circle.form.addChild(aya.Text(0,0,'empty'), (p,c)=>{
+   //    c.setOffsetX(p.x);
+   //    c.setOffsetY(p.y);
+   // }, (p,c)=>{}, true);
+
+   //  var arrow = aya.Component("line", {x: 200, y: 100, dest_x: 400-50 - 10, dest_y: 100});
+   //  arrow.form.children.map( ({child, translate, rotate}, index) => {
+   //     if(child.type == 'circle')
+   //         child.c_svg.setAttribute("fill", "white");
+   //  });
 
    // var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
    // var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-    var res = aya.Ressource(400, 150, 50, 40, aya.svg, aya.config);
+    var res = aya.Ressource(500, 500, 50, 40, {
+       "title": "empty",
+	    "path": "/app/setup",
+	   //  "methods": [
+      //    {
+      //       "role": ":public",
+      //       "name": "get",
+      //       "id": "setup()",
+      //       "response": {
+      //       "representations": [
+      //          {"mediaType": "text/html"}
+      //       ]
+      //       }
+      //    },
+      //    {
+      //       "role": ":public",
+      //       "name": "del",
+      //       "id": "fire()",
+      //       "response": {
+      //       "representations": [
+      //          {"mediaType": "text/html"}
+      //       ]
+      //       }
+      //    },
+      //    {
+      //       "role": ":public",
+      //       "name": "post",
+      //       "id": "postfoo()",
+      //       "response": {
+      //       "representations": [
+      //          {"mediaType": "text/html"}
+      //       ]
+      //       }
+      //    },
+      //    {
+      //       "role": ":public",
+      //       "name": "put",
+      //       "id": "putfoo()",
+      //       "response": {
+      //       "representations": [
+      //          {"mediaType": "text/html"}
+      //       ]
+      //       }
+      //    }
+	   //  ],
+      children: [
+         {
+            "path": "toto",
+            "children" : [
+               {
+                "path": "{foo}",  
+                "params": [
+                   {
+                     "name": "foo",
+                   }
+                ],
+                "methods": [
+                  {
+                     "role": ":public",
+                     "name": "get",
+                     "id": "setup",
+                     "response": {
+                        "representations": [
+                           {"mediaType": "text/html"}
+                        ]
+                     }
+                  },
+                ]
+               }
+            ]
+         },
+         {
+            "path": "pipo",
+            "children" : [
+               {
+                "path": "{bar}",  
+                "params": [
+                   {
+                     "name": "bar",
+                   }
+                ],
+                "methods": [
+                  {
+                     "role": ":public",
+                     "name": "post",
+                     "id": "fire",
+                     "response": {
+                        "representations": [
+                           {"mediaType": "text/html"}
+                        ]
+                     }
+                  },
+                  {
+                     "role": ":public",
+                     "name": "put",
+                     "id": "putfoo",
+                     "response": {
+                        "representations": [
+                           {"mediaType": "text/html"}
+                        ]
+                     }
+                  },
+                ]
+               }
+            ]
+         },
+      ]
+	}, aya.svg, aya.config);
+
+
 
    // var poly = aya.Polyline([100,100, 200,100, 300, 300, 100, 100]);
    // poly.draw();

@@ -25,6 +25,8 @@ class Point {
     this.nativeEvent = event;
     this.config = config;
 
+    this.type = "point";
+
 
     this.c_svg = "";
     this.svg = svg;

@@ -168,7 +168,7 @@ class Circle extends Form {
 
         this.drawVertex();
         this.drawConnector();
-        this.drawBox();
+        // this.drawBox();
 
         this.c_points.map((point) => {
             point.draw();
@@ -213,7 +213,7 @@ class Circle extends Form {
 
         this.drawConnector();
         this.drawVertex();
-        this.drawBox();
+        // this.drawBox();
 
         this.vertex.map((vert) => {
             vert.redraw();
@@ -304,7 +304,8 @@ class Circle extends Form {
                ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
                   (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
                   ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
-                return this.c_points[i];
+                // return this.c_points[i];
+                return i;
                }
           }
         return null;

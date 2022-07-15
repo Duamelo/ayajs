@@ -257,6 +257,10 @@ class Rectangle extends Form {
       point.draw();
     });
 
+    this.children.map(({child}) =>{
+      child.draw();
+    });
+
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
     this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
@@ -265,6 +269,9 @@ class Rectangle extends Form {
 
   removeFromDOM(){
     this.svg.removeChild(this.c_svg);
+    this.children.map(({child}) =>{
+      child.removeFromDOM();
+    });
   }
 
   setRotateCenter(centerX, centerY){

@@ -31,8 +31,6 @@ class Line extends Form {
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
-        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
-
         this.c1 = {x : this.x, y : this.y};
         this.c2 = {x : this.x, y : this.y};
         this.c3 = {x : this.x, y : this.y};

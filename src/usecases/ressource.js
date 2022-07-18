@@ -45,14 +45,15 @@ class Ressource{
         if(this.data.children){
             this.data.children.map((m)=>{
                 aya.Ressource(this.x + this.delta, this.y + 50, this.r, this.arc_angle, m);
-                this.delta = 300;
+                this.delta = 200;
 
             });
         }
     }
 
     drawPath(name){
-        var path = aya.Component("circle", {x: this.x + 200, y: this.y + 50, r: 20});
+        var path = aya.Component("circle", {x: this.x + 100, y: this.y + 50, r: 10});
+        path.form.c_svg.setAttribute("fill", "#151e3e");
         path.form.addChild(aya.Text(0,0,name), (p,c)=>{
             c.setOffsetX(p.x - p.r);
             c.setOffsetY(p.y - p.r - 10);
@@ -61,10 +62,11 @@ class Ressource{
 
     drawParam(params){
         params.map((param)=>{
-            var node = aya.Component("lozenge", {x: this.x + 80, y: this.y - 50, width: 60, height: 60});
+            var node = aya.Component("lozenge", {x: this.x + 80, y: this.y - 50, width: 30, height: 30});
+            node.form.c_svg.setAttribute("fill", "#415682");
             var text = aya.Text(0,0,"{"+param.name+"}");
             node.form.addChild(text, (p,c)=>{
-                c.setOffsetX(p.x - p.width/3 - 2);
+                c.setOffsetX(p.x - p.width/3 - 12);
                 c.setOffsetY(p.y + p.height/2 + 5);
             }, (p, c) =>{}, true);
         });
@@ -74,17 +76,20 @@ class Ressource{
         var x = this.x, y = this.y + this.r + 10, idx;
 
         this.circle = aya.Component("circle", {x: this.x, y: this.y, r: this.r});
+        this.circle.form.c_svg.setAttribute("fill", "#909294");
+
         this.circle.form.removeBoxFromDOM();
         // this.circle.form.deleteEvent("mousedown");
         // this.circle.form.deleteEvent("mouseover");
         // this.circle.form.deleteEvent("mouseleave");
 
         if(Object.keys(this.data)){
-            var text = aya.Text(0,0, this.data.title);
+            var text = aya.Text(0,0, "res");
             this.circle.form.addChild(text, (p,c) => {
-                c.setOffsetX(p.x - p.r/2);
+                c.setOffsetX(p.x - p.r/2 + 10);
                 c.setOffsetY(p.y + 5)
             }, (p,c) => {}, true);
+            text.title.textContent = "ressource";
         }
 
 
@@ -121,6 +126,10 @@ class Ressource{
                 console.log(this.methods[idx]);
                 delete this.methods[idx]
                 this.methods[idx] = new Method(this.x, this.y, this.r, idx, m.id, this.svg);
+                this.methods[idx].ancre.addChild(aya.Text(0,0,m.name), (p,c)=>{
+                    c.setOffsetX(p.x + 10);
+                    c.setOffsetY(p.y + 10);
+                }, (p,c)=>{}, true);
                 this.methods[idx].id.removeFromDOM();
                 this.methods[idx].polyline.removeFromDOM();
             }

@@ -123,7 +123,6 @@ class Rectangle extends Form {
     this.angle = 0;
 
 
-
     /**
      * @description
      * The center of rotation is defined by defining centerX.
@@ -212,14 +211,14 @@ class Rectangle extends Form {
    * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
    * account its relative position and the center of rotation.
    */
-  addChild(child, translate = null, rotate = null, draw = true){
+  addChild(child, translate = null, rotate = null, drawing = true){
     // child.setOffsetX(this.x);
     // child.setOffsetY(this.y);
     if(translate != null)
       translate(this, child);
     if(rotate != null)
       rotate(this, child);
-    if(draw == true)
+    if(drawing == true)
       child.draw();
     this.children.push({child, translate, rotate});
   }
@@ -242,9 +241,7 @@ class Rectangle extends Form {
     this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
     this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
-
     this.svg.appendChild(this.c_svg);
-
 
     this.drawConnector();
     this.drawVertex();

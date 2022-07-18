@@ -78,14 +78,14 @@ class Text{
         this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
 
         // this.tspan = document.createElementNS(svgns, "tspan");
-        // this.title = document.createElementNS(svgns, "title");
+        this.title = document.createElementNS(svgns, "title");
 
-        // this.title.textContent = this.text;
+        this.title.textContent = this.text;
         // this.tspan.textContent = this.text;
 
         this.c_svg.textContent = this.text;
         // this.c_svg.appendChild(this.tspan);
-        // this.c_svg.appendChild(this.title);
+        this.c_svg.appendChild(this.title);
 
         // this.updateWidthText();
         this.svg.appendChild(this.c_svg);

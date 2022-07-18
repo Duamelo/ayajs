@@ -27,7 +27,6 @@ class Point {
 
     this.type = "point";
 
-
     this.c_svg = "";
     this.svg = svg;
 

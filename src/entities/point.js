@@ -1,5 +1,9 @@
 import {_Register} from "../register.js";
 import {_uuid} from "./uuid.js";
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
+
 
 /**
  *
@@ -55,7 +59,7 @@ class Point {
   draw() {
     var ns = "http://www.w3.org/2000/svg";
 
-    this.c_svg = document.createElementNS(ns, "circle");
+    this.c_svg = dom.window.document.createElementNS(ns, "circle") || document.createElementNS(ns, "circle");
 
     this.c_svg.setAttribute("id", this.uuid);
 

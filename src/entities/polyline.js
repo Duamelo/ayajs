@@ -2,6 +2,9 @@ import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
 import { Form } from "../abstraction/form";
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
 
 
 /**
@@ -9,10 +12,6 @@ import { Form } from "../abstraction/form";
  */
 
 class Polyline extends Form {
-    /**
-     * 
-     * @param {string} uuid 
-     */
     constructor(uuid, points = [], svg, event, config){
 
         super();
@@ -86,6 +85,8 @@ class Polyline extends Form {
     }
 
     drawConnector(){
+        if(this.c_points.length == 0)
+            return;
     }
 
     drawBox(){
@@ -93,7 +94,7 @@ class Polyline extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = document.createElementNS(ns,'polyline');
+        this.c_svg = dom.window.document.createElementNS(ns,'polyline') || document.createElementNS(ns,'polyline');
 
         var path = "";
         for(var i = 0; i < this.points.length; i++){
@@ -160,24 +161,23 @@ class Polyline extends Form {
 
     calculateAngle(){
         var angle;
-        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-        if(this.pente == 0)
+        if(pente == 0)
             angle = 0;
-        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
             angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+        else if(pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
             angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+        else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
             angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+        else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
             angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 
         return angle;
     }
 
     resize(pos, dx, dy){
-
         if(pos == 0){
             this.x += dx;
             this.y += dy;
@@ -186,7 +186,6 @@ class Polyline extends Form {
             this.dest_x += dx;
             this.dest_y += dy;
         }
-
         this.children.map ( ({child, translate, rotate}) => {
             translate(this, child);
             child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
@@ -240,9 +239,8 @@ class Polyline extends Form {
         return this.scaleY;
     }
 
-
     optimalPath(){
 
     }
 }
-export {Polyline};
+export {Polyline}; 

@@ -1,3 +1,8 @@
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
+
+
 class Image{
     constructor(x = 0, y = 0, width = 50, height = 50, path, svg){
         this.width = width;
@@ -11,7 +16,7 @@ class Image{
     }
 
     draw(){
-        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
+        this.c_svg = dom.window.document.createElementNS('http://www.w3.org/2000/svg','image') || document.createElementNS('http://www.w3.org/2000/svg','image');
         this.c_svg.setAttributeNS(null,'height',this.height);
         this.c_svg.setAttributeNS(null,'width',this.width);
         this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.path);

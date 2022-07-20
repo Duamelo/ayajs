@@ -77,9 +77,7 @@ class Link
             //     this.line.c3.x = this.line.c2.x;
             //     this.line.c3.y = this.line.c4.y;
             // }
-    
-    
-    
+
             console.log(this.line.c1.x + " " + this.line.c1.y); 
     
             this.line.c_svg.setAttribute("fill", "none");

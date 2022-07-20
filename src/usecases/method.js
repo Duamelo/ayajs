@@ -1,4 +1,4 @@
-import { AncreEvent, EsquissEvent, PatternEvent, RectangleEvent } from "./event";
+import { EsquissEvent, PatternEvent, RectangleEvent } from "./event";
 
 class Method{
     constructor(x, y, r, min, name = "", svg){

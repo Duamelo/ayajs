@@ -1,8 +1,7 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.aya = {}));
-})(this, (function (exports) { 'use strict';
+(function (factory) {
+	typeof define === 'function' && define.amd ? define(factory) :
+	factory();
+})((function () { 'use strict';
 
 	var config =  {
 	    svg : {
@@ -108,6 +107,11 @@
 	    }
 	}
 
+	const jsdom$c = require("jsdom");
+	const { JSDOM: JSDOM$c } = jsdom$c;
+	const dom$b = new JSDOM$c(`...`);
+
+
 	/**
 	 *
 	 * @class Point
@@ -133,7 +137,6 @@
 	    this.config = config;
 
 	    this.type = "point";
-
 
 	    this.c_svg = "";
 	    this.svg = svg;
@@ -163,7 +166,7 @@
 	  draw() {
 	    var ns = "http://www.w3.org/2000/svg";
 
-	    this.c_svg = document.createElementNS(ns, "circle");
+	    this.c_svg = dom$b.window.document.createElementNS(ns, "circle") || document.createElementNS(ns, "circle");
 
 	    this.c_svg.setAttribute("id", this.uuid);
 
@@ -307,6 +310,10 @@
 	    };
 	}
 
+	const jsdom$b = require("jsdom");
+	const { JSDOM: JSDOM$b } = jsdom$b;
+	const dom$a = new JSDOM$b(`...`);
+
 	/**
 	 * @class Circle
 	 */
@@ -318,7 +325,6 @@
 	     * @param {number} y 
 	     * @param {number} r 
 	     */
-
 	    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
 
 	        super();
@@ -379,8 +385,6 @@
 	    }
 
 	    addChild(child, translate = null, rotate = null, drawing = false){
-	        // child.setOffsetX(this.x);
-	        // child.setOffsetY(this.y);
 	        if(translate != null)
 	            translate(this, child);
 	        if(rotate != null)
@@ -440,8 +444,8 @@
 	    draw(){
 	        var ns="http://www.w3.org/2000/svg";
 
-	        this.box = document.createElementNS(ns, "path");
-	        this.c_svg = document.createElementNS(ns,"circle");
+	        this.box = dom$a.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
+	        this.c_svg = dom$a.window.document.createElementNS(ns,"circle") || document.createElementNS(ns,"circle");
 
 	        this.c_svg.setAttribute("id", this.uuid);
 
@@ -616,6 +620,12 @@
 	      }
 	}
 
+	const jsdom$a = require("jsdom");
+	const { JSDOM: JSDOM$a } = jsdom$a;
+	const dom$9 = new JSDOM$a(`...`);
+
+
+
 	/**
 	 *  Class representing a rectangle form.
 	 * 
@@ -737,7 +747,6 @@
 	    this.angle = 0;
 
 
-
 	    /**
 	     * @description
 	     * The center of rotation is defined by defining centerX.
@@ -826,14 +835,14 @@
 	   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
 	   * account its relative position and the center of rotation.
 	   */
-	  addChild(child, translate = null, rotate = null, draw = true){
+	  addChild(child, translate = null, rotate = null, drawing = true){
 	    // child.setOffsetX(this.x);
 	    // child.setOffsetY(this.y);
 	    if(translate != null)
 	      translate(this, child);
 	    if(rotate != null)
 	      rotate(this, child);
-	    if(draw == true)
+	    if(drawing == true)
 	      child.draw();
 	    this.children.push({child, translate, rotate});
 	  }
@@ -845,7 +854,7 @@
 	   */
 	  draw() {
 	    const sv = "http://www.w3.org/2000/svg";
-	    this.c_svg = document.createElementNS(sv, "rect");
+	    this.c_svg = dom$9.window.document.createElementNS(sv, "rect") || document.createElementNS(sv, "rect");
 
 	    this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
 	    this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
@@ -856,9 +865,7 @@
 	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
 	    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
-
 	    this.svg.appendChild(this.c_svg);
-
 
 	    this.drawConnector();
 	    this.drawVertex();
@@ -1217,9 +1224,7 @@
 	            //     this.line.c3.x = this.line.c2.x;
 	            //     this.line.c3.y = this.line.c4.y;
 	            // }
-	    
-	    
-	    
+
 	            console.log(this.line.c1.x + " " + this.line.c1.y); 
 	    
 	            this.line.c_svg.setAttribute("fill", "none");
@@ -1228,6 +1233,13 @@
 
 	    }
 	}
+
+	const jsdom$9 = require("jsdom");
+	const { JSDOM: JSDOM$9 } = jsdom$9;
+	const { document: document$1 } = (new JSDOM$9(`...`)).window;
+
+
+
 
 	class Events {
 
@@ -1377,13 +1389,13 @@
 	            link.redraw();
 	          }
 	          else if (id == id_svg || pnt.ref == undefined) {
-	            var ref = document.getElementById(line.uuid);
+	            var ref = document$1.getElementById(line.uuid);
 	            line.children.map( ({child}) => {
-	              var rf = document.getElementById(child.uuid);
+	              var rf = document$1.getElementById(child.uuid);
 	              rf.remove();
 	            });
 	            line.vertex.map( (point) => {
-	              var rf = document.getElementById(point.uuid);
+	              var rf = document$1.getElementById(point.uuid);
 	              rf.remove();
 	            });
 	            ref.remove();
@@ -1472,18 +1484,28 @@
 	  }
 	}
 
+	const jsdom$8 = require("jsdom");
+	const { JSDOM: JSDOM$8 } = jsdom$8;
+	const dom$8 = new JSDOM$8(`...`);
+
+
 	/**
 	 * @class Line
 	 */
 
 	class Line extends Form {
+
 	    /**
 	     * 
-	     * @param {string} uuid 
-	     * @param {number} x 
-	     * @param {number} y 
-	     * @param {number} dest_x 
-	     * @param {number} dest_y 
+	     * @param {String} id_svg 
+	     * @param {DomElement} svg 
+	     * @param {Function} event 
+	     * @param {Object} config 
+	     * @param {String} uuid 
+	     * @param {Number} x 
+	     * @param {Number} y 
+	     * @param {Number} dest_x 
+	     * @param {Number} dest_y 
 	     */
 	    constructor(id_svg, svg, event, config, uuid, x=0, y=0, dest_x = x, dest_y = y){
 
@@ -1496,8 +1518,6 @@
 	        
 	        this.dest_x = dest_x;
 	        this.dest_y = dest_y;
-
-	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
 	        this.c1 = {x : this.x, y : this.y};
 	        this.c2 = {x : this.x, y : this.y};
@@ -1537,42 +1557,42 @@
 	        ];
 
 
-	        // if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
-	        //     var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
-	        //     if(this.config.line.ends.start.type == 'triangle'){
-	        //         this.addChild(child, (p, c) => {
-	        //             c.x2 = this.x;
-	        //             c.y2 = this.y;
+	        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
+	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
+	            if(this.config.line.ends.start.type == 'triangle'){
+	                this.addChild(child, (p, c) => {
+	                    c.x2 = this.x;
+	                    c.y2 = this.y;
 
-	        //             c.x1 = this.x - 8;
-	        //             c.y1 = this.y - 3;
+	                    c.x1 = this.x - 8;
+	                    c.y1 = this.y - 3;
 
-	        //             c.x3 = this.x - 8;
-	        //             c.y3 = this.y + 3;
+	                    c.x3 = this.x - 8;
+	                    c.y3 = this.y + 3;
 
-	        //         },  (p, c) => {
-	        //             c.setRotateCenter(c.x2, c.y2);
-	        //             c.setRotateAngle(p.calculateAngle() - Math.PI);
-	        //         } );
-	        //     }
+	                },  (p, c) => {
+	                    c.setRotateCenter(c.x2, c.y2);
+	                    c.setRotateAngle(p.calculateAngle() - Math.PI);
+	                } );
+	            }
 	                
-	        //     else if(this.config.line.ends.start.type == 'circle')
-	        //         this.addChild(child, (p, c) => {
-	        //             c.setOffsetX(p.x - 5);
-	        //             c.setOffsetY(p.y);
-	        //         },  (p, c) => {
-	        //             c.setRotateCenter(c.x, c.y);
-	        //             c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	        //         } );
-	        //     else
-	        //         this.addChild(child, (p, c) => {
-	        //             c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
-	        //             c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
-	        //         },  (p, c) => {
-	        //             c.setRotateCenter(c.x, c.y);
-	        //             c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	        //         } );
-	        // }
+	            else if(this.config.line.ends.start.type == 'circle')
+	                this.addChild(child, (p, c) => {
+	                    c.setOffsetX(p.x - 5);
+	                    c.setOffsetY(p.y);
+	                },  (p, c) => {
+	                    c.setRotateCenter(c.x, c.y);
+	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+	                } );
+	            else
+	                this.addChild(child, (p, c) => {
+	                    c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
+	                    c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
+	                },  (p, c) => {
+	                    c.setRotateCenter(c.x, c.y);
+	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+	                } );
+	        }
 
 	        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, { x1 :this.dest_x - 8, y1: this.dest_y - 2, x2 : this.dest_x, y2 : this.dest_y, x3 : this.dest_x - 8, y3 :this.dest_y + 2}, this.svg, this.nativeEvent, this.config);
@@ -1619,8 +1639,6 @@
 	    addChild(child, translate, rotate){
 	        child.vertex = [];
 	        child.c_points = [];
-	        // child.setOffsetX(this.x);
-	        // child.setOffsetY(this.y);
 	        translate(this, child);
 	        rotate(this, child);
 	        child.draw();
@@ -1649,7 +1667,7 @@
 
 	    draw(){
 	        const ns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(ns,'path');
+	        this.c_svg = dom$8.window.document.createElementNS(ns, "path") || document.createElementNS(ns,'path');
 
 	        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
 	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
@@ -1727,18 +1745,18 @@
 	    calculateAngle(){
 	        var angle = 0;
 	        
-	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+	        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 	        if(this.dest_x == this.x)
 	            angle = -Math.PI/2;
-	        if(this.pente == 0)
+	        if(pente == 0)
 	            angle = 0;
-	        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+	        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
 	            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+	        else if(pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
 	            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+	        else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
 	            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+	        else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
 	            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 
 	        return angle;
@@ -1807,11 +1825,14 @@
 	        return this.scaleY;
 	    }
 
-
 	    optimalPath(){
 	        
 	    }
 	}
+
+	const jsdom$7 = require("jsdom");
+	const { JSDOM: JSDOM$7 } = jsdom$7;
+	const dom$7 = new JSDOM$7(`...`);
 
 	/**
 	 * @class Triangle
@@ -1946,7 +1967,7 @@
 	  draw() {
 	      
 	    const ns = "http://www.w3.org/2000/svg";
-	    this.c_svg = document.createElementNS(ns, "path");
+	    this.c_svg = dom$7.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
 
 	    if(this.angle != 0){
 	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
@@ -2097,6 +2118,11 @@
 	  }
 	}
 
+	const jsdom$6 = require("jsdom");
+	const { JSDOM: JSDOM$6 } = jsdom$6;
+	const dom$6 = new JSDOM$6(`...`);
+
+
 	/**
 	 * @class Lozenge
 	 */
@@ -2228,8 +2254,8 @@
 	  draw() {
 	    const ns = "http://www.w3.org/2000/svg";
 
-	    this.c_svg = document.createElementNS(ns, "path");
-	    this.box = document.createElementNS(ns, "path");
+	    this.c_svg = dom$6.window.document.createElementNS(ns, "path")  || document.createElementNS(ns, "path");
+	    this.box = dom$6.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
 
 	    if(this.angle != 0){
 	      var __x, __y, _x, _y, dx, dy;
@@ -2487,15 +2513,16 @@
 	  }
 	}
 
+	const jsdom$5 = require("jsdom");
+	const { JSDOM: JSDOM$5 } = jsdom$5;
+	const dom$5 = new JSDOM$5(`...`);
+
+
 	/**
 	 * @class Polyline
 	 */
 
 	class Polyline extends Form {
-	    /**
-	     * 
-	     * @param {string} uuid 
-	     */
 	    constructor(uuid, points = [], svg, event, config){
 
 	        super();
@@ -2569,6 +2596,8 @@
 	    }
 
 	    drawConnector(){
+	        if(this.c_points.length == 0)
+	            return;
 	    }
 
 	    drawBox(){
@@ -2576,7 +2605,7 @@
 
 	    draw(){
 	        const ns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(ns,'polyline');
+	        this.c_svg = dom$5.window.document.createElementNS(ns,'polyline') || document.createElementNS(ns,'polyline');
 
 	        var path = "";
 	        for(var i = 0; i < this.points.length; i++){
@@ -2639,24 +2668,23 @@
 
 	    calculateAngle(){
 	        var angle;
-	        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+	        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-	        if(this.pente == 0)
+	        if(pente == 0)
 	            angle = 0;
-	        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+	        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
 	            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+	        else if(pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
 	            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+	        else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
 	            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-	        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+	        else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
 	            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 
 	        return angle;
 	    }
 
 	    resize(pos, dx, dy){
-
 	        if(pos == 0){
 	            this.x += dx;
 	            this.y += dy;
@@ -2665,7 +2693,6 @@
 	            this.dest_x += dx;
 	            this.dest_y += dy;
 	        }
-
 	        this.children.map ( ({child, translate, rotate}) => {
 	            translate(this, child);
 	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
@@ -2719,11 +2746,15 @@
 	        return this.scaleY;
 	    }
 
-
 	    optimalPath(){
 
 	    }
 	}
+
+	const jsdom$4 = require("jsdom");
+	const { JSDOM: JSDOM$4 } = jsdom$4;
+	const dom$4 = new JSDOM$4(`...`);
+
 
 	/**
 	 * @class Arc
@@ -2826,7 +2857,7 @@
 
 	    draw(){
 	        const ns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(ns,'path');
+	        this.c_svg = dom$4.window.document.createElementNS(ns,'path') || document.createElementNS(ns,'path');
 
 	        this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
 	        this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
@@ -2998,6 +3029,11 @@
 	    }
 	}
 
+	const jsdom$3 = require("jsdom");
+	const { JSDOM: JSDOM$3 } = jsdom$3;
+	const dom$3 = new JSDOM$3(`...`);
+
+
 	class Group{
 	    /**
 	     * 
@@ -3081,7 +3117,7 @@
 
 	    draw(){
 	        const svgns = "http://www.w3.org/2000/svg";
-	        this.c_svg = document.createElementNS(svgns, "g");
+	        this.c_svg = dom$3.window.document.createElementNS(svgns, "g") || document.createElementNS(svgns, "g");
 
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("fill", this.config.form.fill);
@@ -3109,6 +3145,11 @@
 	        this.svg.removeChild(this.c_svg);
 	    }
 	}
+
+	const jsdom$2 = require("jsdom");
+	const { JSDOM: JSDOM$2 } = jsdom$2;
+	const dom$2 = new JSDOM$2(`...`);
+
 
 	/**
 	 * @class
@@ -3177,7 +3218,7 @@
 	    draw(){
 	        const svgns = "http://www.w3.org/2000/svg";
 
-	        this.c_svg = document.createElementNS(svgns, "text");
+	        this.c_svg = dom$2.window.document.createElementNS(svgns, "text") || document.createElementNS(svgns, "text");
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
 	        this.c_svg.setAttributeNS(null, "id", this.uuid);
@@ -3874,6 +3915,11 @@
 	    }
 	}
 
+	const jsdom$1 = require("jsdom");
+	const { JSDOM: JSDOM$1 } = jsdom$1;
+	const dom$1 = new JSDOM$1(`...`);
+
+
 	class Image{
 	    constructor(x = 0, y = 0, width = 50, height = 50, path, svg){
 	        this.width = width;
@@ -3887,7 +3933,7 @@
 	    }
 
 	    draw(){
-	        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
+	        this.c_svg = dom$1.window.document.createElementNS('http://www.w3.org/2000/svg','image') || document.createElementNS('http://www.w3.org/2000/svg','image');
 	        this.c_svg.setAttributeNS(null,'height',this.height);
 	        this.c_svg.setAttributeNS(null,'width',this.width);
 	        this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.path);
@@ -3901,6 +3947,10 @@
 	    }
 	}
 
+	const jsdom = require("jsdom");
+	const { JSDOM } = jsdom;
+	const dom = new JSDOM(`...`);
+
 	class Application{
 	    constructor(width = 1343, height = 1343){
 
@@ -3909,7 +3959,7 @@
 	        this.svg_width = width;
 	        this.svg_height = height;
 
-	        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+	        this.svg = dom.window.document.createElementNS("http://www.w3.org/2000/svg", 'svg') || document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
 	        this.svg.setAttribute("width", this.svg_width);
 	        this.svg.setAttribute("height", this.svg_height);
@@ -4083,9 +4133,6 @@
 	        return new Image(x, y, width, height, path, this.svg);
 	    }
 	}
-
-	exports.Application = Application;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
+	exports.ayajs = Application;
 
 }));

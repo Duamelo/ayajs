@@ -1,6 +1,10 @@
 import { Form } from "../abstraction/form.js";
 import { Point } from "./point.js";
 import { _uuid } from "./uuid.js";
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
+
 
 /**
  * @class Lozenge
@@ -133,8 +137,8 @@ class Lozenge extends Form{
   draw() {
     const ns = "http://www.w3.org/2000/svg";
 
-    this.c_svg = document.createElementNS(ns, "path");
-    this.box = document.createElementNS(ns, "path");
+    this.c_svg = dom.window.document.createElementNS(ns, "path")  || document.createElementNS(ns, "path");
+    this.box = dom.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
 
     if(this.angle != 0){
       var __x, __y, _x, _y, dx, dy;

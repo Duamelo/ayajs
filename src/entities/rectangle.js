@@ -1,6 +1,11 @@
 import { Form } from "../abstraction/form.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
+
+
 
 /**
  *  Class representing a rectangle form.
@@ -230,7 +235,7 @@ class Rectangle extends Form {
    */
   draw() {
     const sv = "http://www.w3.org/2000/svg";
-    this.c_svg = document.createElementNS(sv, "rect");
+    this.c_svg = dom.window.document.createElementNS(sv, "rect") || document.createElementNS(sv, "rect");
 
     this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
     this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);

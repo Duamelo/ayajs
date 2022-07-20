@@ -2,6 +2,11 @@ import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const { document } = (new JSDOM(`...`)).window;
+
+
 
 
 class Events {

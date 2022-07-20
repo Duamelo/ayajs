@@ -1,3 +1,7 @@
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
+
 import { _uuid } from "./uuid";
 import { Point } from "./point";
 import { Form } from "../abstraction/form";
@@ -105,7 +109,7 @@ class Arc extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = document.createElementNS(ns,'path');
+        this.c_svg = dom.window.document.createElementNS(ns,'path') || document.createElementNS(ns,'path');
 
         this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
         this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));

@@ -14,7 +14,9 @@ import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
 import { Image } from "./entities/Image";
-
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`...`);
 
 class Application{
     constructor(width = 1343, height = 1343){
@@ -24,7 +26,7 @@ class Application{
         this.svg_width = width;
         this.svg_height = height;
 
-        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+        this.svg = dom.window.document.createElementNS("http://www.w3.org/2000/svg", 'svg') || document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
         this.svg.setAttribute("width", this.svg_width);
         this.svg.setAttribute("height", this.svg_height);
@@ -198,4 +200,4 @@ class Application{
         return new Image(x, y, width, height, path, this.svg);
     }
 }
-export {Application};
+exports.ayajs = Application;

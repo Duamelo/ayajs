@@ -1,7 +1,3 @@
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
 import { _Register } from "../register";
 import { _uuid } from "./uuid";
 import { Point } from "./point";
@@ -137,8 +133,8 @@ class Circle extends Form {
     draw(){
         var ns="http://www.w3.org/2000/svg";
 
-        this.box = dom.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
-        this.c_svg = dom.window.document.createElementNS(ns,"circle") || document.createElementNS(ns,"circle");
+        this.box = document.createElementNS(ns, "path");
+        this.c_svg = document.createElementNS(ns,"circle");
 
         this.c_svg.setAttribute("id", this.uuid);
 

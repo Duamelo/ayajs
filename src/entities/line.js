@@ -4,10 +4,6 @@ import { Point } from "./point";
 import { FactoryForm } from "../factoryForm";
 import { Form } from "../abstraction/form";
 import { Events } from "../events";
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
 
 /**
  * @class Line
@@ -187,7 +183,7 @@ class Line extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom.window.document.createElementNS(ns, "path") || document.createElementNS(ns,'path');
+        this.c_svg = document.createElementNS(ns,'path');
 
         // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
         // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "

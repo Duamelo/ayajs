@@ -1,8 +1,3 @@
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
-
 /**
  * @class
  * 
@@ -70,7 +65,7 @@ class Text{
     draw(){
         const svgns = "http://www.w3.org/2000/svg";
 
-        this.c_svg = dom.window.document.createElementNS(svgns, "text") || document.createElementNS(svgns, "text");
+        this.c_svg = document.createElementNS(svgns, "text");
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
         this.c_svg.setAttributeNS(null, "id", this.uuid);

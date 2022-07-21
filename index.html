@@ -7,15 +7,13 @@
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
    <script src="./build/aya.js"></script>
-   <script src="./test.js"></script>
-
    <title>ayajs</title>
 </head>
 
 <body>
 
    <script>
-      var aya = new aya.Application();
+      var aya = new aya.Init();
       console.log(aya);
       var active_component = "", active_method = "";
       var state = "";
@@ -48,114 +46,114 @@
    // var rec = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
    // var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-   //  var res = aya.Ressource(500, 500, 45, 40, {
-   //     "title": "empty",
-	//     "path": "/app/setup",
-	//    //  "methods": [
-   //    //    {
-   //    //       "role": ":public",
-   //    //       "name": "get",
-   //    //       "id": "setup()",
-   //    //       "response": {
-   //    //       "representations": [
-   //    //          {"mediaType": "text/html"}
-   //    //       ]
-   //    //       }
-   //    //    },
-   //    //    {
-   //    //       "role": ":public",
-   //    //       "name": "del",
-   //    //       "id": "fire()",
-   //    //       "response": {
-   //    //       "representations": [
-   //    //          {"mediaType": "text/html"}
-   //    //       ]
-   //    //       }
-   //    //    },
-   //    //    {
-   //    //       "role": ":public",
-   //    //       "name": "post",
-   //    //       "id": "postfoo()",
-   //    //       "response": {
-   //    //       "representations": [
-   //    //          {"mediaType": "text/html"}
-   //    //       ]
-   //    //       }
-   //    //    },
-   //    //    {
-   //    //       "role": ":public",
-   //    //       "name": "put",
-   //    //       "id": "putfoo()",
-   //    //       "response": {
-   //    //       "representations": [
-   //    //          {"mediaType": "text/html"}
-   //    //       ]
-   //    //       }
-   //    //    }
-	//    //  ],
-   //    children: [
-   //       {
-   //          "path": "/users",
-   //          "children" : [
-   //             {
-   //              "path": "{id}",  
-   //              "params": [
-   //                 {
-   //                   "name": "user_id",
-   //                 }
-   //              ],
-   //              "methods": [
-   //                {
-   //                   "role": ":public",
-   //                   "name": "get",
-   //                   "id": "setup",
-   //                   "response": {
-   //                      "representations": [
-   //                         {"mediaType": "text/html"}
-   //                      ]
-   //                   }
-   //                },
-   //              ]
-   //             }
-   //          ]
-   //       },
-   //       {
-   //          // "path": "pipo",
-   //          "children" : [
-   //             {
-   //              "path": "{id_app}",  
-   //              "params": [
-   //                 {
-   //                   "name": "id_app",
-   //                 }
-   //              ],
-   //              "methods": [
-   //                {
-   //                   "role": ":public",
-   //                   "name": "post",
-   //                   "id": "fire",
-   //                   "response": {
-   //                      "representations": [
-   //                         {"mediaType": "text/html"}
-   //                      ]
-   //                   }
-   //                },
-   //                {
-   //                   "role": ":public",
-   //                   "name": "put",
-   //                   "id": "putfoo",
-   //                   "response": {
-   //                      "representations": [
-   //                         {"mediaType": "text/html"}
-   //                      ]
-   //                   }
-   //                },
-   //              ]
-   //             }
-   //          ]
-   //       },
-   //    ]
-	// }, aya.svg, aya.config);
+    var res = aya.Ressource(500, 500, 45, 40, {
+       "title": "empty",
+	    "path": "/app/setup",
+	    "methods": [
+         {
+            "role": ":public",
+            "name": "get",
+            "id": "setup()",
+            "response": {
+            "representations": [
+               {"mediaType": "text/html"}
+            ]
+            }
+         },
+         {
+            "role": ":public",
+            "name": "del",
+            "id": "fire()",
+            "response": {
+            "representations": [
+               {"mediaType": "text/html"}
+            ]
+            }
+         },
+         {
+            "role": ":public",
+            "name": "post",
+            "id": "postfoo()",
+            "response": {
+            "representations": [
+               {"mediaType": "text/html"}
+            ]
+            }
+         },
+         {
+            "role": ":public",
+            "name": "put",
+            "id": "putfoo()",
+            "response": {
+            "representations": [
+               {"mediaType": "text/html"}
+            ]
+            }
+         }
+	    ],
+      // children: [
+      //    {
+      //       "path": "/users",
+      //       "children" : [
+      //          {
+      //           "path": "{id}",  
+      //           "params": [
+      //              {
+      //                "name": "user_id",
+      //              }
+      //           ],
+      //           "methods": [
+      //             {
+      //                "role": ":public",
+      //                "name": "get",
+      //                "id": "setup",
+      //                "response": {
+      //                   "representations": [
+      //                      {"mediaType": "text/html"}
+      //                   ]
+      //                }
+      //             },
+      //           ]
+      //          }
+      //       ]
+      //    },
+      //    {
+      //       // "path": "pipo",
+      //       "children" : [
+      //          {
+      //           "path": "{id_app}",  
+      //           "params": [
+      //              {
+      //                "name": "id_app",
+      //              }
+      //           ],
+      //           "methods": [
+      //             {
+      //                "role": ":public",
+      //                "name": "post",
+      //                "id": "fire",
+      //                "response": {
+      //                   "representations": [
+      //                      {"mediaType": "text/html"}
+      //                   ]
+      //                }
+      //             },
+      //             {
+      //                "role": ":public",
+      //                "name": "put",
+      //                "id": "putfoo",
+      //                "response": {
+      //                   "representations": [
+      //                      {"mediaType": "text/html"}
+      //                   ]
+      //                }
+      //             },
+      //           ]
+      //          }
+      //       ]
+      //    },
+      // ]
+	}, aya.svg, aya.config);
 
 
 

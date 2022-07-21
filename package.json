@@ -3,14 +3,6 @@
   "version": "0.0.12",
   "description": "librairie javascript de création de forme géométrique",
   "module": "build/aya.module.js",
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "import": "./build/aya.module.js",
-      "require": "./build/aya.js"
-    },
-    "./src/*": "./src/*"
-  },
   "main": "build/aya.js",
   "scripts": {
     "start": "rollup -c rollup.dev.js",
@@ -25,6 +17,5 @@
   "author": "emack.io",
   "license": "ISC",
   "dependencies": {
-    "jsdom": "^20.0.0"
   }
 }

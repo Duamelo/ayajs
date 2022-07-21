@@ -102,11 +102,6 @@ class _uuid
     }
 }
 
-const jsdom$c = require("jsdom");
-const { JSDOM: JSDOM$c } = jsdom$c;
-const dom$b = new JSDOM$c(`...`);
-
-
 /**
  *
  * @class Point
@@ -161,7 +156,7 @@ class Point {
   draw() {
     var ns = "http://www.w3.org/2000/svg";
 
-    this.c_svg = dom$b.window.document.createElementNS(ns, "circle") || document.createElementNS(ns, "circle");
+    this.c_svg = document.createElementNS(ns, "circle");
 
     this.c_svg.setAttribute("id", this.uuid);
 
@@ -305,10 +300,6 @@ class Form
     };
 }
 
-const jsdom$b = require("jsdom");
-const { JSDOM: JSDOM$b } = jsdom$b;
-const dom$a = new JSDOM$b(`...`);
-
 /**
  * @class Circle
  */
@@ -439,8 +430,8 @@ class Circle extends Form {
     draw(){
         var ns="http://www.w3.org/2000/svg";
 
-        this.box = dom$a.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
-        this.c_svg = dom$a.window.document.createElementNS(ns,"circle") || document.createElementNS(ns,"circle");
+        this.box = document.createElementNS(ns, "path");
+        this.c_svg = document.createElementNS(ns,"circle");
 
         this.c_svg.setAttribute("id", this.uuid);
 
@@ -614,12 +605,6 @@ class Circle extends Form {
         return null;
       }
 }
-
-const jsdom$a = require("jsdom");
-const { JSDOM: JSDOM$a } = jsdom$a;
-const dom$9 = new JSDOM$a(`...`);
-
-
 
 /**
  *  Class representing a rectangle form.
@@ -849,7 +834,7 @@ class Rectangle extends Form {
    */
   draw() {
     const sv = "http://www.w3.org/2000/svg";
-    this.c_svg = dom$9.window.document.createElementNS(sv, "rect") || document.createElementNS(sv, "rect");
+    this.c_svg = document.createElementNS(sv, "rect");
 
     this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
     this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
@@ -1229,13 +1214,6 @@ class Link
     }
 }
 
-const jsdom$9 = require("jsdom");
-const { JSDOM: JSDOM$9 } = jsdom$9;
-const { document: document$1 } = (new JSDOM$9(`...`)).window;
-
-
-
-
 class Events {
 
   static setup = (svg, id_svg, config)=>{
@@ -1384,13 +1362,13 @@ class Events {
             link.redraw();
           }
           else if (id == id_svg || pnt.ref == undefined) {
-            var ref = document$1.getElementById(line.uuid);
+            var ref = document.getElementById(line.uuid);
             line.children.map( ({child}) => {
-              var rf = document$1.getElementById(child.uuid);
+              var rf = document.getElementById(child.uuid);
               rf.remove();
             });
             line.vertex.map( (point) => {
-              var rf = document$1.getElementById(point.uuid);
+              var rf = document.getElementById(point.uuid);
               rf.remove();
             });
             ref.remove();
@@ -1478,11 +1456,6 @@ class Events {
     }
   }
 }
-
-const jsdom$8 = require("jsdom");
-const { JSDOM: JSDOM$8 } = jsdom$8;
-const dom$8 = new JSDOM$8(`...`);
-
 
 /**
  * @class Line
@@ -1662,7 +1635,7 @@ class Line extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom$8.window.document.createElementNS(ns, "path") || document.createElementNS(ns,'path');
+        this.c_svg = document.createElementNS(ns,'path');
 
         // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
         // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
@@ -1825,10 +1798,6 @@ class Line extends Form {
     }
 }
 
-const jsdom$7 = require("jsdom");
-const { JSDOM: JSDOM$7 } = jsdom$7;
-const dom$7 = new JSDOM$7(`...`);
-
 /**
  * @class Triangle
  */
@@ -1847,6 +1816,7 @@ class Triangle extends Form {
 
     this.x2 = x2;
     this.y2 = y2;
+
 
     this.x3 = x3;
     this.y3 = y3;
@@ -1962,7 +1932,7 @@ class Triangle extends Form {
   draw() {
       
     const ns = "http://www.w3.org/2000/svg";
-    this.c_svg = dom$7.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
+    this.c_svg = document.createElementNS(ns, "path");
 
     if(this.angle != 0){
       var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
@@ -2113,11 +2083,6 @@ class Triangle extends Form {
   }
 }
 
-const jsdom$6 = require("jsdom");
-const { JSDOM: JSDOM$6 } = jsdom$6;
-const dom$6 = new JSDOM$6(`...`);
-
-
 /**
  * @class Lozenge
  */
@@ -2249,8 +2214,8 @@ class Lozenge extends Form{
   draw() {
     const ns = "http://www.w3.org/2000/svg";
 
-    this.c_svg = dom$6.window.document.createElementNS(ns, "path")  || document.createElementNS(ns, "path");
-    this.box = dom$6.window.document.createElementNS(ns, "path") || document.createElementNS(ns, "path");
+    this.c_svg = document.createElementNS(ns, "path");
+    this.box = document.createElementNS(ns, "path");
 
     if(this.angle != 0){
       var __x, __y, _x, _y, dx, dy;
@@ -2508,11 +2473,6 @@ class Lozenge extends Form{
   }
 }
 
-const jsdom$5 = require("jsdom");
-const { JSDOM: JSDOM$5 } = jsdom$5;
-const dom$5 = new JSDOM$5(`...`);
-
-
 /**
  * @class Polyline
  */
@@ -2600,7 +2560,7 @@ class Polyline extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom$5.window.document.createElementNS(ns,'polyline') || document.createElementNS(ns,'polyline');
+        this.c_svg = document.createElementNS(ns,'polyline');
 
         var path = "";
         for(var i = 0; i < this.points.length; i++){
@@ -2746,11 +2706,6 @@ class Polyline extends Form {
     }
 }
 
-const jsdom$4 = require("jsdom");
-const { JSDOM: JSDOM$4 } = jsdom$4;
-const dom$4 = new JSDOM$4(`...`);
-
-
 /**
  * @class Arc
  */
@@ -2852,7 +2807,7 @@ class Arc extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom$4.window.document.createElementNS(ns,'path') || document.createElementNS(ns,'path');
+        this.c_svg = document.createElementNS(ns,'path');
 
         this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
         this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
@@ -3024,11 +2979,6 @@ class Arc extends Form {
     }
 }
 
-const jsdom$3 = require("jsdom");
-const { JSDOM: JSDOM$3 } = jsdom$3;
-const dom$3 = new JSDOM$3(`...`);
-
-
 class Group{
     /**
      * 
@@ -3112,7 +3062,7 @@ class Group{
 
     draw(){
         const svgns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom$3.window.document.createElementNS(svgns, "g") || document.createElementNS(svgns, "g");
+        this.c_svg = document.createElementNS(svgns, "g");
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("fill", this.config.form.fill);
@@ -3140,11 +3090,6 @@ class Group{
         this.svg.removeChild(this.c_svg);
     }
 }
-
-const jsdom$2 = require("jsdom");
-const { JSDOM: JSDOM$2 } = jsdom$2;
-const dom$2 = new JSDOM$2(`...`);
-
 
 /**
  * @class
@@ -3213,7 +3158,7 @@ class Text{
     draw(){
         const svgns = "http://www.w3.org/2000/svg";
 
-        this.c_svg = dom$2.window.document.createElementNS(svgns, "text") || document.createElementNS(svgns, "text");
+        this.c_svg = document.createElementNS(svgns, "text");
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
         this.c_svg.setAttributeNS(null, "id", this.uuid);
@@ -3910,11 +3855,6 @@ class Ressource{
     }
 }
 
-const jsdom$1 = require("jsdom");
-const { JSDOM: JSDOM$1 } = jsdom$1;
-const dom$1 = new JSDOM$1(`...`);
-
-
 class Image{
     constructor(x = 0, y = 0, width = 50, height = 50, path, svg){
         this.width = width;
@@ -3928,7 +3868,7 @@ class Image{
     }
 
     draw(){
-        this.c_svg = dom$1.window.document.createElementNS('http://www.w3.org/2000/svg','image') || document.createElementNS('http://www.w3.org/2000/svg','image');
+        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
         this.c_svg.setAttributeNS(null,'height',this.height);
         this.c_svg.setAttributeNS(null,'width',this.width);
         this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.path);
@@ -3942,11 +3882,7 @@ class Image{
     }
 }
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
-class Application{
+class Init{
     constructor(width = 1343, height = 1343){
 
         this.uuid = _uuid.generate();
@@ -3954,7 +3890,7 @@ class Application{
         this.svg_width = width;
         this.svg_height = height;
 
-        this.svg = dom.window.document.createElementNS("http://www.w3.org/2000/svg", 'svg') || document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
         this.svg.setAttribute("width", this.svg_width);
         this.svg.setAttribute("height", this.svg_height);
@@ -4128,4 +4064,5 @@ class Application{
         return new Image(x, y, width, height, path, this.svg);
     }
 }
-exports.ayajs = Application;
+
+export { Init };

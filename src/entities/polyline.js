@@ -2,10 +2,6 @@ import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
 import { Form } from "../abstraction/form";
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
 
 /**
  * @class Polyline
@@ -94,7 +90,7 @@ class Polyline extends Form {
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom.window.document.createElementNS(ns,'polyline') || document.createElementNS(ns,'polyline');
+        this.c_svg = document.createElementNS(ns,'polyline');
 
         var path = "";
         for(var i = 0; i < this.points.length; i++){

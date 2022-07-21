@@ -1,8 +1,3 @@
-import { _uuid } from "./uuid";
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`...`);
-
 
 class Group{
     /**
@@ -87,7 +82,7 @@ class Group{
 
     draw(){
         const svgns = "http://www.w3.org/2000/svg";
-        this.c_svg = dom.window.document.createElementNS(svgns, "g") || document.createElementNS(svgns, "g");
+        this.c_svg = document.createElementNS(svgns, "g");
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("fill", this.config.form.fill);

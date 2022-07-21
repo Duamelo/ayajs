@@ -1,12 +1,5 @@
 export default {
 	input: "src/aya.js",
-	external: [
-		'jsdom',
-	  ],
-	  output: {
-		globals: {
-		  'jsdom': 'jsdom',
-		},
 	output: [
 		{
 			format: "umd",
@@ -15,4 +8,4 @@ export default {
 			indent: "\t"
 		}
 	]
-};
+}

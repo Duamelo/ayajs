@@ -83,12 +83,15 @@ class Lozenge extends Form{
   }
 
 
-  addChild(child, translate, rotate){
+  addChild(child, translate = null, rotate = null, drawing = true){
     child.setOffsetX(this.x);
     child.setOffsetY(this.y);
-    translate(this, child);
-    rotate(this, child);
-    child.draw();
+    if(translate != null)
+      translate(this, child);
+    if(rotate != null)
+      rotate(this, child);
+    if(drawing)
+      child.draw();
     this.children.push({child, translate, rotate});
   }
 
@@ -153,7 +156,7 @@ class Lozenge extends Form{
 
     this.drawVertex();
     this.drawConnector();
-    this.drawBox();
+    // this.drawBox();
 
     this.c_svg.setAttribute("d",this.p);
 
@@ -182,11 +185,17 @@ class Lozenge extends Form{
     
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
   }
 
   removeFromDOM(){
     this.svg.removeChild(this.box);
     this.svg.removeChild(this.c_svg);
+    this.children.map(({child})=>{
+      child.removeFromDOM();
+    });
   }
 
   redraw() {
@@ -210,7 +219,7 @@ class Lozenge extends Form{
 
     this.drawVertex();
     this.drawConnector();
-    this.drawBox();
+    // this.drawBox();
 
     this.c_svg.setAttribute("d",this.p);
 
@@ -375,7 +384,8 @@ class Lozenge extends Form{
            ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
               (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
               ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
-            return this.c_points[i];
+            // return this.c_points[i];
+            return i;
            }
       }
     return null;

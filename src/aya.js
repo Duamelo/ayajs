@@ -13,9 +13,9 @@ import { Point } from "./entities/point";
 import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
+import { Image } from "./entities/Image";
 
-
-class Application{
+class Init{
     constructor(width = 1343, height = 1343){
 
         this.uuid = _uuid.generate();
@@ -181,16 +181,20 @@ class Application{
         return new Point(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
     }
 
-    Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90){
-        return new Arc(_uuid.generate(), x0, y0, x, y, angle, this.svg, this.events, this.config);
+    Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
+        return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio, this.svg, this.events, this.config);
     }
 
     Group(){
         return new Group(_uuid.generate(),this.svg, this.events, this.config);
     }
 
-    Ressource(x = 0, y = 0, r = 5){
-        return new Ressource(_uuid.generate(), x = 0, y = 0, r = 5, this.svg, this.events, this.config);
+    Ressource(x = 0, y = 0, r = 5, angle = 40, data = {}){
+        return new Ressource(x, y, r, angle, data, this.svg, this.config);
+    }
+
+    Image(x,y, width, height, path = ""){
+        return new Image(x, y, width, height, path, this.svg);
     }
 }
-export {Application};
+export {Init};

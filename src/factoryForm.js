@@ -5,7 +5,8 @@ import  {Triangle}  from "./entities/triangle.js";
 import  {Lozenge} from "./entities/lozenge.js";
 import { Polyline } from "./entities/polyline.js";
 import { Arc } from "./entities/arc";
-import { Ressource } from "./usecases/ressource.js";
+import { Group } from "./entities/group.js";
+import { Text } from "./entities/text.js";
 
 
 /**
@@ -15,7 +16,6 @@ import { Ressource } from "./usecases/ressource.js";
 
 class FactoryForm
 {
-   
     /**
      * 
      * @param {*} uuid 
@@ -41,9 +41,11 @@ class FactoryForm
         else if(type == "polyline")
             return new Polyline(uuid, props.points, svg, events, config);
         else if(type == "arc")
-            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, svg, events, config);
-        else if(type == "ressource")
-            return new Ressource(uuid, props.x, props.y, props.r, svg, events, config);
+            return new Arc(uuid, props.x0, props.y0, props.x, props.y, props.angle, props.ratio, svg, events, config);
+        else if(type == "group")
+            return new Group(uuid, svg, events, config);
+        else if(type == "text")
+            return new Text(uuid, props.x, props.y, props.text, svg, events, config);
     }
 }
 export {FactoryForm};

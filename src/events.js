@@ -9,6 +9,7 @@ class Events {
   static setup = (svg, id_svg, config)=>{
     var id;
     var cp;
+    var point;
     var dx, dy;
     var state = "";
     var deltaX, deltaY;
@@ -30,16 +31,21 @@ class Events {
         id = e.srcElement.id;
   
         cp = _Register.find(id);
+        console.log(cp);
   
         // Only the points have the ref property to refer to form that instantiates them.
         // In source we have the component instance created.
         if (id != this.id_svg)
           source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
   
+        if(cp == undefined)
+          return;
         if(cp.form != undefined)
           lk = _Register.findAllLink(cp);
-  
-  
+        console.log("lk");
+        console.log(lk);
+
+
         // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
         if ((cp != undefined && cp.ref == undefined) )
             state = "moving";
@@ -49,10 +55,13 @@ class Events {
             state = "resizing";
             dx = e.offsetX;
             dy = e.offsetY;
-  
+            
             // component determination 
+            point = cp;
             cp = _Register.find(cp.ref);
-            lk = _Register.findAllLink(cp);
+            if(cp.type != 'line')
+              lk = _Register.findAllLink(cp);
+
           }
           else {
             /**
@@ -60,6 +69,8 @@ class Events {
              * In this case, we start tracing a link.
              */
             state = "drawing_link";
+            console.log("state = drawing_link");
+
             id = _uuid.generate();
             if (cp != source) {
               line = new Line( id_svg, svg, null, config, id, cp.x, cp.y);
@@ -69,15 +80,17 @@ class Events {
         }
       },
       mouseMoveCb: function movecb(e) {
-  
+
         if (state == "moving") {
+
+          console.log("state = moving");
   
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
   
           dx = e.offsetX;
           dy = e.offsetY;
-  
+
           // Ensure cp is a component
           var src, sink;
           if(cp.form != undefined){
@@ -87,30 +100,30 @@ class Events {
                   src = point;
                 else if(point == link.destination)
                   sink = point;
-              })
-              if(src){
-                link.line.x += deltaX;
-                link.line.y += deltaY;
-                link.line.redraw();
-              }
-              else {
+              });
+              if(sink) {
+                console.log("dest");
+                console.log(sink);
                 link.line.dest_x += deltaX;
                 link.line.dest_y += deltaY;
-                link.line.redraw();
+
+                link.redraw();
+              }
+              else{
+                link.line.x += deltaX;
+                link.line.y += deltaY;
+
+                link.redraw();
               }
             });
-  
             cp.form.shift(deltaX, deltaY);
             cp.form.redraw();
-  
             lk.map( (link) => {
               link.redraw();
             });
-  
           }
         }
         else if (state == "drawing_link") {
-  
           line.dest_x = e.clientX;
           line.dest_y = e.clientY;
           line.redraw();
@@ -134,13 +147,13 @@ class Events {
         if (state == "drawing_link") {
           id = e.srcElement.id;
           var pnt = _Register.find(id);
-  
-  
+          
           if (pnt != undefined && pnt.ref != undefined) {
             line.dest_x = pnt.x;
             line.dest_y = pnt.y;
   
-            new Link(cp, pnt, line).redraw();
+            var link = new Link(cp, pnt, line);
+            link.redraw();
           }
           else if (id == id_svg || pnt.ref == undefined) {
             var ref = document.getElementById(line.uuid);
@@ -155,6 +168,29 @@ class Events {
             ref.remove();
           }
         }
+        // else if(state == "resizing" && source.type == 'line'){
+        //   console.log("mouseup");
+        //   id = e.srcElement.id;
+
+        //   var pnt = _Register.find(id);
+
+        //   if(pnt.ref){/* this is a form's connection point*/
+        //     var cp = _Register.find(pnt.ref);
+        //     console.log("pnt.ref != undefined");
+
+        //     if(point.x == source.form.x){
+        //       console.log("source.form.x == point.x");
+        //       source.form.x = pnt.x;
+        //       source.form.y = pnt.y;
+        //     }
+        //     else if(point.x == source.form.dest_x){
+        //       console.log("source.form.dest_x == point.x");
+        //       source.form.dest_x = pnt.x;
+        //       source.form.dest_y = pnt.y;
+        //     }
+        //     new Link(point, pnt, source.form).redraw();
+        //   }
+        // }
         state = "";
       },
       mouseOverCb: function mouseovercb(e){
@@ -163,30 +199,38 @@ class Events {
 
         id_store.push(id);
   
-        cp = _Register.find(id);
+        var local_cp = _Register.find(id);
 
-        if(cp.form.type == "line")
-          cp.form.c_svg.setAttribute("class", "move");
-
-        if(cp.form != undefined){
-          cp.form.c_svg.setAttribute("class", "move");
-          cp.form.c_points.map( (point) => {
-            point.c_svg.setAttribute("class", "show_point");
-            // point.c_svg.setAttribute("class", "drawing");
+        if(local_cp == undefined)
+          return;
+        if(local_cp.form.type == "line"){
+          local_cp.form.c_svg.setAttribute("class", "move");
+          local_cp.form.vertex.map((vt) =>{
+            vt.c_svg.setAttribute("class", "default");
           });
-          cp.form.vertex.map( (vertex, index) => {
-            vertex.c_svg.setAttribute("class", "show_point");
-            if(index == 0)
-              vertex.c_svg.setAttribute("class", "resize_left_top");
-            else if(index == 1)
-              vertex.c_svg.setAttribute("class", "resize_right_top");
-            else if(index == 2)
-              vertex.c_svg.setAttribute("class", "resize_right_bottom");
-            else if(index == 3)
-              vertex.c_svg.setAttribute("class", "resize_left_bottom");
-          });
-
         }
+        else {
+          if(local_cp.form != undefined){
+            local_cp.form.c_svg.setAttribute("class", "move");
+            local_cp.form.c_points.map( (point) => {
+              point.c_svg.setAttribute("class", "show_point");
+            });
+            local_cp.form.vertex.map( (vertex, index) => {
+              vertex.c_svg.setAttribute("class", "show_point");
+              if(index == 0)
+                vertex.c_svg.setAttribute("class", "resize_left_top");
+              else if(index == 1)
+                vertex.c_svg.setAttribute("class", "resize_right_top");
+              else if(index == 2)
+                vertex.c_svg.setAttribute("class", "resize_right_bottom");
+              else if(index == 3)
+                vertex.c_svg.setAttribute("class", "resize_left_bottom");
+            });
+          }
+        }
+        
+
+       
       },
       mouseLeaveCb: function mouseleavecb(e){
 
@@ -200,7 +244,7 @@ class Events {
               component.form.vertex.map( (vertex) => {
                 vertex.c_svg.setAttribute("class", "hidden_point");
               });
-            }, 20000);
+            }, 5000);
           })
       }
     }

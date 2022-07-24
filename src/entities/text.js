@@ -15,7 +15,9 @@ class Text{
         this.text = text;
 
         this.svg = svg;
+        this.c_svg = "";
 
+        this.events = {};
         this.nativeEvent = event;
 
         this.config = config;
@@ -37,6 +39,19 @@ class Text{
         this.tspan = "";
         this.title = "";
     };
+
+
+    addEvent(event, callback){
+        this.c_svg.addEventListener(event, callback);
+        this.events[event] = callback;
+    }
+    
+    deleteEvent(event){
+        var callback = this.events[event];
+        this.c_svg.removeEventListener(event, callback);
+        delete this.events[event];
+    }
+
 
     setRotateCenter(centerX, centerY){
         this.centerX = centerX;
@@ -60,14 +75,16 @@ class Text{
         this.c_svg.setAttributeNS(null, "fill-opacity", this.config.text.fillOpacity);
         this.c_svg.setAttributeNS(null, "stroke-dasharray", this.config.text.strokeDasharray);
         this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
+        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
 
-        this.tspan = document.createElementNS(svgns, "tspan");
+        // this.tspan = document.createElementNS(svgns, "tspan");
         this.title = document.createElementNS(svgns, "title");
 
         this.title.textContent = this.text;
-        this.tspan.textContent = this.text;
+        // this.tspan.textContent = this.text;
 
-        this.c_svg.appendChild(this.tspan);
+        this.c_svg.textContent = this.text;
+        // this.c_svg.appendChild(this.tspan);
         this.c_svg.appendChild(this.title);
 
         // this.updateWidthText();
@@ -95,14 +112,22 @@ class Text{
         this.tspan.textContent = subString;
         this.title.textContent = this.text;
     }
+
+    shift(dx, dy){
+        this.x += dx;
+        this.y += dy;
+    }
     
-    removeFromDom(){
-        this.svg.removeChild(this.c_svg);
+    removeFromDOM(){
+        // this.title.textContent = "";
+        // this.tspan.textContent = "";
+        this.c_svg.textContent = "";
     }
 
     redraw(){
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
         // this.updateWidthText();
     }
 
@@ -112,6 +137,10 @@ class Text{
 
     setOffsetY(y){
         this.offsetY = y;
+    }
+
+    setText(text){
+        this.text = text;
     }
 
     getOffsetX(){

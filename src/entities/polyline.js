@@ -3,16 +3,11 @@ import { _Register } from "../register";
 import { Point } from "./point";
 import { Form } from "../abstraction/form";
 
-
 /**
  * @class Polyline
  */
 
 class Polyline extends Form {
-    /**
-     * 
-     * @param {string} uuid 
-     */
     constructor(uuid, points = [], svg, event, config){
 
         super();
@@ -68,14 +63,15 @@ class Polyline extends Form {
         delete this.events[event];
     }
 
-    addChild(child, translate, rotate){
+    addChild(child, translate = null, rotate = null, drawing = true){
         child.vertex = [];
         child.c_points = [];
-        child.setOffsetX(this.x);
-        child.setOffsetY(this.y);
-        translate(this, child);
-        rotate(this, child);
-        child.draw();
+        if(translate != null)
+            translate(this, child);
+        if(rotate != null)
+            rotate(this, child);
+        if(drawing == true)
+            child.draw();
         this.children.push({child, translate, rotate});
     }
     
@@ -85,6 +81,8 @@ class Polyline extends Form {
     }
 
     drawConnector(){
+        if(this.c_points.length == 0)
+            return;
     }
 
     drawBox(){
@@ -96,10 +94,10 @@ class Polyline extends Form {
 
         var path = "";
         for(var i = 0; i < this.points.length; i++){
-                if(i % 2 == 0)
-                    path += this.points[i] + ",";
-                else
-                    path += this.points[i] + " ";
+            if(i % 2 == 0)
+                path += this.points[i] + ",";
+            else
+                path += this.points[i] + " ";
         }
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("fill", this.config.form.fill);
@@ -124,6 +122,9 @@ class Polyline extends Form {
 
     removeFromDOM(){
         this.svg.removeChild(this.c_svg);
+        this.children.map(({child}) =>{
+            child.removeFromDOM();
+        });
     }
 
 
@@ -146,32 +147,33 @@ class Polyline extends Form {
         this.c_svg.setAttribute("point", path);
 
         this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+            if(translate != null)
+                translate(this, child);
+            if(rotate != null)
+                rotate(this, child);
             child.redraw();
         });
     }
 
     calculateAngle(){
         var angle;
-        this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
+        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
 
-        if(this.pente == 0)
+        if(pente == 0)
             angle = 0;
-        if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
+        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
             angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
+        else if(pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
             angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
+        else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
             angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-        else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
+        else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
             angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 
         return angle;
     }
 
     resize(pos, dx, dy){
-
         if(pos == 0){
             this.x += dx;
             this.y += dy;
@@ -180,7 +182,6 @@ class Polyline extends Form {
             this.dest_x += dx;
             this.dest_y += dy;
         }
-
         this.children.map ( ({child, translate, rotate}) => {
             translate(this, child);
             child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
@@ -234,9 +235,8 @@ class Polyline extends Form {
         return this.scaleY;
     }
 
-
     optimalPath(){
 
     }
 }
-export {Polyline};
+export {Polyline}; 

@@ -2,6 +2,7 @@ import { Form } from "../abstraction/form.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
 
+
 /**
  *  Class representing a rectangle form.
  * 
@@ -123,7 +124,6 @@ class Rectangle extends Form {
     this.angle = 0;
 
 
-
     /**
      * @description
      * The center of rotation is defined by defining centerX.
@@ -212,12 +212,15 @@ class Rectangle extends Form {
    * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
    * account its relative position and the center of rotation.
    */
-  addChild(child, translate, rotate){
-    child.setOffsetX(this.x);
-    child.setOffsetY(this.y);
-    translate(this, child);
-    rotate(this, child);
-    child.draw();
+  addChild(child, translate = null, rotate = null, drawing = true){
+    // child.setOffsetX(this.x);
+    // child.setOffsetY(this.y);
+    if(translate != null)
+      translate(this, child);
+    if(rotate != null)
+      rotate(this, child);
+    if(drawing == true)
+      child.draw();
     this.children.push({child, translate, rotate});
   }
 
@@ -239,9 +242,7 @@ class Rectangle extends Form {
     this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
     this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
-
     this.svg.appendChild(this.c_svg);
-
 
     this.drawConnector();
     this.drawVertex();
@@ -254,6 +255,10 @@ class Rectangle extends Form {
       point.draw();
     });
 
+    this.children.map(({child}) =>{
+      child.draw();
+    });
+
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
     this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
@@ -262,6 +267,9 @@ class Rectangle extends Form {
 
   removeFromDOM(){
     this.svg.removeChild(this.c_svg);
+    this.children.map(({child}) =>{
+      child.removeFromDOM();
+    });
   }
 
   setRotateCenter(centerX, centerY){
@@ -508,7 +516,8 @@ class Rectangle extends Form {
               (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
               ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
         ){
-            return this.c_points[i];
+            // return this.c_points[i];
+            return i;
         }
     }
     return null;

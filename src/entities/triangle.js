@@ -21,6 +21,7 @@ class Triangle extends Form {
     this.x2 = x2;
     this.y2 = y2;
 
+
     this.x3 = x3;
     this.y3 = y3;
 
@@ -171,6 +172,9 @@ class Triangle extends Form {
 
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
+    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
+    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
   }
 
   removeFromDOM(){

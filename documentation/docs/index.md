@@ -1,15 +1,21 @@
 ---
 layout: home
+
 hero:
   name: ayajs
-  text: Amazing and simple diagram generator.
-  tagline: create anything you want
+  text: amazing and fast library for creating diagrams.
+  tagline: Lorem ipsum...
+  image:
+    src: /logo.png
+    alt: VitePress
   actions:
     - theme: brand
-      text: Github
-      link: https://github.com/vuejs/vitepress
+      text: Get Started
+      link: /docs/getting-started
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/Duamelo/ayajs
 ---
-
 <style scoped>
 
 .main-block{

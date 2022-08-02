@@ -1,0 +1,13 @@
+:root {
+    --c-brand: darkred;
+    --c-brand-light: red;
+    --font-family-base: Georgia, serif;
+}
+
+.VPButton.brand[data-v-1851d5f4]{
+    background-color: #000099;
+}
+
+.clip[data-v-a58bc588]{
+    -webkit-text-fill-color: #000099;
+}

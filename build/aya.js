@@ -1235,7 +1235,6 @@
 	    var svg = svg;
 	    var id_svg = id_svg;
 	    var config = config;
-	    var id_store = [];
 	  
 	    return {
 	      mouseDownCb: function mousedowncb(e) {
@@ -1408,8 +1407,6 @@
 	      mouseOverCb: function mouseovercb(e){
 
 	        id = e.srcElement.id;
-
-	        id_store.push(id);
 	  
 	        var local_cp = _Register.find(id);
 

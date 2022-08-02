@@ -194,7 +194,7 @@ class Init{
     }
 
     Image(x,y, width, height, path = ""){
-        return new Image(x, y, width, height, path, this.svg);
+        return new Image(x, y, width, height, path, this.svg, this.events, this.config);
     }
 }
 export {Init};

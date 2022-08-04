@@ -14,6 +14,7 @@ import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
 import { Image } from "./entities/Image";
+import { _Register } from "./register";
 
 class Init{
     constructor(width = 1343, height = 1343){
@@ -143,6 +144,10 @@ class Init{
 
         this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);
+    }
+
+    Register(){
+        return _Register;
     }
 
     Component(type, props){

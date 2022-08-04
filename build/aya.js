@@ -4052,6 +4052,10 @@
 	        return _Register;
 	    }
 
+	    _uuid(){
+	        return _uuid;
+	    }
+
 	    Component(type, props){
 	        return new Component(type, props, this.svg, this.events, this.config);
 	    }

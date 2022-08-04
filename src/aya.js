@@ -15,7 +15,6 @@ import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
 import { Image } from "./entities/Image";
 import { _Register } from "./register";
-import {_uuid } from "./entities/uuid";
 
 class Init{
     constructor(width = 1343, height = 1343){

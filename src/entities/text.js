@@ -14,6 +14,8 @@ class Text{
 
         this.text = text;
 
+        this.type = 'text';
+
         this.svg = svg;
         this.c_svg = "";
 

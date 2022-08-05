@@ -1173,43 +1173,178 @@
 	            
 	            this.line.dest_x = this.destination.x;
 	            this.line.dest_y = this.destination.y;
-	            
-	            // if(this.line.x <= this.line.dest_x){
-	            //     if(i_src == 0){
-	            //         this.line.c1.x = this.line.x;
-	            //         this.line.c1.y = this.line.y - dy;
-	            //     }
-	            //     if(i_src == 1){
-	            //         console.log("i_src= 1");
-	            //         this.line.c1.y = this.line.y;
-	            //         this.line.c1.x = this.line.x;
-	    
-	            //         console.log(this.line.x + " " + this.line.y); 
-	            //         console.log(this.line.c1.x + " " + this.line.c1.y);
-	            //     }
-	            //     if(i_src == 2){
-	            //         this.line.c1.x = this.line.x;
-	            //         this.line.c1.y = this.line.y + dy;
-	            //     }
-	            //     if(i_dest == 0){
-	            //         this.line.c4.x = this.line.dest_x;
-	            //         this.line.c4.y = this.line.dest_y - dy;
-	            //     }
-	            //     if(i_dest == 2){
-	            //         this.line.c4.x = this.line.dest_x;
-	            //         this.line.c4.y = this.line.dest_y + dy;
-	            //     }
-	            //     if(i_dest == 3){
-	            //         this.line.c4.y = this.line.dest_y;
-	            //         this.line.c4.x = this.line.dest_x - dx;
-	            //     }
-	    
-	            //     this.line.c4.y = this.line.dest_y;
-	            //     this.line.c2.x = (this.line.dest_x + this.line.x)/2;
-	            //     this.line.c2.y = this.line.c1.y;
-	            //     this.line.c3.x = this.line.c2.x;
-	            //     this.line.c3.y = this.line.c4.y;
-	            // }
+	            console.log(this.line);
+	            var dy = 10;
+	            {
+	                 if(i_src == 0 ){
+	                   if(i_dest == 3){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                   }
+
+	                    if(i_dest == 1){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                     }
+	                    if(i_dest == 2){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = (this.y + this.dest_y) / 2;
+
+	                        this.line.c3.x = this.dest_x;
+	                        this.line.c3.y = this.line.c2.y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                    }
+	                 }
+	                 if(i_src == 1){
+	                    if(i_dest == 3){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = (this.x + this.dest_y)/2;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.line.c2;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                   }
+
+	                    if(i_dest == 2){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.dest_x;
+	                        this.line.c3.y = this.y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                     }
+	                    if(i_dest == 0){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.dest_x;
+	                        this.line.c3.y = this.y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                    }
+	                 }
+	                 if(i_src == 2){
+	                     if(i_dest == 3){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                   }
+
+	                    if(i_dest == 1){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                     }
+	                    if(i_dest == 0){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = (this.y + this.x)/2;
+
+	                        this.line.c3.x = this.dest_x;
+	                        this.line.c3.y = this.line.c2.y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                    }
+	                 }
+	                 if(i_src == 3){
+	                    if(i_dest == 1){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = (this.x + this.dest_x) / 2;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.line.c2.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                   }
+
+	                    if(i_dest == 2){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y;
+	                     }
+	                    if(i_dest == 0){
+	                        this.line.c1.x = this.x;
+	                        this.line.c1.y = this.y;
+
+	                        this.line.c2.x = this.x;
+	                        this.line.c2.y = this.y;
+
+	                        this.line.c3.x = this.x;
+	                        this.line.c3.y = this.dest_y;
+
+	                        this.line.c4.x = this.dest_x;
+	                        this.line.c4.y = this.dest_y + dy;
+	                    }
+	                 }
+	            }
 
 	            console.log(this.line.c1.x + " " + this.line.c1.y); 
 	    
@@ -1235,7 +1370,6 @@
 	    var svg = svg;
 	    var id_svg = id_svg;
 	    var config = config;
-	    var id_store = [];
 	  
 	    return {
 	      mouseDownCb: function mousedowncb(e) {
@@ -1408,8 +1542,6 @@
 	      mouseOverCb: function mouseovercb(e){
 
 	        id = e.srcElement.id;
-
-	        id_store.push(id);
 	  
 	        var local_cp = _Register.find(id);
 
@@ -1643,14 +1775,14 @@
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
-	        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+	         this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+	         + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+	         + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+	         + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+	         + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+	         + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 
-	        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+	        //this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", this.p);
@@ -1693,6 +1825,10 @@
 	        this.dest_y += dy;
 	    }
 
+	    updateLine(){
+
+	    }
+
 	    redraw(){
 	        this.drawVertex();
 
@@ -1700,13 +1836,13 @@
 	            vertex.redraw();
 	        });
 
-	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-	        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+	        //var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+	         + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+	         + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+	         + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+	         + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+	         + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 	        this.c_svg.setAttribute("d", p);
 
 	        this.children.map ( ({child, translate, rotate}) => {

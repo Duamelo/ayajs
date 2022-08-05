@@ -822,8 +822,6 @@
 	   * account its relative position and the center of rotation.
 	   */
 	  addChild(child, translate = null, rotate = null, drawing = true){
-	    // child.setOffsetX(this.x);
-	    // child.setOffsetY(this.y);
 	    if(translate != null)
 	      translate(this, child);
 	    if(rotate != null)
@@ -2171,8 +2169,6 @@
 
 
 	  addChild(child, translate = null, rotate = null, drawing = true){
-	    child.setOffsetX(this.x);
-	    child.setOffsetY(this.y);
 	    if(translate != null)
 	      translate(this, child);
 	    if(rotate != null)
@@ -2790,8 +2786,6 @@
 	    addChild(child, translate = null, rotate = null, draw = true){
 	        child.vertex = [];
 	        child.c_points = [];
-	        child.setOffsetX(this.x);
-	        child.setOffsetY(this.y);
 	        if(translate != null)
 	            translate(this, child);
 	        if(rotate != null)
@@ -3864,16 +3858,26 @@
 	}
 
 	class Image{
-	    constructor(x = 0, y = 0, width = 50, height = 50, path, svg, event, config){
+	    constructor(uuid, x = 0, y = 0, width = 50, height = 50, path, name, svg, event, config){
+	       
+	        this.uuid = uuid;
+	       
 	        this.width = width;
 	        this.height = height;
+	       
 	        this.x = x;
 	        this.y = y;
+	       
 	        this.path = path;
+	        this.name = name;
+
 	        this.c_svg = "";
+	        
 	        this.events = {};
 	        this.nativeEvent = event;
+	        
 	        this.config = config;
+	        
 	        this.type = 'image';
 	        this.svg = svg;
 	    }
@@ -3888,7 +3892,6 @@
 	        this.c_svg.removeEventListener(event, callback);
 	        delete this.events[event];
 	    }
-
 
 	    draw(){
 	        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
@@ -3939,10 +3942,6 @@
 	        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
 	        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
 
-	        this.u_tail_px = 10;
-	        this.u_nc = Math.floor(this.tail_px / this.u_tail_px); 
-	        this.u_nl = Math.floor(this.tail_px / this.u_tail_px);
-	        
 	        this.box = this.Component("rectangle", {
 	            x: 0,
 	            y: 0,
@@ -3968,32 +3967,6 @@
 
 	        for(var j = 1; j <= this.nl - 1; j++){
 	            var line = this.Line(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
-
-	            // for(var k = 1; k <=( this.u_nl - 1) + this.tail_px; k++){
-	            //     var u_line = this.Line(0, k * this.u_tail_px, this.nl * this.tail_px, k * this.u_tail_px);
-
-	            //     this.box.form.addChild(u_line, (p, c)=> {}, (p,c)=>{});
-
-	            //     u_line.c_svg.setAttribute("fill", "white");
-	            //     u_line.c_svg.setAttribute("stroke", "#57564F");
-	            //     u_line.c_svg.setAttributeNS(null, "stroke-width", "0.1pt");
-	    
-	            //     u_line.children.map( ({child}) => {
-	            //         child.removeFromDOM();
-	            //     });
-	    
-	            //     u_line.vertex.map( (vt) => {
-	            //         vt.removeFromDOM();
-	            //     });
-	    
-	            //     u_line.c_points.map( (point) => {
-	            //         point.removeFromDOM();
-	            //     });
-	    
-	            //     Object.keys(u_line.events).map((ev) => {
-	            //         u_line.deleteEvent(ev);
-	            //     });
-	            // }
 
 	            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
@@ -4104,8 +4077,8 @@
 	        return new Ressource(x, y, r, angle, data, this.svg, this.config);
 	    }
 
-	    Image(x,y, width, height, path = ""){
-	        return new Image(x, y, width, height, path, this.svg, this.events, this.config);
+	    Image(x,y, width, height, path = "", name = ""){
+	        return new Image(_uuid.generate(), x, y, width, height, path, name, this.svg, this.events, this.config);
 	    }
 	}
 

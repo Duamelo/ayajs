@@ -172,8 +172,8 @@ class Init{
         return new Ressource(x, y, r, angle, data, this.svg, this.config);
     }
 
-    Image(x,y, width, height, path = ""){
-        return new Image(x, y, width, height, path, this.svg, this.events, this.config);
+    Image(x,y, width, height, path = "", name = ""){
+        return new Image(_uuid.generate(), x, y, width, height, path, name, this.svg, this.events, this.config);
     }
 }
 export {Init};

@@ -1,14 +1,24 @@
 class Image{
-    constructor(x = 0, y = 0, width = 50, height = 50, path, svg, event, config){
+    constructor(uuid, x = 0, y = 0, width = 50, height = 50, path, name, svg, event, config){
+       
+        this.uuid = uuid;
+       
         this.width = width;
         this.height = height;
+       
         this.x = x;
         this.y = y;
+       
         this.path = path;
+        this.name = name;
+
         this.c_svg = "";
+        
         this.events = {};
         this.nativeEvent = event;
+        
         this.config = config;
+        
         this.type = 'image';
         this.svg = svg;
     }

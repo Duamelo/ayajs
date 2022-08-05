@@ -84,8 +84,6 @@ class Lozenge extends Form{
 
 
   addChild(child, translate = null, rotate = null, drawing = true){
-    child.setOffsetX(this.x);
-    child.setOffsetY(this.y);
     if(translate != null)
       translate(this, child);
     if(rotate != null)

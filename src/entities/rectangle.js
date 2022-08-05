@@ -213,8 +213,6 @@ class Rectangle extends Form {
    * account its relative position and the center of rotation.
    */
   addChild(child, translate = null, rotate = null, drawing = true){
-    // child.setOffsetX(this.x);
-    // child.setOffsetY(this.y);
     if(translate != null)
       translate(this, child);
     if(rotate != null)

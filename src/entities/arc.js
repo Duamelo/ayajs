@@ -82,8 +82,6 @@ class Arc extends Form {
     addChild(child, translate = null, rotate = null, draw = true){
         child.vertex = [];
         child.c_points = [];
-        child.setOffsetX(this.x);
-        child.setOffsetY(this.y);
         if(translate != null)
             translate(this, child);
         if(rotate != null)

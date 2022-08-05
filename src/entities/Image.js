@@ -1,4 +1,3 @@
-
 class Image{
     constructor(x = 0, y = 0, width = 50, height = 50, path, svg, event, config){
         this.width = width;
@@ -24,7 +23,6 @@ class Image{
         this.c_svg.removeEventListener(event, callback);
         delete this.events[event];
     }
-
 
     draw(){
         this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');

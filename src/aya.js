@@ -15,6 +15,7 @@ import { Arc } from "./entities/arc";
 import { Ressource } from "./usecases/ressource";
 import { Image } from "./entities/Image";
 import { _Register } from "./register";
+import { Link } from "./entities/link";
 
 class Init{
     constructor(width = 1343, height = 1343){
@@ -150,6 +151,10 @@ class Init{
 
     Line(x=0, y=0, dest_x = x, dest_y = y){
         return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
+    }
+
+    Link(src_point, dest_point, line = undefined){
+        return Link(src_point, dest_point, line);
     }
 
     Polyline( points = []){

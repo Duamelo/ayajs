@@ -4057,6 +4057,10 @@
 	        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
 	    }
 
+	    Link(src_point, dest_point, line = undefined){
+	        return Link(src_point, dest_point, line);
+	    }
+
 	    Polyline( points = []){
 	        return new Polyline(_uuid.generate(), points, this.svg, this.events, this.config);
 	    }

@@ -1,21 +1,21 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js install
+  /usr/local/bin/node /usr/local/bin/yarn install
 
 PATH: 
-  /home/franck/.cargo/bin:/home/franck/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /Library/Frameworks/Python.framework/Versions/3.10/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/Users/amald/opt/anaconda3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Library/TeX/texbin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/amald/progs/flutter/bin
 
 Yarn version: 
-  1.22.15
+  1.22.19
 
 Node version: 
-  14.17.6
+  16.13.1
 
 Platform: 
-  linux x64
+  darwin x64
 
 Trace: 
-  Error: connect EHOSTUNREACH 104.16.17.35:443
-      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16)
+  Error: connect EBADF 104.16.21.35:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1161:16)
 
 npm manifest: 
   {

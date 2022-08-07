@@ -3,15 +3,11 @@ layout: home
 
 hero:
   name: ayajs
-  text: amazing and fast library for creating diagrams.
-  tagline: Lorem ipsum...
-  image:
-    src: /logo.png
-    alt: VitePress
+  text: amazing and fastest library for creating diagrams.
   actions:
     - theme: brand
       text: Get Started
-      link: /docs/getting-started
+      link: /docs
     - theme: alt
       text: View on GitHub
       link: https://github.com/Duamelo/ayajs
@@ -21,7 +17,7 @@ hero:
 .main-block{
     height:100px;
     width:80%;
-    margin:0 auto;
+    margin:50px auto;
    /*background:grey;*/
 }
 .para-with-line-above-download{
@@ -29,6 +25,7 @@ hero:
     max-width:135px;
     font-size:26px;
     font-weight:bold;
+    margin-top:100px;
 }
 .para-with-line-above-overview{
   position:relative;
@@ -57,12 +54,22 @@ hero:
     margin-bottom:20px;
     font-weight:bold;
 }
+.para-with-line-above-uses-cases{
+  padding-top:15px;
+    position:relative;
+    max-width:320px;
+    margin-bottom:70px;
+    font-weight:bold;
+    font-size:56px;
+
+}
 
 .para-with-line-above-download::before,
 .para-with-line-above-overview:before,
 .para-with-line-above-basic-usage::before,
 .para-with-line-above-drawing-first-shape::before,
-.para-with-line-above-next-step::before{
+.para-with-line-above-next-step::before,
+.para-with-line-above-uses-cases::before{
     content:'';
     position:absolute;
     height: 3px;
@@ -128,7 +135,6 @@ ul .overview-list{
   margin-bottom:20px;
 }
 
-
 .basic-usage-para,
 .drawing-para,
 .next-step-para
@@ -140,12 +146,94 @@ ul .overview-list{
    margin-bottom:50px;
 }
 
+.use-case-block{
+  margin-top:30px;
+  background:#0065b88e;
+  display:flex;
+  justify-content:space-around;
+  padding:20px;
+  border-radius:6px;
+}
 
+.use-case-presentation-block,
+.right-use-case-presentation-block{
+  width:50%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.right-use-case-presentation-block{
+  padding-left:20px;
+}
+
+.live-use-case-presentation{
+  width:50%;
+}
+
+.use-case-block .use-case-presentation-block .use-case-description,
+.use-case-block .right-use-case-presentation-block .use-case-description {
+  padding:20px;
+  text-align:justify;
+}
+
+.use-case-block .use-case-presentation-block .use-case-title,
+.use-case-block .right-use-case-presentation-block .right-use-case-title{
+  font-size:32px;
+}
+
+.live-use-case-presentation{
+  display:flex;
+  align-items:center;
+}
+
+@media(max-width: 688px){
+    .use-case-block{
+        display:block;
+    }
+    .live-use-case-presentation{
+       width:100%;
+    }
+    .use-case-presentation-block,
+    .right-use-case-presentation-block{
+      width:100%;
+    }
+
+    .right-use-case-presentation-block{
+      margin-top:20px;
+  }
+}
 </style>
 
-
 <body>
+
 <div class="main-block">
+
+  <p class="para-with-line-above-uses-cases">Uses cases </p>
+
+  <div class="use-case-block">
+    <div class="use-case-presentation-block">
+      <h1 class="use-case-title"> Use case title 1</h1>
+      <p class="use-case-description">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+      </p>
+    </div>
+    <div class="live-use-case-presentation">
+      <img src="./images/bpmn-js.gif">
+    </div>
+  </div>
+<br><br>
+   <div class="use-case-block">
+    <div class="live-use-case-presentation">
+      <img src="./images/bpmn-js.gif">
+    </div>
+     <div class="right-use-case-presentation-block">
+      <h1 class="right-use-case-title"> Use case title 2</h1>
+      <p class="use-case-description">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+      </p>
+    </div>
+  </div>
   <p class="para-with-line-above-download">Download </p>
   <br>
   <p>via NPM</p>
@@ -195,8 +283,3 @@ Haven't found what you're looking for? Then ask a question on our GitHub page.</
 <br><br>
 </div>
 </body>
-
-
-
-
-

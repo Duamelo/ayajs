@@ -12,10 +12,6 @@ export default {
           socialLinks: [
             { icon: 'github', link: 'https://github.com/Duamelo/ayajs'},
           ],
-          footer: {
-            message: 'Released under the MIT License.',
-            copyright: 'Copyright © 2022-present David DOSSEH'
-          },
           docFooter: {
             prev: 'Pagina prior',
             next: 'Proxima pagina'
@@ -23,7 +19,31 @@ export default {
           carbonAds: {
             code: 'your-carbon-code',
             placement: 'your-carbon-placement'
-          }
+          },
+          sidebar: [
+            {
+              text: 'Guide',
+              items: [
+                { text: 'Introduction', link: '/introduction' },
+                { text: 'Getting Started', link: '/getting-started' },
+              ]
+            },{
+              text: 'Forms',
+              collapsible: true,
+              items: [
+                { text: 'triangle', link: '/introduction' },
+                { text: 'losange', link: '/getting-started' },
+              ]
+            },
+            {
+              text: 'Components',
+              collapsible: true,
+              items: [
+                { text: 'rectangle', link: '/introduction' },
+                { text: 'triangle', link: '/getting-started' },
+              ]
+            }
+          ]
     },
     head: [
        // ['link', { rel: 'icon', href: `/favicon-vuesax.png` }],

@@ -5,9 +5,67 @@
 }
 
 .VPButton.brand[data-v-1851d5f4]{
-    background-color: #000099;
+    background-color: #0066b8;
 }
 
 .clip[data-v-a58bc588]{
-    -webkit-text-fill-color: #000099;
+    -webkit-text-fill-color: #0066b8;
+}
+
+.text[data-v-a58bc588],
+.name[data-v-a58bc588]{
+    font-size: 30px;
+}
+
+.main[data-v-a58bc588]{
+display: flex;
+align-items: center;
+flex-direction: column;
+}
+
+.text[data-v-a58bc588] {
+    line-height: 55px;
+    font-size: 50px;
+    max-width: 1100px;
+    text-align: center;
+}
+
+@media(max-width: 674px){
+    .text[data-v-a58bc588] {
+        font-size: 40px;
+    }
+}
+
+@media(max-width: 510px){
+    .text[data-v-a58bc588] {
+        font-size: 30px;
+        line-height: 40px;
+    }
+}
+
+.VPButton.brand[data-v-1851d5f4] {
+    border-color:#0066b8;
+}
+
+.VPButton.brand[data-v-1851d5f4]:hover {
+    border-color:white;
+    background-color: black;
+}
+
+.VPHero[data-v-a58bc588] {
+    
+}
+
+.VPNavBarMenuLink.active[data-v-3589a96a]{
+    color:#0066b8;
+}
+.VPNavBarMenuLink[data-v-3589a96a]:hover{
+    color:#0066b8;
+}
+
+
+
+
+.test{
+    color:#0065b88e;
 }

@@ -4107,7 +4107,7 @@
 	    }
 
 	    Link(src_point, dest_point, line = undefined){
-	        return Link(src_point, dest_point, line);
+	        return new Link(src_point, dest_point, line);
 	    }
 
 	    Polyline( points = []){

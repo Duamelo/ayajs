@@ -499,6 +499,13 @@
 	        this.children.map(({child}) => {
 	            child.removeFromDOM();
 	        });
+	        this.c_points.map((pt)=>{
+	            pt.removeFromDOM();
+	        });
+	      
+	        this.vertex.map((vt)=>{
+	        vt.removeFromDOM();
+	        });
 	    }
 	    
 	    shift(dx, dy){
@@ -876,6 +883,13 @@
 	    this.svg.removeChild(this.c_svg);
 	    this.children.map(({child}) =>{
 	      child.removeFromDOM();
+	    });
+	    this.c_points.map((pt)=>{
+	      pt.removeFromDOM();
+	    });
+
+	    this.vertex.map((vt)=>{
+	      vt.removeFromDOM();
 	    });
 	  }
 
@@ -1680,6 +1694,13 @@
 
 	    removeFromDOM(){
 	        this.svg.removeChild(this.c_svg);
+	        this.c_points.map((pt)=>{
+	            pt.removeFromDOM();
+	        });
+	    
+	        this.vertex.map((vt)=>{
+	        vt.removeFromDOM();
+	        });
 	    }
 
 
@@ -1979,6 +2000,18 @@
 
 	  removeFromDOM(){
 	    this.svg.removeChild(this.c_svg);
+
+	    this.children.map(({child})=>{
+	      child.removeFromDOM();
+	    });
+	    
+	    this.c_points.map((pt)=>{
+	      pt.removeFromDOM();
+	    });
+
+	    this.vertex.map((vt)=>{
+	      vt.removeFromDOM();
+	    });
 	  }
 
 	  shift(dx, dy) {
@@ -2278,6 +2311,14 @@
 	    this.svg.removeChild(this.c_svg);
 	    this.children.map(({child})=>{
 	      child.removeFromDOM();
+	    });
+
+	    this.c_points.map((pt)=>{
+	      pt.removeFromDOM();
+	    });
+
+	    this.vertex.map((vt)=>{
+	      vt.removeFromDOM();
 	    });
 	  }
 
@@ -2596,6 +2637,14 @@
 	        this.svg.removeChild(this.c_svg);
 	        this.children.map(({child}) =>{
 	            child.removeFromDOM();
+	        });
+
+	        this.c_points.map((pt)=>{
+	            pt.removeFromDOM();
+	        });
+	      
+	        this.vertex.map((vt)=>{
+	        vt.removeFromDOM();
 	        });
 	    }
 

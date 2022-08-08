@@ -194,6 +194,14 @@ class Lozenge extends Form{
     this.children.map(({child})=>{
       child.removeFromDOM();
     });
+
+    this.c_points.map((pt)=>{
+      pt.removeFromDOM();
+    });
+
+    this.vertex.map((vt)=>{
+      vt.removeFromDOM();
+    });
   }
 
   redraw() {

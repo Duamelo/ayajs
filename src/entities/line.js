@@ -224,6 +224,13 @@ class Line extends Form {
 
     removeFromDOM(){
         this.svg.removeChild(this.c_svg);
+        this.c_points.map((pt)=>{
+            pt.removeFromDOM();
+        });
+    
+        this.vertex.map((vt)=>{
+        vt.removeFromDOM();
+        });
     }
 
 

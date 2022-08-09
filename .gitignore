@@ -1,4 +1,4 @@
 node_modules/
 task_ressource.txt
-build/aya.js
-build/aya.module.js
+build/
+!build/aya.min.js

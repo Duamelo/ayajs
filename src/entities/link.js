@@ -1,5 +1,6 @@
 import  {_uuid}  from "./uuid.js";
 import {_Register}  from "../register.js"
+import { config } from "../../config.js";
 /**
  * @class Link
  */
@@ -15,6 +16,8 @@ class Link
        this.line = line;
        this.type = "link";
        _Register.add(this);
+       if(config.linkcb)
+        config.linkcb(this);
     }
 
     redraw(){

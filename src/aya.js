@@ -117,6 +117,10 @@ class Init{
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);
     }
 
+    setlinkcb(cb){
+        this.config.linkcb = cb;
+    }
+
     _uuid(){
         return _uuid;
     }

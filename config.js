@@ -51,7 +51,9 @@ var config =  {
         strokeOpacity : 100,
         strokeDasharray : 10.5,
         strokeDashoffset : 10.5,
-    }
+    },
+
+    linkcb: null
 }
 
 export {config};

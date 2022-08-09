@@ -57,7 +57,9 @@
 	        strokeOpacity : 100,
 	        strokeDasharray : 10.5,
 	        strokeDashoffset : 10.5,
-	    }
+	    },
+
+	    linkcb: null
 	};
 
 	var store = {};
@@ -1160,6 +1162,8 @@
 	       this.line = line;
 	       this.type = "link";
 	       _Register.add(this);
+	       if(config.linkcb)
+	        config.linkcb(this);
 	    }
 
 	    redraw(){
@@ -4068,6 +4072,10 @@
 
 	        this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
 	        this.svg.addEventListener("mouseup", this.events.mouseUpCb);
+	    }
+
+	    setlinkcb(cb){
+	        this.config.linkcb = cb;
 	    }
 
 	    _uuid(){

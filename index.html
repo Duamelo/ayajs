@@ -22,12 +22,14 @@
    //    child.removeFromDOM();
    // });
 
-   var rg = aya._uuid();
-
-   console.log(rg);
 
    var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
    
+
+   var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
+
+      aya.setlinkcb((l)=>{ console.log("testxtx") ; console.log(l)});
+
    // var text = aya.Text(0,0,"{text}");
    // los.form.addChild(text, (p,c)=>{
    //    c.setOffsetX(p.x - p.width/4);

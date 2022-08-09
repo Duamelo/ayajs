@@ -2608,9 +2608,9 @@
 	        var path = "";
 	        for(var i = 0; i < this.points.length; i++){
 	            if(i % 2 == 0)
-	                path += this.points[i] + ",";
+	                path += this.points[i] + this.offsetX + ",";
 	            else
-	                path += this.points[i] + " ";
+	                path += this.points[i] + this.offsetY + " ";
 	        }
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("fill", this.config.form.fill);

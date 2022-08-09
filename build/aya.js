@@ -44,7 +44,7 @@
 	    line : {
 	        fill : "black",
 	        ends : {
-	            start : { type : "circle"},
+	            start : { type : "triangle"},
 	            dest : { type : "triangle"}
 	        }
 	    },

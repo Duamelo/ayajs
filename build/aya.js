@@ -4070,10 +4070,6 @@
 	        this.svg.addEventListener("mouseup", this.events.mouseUpCb);
 	    }
 
-	    Register(){
-	        return _Register;
-	    }
-
 	    _uuid(){
 	        return _uuid;
 	    }

@@ -4078,6 +4078,10 @@
 	        this.config.linkcb = cb;
 	    }
 
+	    getlinkcb(){
+	        return this.config.linkcb;
+	    }
+
 	    _uuid(){
 	        return _uuid;
 	    }

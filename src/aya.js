@@ -62,7 +62,7 @@ class Init{
         });
 
         for(var j = 1; j <= this.nl - 1; j++){
-            var line = this.Line(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
+            var line = this.Line(0, j * this.tail_px, this.svg_width, j * this.tail_px);
 
             this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
@@ -88,7 +88,7 @@ class Init{
         }
 
         for(var j = 1; j <= this.nc - 1; j++){
-            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.nc * this.tail_px);
+            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.svg_height);
 
             this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
 

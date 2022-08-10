@@ -4,9 +4,6 @@
     --font-family-base: Georgia, serif;
 }
 
-.VPButton.brand[data-v-1851d5f4]{
-    background-color: #0066b8;
-}
 
 .clip[data-v-a58bc588]{
     -webkit-text-fill-color: #0066b8;
@@ -45,15 +42,12 @@ flex-direction: column;
 
 .VPButton.brand[data-v-1851d5f4] {
     border-color:#0066b8;
+    background-color: #0066b8;
 }
 
 .VPButton.brand[data-v-1851d5f4]:hover {
     border-color:white;
     background-color: black;
-}
-
-.VPHero[data-v-a58bc588] {
-    
 }
 
 .VPNavBarMenuLink.active[data-v-3589a96a]{
@@ -63,9 +57,20 @@ flex-direction: column;
     color:#0066b8;
 }
 
+.VPHero[data-v-a58bc588]{
+    background:#58768f1a
+}
+
+.title[data-v-857cd014]{
+    color:orangered;
+    font-size: 32;
+}
+
+
 
 
 
 .test{
-    color:#0065b88e;
+    color:#58768f1a;
+   color:rgba(128, 128, 128, 0.202);
 }

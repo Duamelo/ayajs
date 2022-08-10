@@ -2,8 +2,8 @@
 layout: home
 
 hero:
-  name: ayajs
-  text: amazing and fastest library for creating diagrams.
+  #name: ayajs
+  text: Build everything you want with ayajs
   actions:
     - theme: brand
       text: Get Started
@@ -148,11 +148,11 @@ ul .overview-list{
 
 .use-case-block{
   margin-top:30px;
-  background:#0065b88e;
+  
   display:flex;
   justify-content:space-around;
   padding:20px;
-  border-radius:6px;
+  border-radius:10px;
 }
 
 .use-case-presentation-block,
@@ -173,12 +173,14 @@ ul .overview-list{
 
 .use-case-block .use-case-presentation-block .use-case-description,
 .use-case-block .right-use-case-presentation-block .use-case-description {
-  padding:20px;
+  padding:20px 0;
   text-align:justify;
+  max-width: 80%;
 }
 
 .use-case-block .use-case-presentation-block .use-case-title,
 .use-case-block .right-use-case-presentation-block .right-use-case-title{
+  font-weight:bold;
   font-size:32px;
 }
 
@@ -203,13 +205,21 @@ ul .overview-list{
       margin-top:20px;
   }
 }
+
+.use-case-block .use-case-presentation-block .use-case-button,
+.use-case-block .right-use-case-presentation-block .use-case-button{
+    padding:15px;
+    background:#58768f1a;
+    width:50%;
+    text-align:center;
+  }
 </style>
 
 <body>
 
 <div class="main-block">
 
-  <p class="para-with-line-above-uses-cases">Uses cases </p>
+  <!--<p class="para-with-line-above-uses-cases">Uses cases </p>-->
 
   <div class="use-case-block">
     <div class="use-case-presentation-block">
@@ -217,9 +227,10 @@ ul .overview-list{
       <p class="use-case-description">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
       </p>
+      <a href="#!" class="use-case-button">Live preview</a>
     </div>
     <div class="live-use-case-presentation">
-      <img src="./images/bpmn-js.gif">
+      <img src="./images/game_of_life_demo_AdobeExpress.gif" width="400px" height="100px">
     </div>
   </div>
 <br><br>
@@ -232,6 +243,7 @@ ul .overview-list{
       <p class="use-case-description">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
       </p>
+      <a href="#!" class="use-case-button">Live preview</a>
     </div>
   </div>
   <p class="para-with-line-above-download">Download </p>

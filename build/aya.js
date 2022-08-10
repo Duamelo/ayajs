@@ -1174,7 +1174,6 @@
 	            this.line.dest_x = this.destination.x;
 	            this.line.dest_y = this.destination.y;
 	            console.log(this.line);
-	            var dy = 10;
 	            {
 	                 if(i_src == 0 ){
 	                   if(i_dest == 3){
@@ -1341,7 +1340,7 @@
 	                        this.line.c3.y = this.dest_y;
 
 	                        this.line.c4.x = this.dest_x;
-	                        this.line.c4.y = this.dest_y + dy;
+	                        this.line.c4.y = this.dest_y;
 	                    }
 	                 }
 	            }

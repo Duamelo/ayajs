@@ -7,7 +7,7 @@
   "scripts": {
     "start": "rollup -c rollup.dev.js",
     "build": "rollup -c && npm run uglify",
-    "uglify": "uglifyjs --v8 --toplevel --compress --mangle --verbose  -m reserved=['$','require','exports'] --output build/aya.min.js -- build/aya.js"
+    "uglify": "uglifyjs --v8 --toplevel --compress --mangle --verbose  -m reserved=['$','require','exports'] --output build/aya.min.js --build/aya.js"
   },
   "keywords": [
     "tape",

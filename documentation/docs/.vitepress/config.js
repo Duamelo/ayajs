@@ -3,7 +3,7 @@ export default {
     description: 'Just playing bycreating your diagram.',
     theme: 'reco',
     themeConfig: {
-        logo: '/logo_ayajs.png',
+        //logo: '/logo_ayajs.png',
         nav: [
             { text: 'Docs', link: '/docs' },
             { text: 'Examples', link: '/example' },
@@ -23,24 +23,49 @@ export default {
           sidebar: [
             {
               text: 'Guide',
-              items: [
-                { text: 'Introduction', link: '/introduction' },
-                { text: 'Getting Started', link: '/getting-started' },
-              ]
-            },{
-              text: 'Forms',
               collapsible: true,
               items: [
-                { text: 'triangle', link: '/introduction' },
-                { text: 'losange', link: '/getting-started' },
+                { text: 'Introduction', link: '../guide_docs/introduction' },
+                { text: 'Démarrage', link: '../guide_docs/demarrage' },
+                { text: 'Installation', link: '../guide_docs/installation' },
+                { text: 'Integration', link: '../guide_docs/integration' },
               ]
             },
             {
-              text: 'Components',
+              text: 'Composants',
               collapsible: true,
               items: [
-                { text: 'rectangle', link: '/introduction' },
-                { text: 'triangle', link: '/getting-started' },
+                { text: 'rectangle', link: '../composants_docs/component_rectangle' },
+                { text: 'circle', link: '../composants_docs/component_circle' },
+                { text: 'triangle', link: '../composants_docs/component_triangle' },
+                { text: 'line', link: '../composants_docs/component_line' },
+                { text: 'lozenge', link: '../composants_docs/component_lozenge' }
+              ]
+            },
+            {
+              text: 'Formes simple',
+              collapsible: true,
+              items: [
+                { text: 'arc', link: '../entities_doc/arc' },
+                { text: 'cicrle', link: '../entities_doc/circle' },
+                { text: 'group', link: '../entities_doc/group' },
+                { text: 'image', link: '../entities_doc/image' },
+                { text: 'line', link: '../entities_doc/line' },
+                { text: 'lozenge', link: '../entities_doc/lozenge' },
+                { text: 'point', link: '../entities_doc/point' },
+                { text: 'polyline', link: '../entities_doc/polyline' },
+                { text: 'rectangle', link: '../entities_doc/rectangle' },
+                { text: 'point', link: '../entities_doc/point' },
+                { text: 'polyline', link: '../entities_doc/polyline' },
+                { text: 'rectangle', link: '../entities_doc/rectangle' },
+              ]
+            },
+            {
+              text: 'Config',
+              collapsible: true,
+              items:[
+                { text: 'configuration', link: '/' },
+
               ]
             }
           ]

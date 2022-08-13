@@ -1190,42 +1190,104 @@
 	            this.line.dest_x = this.destination.x;
 	            this.line.dest_y = this.destination.y;
 	            
-	            // if(this.line.x <= this.line.dest_x){
-	            //     if(i_src == 0){
+	            if(this.line.x <= this.line.dest_x){
+	                if(i_src == 0){
+	                    this.line.c1.x = this.line.x;
+	                    this.line.c1.y = this.line.y - dy;
+	                }
+	                if(i_src == 1){
+	                    console.log("i_src= 1");
+	                    this.line.c1.y = this.line.y;
+	                    this.line.c1.x = this.line.x;
+	    
+	                    console.log(this.line.x + " " + this.line.y); 
+	                    console.log(this.line.c1.x + " " + this.line.c1.y);
+	                }
+	                if(i_src == 2){
+	                    this.line.c1.x = this.line.x;
+	                    this.line.c1.y = this.line.y + dy;
+	                }
+	                if(i_dest == 0){
+	                    this.line.c4.x = this.line.dest_x;
+	                    this.line.c4.y = this.line.dest_y - dy;
+	                }
+	                if(i_dest == 2){
+	                    this.line.c4.x = this.line.dest_x;
+	                    this.line.c4.y = this.line.dest_y + dy;
+	                }
+	                if(i_dest == 3){
+	                    this.line.c4.y = this.line.dest_y;
+	                    this.line.c4.x = this.line.dest_x - dx;
+	                }
+	    
+	                this.line.c4.y = this.line.dest_y;
+	                this.line.c2.x = (this.line.dest_x + this.line.x)/2;
+	                this.line.c2.y = this.line.c1.y;
+	                this.line.c3.x = this.line.c2.x;
+	                this.line.c3.y = this.line.c4.y;
+	            }
+
+	            // if(i_src == 0){
+	            //     if(dest_x == 1){
+	            //         console.log("test : 0 : 1")
 	            //         this.line.c1.x = this.line.x;
-	            //         this.line.c1.y = this.line.y - dy;
-	            //     }
-	            //     if(i_src == 1){
-	            //         console.log("i_src= 1");
 	            //         this.line.c1.y = this.line.y;
-	            //         this.line.c1.x = this.line.x;
-	    
-	            //         console.log(this.line.x + " " + this.line.y); 
-	            //         console.log(this.line.c1.x + " " + this.line.c1.y);
-	            //     }
-	            //     if(i_src == 2){
-	            //         this.line.c1.x = this.line.x;
-	            //         this.line.c1.y = this.line.y + dy;
-	            //     }
-	            //     if(i_dest == 0){
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.x;
+	            //         this.line.c3.y = this.line.dest_y;
 	            //         this.line.c4.x = this.line.dest_x;
-	            //         this.line.c4.y = this.line.dest_y - dy;
-	            //     }
-	            //     if(i_dest == 2){
-	            //         this.line.c4.x = this.line.dest_x;
-	            //         this.line.c4.y = this.line.dest_y + dy;
-	            //     }
-	            //     if(i_dest == 3){
 	            //         this.line.c4.y = this.line.dest_y;
-	            //         this.line.c4.x = this.line.dest_x - dx;
 	            //     }
-	    
-	            //     this.line.c4.y = this.line.dest_y;
-	            //     this.line.c2.x = (this.line.dest_x + this.line.x)/2;
-	            //     this.line.c2.y = this.line.c1.y;
-	            //     this.line.c3.x = this.line.c2.x;
-	            //     this.line.c3.y = this.line.c4.y;
+	            //     if(dest_x == 2){
+	            //         console.log("test : 0 : 2")
+	            //         this.line.c1.x = this.line.x;
+	            //         this.line.c1.y = this.line.y;
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
+	            //         this.line.c4.x = this.line.dest_x;
+	            //         this.line.c4.y = this.line.dest_y;
+	            //     }
+	            //     if(dest_x == 3){
+
+	            //     }
+	            // }            
+	            // if(i_src == 1){
+	            //     if(dest_x == 0){
+
+	            //     }
+	            //     if(dest_x == 2){
+
+	            //     }
+	            //     if(dest_x == 3){
+
+	            //     }
+	            // }            
+	            // if(i_src == 2){
+	            //     if(dest_x == 0){
+
+	            //     }
+	            //     if(dest_x == 1){
+
+	            //     }
+	            //     if(dest_x == 3){
+
+	            //     }
 	            // }
+	            // if(i_src == 3){
+	            //     if(dest_x == 0){
+
+	            //     }
+	            //     if(dest_x == 1){
+
+	            //     }
+	            //     if(dest_x == 2){
+
+	            //     }
+	            // }
+
 
 	            console.log(this.line.c1.x + " " + this.line.c1.y); 
 	    
@@ -1251,7 +1313,6 @@
 	    var svg = svg;
 	    var id_svg = id_svg;
 	    var config = config;
-	    var id_store = [];
 	  
 	    return {
 	      mouseDownCb: function mousedowncb(e) {
@@ -1424,8 +1485,6 @@
 	      mouseOverCb: function mouseovercb(e){
 
 	        id = e.srcElement.id;
-
-	        id_store.push(id);
 	  
 	        var local_cp = _Register.find(id);
 

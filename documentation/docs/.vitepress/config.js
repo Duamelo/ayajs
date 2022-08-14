@@ -1,5 +1,5 @@
 export default {
-    title: 'ayajs',
+    title: 'aya.js',
     description: 'Just playing bycreating your diagram.',
     theme: 'reco',
     themeConfig: {
@@ -35,36 +35,33 @@ export default {
               text: 'Composants',
               collapsible: true,
               items: [
-                { text: 'rectangle', link: '../composants_docs/component_rectangle' },
-                { text: 'circle', link: '../composants_docs/component_circle' },
-                { text: 'triangle', link: '../composants_docs/component_triangle' },
-                { text: 'line', link: '../composants_docs/component_line' },
-                { text: 'lozenge', link: '../composants_docs/component_lozenge' }
+                { text: 'Rectangle', link: '../composants_docs/component_rectangle' },
+                { text: 'Circle', link: '../composants_docs/component_circle' },
+                { text: 'Triangle', link: '../composants_docs/component_triangle' },
+                { text: 'Line', link: '../composants_docs/component_line' },
+                { text: 'Lozenge', link: '../composants_docs/component_lozenge' }
               ]
             },
             {
               text: 'Formes simple',
               collapsible: true,
               items: [
-                { text: 'arc', link: '../entities_doc/arc' },
-                { text: 'cicrle', link: '../entities_doc/circle' },
-                { text: 'group', link: '../entities_doc/group' },
-                { text: 'image', link: '../entities_doc/image' },
-                { text: 'line', link: '../entities_doc/line' },
-                { text: 'lozenge', link: '../entities_doc/lozenge' },
-                { text: 'point', link: '../entities_doc/point' },
-                { text: 'polyline', link: '../entities_doc/polyline' },
-                { text: 'rectangle', link: '../entities_doc/rectangle' },
-                { text: 'point', link: '../entities_doc/point' },
-                { text: 'polyline', link: '../entities_doc/polyline' },
-                { text: 'rectangle', link: '../entities_doc/rectangle' },
+                { text: 'Arc', link: '../entities_doc/arc' },
+                { text: 'Cicrle', link: '../entities_doc/circle' },
+                { text: 'Group', link: '../entities_doc/group' },
+                { text: 'Image', link: '../entities_doc/image' },
+                { text: 'Line', link: '../entities_doc/line' },
+                { text: 'Lozenge', link: '../entities_doc/lozenge' },
+                { text: 'Point', link: '../entities_doc/point' },
+                { text: 'Polyline', link: '../entities_doc/polyline' },
+                { text: 'Rectangle', link: '../entities_doc/rectangle' },
               ]
             },
             {
               text: 'Config',
               collapsible: true,
               items:[
-                { text: 'configuration', link: '/' },
+                { text: 'Configuration', link: '/' },
 
               ]
             }

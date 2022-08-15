@@ -461,10 +461,11 @@
 	    
 	      
 	        /** draw box */
-	        
+
 	        this.drawVertex();
 	        this.drawConnector();
 	        this.drawBox();  
+	        
 	        this.box.setAttribute("id", this.uuid);
 	        this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
@@ -1505,6 +1506,8 @@
 
 	        super();
 
+	        console.log("tesssssssssssssssssssssssssssss");
+	        
 	        this.uuid = uuid;
 
 	        this.x = x;

@@ -6,7 +6,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
-   <script src="./build/aya.min.js"></script>
+   <script src="./build/aya.js"></script>
    <title>ayajs</title>
 </head>
 
@@ -20,14 +20,44 @@
 
    // aya.box.form.children.map(({child}) =>{
    //    child.removeFromDOM();
-   // }); 
+   // });
 
-   var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
-   
+   var los = aya.Component("lozenge", {x: 100, y: 100, width: 300, height: 200});
 
-   var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
+   var cir = aya.Component("circle", {x: 50, y: 50, r: 30});
 
-      // aya.setlinkcb((l)=>{ console.log("testxtx") ; console.log(l)});
+   var circle = aya.Circle(100, 200, 20);
+    
+    circle.draw();
+
+
+   // var rec = aya.Component("rectangle", {x: 100, y: 100, width: 100, height: 100});
+
+   // var props = {
+   //      x1: 50,
+   //      y1: 75,
+   //      x2: 70,
+   //      y2: 35,
+   //      x3: 90,
+   //      y3: 45,
+   //  };
+
+   //  var cp = aya.Component("triangle", props);
+
+
+   // aya.config.line.ends.start = "";
+
+   // var props = {
+   //    x: 100,
+   //    y: 200,
+   //    dest_x: 400,
+   //    dest_y: 600
+   //  };
+
+   //  var cp = aya.Component("line", props);
+
+
+   // aya.setlinkcb((l)=>{ console.log("testxtx") ; console.log(l)});
 
       // console.log("ayffffffffffffffffffffffff" + aya.getlinkcb());
 

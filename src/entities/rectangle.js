@@ -231,14 +231,14 @@ class Rectangle extends Form {
     const sv = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(sv, "rect");
 
+    this.c_svg.setAttributeNS(null, "id", this.uuid);
     this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
     this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
-    this.c_svg.setAttributeNS(null, "id", this.uuid);
-    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
     this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
+    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
+    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
     this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
     this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
     this.svg.appendChild(this.c_svg);
 

@@ -163,9 +163,9 @@ class Triangle extends Form {
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
+    this.c_svg.setAttribute("fill", this.config.form.fill);
     this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
     this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-    this.c_svg.setAttribute("fill", this.config.form.fill);
 
 
     this.svg.appendChild(this.c_svg);

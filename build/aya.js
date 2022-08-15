@@ -26,11 +26,12 @@
 	        fillOpacity : "1",
 	        limitWidth: 20,
 	        limitHeight: 20
+
 	    },
 
 	    box : {
-	        stroke : "black",
-	        strokeWidth : "1px",
+	        stroke : "indigo",
+	        strokeWidth : "2px",
 	        fill : "none",
 	        strokeDasharray : "4"
 	    },
@@ -44,7 +45,7 @@
 	    line : {
 	        fill : "black",
 	        ends : {
-	            start : { type : "triangle"},
+	            start : { type : "circle"},
 	            dest : { type : "triangle"}
 	        }
 	    },
@@ -319,7 +320,7 @@
 	     * @param {number} y 
 	     * @param {number} r 
 	     */
-	    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
+	    constructor(uuid, x = 0, y = 0, r = 3, svg, event, config){
 
 	        super();
 
@@ -421,8 +422,10 @@
 	    }
 
 	    drawBox(){
-	        if(this.vertex.length > 0 && this.c_points.length >0){
-	            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+	        if(this.c_points.length == 0 || this.vertex.length == 0)
+	            return;
+	  
+	        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
             L ${this.c_points[0].x} ${this.c_points[0].y} 
             L ${this.vertex[1].x}   ${this.vertex[1].y} 
             L ${this.c_points[1].x} ${this.c_points[1].y}
@@ -431,8 +434,7 @@
             L ${this.vertex[3].x}   ${this.vertex[3].y} 
             L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
 
-	            this.box.setAttribute("d", p);
-	        }
+	        this.box.setAttribute("d", p);
 	    }
 	    
 	    draw(){
@@ -459,19 +461,21 @@
 	    
 	      
 	        /** draw box */
+	        
+	        this.drawVertex();
+	        this.drawConnector();
+	        this.drawBox();  
+	        this.box.setAttribute("id", this.uuid);
+	        this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	        this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
 	        this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
-	        this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	        this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
 	        
 	        this.svg.appendChild(this.c_svg);
 	        this.svg.appendChild(this.box);
 
-	        this.drawVertex();
-	        this.drawConnector();
-	        // this.drawBox();
-
+	    
 	        this.c_points.map((point) => {
 	            point.draw();
 	        });
@@ -522,7 +526,7 @@
 
 	        this.drawConnector();
 	        this.drawVertex();
-	        // this.drawBox();
+	        this.drawBox();
 
 	        this.vertex.map((vert) => {
 	            vert.redraw();
@@ -849,14 +853,14 @@
 	    const sv = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(sv, "rect");
 
+	    this.c_svg.setAttributeNS(null, "id", this.uuid);
 	    this.c_svg.setAttributeNS(null, "x", this.x +  this.offsetX);
 	    this.c_svg.setAttributeNS(null, "y", this.y +  this.offsetY);
-	    this.c_svg.setAttributeNS(null, "id", this.uuid);
-	    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
 	    this.c_svg.setAttributeNS(null, "width", this.width * this.scaleX);
+	    this.c_svg.setAttributeNS(null, "height", this.height * this.scaleY);
+	    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 	    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
 	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-	    this.c_svg.setAttributeNS(null, "fill", this.config.form.fill);
 
 	    this.svg.appendChild(this.c_svg);
 
@@ -1538,12 +1542,12 @@
 	        this.children = [];
 
 	        this.vertex = [
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	        ];
 	        this.c_points = [
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
+	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	        ];
 
 
@@ -1568,7 +1572,7 @@
 	                
 	            else if(this.config.line.ends.start.type == 'circle')
 	                this.addChild(child, (p, c) => {
-	                    c.setOffsetX(p.x - 5);
+	                    c.setOffsetX(p.x);
 	                    c.setOffsetY(p.y);
 	                },  (p, c) => {
 	                    c.setRotateCenter(c.x, c.y);
@@ -1697,14 +1701,14 @@
 	    }
 
 	    removeFromDOM(){
-	        this.svg.removeChild(this.c_svg);
 	        this.c_points.map((pt)=>{
 	            pt.removeFromDOM();
 	        });
 	    
 	        this.vertex.map((vt)=>{
-	        vt.removeFromDOM();
+	            vt.removeFromDOM();
 	        });
+	        this.svg.removeChild(this.c_svg);
 	    }
 
 
@@ -1988,9 +1992,9 @@
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", this.p);
+	    this.c_svg.setAttribute("fill", this.config.form.fill);
 	    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
 	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-	    this.c_svg.setAttribute("fill", this.config.form.fill);
 
 
 	    this.svg.appendChild(this.c_svg);
@@ -2276,9 +2280,7 @@
 
 	    this.drawVertex();
 	    this.drawConnector();
-	    // this.drawBox();
-
-	    this.c_svg.setAttribute("d",this.p);
+	    this.drawBox();
 
 	    this.vertex.map((v) => {
 	      v.draw();
@@ -2289,16 +2291,16 @@
 	    });
 
 	    this.box.setAttribute("id", this.uuid);
+	    this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	    this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
 	    this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
-	    this.box.setAttributeNS(null, "fill", this.config.box.fill);
 	    this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", this.p);
+	    this.c_svg.setAttribute("fill", this.config.form.fill);
 	    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
 	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-	    this.c_svg.setAttribute("fill", this.config.form.fill);
 
 	    this.svg.appendChild(this.c_svg);
 	    this.svg.appendChild(this.box);
@@ -2347,7 +2349,7 @@
 
 	    this.drawVertex();
 	    this.drawConnector();
-	    // this.drawBox();
+	    this.drawBox();
 
 	    this.c_svg.setAttribute("d",this.p);
 

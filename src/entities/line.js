@@ -72,7 +72,7 @@ class Line extends Form {
             new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
         ];
 
-
+        console.log("tedt log in line js")
         if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
             var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
             if(this.config.line.ends.start.type == 'triangle'){

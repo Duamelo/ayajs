@@ -20,11 +20,12 @@ var config =  {
         fillOpacity : "1",
         limitWidth: 20,
         limitHeight: 20
+
     },
 
     box : {
-        stroke : "black",
-        strokeWidth : "1px",
+        stroke : "indigo",
+        strokeWidth : "2px",
         fill : "none",
         strokeDasharray : "4"
     },
@@ -38,7 +39,7 @@ var config =  {
     line : {
         fill : "black",
         ends : {
-            start : { type : "triangle"},
+            start : { type : "circle"},
             dest : { type : "triangle"}
         }
     },

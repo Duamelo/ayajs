@@ -14,7 +14,7 @@ class Circle extends Form {
      * @param {number} y 
      * @param {number} r 
      */
-    constructor(uuid, x = 0, y = 0, r = 5, svg, event, config){
+    constructor(uuid, x = 0, y = 0, r = 3, svg, event, config){
 
         super();
 
@@ -116,8 +116,10 @@ class Circle extends Form {
     }
 
     drawBox(){
-        if(this.vertex.length > 0 && this.c_points.length >0){
-            var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+        if(this.c_points.length == 0 || this.vertex.length == 0)
+            return;
+  
+        var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
             L ${this.c_points[0].x} ${this.c_points[0].y} 
             L ${this.vertex[1].x}   ${this.vertex[1].y} 
             L ${this.c_points[1].x} ${this.c_points[1].y}
@@ -126,8 +128,7 @@ class Circle extends Form {
             L ${this.vertex[3].x}   ${this.vertex[3].y} 
             L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
 
-            this.box.setAttribute("d", p);
-        }
+        this.box.setAttribute("d", p);
     }
     
     draw(){
@@ -154,19 +155,22 @@ class Circle extends Form {
     
       
         /** draw box */
+
+        this.drawVertex();
+        this.drawConnector();
+        this.drawBox();  
+        
+        this.box.setAttribute("id", this.uuid);
+        this.box.setAttributeNS(null, "fill", this.config.box.fill);
         this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
         this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
-        this.box.setAttributeNS(null, "fill", this.config.box.fill);
         this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
         
         this.svg.appendChild(this.c_svg);
         this.svg.appendChild(this.box);
 
-        this.drawVertex();
-        this.drawConnector();
-        // this.drawBox();
-
+    
         this.c_points.map((point) => {
             point.draw();
         });
@@ -217,7 +221,7 @@ class Circle extends Form {
 
         this.drawConnector();
         this.drawVertex();
-        // this.drawBox();
+        this.drawBox();
 
         this.vertex.map((vert) => {
             vert.redraw();

@@ -1,0 +1,40 @@
+QUnit.module('Circle');
+
+
+QUnit.test("creating circle object", assert => {
+    var circle = aya.Circle(100, 200, 20);
+
+    assert.ok(circle.uuid, "uuid must be no null");
+    assert.equal(circle.type, "circle", "type of that form must be circle");
+    assert.equal(circle.x, 100, "x value matches to the x parameter");
+    assert.equal(circle.y, 200, "y value matches to the y parameter");
+    assert.equal(circle.r, 20, "r value matches to the r parameter");
+});
+
+QUnit.test("check that circle is not yet drawn into the dom", assert => {
+    var circle = aya.Circle(100, 200, 20);
+
+    assert.equal(circle.type, "circle", "type of that form must be circle");
+    assert.notOk(circle.c_svg, "the c_svg property must be different of empty string");
+    assert.equal(circle.c_svg, "", "c_svg attribute representing the dom element is not yet defined");
+});
+
+QUnit.test("check that circle is well drawn into the dom", assert => {
+    var circle = aya.Circle(100, 200, 20);
+    
+    circle.draw();
+
+    assert.equal(circle.type, "circle", "type of that form must be circle");
+    assert.ok(circle.c_svg, "the c_svg property must be different of empty string");
+    assert.equal(circle.c_svg.nodeName, "circle", "svg element used is circle");
+    assert.equal(circle.c_svg.attributes.length, 7, "the length of attributes property is 7");
+    assert.equal(circle.c_svg.attributes[0].nodeValue, `${circle.uuid}`, "id must be that of the component");
+    assert.equal(circle.c_svg.attributes[1].nodeValue, `${circle.x}`, "cx used must be that defined through x");
+    assert.equal(circle.c_svg.attributes[2].nodeValue, `${circle.y}`, "cy used must be that defined through y");
+    assert.equal(circle.c_svg.attributes[3].nodeValue, `${circle.r}`, "r used must be that defined through r");
+    assert.equal(circle.c_svg.attributes[4].nodeValue, circle.config.form.fill, "fill used must be that defined in config file");
+    assert.equal(circle.c_svg.attributes[5].nodeValue, circle.config.form.stroke, "stroke used must be that defined in config file");
+    assert.equal(circle.c_svg.attributes[6].nodeValue, circle.config.form.strokeWidth, "stroke-width used must be that defined in config file");
+    assert.equal(circle.c_svg.parentElement.children[`${circle.uuid}`], circle.c_svg, "the form is added to svg element");
+});
+

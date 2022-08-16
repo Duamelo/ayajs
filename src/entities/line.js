@@ -27,6 +27,8 @@ class Line extends Form {
 
         super();
 
+        console.log("tesssssssssssssssssssssssssssss");
+        
         this.uuid = uuid;
 
         this.x = x;
@@ -64,12 +66,12 @@ class Line extends Form {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
         ];
 
         console.log("tedt log in line js")
@@ -94,7 +96,7 @@ class Line extends Form {
                 
             else if(this.config.line.ends.start.type == 'circle')
                 this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - 5);
+                    c.setOffsetX(p.x);
                     c.setOffsetY(p.y);
                 },  (p, c) => {
                     c.setRotateCenter(c.x, c.y);
@@ -223,14 +225,14 @@ class Line extends Form {
     }
 
     removeFromDOM(){
-        this.svg.removeChild(this.c_svg);
         this.c_points.map((pt)=>{
             pt.removeFromDOM();
         });
     
         this.vertex.map((vt)=>{
-        vt.removeFromDOM();
+            vt.removeFromDOM();
         });
+        this.svg.removeChild(this.c_svg);
     }
 
 

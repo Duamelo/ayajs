@@ -154,9 +154,7 @@ class Lozenge extends Form{
 
     this.drawVertex();
     this.drawConnector();
-    // this.drawBox();
-
-    this.c_svg.setAttribute("d",this.p);
+    this.drawBox();
 
     this.vertex.map((v) => {
       v.draw();
@@ -167,16 +165,16 @@ class Lozenge extends Form{
     });
 
     this.box.setAttribute("id", this.uuid);
+    this.box.setAttributeNS(null, "fill", this.config.box.fill);
     this.box.setAttributeNS(null, "stroke", this.config.box.stroke);
     this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
-    this.box.setAttributeNS(null, "fill", this.config.box.fill);
     this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
+    this.c_svg.setAttribute("fill", this.config.form.fill);
     this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
     this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-    this.c_svg.setAttribute("fill", this.config.form.fill);
 
     this.svg.appendChild(this.c_svg);
     this.svg.appendChild(this.box);
@@ -225,7 +223,7 @@ class Lozenge extends Form{
 
     this.drawVertex();
     this.drawConnector();
-    // this.drawBox();
+    this.drawBox();
 
     this.c_svg.setAttribute("d",this.p);
 

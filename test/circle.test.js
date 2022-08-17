@@ -16,7 +16,7 @@ QUnit.test("check that circle is not yet drawn into the dom", assert => {
 
     assert.equal(circle.type, "circle", "type of that form must be circle");
     assert.notOk(circle.c_svg, "the c_svg property must be different of empty string");
-    assert.equal(circle.c_svg, "", "c_svg attribute representing the dom element is not yet defined");
+    assert.equal(circle.ccir_svg, "", "c_svg attribute representing the dom element is not yet defined");
 });
 
 QUnit.test("check that circle is well drawn into the dom", assert => {
@@ -38,3 +38,19 @@ QUnit.test("check that circle is well drawn into the dom", assert => {
     assert.equal(circle.c_svg.parentElement.children[`${circle.uuid}`], circle.c_svg, "the form is added to svg element");
 });
 
+QUnit.test("check that the box surrounding the circle shape is well drawn", assert => {
+
+    var circle = aya.Circle(100, 100, 20);
+    circle.draw();
+
+    assert.equal(circle.type, "circle", "shape's type must be a circle");
+    assert.equal(circle.type, "circle", "the  shape created must be a circle");
+    assert.ok(circle.box, "the box property must be different of empty string");
+    assert.equal(circle.box.nodeName, "path", "svg element used is path");
+    assert.equal(circle.box.attributes[1].nodeValue, `${circle.uuid}`, "id must be that of circle form  ");
+    assert.equal(circle.box.attributes[2].nodeValue, circle.config.box.fill, "fill used must be that defined in config file");
+    assert.equal(circle.box.attributes[3].nodeValue, circle.config.box.stroke, "stroke used must be that defined in config file");
+    assert.equal(circle.box.attributes[4].nodeValue, circle.config.box.strokeWidth, "stroke-width used must be that defined in config file");
+    assert.equal(circle.box.attributes[5].nodeValue, circle.config.box.strokeDasharray, "stroke-dasharray used must be that defined in config file");
+    // assert.equal(cp.form.c_svg.parentElement.children[`${cp.form.uuid}`], cp.form.c_svg, "the form is added to svg element");
+});

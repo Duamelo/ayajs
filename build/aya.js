@@ -3156,12 +3156,14 @@
 	 * 
 	 */
 	class Text{
-	    constructor(uuid, x = 0, y = 0, text = "text", svg, event, config){
+	    constructor(uuid, x = 0, y = 0, text = "text", size, svg, event, config){
 
 	        this.uuid = uuid;
 
 	        this.x = x;
 	        this.y = y;
+
+	        this.size = size;
 
 	        this.text = text;
 
@@ -3221,6 +3223,7 @@
 	        this.c_svg = document.createElementNS(svgns, "text");
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+	        this.c_svg.setAttributeNS(null, "textLength", this.size);
 	        this.c_svg.setAttributeNS(null, "id", this.uuid);
 	        this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
 	        this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);
@@ -4111,8 +4114,8 @@
 	        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
 	    }
 
-	    Text(x = 0, y = 0, text = "text"){
-	        return new Text(_uuid.generate(), x, y, text, this.svg, this.events, this.config);
+	    Text(x = 0, y = 0, text = "text", size = 100){
+	        return new Text(_uuid.generate(), x, y, text, size, this.svg, this.events, this.config);
 	    }
 
 	    Line(x=0, y=0, dest_x = x, dest_y = y){

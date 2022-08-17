@@ -5,12 +5,14 @@
  * 
  */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text", svg, event, config){
+    constructor(uuid, x = 0, y = 0, text = "text", size, svg, event, config){
 
         this.uuid = uuid;
 
         this.x = x;
         this.y = y;
+
+        this.size = size;
 
         this.text = text;
 
@@ -70,6 +72,7 @@ class Text{
         this.c_svg = document.createElementNS(svgns, "text");
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+        this.c_svg.setAttributeNS(null, "textLength", this.size);
         this.c_svg.setAttributeNS(null, "id", this.uuid);
         this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
         this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);

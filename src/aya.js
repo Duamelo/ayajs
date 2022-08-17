@@ -149,8 +149,8 @@ class Init{
         return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
     }
 
-    Text(x = 0, y = 0, text = "text"){
-        return new Text(_uuid.generate(), x, y, text, this.svg, this.events, this.config);
+    Text(x = 0, y = 0, text = "text", size = 100){
+        return new Text(_uuid.generate(), x, y, text, size, this.svg, this.events, this.config);
     }
 
     Line(x=0, y=0, dest_x = x, dest_y = y){

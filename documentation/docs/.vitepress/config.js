@@ -1,11 +1,11 @@
 export default {
-    title: 'aya.js',
+    title: 'ayajs',
     description: 'Just playing bycreating your diagram.',
     theme: 'reco',
     themeConfig: {
         //logo: '/logo_ayajs.png',
         nav: [
-            { text: 'Docs', link: '/docs' },
+            { text: 'Docs', link: '../guide_docs/introduction' },
             { text: 'Examples', link: '/example' },
             { text: 'Changelog', link: '/changelog' }
           ],
@@ -28,7 +28,7 @@ export default {
                 { text: 'Introduction', link: '../guide_docs/introduction' },
                 { text: 'Démarrage', link: '../guide_docs/demarrage' },
                 { text: 'Installation', link: '../guide_docs/installation' },
-                { text: 'Integration', link: '../guide_docs/integration' },
+                //{ text: 'Integration', link: '../guide_docs/integration' },
               ]
             },
             {
@@ -46,15 +46,15 @@ export default {
               text: 'Formes simple',
               collapsible: true,
               items: [
-                { text: 'Arc', link: '../entities_doc/arc' },
-                { text: 'Cicrle', link: '../entities_doc/circle' },
-                { text: 'Group', link: '../entities_doc/group' },
-                { text: 'Image', link: '../entities_doc/image' },
-                { text: 'Line', link: '../entities_doc/line' },
-                { text: 'Lozenge', link: '../entities_doc/lozenge' },
-                { text: 'Point', link: '../entities_doc/point' },
-                { text: 'Polyline', link: '../entities_doc/polyline' },
-                { text: 'Rectangle', link: '../entities_doc/rectangle' },
+                { text: 'Arc', link: '../entities_docs/arc' },
+                { text: 'Cicrle', link: '../entities_docs/circle' },
+                { text: 'Group', link: '../entities_docs/group' },
+                { text: 'Image', link: '../entities_docs/image' },
+                { text: 'Line', link: '../entities_docs/line' },
+                { text: 'Lozenge', link: '../entities_docs/lozenge' },
+                { text: 'Point', link: '../entities_docs/point' },
+                { text: 'Polyline', link: '../entities_docs/polyline' },
+                { text: 'Rectangle', link: '../entities_docs/rectangle' },
               ]
             },
             {

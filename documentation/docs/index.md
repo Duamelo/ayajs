@@ -3,11 +3,11 @@ layout: home
 
 hero:
   #name: ayajs
-  text: Build everything you want with aya.js
+  text: Avec aya, votre seule limite est votre imagination
   actions:
     - theme: brand
       text: Get Started
-      link: /docs
+      link: ../guide_docs/introduction
     - theme: alt
       text: View on GitHub
       link: https://github.com/Duamelo/ayajs
@@ -223,23 +223,24 @@ ul .overview-list{
 
   <div class="use-case-block">
     <div class="use-case-presentation-block">
-      <h1 class="use-case-title"> Use case title 1</h1>
+      <h1 class="use-case-title"> Jeu de la vie</h1>
       <p class="use-case-description">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+        Le jeu de la vie se déroule sur une grille à deux dimensions, théoriquement infinie, dont les cases — appelées « cellules », par analogie avec les cellules vivantes — peuvent prendre deux états distincts : « vivante » ou « morte ».
+Une cellule possède huit voisins, qui sont les cellules adjacentes horizontalement, verticalement et diagonalement.
       </p>
-      <a href="#!" class="use-case-button">Live preview</a>
+      <a href="https://duamelo.github.io/game_of_life/" class="use-case-button">Live preview</a>
     </div>
     <div class="live-use-case-presentation">
-      <img src="./images/game_of_life_demo_AdobeExpress.gif" width="400px" height="100px">
+      <img src="./images/real_jede_la_vie.gif" width="400px" height="100px">
     </div>
   </div>
 <br><br>
    <div class="use-case-block">
     <div class="live-use-case-presentation">
-      <img src="./images/bpmn-js.gif">
+      <img src="./images/flowchart.gif">
     </div>
      <div class="right-use-case-presentation-block">
-      <h1 class="right-use-case-title"> Use case title 2</h1>
+      <h1 class="right-use-case-title">MBP-flowchat</h1>
       <p class="use-case-description">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
       </p>
@@ -247,9 +248,9 @@ ul .overview-list{
     </div>
   </div>
 <br><br>
-<div class="use-case-block">
+<!--<div class="use-case-block">
     <div class="live-use-case-presentation">
-      <img src="./images/bpmn-js.gif">
+      <img src="./images/flowchart.gif">
     </div>
      <div class="right-use-case-presentation-block">
       <h1 class="right-use-case-title"> Use case title 2</h1>
@@ -258,7 +259,7 @@ ul .overview-list{
       </p>
       <a href="#!" class="use-case-button">Live preview</a>
     </div>
-  </div>
+  </div>-->
 </div>
 <br><br>
 <!-- <footer>

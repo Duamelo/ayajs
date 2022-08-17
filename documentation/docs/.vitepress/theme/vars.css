@@ -62,12 +62,14 @@ flex-direction: column;
 }
 
 .title[data-v-857cd014]{
-    color:orangered;
+    color:#0066b8;
     font-size: 32;
 }
 
 
-
+.vp-doc h2 {
+    border-top:none;
+}
 
 
 .test{

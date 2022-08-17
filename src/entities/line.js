@@ -187,14 +187,14 @@ class Line extends Form {
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 
-        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", this.p);
@@ -251,13 +251,13 @@ class Line extends Form {
             vertex.redraw();
         });
 
-        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
         this.c_svg.setAttribute("d", p);
 
         this.children.map ( ({child, translate, rotate}) => {

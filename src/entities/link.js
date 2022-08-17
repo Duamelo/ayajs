@@ -44,7 +44,7 @@ class Link
             this.line.dest_x = this.destination.x;
             this.line.dest_y = this.destination.y;
             
-this.line.c1.x = this.line.x;
+            this.line.c1.x = this.line.x;
             this.line.c1.y = this.line.y;
             this.line.c2.x = this.line.x;
             this.line.c2.y = this.line.y;
@@ -118,76 +118,80 @@ this.line.c1.x = this.line.x;
                 }
             }
 
-            if(i_dest == 0){
-                if(i_src == 3 || i_src == 1){
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            // if(i_dest == 0){
+            //     if(i_src == 3 || i_src == 1){
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
-                if(i_src == 2){
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
-            }
-            if(i_dest == 1){
-                if(i_src == 3){
-                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-                    this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
+            //     if(i_src == 2){
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
+            // }
+            // if(i_dest == 1){
+            //     if(i_src == 3){
+            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
-                if(i_src == 2 || i_src == 0){
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
+            //     if(i_src == 2 || i_src == 0){
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
                 
-            }
-            if(i_dest == 2){
-                if(i_src == 3 || i_src == 1){
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            // }
+            // if(i_dest == 2){
+            //     if(i_src == 3 || i_src == 1){
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
  
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
                 
-                if(i_src == 0){
-                    this.line.c2.x = this.line.x                  
-                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+            //     if(i_src == 0){
+            //         this.line.c2.x = this.line.x                  
+            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
 
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
-            }
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
+            // }
 
-            if(i_dest == 3){
-                if(i_src == 2 || i_src == 0){
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            // if(i_dest == 3){
+            //     if(i_src == 2 || i_src == 0){
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
  
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.y;
-                }
-                if(i_src == 1){
-                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-                    this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.y;
+            //     }
+            //     if(i_src == 1){
+            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
-            }    
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
+            // }
+
+            console.log("this.line 1");
+            console.log(this.line);
             this.line.c_svg.setAttribute("fill", "none");
             this.line.redraw();
+            console.log("this.line 2");
+            console.log(this.line);
         }
-
     }
 }
 export {Link};

@@ -210,7 +210,7 @@ ul .overview-list{
 .use-case-block .right-use-case-presentation-block .use-case-button{
     padding:15px;
     background:#58768f1a;
-    width:50%;
+    max-width:80%;
     text-align:center;
   }
 </style>
@@ -231,7 +231,7 @@ Une cellule possède huit voisins, qui sont les cellules adjacentes horizontalem
       <a href="https://duamelo.github.io/game_of_life/" class="use-case-button">Live preview</a>
     </div>
     <div class="live-use-case-presentation">
-      <img src="./images/real_jede_la_vie.gif" width="400px" height="100px">
+      <img src="./images/game_of_life.gif" width="400px" height="100px">
     </div>
   </div>
 <br><br>

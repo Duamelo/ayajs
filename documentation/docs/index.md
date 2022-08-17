@@ -208,7 +208,7 @@ ul .overview-list{
 
 .use-case-block .use-case-presentation-block .use-case-button,
 .use-case-block .right-use-case-presentation-block .use-case-button{
-    padding:15px;
+    padding:14.5px;
     background:#58768f1a;
     max-width:80%;
     text-align:center;

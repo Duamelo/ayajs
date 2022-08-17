@@ -212,6 +212,7 @@ ul .overview-list{
     background:#58768f1a;
     width:50%;
     text-align:center;
+    
   }
 </style>
 

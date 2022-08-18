@@ -367,8 +367,7 @@ class Link
                 }
             }
 
-            // this.line.c_svg.setAttribute("fill", "none");
-            // this.line.redraw();
+
             
             this.line.c_svg.setAttribute("fill", "none");
             this.line.redraw();

@@ -356,6 +356,15 @@ class Link
                     this.line.c3.x = this.line.x;
                     this.line.c3.y = this.line.dest_y;
                 }
+
+                 if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
+                    // 3 2
+                     this.line.c2.x = this.line.x;
+                    this.line.c2.y = this.line.y;
+ 
+                    this.line.c3.x = this.line.dest_x;
+                    this.line.c3.y = this.line.y;
+                }
             }
 
             // this.line.c_svg.setAttribute("fill", "none");

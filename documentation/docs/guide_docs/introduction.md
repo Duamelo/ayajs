@@ -29,9 +29,9 @@
     Vous pouvez télécharger <a href="#!">aya.js</a> via npm, sur github ou en utilisant la version en ligne via cdn. Les details de l'installation peuvent être trouver sur la page <a href="installation">d'installation</a>.
    <!-- Si vous utilisez un framework front-end, comme React, Angular ou Vue, consultez s'il vous plaît les <a href=""> intégrations disponibles </a>-->
     <br>
-    <h2 class="title-design">Construit un graphe simple</h2>
+    <h2 class="title-design">Construisez votre première forme : </h2>
     <pre class="installation-code-section">
-        <code class="code-example">some codes should be writting here</code>
+        <code class="code-example">aya.Lozenge(100,100,300,200).draw()</code>
     </pre>
     <h2 class="title-design">Contribution</h2>
     Avant de soumettre une erreur ou créer une pull request, prenez s'il vous plait un moment pour voir les <a href="#!"> directives de contribution</a>

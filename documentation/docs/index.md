@@ -213,6 +213,11 @@ ul .overview-list{
     max-width:80%;
     text-align:center;
   }
+
+  .main-footer{
+    background:black;
+    width:100%;
+  }
 </style>
 
 <body>
@@ -247,22 +252,6 @@ Une cellule possède huit voisins, qui sont les cellules adjacentes horizontalem
       <a href="#!" class="use-case-button">Live preview</a>
     </div>
   </div>
-<br><br>
-<!--<div class="use-case-block">
-    <div class="live-use-case-presentation">
-      <img src="./images/flowchart.gif">
-    </div>
-     <div class="right-use-case-presentation-block">
-      <h1 class="right-use-case-title"> Use case title 2</h1>
-      <p class="use-case-description">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-      </p>
-      <a href="#!" class="use-case-button">Live preview</a>
-    </div>
-  </div>-->
 </div>
-<br><br>
-<!-- <footer>
-  Dernière mise à jour : 14/08/2022, 10:27 AM
-</footer> -->
+
 </body>

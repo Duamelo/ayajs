@@ -71,6 +71,11 @@ flex-direction: column;
     border-top:none;
 }
 
+.title[data-v-79471ebe],
+.desc[data-v-79471ebe]{
+    display:none;
+}
+
 
 .test{
     color:#58768f1a;

@@ -148,9 +148,11 @@
     </tr>
     </tbody>
 </table>
+</body>
 
-## aya.Rectangle.addEvent
+## aya.Arc.addEvent
 
+Cette méthode nous permet d'ajouter un événement à ce formulaire ; nous enregistrons l'événement et le callback associé pour pouvoir le retirer facilement après
 <table class='table_3'>
     <thead>
     <tr class="thead-row">
@@ -161,34 +163,34 @@
     <tbody>
     <tr>
         <td>event</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+        <td>l'événement</td>
     </tr>
     <tr>
         <td>callback</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+        <td>Ce callback est soit défini par l'utilisateur lors de l'ajout d'autres événements personnalisés, soit un callback déjà défini dans event.js</td>
     </tr>
     </tbody>
 </table>
 
-## aya.Rectangle.deleteEvent
-
+## aya.Arc.deleteEvent
+Cette méthode nous permet de supprimer un événement spécifique passé comme paramètre de type chaîne.
 <table class='table_4'>
     <thead>
-    <tr class="thead-row">
-        <th>Argument</th>
-        <th>Description</th>
-    </tr>
+        <tr class="thead-row">
+            <th>Argument</th>
+            <th>Description</th>
+        </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>event</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-    </tr>
+        <tr>
+            <td>event</td>
+            <td>l'élévenement</td>
+        </tr>
     </tbody>
 </table>
 
 ## aya.Arc.addChild
-
+Nous pouvons construire n'importe quelle forme en ajoutant à un composant de base des enfants de forme
 <table class='table_4'>
     <thead>
     <tr class="thead-row">
@@ -199,32 +201,27 @@
     <tbody>
     <tr>
         <td>child</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+        <td>Ce formulaire ( @extend Form) est ajouté comme enfant à un composant avec un formulaire.</td>
     </tr>
     <tr>
         <td>translate</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+        <td> { parent, child } Cette fonction nous permet de positionner l'enfant par rapport à son parent</td>
     </tr>
     <tr>
         <td>rotate</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-    </tr>
-        <tr>
-        <td>drawing</td>
-        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+        <td> { parent, enfant } Cette fonction nous permet d'appliquer une rotation de l'enfant en prenant en compte compte de sa position relative et du centre de rotation</td>
     </tr>
     </tbody>
-</table>
-</body>
+    </table>
 
-## aya.Rectangle.draw
+## aya.Circle.draw
 
-draw déssine ..................................
+draw déssine le cercle avec les paramètres spécifiés
 
-## aya.Rectangle.removeFromDOM
+## aya.Circle.removeFromDOM
 
-removeFromDOM supprime ..........................
+ supprime l'élément du DOM
 
-## aya.Rectangle.redraw
+## aya.circle.redraw
 
-redraw déssine de nouveau..........................
+redessine la forme après un événement ex: move, resize etc...

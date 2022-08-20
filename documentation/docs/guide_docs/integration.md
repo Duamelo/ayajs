@@ -1,4 +1,3 @@
-
 <br><br>
 
 <style>
@@ -44,4 +43,3 @@
      aya.js ets disponible sous license ...
      Copyright © 2022 aya.js contributors.
 </body>
- 

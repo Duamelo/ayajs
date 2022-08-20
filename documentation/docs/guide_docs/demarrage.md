@@ -1,15 +1,11 @@
-
-<br><br>
-
 <style>
     body{
         width:100%;
     }
     .getstart{
-        background: rgba(120, 120, 120, .3);
+        /*background: rgba(120, 120, 120, .3);*/
         padding: 15px;
-        width: 400px;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: bold;
     }
     .demarrage-title-design{
@@ -32,27 +28,27 @@
     .code-example-getstated{
         color: rgba(250, 250, 250, 1.0);
     }
-
+    .demarrage-installation-code-section .code-example-getstated .script{
+        color:orange;
+    }
+     .demarrage-installation-code-section .code-example-getstated .real-script{
+        margin:0 0;
+        padding-left:30px;
+        color:#33a7e6ca;
+     }
 </style>
 <body>
-    <div class="getstart">Commençons à utiliser aya.js !</div>
-    <div><p>Insérons une balise de Javascript</p></div>
+    <div class="getstart">Let's Goo! Commençons à utiliser aya</div>
     <pre class="demarrage-installation-code-section">
-        <code class='code-example-getstated getstart-example'>script
-        </code>
+        <code class="code-example-getstated"><span class='script'><span>&lt;</span>script</span><span class='script'>></span> &nbsp;&nbsp;<p class="real-script">var aya = new aya.Init();</p><span class='script'><span>&lt;</span>script</span><span class='script'>/></span></code>
     </pre>
-    <div><p>Créeons une instance de aya</p></div>
+    <div><p>Créer un simple composant</p></div>
     <pre class="demarrage-installation-code-section">
-        <code class="code-example-getstated">script <br> var aya = new aya.Init(); <br>script</code>
+        <code class="code-example-getstated"><span class='script'><span>&lt;</span>script</span><span class='script'>></span> <br> var rectangle = aya.Component( <br> "rectangle",<br>  { <br>    x: 100,<br>    y: 100,<br>    width: 200,<br>    height: 100<br>  }<br>); <br><span class='script'><span>&lt;</span>script</span><span class='script'>/></span></code>
     </pre>
-    <div><p>Maintenant, nous pouvons créer un composant.</p></div>
+    <div><p>Rendre visible le composant créé</p></div>
     <pre class="demarrage-installation-code-section">
-        <code class="code-example-getstated">script <br> var rectangle = aya.Component( <br> "rectangle",<br>  { <br>    x: 100,<br>    y: 100,<br>    width: 200,<br>    height: 100<br>  }<br>); <br>script</code>
-    </pre>
-    <div><p>Enfin, rendons le composant crée</p></div>
-    <pre class="demarrage-installation-code-section">
-        <code class="code-example-getstated">script <br>  document.body.append(aya.svg);<br>script</code>
+        <code class="code-example-getstated"><span class='script'><span>&lt;</span>script</span><span class='script'>></span> <br>  <span class="real-script">document.body.append(aya.svg);</span><br><span class='script'><span>&lt;</span>script</span><span class='script'>/></span></code>
     </pre>
     <br><br>
-    
 </body>

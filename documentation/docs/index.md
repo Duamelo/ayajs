@@ -3,7 +3,7 @@ layout: home
 
 hero:
   #name: ayajs
-  text: Avec aya, votre seule limite est votre imagination
+  text: Build every thing you want with aya
   actions:
     - theme: brand
       text: Get Started

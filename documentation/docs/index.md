@@ -231,7 +231,7 @@ ul .overview-list{
     <div class="use-case-presentation-block">
       <h1 class="use-case-title"> Jeu de la vie</h1>
       <p class="use-case-description">
-        Le jeu de la vie se déroule sur une grille à deux dimensions, théoriquement infinie, dont les cases — appelées « cellules », par analogie avec les cellules vivantes — peuvent prendre deux états distincts : « vivante » ou « morte ».
+        <b>Le jeu de la vie</b> se déroule sur une grille à deux dimensions, théoriquement infinie, dont les cases — appelées « cellules », par analogie avec les cellules vivantes — peuvent prendre deux états distincts : « vivante » ou « morte ».
 Une cellule possède huit voisins, qui sont les cellules adjacentes horizontalement, verticalement et diagonalement.
       </p>
       <a href="https://duamelo.github.io/game_of_life/" class="use-case-button">Live preview</a>
@@ -248,7 +248,7 @@ Une cellule possède huit voisins, qui sont les cellules adjacentes horizontalem
      <div class="right-use-case-presentation-block">
       <h1 class="right-use-case-title">MBP-flowchat</h1>
       <p class="use-case-description">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+        <b>MBP-flowchat</b> est un outils basé sur aya qui vous permet de faire la réalisation des processus métier
       </p>
       <a href="#!" class="use-case-button">Live preview</a>
     </div>

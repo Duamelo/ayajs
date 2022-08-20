@@ -1,3 +1,5 @@
+
+<br><br>
 <style>
     body{
         width:100%;
@@ -6,7 +8,6 @@
         border-bottom:2px dashed rgba(128, 128, 128, 0.202);
         margin-bottom:500px;
     }
-
     .demarrage-installation-code-section,
     .demarrage-installation-code-section-cdn{
         background: #282c34;

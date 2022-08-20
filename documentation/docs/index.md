@@ -212,6 +212,7 @@ ul .overview-list{
     background:#58768f1a;
     max-width:80%;
     text-align:center;
+    
   }
 
   .main-footer{

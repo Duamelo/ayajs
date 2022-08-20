@@ -28,8 +28,6 @@ class Line extends Form {
 
         super();
 
-        console.log("tesssssssssssssssssssssssssssss");
-        
         this.uuid = uuid;
 
         this.x = x;

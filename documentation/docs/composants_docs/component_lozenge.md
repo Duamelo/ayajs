@@ -1,6 +1,5 @@
 ## aya.component
 
-
 <style>
 .empty-space{
     visibility:hidden;
@@ -40,16 +39,15 @@
         <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
     </tr>
      <tr>
-        <td>dest_x</td>
+        <td>width</td>
         <td>Lorem ipsum dolor sit amet</td>
     </tr>
      <tr>
-        <td>dest_y</td>
+        <td>height</td>
         <td>Lorem ipsum dolor sit amet</td>
     </tr>
     </tbody>
 </table>
-
 
 ## attributs
 
@@ -61,71 +59,55 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>this.uuid</td>
-        <td>nom du composant</td>
-    </tr>
-    <tr>
+     <tr>
         <td>this.x</td>
-        <td>L'abscisse du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
     </tr>
     <tr>
         <td>this.y</td>
-        <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
     </tr>
      <tr>
-        <td>this.dest_x</td>
+        <td>this.width</td>
         <td>Lorem ipsum dolor sit amet</td>
     </tr>
      <tr>
-        <td>this.dest_y</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
-        <td>this.c1</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
-        <td>this.c2</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
-        <td>this.c3</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
-        <td>this.c4</td>
+        <td>this.height</td>
         <td>Lorem ipsum dolor sit amet</td>
     </tr>
      <tr>
         <td>this.events</td>
+        <td>La largeur de la forme rectangulaire</td>
+    </tr>
+    <tr>
+        <td>this.nativeEvent</td>
+        <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
+    </tr>
+    <tr>
+        <td>this.config</td>
+        <td>La largeur de la forme rectangulaire</td>
+    </tr>
+    <tr>
+        <td>this.c_svg</td>
         <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
     </tr>
      <tr>
-        <td>this.config</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
         <td>this.svg</td>
-        <td>Lorem ipsum dolor sit amet</td>
+        <td>La largeur de la forme rectangulaire</td>
     </tr>
-     <tr>
-        <td>this.id_svg</td>
-        <td>Lorem ipsum dolor sit amet</td>
+    <tr>
+        <td>this.box</td>
+        <td>La largeur de la forme rectangulaire</td>
     </tr>
-     <tr>
-        <td>this.nativeEvent</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
-        <td>this.c_svg</td>
-        <td>Lorem ipsum dolor sit amet</td>
-    </tr>
-     <tr>
+    <tr>
         <td>this.type</td>
-        <td>Lorem ipsum dolor sit amet</td>
+        <td>La largeur de la forme rectangulaire</td>
     </tr>
-        <tr>
+    <tr>
+        <td>this.p</td>
+        <td>La largeur de la forme rectangulaire</td>
+    </tr>
+    <tr>
         <td>this.offsetX</td>
         <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
     </tr>
@@ -133,12 +115,20 @@
         <td>this.offsetY</td>
         <td>La largeur de la forme rectangulaire</td>
     </tr>
-        <tr>
-        <td>this.sclaeX</td>
+     <tr>
+        <td>this.scaleX</td>
         <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
     </tr>
      <tr>
         <td>this.scaleY</td>
+        <td>La largeur de la forme rectangulaire</td>
+    </tr>
+     <tr>
+        <td>this.centerX</td>
+        <td>L'ordonnée du début du dessin de la forme, située à l'extrémité gauche du navigateur</td>
+    </tr>
+     <tr>
+        <td>this.centerY</td>
         <td>La largeur de la forme rectangulaire</td>
     </tr>
      <tr>

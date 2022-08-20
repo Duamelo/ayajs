@@ -22,6 +22,46 @@
    //    child.removeFromDOM();
    // });
 
+   var rg = aya._uuid();
+
+   console.log(rg);
+
+   var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
+   
+   // var text = aya.Text(0,0,"{text}");
+   // los.form.addChild(text, (p,c)=>{
+   //    c.setOffsetX(p.x - p.width/4);
+   //    c.setOffsetY(p.y + p.height/2);
+   // }, (p,c)=>{}, true);
+
+
+   // var circle = aya.Component("circle", {x: 200, y: 200, r: 80});
+
+   // circle.form.addChild(aya.Text(0,0,'empty'), (p,c)=>{
+   //    c.setOffsetX(p.x);
+   //    c.setOffsetY(p.y);
+   // }, (p,c)=>{}, true);
+
+   //  var arrow = aya.Component("line", {x: 200, y: 100, dest_x: 400-50 - 10, dest_y: 100});
+   //  arrow.form.children.map( ({child, translate, rotate}, index) => {
+   //     if(child.type == 'circle')
+   //         child.c_svg.setAttribute("fill", "white");
+   //  });
+
+   var rec1 = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
+   var rec2 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+
+
+   // var poly = aya.Polyline([100,100, 200,100, 300, 300, 100, 100]);
+   // poly.draw();
+
+   // poly.addEvent("mouseover", ()=>{
+   //    poly.c_svg.setAttribute("fill", "indigo");
+   // });
+
+   // poly.addEvent("mouseleave", ()=>{
+   //    poly.c_svg.setAttribute("fill", "white");
+   // });
     document.body.append(aya.svg);
    </script>
 

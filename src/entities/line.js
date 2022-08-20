@@ -1,3 +1,4 @@
+
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
@@ -244,6 +245,10 @@ class Line extends Form {
         this.dest_y += dy;
     }
 
+    updateLine(){
+
+    }
+
     redraw(){
         this.drawVertex();
 
@@ -258,6 +263,7 @@ class Line extends Form {
         + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
         + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
         + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+
         this.c_svg.setAttribute("d", p);
 
         this.children.map ( ({child, translate, rotate}) => {

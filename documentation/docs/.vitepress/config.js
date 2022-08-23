@@ -1,5 +1,5 @@
 export default {
-    title: 'aya.js',
+    title: 'ayajs',
     description: 'Just playing bycreating your diagram.',
     theme: 'reco',
     themeConfig: {

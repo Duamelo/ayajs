@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as a}from"./app.fddc9d6e.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"entities_docs/text.md"}'),r={name:"entities_docs/text.md"};function s(o,c,n,i,_,d){return a(),e("div")}var f=t(r,[["render",s]]);export{m as __pageData,f as default};

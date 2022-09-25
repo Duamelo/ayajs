@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a,d as r}from"./app.fddc9d6e.js";const v=JSON.parse('{"title":"D\xE9couvrez aya.js","description":"","frontmatter":{},"headers":[],"relativePath":"guide_docs/introduction.md"}'),s={name:"guide_docs/introduction.md"},o=r("",3),n=[o];function i(c,d,l,u,_,p){return a(),t("div",null,n)}var m=e(s,[["render",i]]);export{v as __pageData,m as default};

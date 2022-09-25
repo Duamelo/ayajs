@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as s,d as a}from"./app.fddc9d6e.js";const g=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide_docs/installation.md"}'),o={name:"guide_docs/installation.md"},n=a("",1),r=[n];function i(c,l,d,_,p,u){return s(),t("div",null,r)}var h=e(o,[["render",i]]);export{g as __pageData,h as default};

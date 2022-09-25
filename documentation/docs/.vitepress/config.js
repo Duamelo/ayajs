@@ -1,4 +1,5 @@
 export default {
+    base: '/ayajs/',
     title: 'ayajs',
     description: 'Just playing bycreating your diagram.',
     theme: 'reco',

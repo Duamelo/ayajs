@@ -8,7 +8,6 @@ import { Arc } from "./entities/arc";
 import { Group } from "./entities/group.js";
 import { Text } from "./entities/text.js";
 
-
 /**
  * @class FactoryForm
  */

@@ -97,7 +97,7 @@ const members = [
     name: 'Abel',
     title: 'Developer',
     links: [
-      { icon: 'github', link: 'https://github.com/Duamelo' },
+      { icon: 'github', link: 'https://github.com/abel2319' },
     ]
   },
   {

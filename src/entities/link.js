@@ -49,175 +49,175 @@ class Link
             console.log(source.form.width);
             console.log(destination.form.height);
 
-            if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
-                this.line.c1.x = this.line.x;
-                this.line.c1.y = this.line.y;
+            // if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
+            //     this.line.c1.x = this.line.x;
+            //     this.line.c1.y = this.line.y;
 
-                this.line.c2.x = this.line.dest_x;
-                this.line.c2.y = this.line.y;
+            //     this.line.c2.x = this.line.dest_x;
+            //     this.line.c2.y = this.line.y;
 
-                this.line.c4.x = this.line.dest_x;
-                this.line.c4.y = this.line.dest_y;
+            //     this.line.c4.x = this.line.dest_x;
+            //     this.line.c4.y = this.line.dest_y;
 
-                this.line.c3.x = this.line.c2.x;
-                this.line.c3.y = this.line.c4.y;
+            //     this.line.c3.x = this.line.c2.x;
+            //     this.line.c3.y = this.line.c4.y;
 
-                if(this.line.dest_x >= (source.form.x + widthS/2) ){
-                    this.line.c1.x = this.line.x;
-                    this.line.c1.y = this.line.y;
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //     if(this.line.dest_x >= (source.form.x + widthS/2) ){
+            //         this.line.c1.x = this.line.x;
+            //         this.line.c1.y = this.line.y;
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                    this.line.c4.x = this.line.dest_x;
-                    this.line.c4.y = this.line.dest_y;
-                }
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //         this.line.c4.x = this.line.dest_x;
+            //         this.line.c4.y = this.line.dest_y;
+            //     }
 
-                if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-                    this.line.c2.y = this.line.y;
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
+            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+            //         this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
 
-                if( this.line.x == (source.form.x + widthS/2) &&  this.line.dest_x == (destination.form.x + widthD/2)){
-                    // 0 2
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
+            //     if( this.line.x == (source.form.x + widthS/2) &&  this.line.dest_x == (destination.form.x + widthD/2)){
+            //         // 0 2
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
 
-                }
+            //     }
 
-                if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x))){
-                    // 0 3
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //     if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x))){
+            //         // 0 3
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
-            }
-            else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
-                this.line.c1.x = this.line.x;
-                this.line.c1.y = this.line.y;
+            //         this.line.c3.x = this.line.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
+            // }
+            // else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
+            //     this.line.c1.x = this.line.x;
+            //     this.line.c1.y = this.line.y;
 
-                this.line.c2.x = this.line.x; 
-                this.line.c2.y = this.line.y;
+            //     this.line.c2.x = this.line.x; 
+            //     this.line.c2.y = this.line.y;
 
-                this.line.c4.x = this.line.dest_x;
-                this.line.c4.y = this.line.dest_y;
+            //     this.line.c4.x = this.line.dest_x;
+            //     this.line.c4.y = this.line.dest_y;
 
-                this.line.c3.x = this.line.dest_x;
-                this.line.c3.y <= this.line.y;
+            //     this.line.c3.x = this.line.dest_x;
+            //     this.line.c3.y <= this.line.y;
 
-                if((this.line.x < source.form.x + widthS) && (this.line.dest_x <= destination.form.x ) ){
-                    // 2 1
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //     if((this.line.x < source.form.x + widthS) && (this.line.dest_x <= destination.form.x ) ){
+            //         // 2 1
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
 
-                 if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-                     //1 3
-                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-                    this.line.c2.y = this.line.y;
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //      if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
+            //          //1 3
+            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+            //         this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
 
-                if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x == (destination.form.x + widthD/2))){
-                    // 1 0
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
+            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x == (destination.form.x + widthD/2))){
+            //         // 1 0
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
 
-                 if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x + widthD/2))){
-                    // 2 0
-                    this.line.c2.x = this.line.x                  
-                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;    
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
+            //      if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x + widthD/2))){
+            //         // 2 0
+            //         this.line.c2.x = this.line.x                  
+            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;    
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
 
 
-            }
+            // }
 
-            else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
-                this.line.c1.x = this.line.x;
-                this.line.c1.y = this.line.y;
+            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
+            //     this.line.c1.x = this.line.x;
+            //     this.line.c1.y = this.line.y;
 
-                this.line.c2.x = this.line.x;
-                this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+            //     this.line.c2.x = this.line.x;
+            //     this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
 
-                this.line.c4.x = this.line.dest_x;
-                this.line.c4.y = this.line.dest_y;
+            //     this.line.c4.x = this.line.dest_x;
+            //     this.line.c4.y = this.line.dest_y;
 
-                this.line.c3.x = this.line.dest_x;
-                this.line.c3.y = this.line.c2.y;
+            //     this.line.c3.x = this.line.dest_x;
+            //     this.line.c3.y = this.line.c2.y;
 
-                if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD/2)){
-                    // 3 0
-                     this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD/2)){
+            //         // 3 0
+            //          this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
  
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.y;
-                }
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.y;
+            //     }
 
-                if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD)){
-                    // 3 1
-                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-                    this.line.c2.y = this.line.y;
-                    this.line.c3.x = this.line.c2.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD)){
+            //         // 3 1
+            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+            //         this.line.c2.y = this.line.y;
+            //         this.line.c3.x = this.line.c2.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
 
 
-            }
-            else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){
+            // }
+            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){
 
-                this.line.c1.x = this.line.x;
-                this.line.c1.y = this.line.y;
+            //     this.line.c1.x = this.line.x;
+            //     this.line.c1.y = this.line.y;
 
-                this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
-                this.line.c2.y = this.line.c1.y;
-                this.line.c4.x = this.line.dest_x;
-                this.line.c4.y = this.line.dest_y;
+            //     this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
+            //     this.line.c2.y = this.line.c1.y;
+            //     this.line.c4.x = this.line.dest_x;
+            //     this.line.c4.y = this.line.dest_y;
                 
-                this.line.c3.x = this.line.c2.x;
-                this.line.c3.y = this.line.c4.y;
+            //     this.line.c3.x = this.line.c2.x;
+            //     this.line.c3.y = this.line.c4.y;
 
-                if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD/2)){
-                    // 0 2
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.c2.y;
-                }
+            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD/2)){
+            //         // 0 2
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.c2.y;
+            //     }
 
-                if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD)){
-                    // 0 1
-                    this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD)){
+            //         // 0 1
+            //         this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
 
-                    this.line.c3.x = this.line.x;
-                    this.line.c3.y = this.line.dest_y;
-                }
+            //         this.line.c3.x = this.line.x;
+            //         this.line.c3.y = this.line.dest_y;
+            //     }
 
-                 if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
-                    // 3 2
-                     this.line.c2.x = this.line.x;
-                    this.line.c2.y = this.line.y;
+            //      if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
+            //         // 3 2
+            //          this.line.c2.x = this.line.x;
+            //         this.line.c2.y = this.line.y;
  
-                    this.line.c3.x = this.line.dest_x;
-                    this.line.c3.y = this.line.y;
-                }
-            }
+            //         this.line.c3.x = this.line.dest_x;
+            //         this.line.c3.y = this.line.y;
+            //     }
+            // }
 
             this.line.c_svg.setAttribute("fill", "none");
             this.line.redraw();

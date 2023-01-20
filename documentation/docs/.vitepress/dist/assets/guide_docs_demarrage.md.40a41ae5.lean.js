@@ -1,1 +1,0 @@
-import{_ as s,c as a,o as e,d as t}from"./app.fddc9d6e.js";const b=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide_docs/demarrage.md"}'),p={name:"guide_docs/demarrage.md"},r=t("",1),n=[r];function c(i,o,d,l,_,m){return e(),a("div",null,n)}var v=s(p,[["render",c]]);export{b as __pageData,v as default};

@@ -45,9 +45,10 @@
 	    line : {
 	        fill : "black",
 	        ends : {
-	            start : { type : "circle"},
+	            start : { type : "triangle"},
 	            dest : { type : "triangle"}
-	        }
+	        },
+	        strokeWidth : "2pt",
 	    },
 
 	    text : {
@@ -1192,183 +1193,183 @@
 	            this.line.dest_x = this.destination.x;
 	            this.line.dest_y = this.destination.y;
 
-	            var widthS = source.form.width;
+	            source.form.width;
 	             source.form.height; 
-	             var widthD = destination.form.width; 
+	             destination.form.width; 
 	             destination.form.height;
 
 	            console.log(source.form.width);
 	            console.log(destination.form.height);
 
-	            if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
-	                this.line.c1.x = this.line.x;
-	                this.line.c1.y = this.line.y;
+	            // if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
+	            //     this.line.c1.x = this.line.x;
+	            //     this.line.c1.y = this.line.y;
 
-	                this.line.c2.x = this.line.dest_x;
-	                this.line.c2.y = this.line.y;
+	            //     this.line.c2.x = this.line.dest_x;
+	            //     this.line.c2.y = this.line.y;
 
-	                this.line.c4.x = this.line.dest_x;
-	                this.line.c4.y = this.line.dest_y;
+	            //     this.line.c4.x = this.line.dest_x;
+	            //     this.line.c4.y = this.line.dest_y;
 
-	                this.line.c3.x = this.line.c2.x;
-	                this.line.c3.y = this.line.c4.y;
+	            //     this.line.c3.x = this.line.c2.x;
+	            //     this.line.c3.y = this.line.c4.y;
 
-	                if(this.line.dest_x >= (source.form.x + widthS/2) ){
-	                    this.line.c1.x = this.line.x;
-	                    this.line.c1.y = this.line.y;
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
+	            //     if(this.line.dest_x >= (source.form.x + widthS/2) ){
+	            //         this.line.c1.x = this.line.x;
+	            //         this.line.c1.y = this.line.y;
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
 
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.c2.y;
-	                    this.line.c4.x = this.line.dest_x;
-	                    this.line.c4.y = this.line.dest_y;
-	                }
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
+	            //         this.line.c4.x = this.line.dest_x;
+	            //         this.line.c4.y = this.line.dest_y;
+	            //     }
 
-	                if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-	                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-	                    this.line.c2.y = this.line.y;
-	                    this.line.c3.x = this.line.c2.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
+	            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
+	            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.c2.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
 
-	                if( this.line.x == (source.form.x + widthS/2) &&  this.line.dest_x == (destination.form.x + widthD/2)){
-	                    // 0 2
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.c2.y;
+	            //     if( this.line.x == (source.form.x + widthS/2) &&  this.line.dest_x == (destination.form.x + widthD/2)){
+	            //         // 0 2
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
 
-	                }
+	            //     }
 
-	                if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x))){
-	                    // 0 3
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
+	            //     if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x))){
+	            //         // 0 3
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
 
-	                    this.line.c3.x = this.line.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
-	            }
-	            else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
-	                this.line.c1.x = this.line.x;
-	                this.line.c1.y = this.line.y;
+	            //         this.line.c3.x = this.line.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
+	            // }
+	            // else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
+	            //     this.line.c1.x = this.line.x;
+	            //     this.line.c1.y = this.line.y;
 
-	                this.line.c2.x = this.line.x; 
-	                this.line.c2.y = this.line.y;
+	            //     this.line.c2.x = this.line.x; 
+	            //     this.line.c2.y = this.line.y;
 
-	                this.line.c4.x = this.line.dest_x;
-	                this.line.c4.y = this.line.dest_y;
+	            //     this.line.c4.x = this.line.dest_x;
+	            //     this.line.c4.y = this.line.dest_y;
 
-	                this.line.c3.x = this.line.dest_x;
-	                this.line.c3.y <= this.line.y;
+	            //     this.line.c3.x = this.line.dest_x;
+	            //     this.line.c3.y <= this.line.y;
 
-	                if((this.line.x < source.form.x + widthS) && (this.line.dest_x <= destination.form.x ) ){
-	                    // 2 1
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
-	                    this.line.c3.x = this.line.c2.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
+	            //     if((this.line.x < source.form.x + widthS) && (this.line.dest_x <= destination.form.x ) ){
+	            //         // 2 1
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.c2.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
 
-	                 if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-	                     //1 3
-	                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-	                    this.line.c2.y = this.line.y;
-	                    this.line.c3.x = this.line.c2.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
+	            //      if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
+	            //          //1 3
+	            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.c2.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
 
-	                if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x == (destination.form.x + widthD/2))){
-	                    // 1 0
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.c2.y;
-	                }
+	            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x == (destination.form.x + widthD/2))){
+	            //         // 1 0
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
+	            //     }
 
-	                 if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x + widthD/2))){
-	                    // 2 0
-	                    this.line.c2.x = this.line.x;                  
-	                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;    
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.c2.y;
-	                }
+	            //      if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x + widthD/2))){
+	            //         // 2 0
+	            //         this.line.c2.x = this.line.x                  
+	            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;    
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
+	            //     }
 
 
-	            }
+	            // }
 
-	            else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
-	                this.line.c1.x = this.line.x;
-	                this.line.c1.y = this.line.y;
+	            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
+	            //     this.line.c1.x = this.line.x;
+	            //     this.line.c1.y = this.line.y;
 
-	                this.line.c2.x = this.line.x;
-	                this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+	            //     this.line.c2.x = this.line.x;
+	            //     this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
 
-	                this.line.c4.x = this.line.dest_x;
-	                this.line.c4.y = this.line.dest_y;
+	            //     this.line.c4.x = this.line.dest_x;
+	            //     this.line.c4.y = this.line.dest_y;
 
-	                this.line.c3.x = this.line.dest_x;
-	                this.line.c3.y = this.line.c2.y;
+	            //     this.line.c3.x = this.line.dest_x;
+	            //     this.line.c3.y = this.line.c2.y;
 
-	                if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD/2)){
-	                    // 3 0
-	                     this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
+	            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD/2)){
+	            //         // 3 0
+	            //          this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
 	 
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.y;
-	                }
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.y;
+	            //     }
 
-	                if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD)){
-	                    // 3 1
-	                    this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-	                    this.line.c2.y = this.line.y;
-	                    this.line.c3.x = this.line.c2.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
+	            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD)){
+	            //         // 3 1
+	            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
+	            //         this.line.c2.y = this.line.y;
+	            //         this.line.c3.x = this.line.c2.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
 
 
-	            }
-	            else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){
+	            // }
+	            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){
 
-	                this.line.c1.x = this.line.x;
-	                this.line.c1.y = this.line.y;
+	            //     this.line.c1.x = this.line.x;
+	            //     this.line.c1.y = this.line.y;
 
-	                this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
-	                this.line.c2.y = this.line.c1.y;
-	                this.line.c4.x = this.line.dest_x;
-	                this.line.c4.y = this.line.dest_y;
+	            //     this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
+	            //     this.line.c2.y = this.line.c1.y;
+	            //     this.line.c4.x = this.line.dest_x;
+	            //     this.line.c4.y = this.line.dest_y;
 	                
-	                this.line.c3.x = this.line.c2.x;
-	                this.line.c3.y = this.line.c4.y;
+	            //     this.line.c3.x = this.line.c2.x;
+	            //     this.line.c3.y = this.line.c4.y;
 
-	                if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD/2)){
-	                    // 0 2
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.c2.y;
-	                }
+	            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD/2)){
+	            //         // 0 2
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.c2.y;
+	            //     }
 
-	                if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD)){
-	                    // 0 1
-	                    this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
+	            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD)){
+	            //         // 0 1
+	            //         this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
 
-	                    this.line.c3.x = this.line.x;
-	                    this.line.c3.y = this.line.dest_y;
-	                }
+	            //         this.line.c3.x = this.line.x;
+	            //         this.line.c3.y = this.line.dest_y;
+	            //     }
 
-	                 if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
-	                    // 3 2
-	                     this.line.c2.x = this.line.x;
-	                    this.line.c2.y = this.line.y;
+	            //      if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
+	            //         // 3 2
+	            //          this.line.c2.x = this.line.x;
+	            //         this.line.c2.y = this.line.y;
 	 
-	                    this.line.c3.x = this.line.dest_x;
-	                    this.line.c3.y = this.line.y;
-	                }
-	            }
+	            //         this.line.c3.x = this.line.dest_x;
+	            //         this.line.c3.y = this.line.y;
+	            //     }
+	            // }
 
 	            this.line.c_svg.setAttribute("fill", "none");
 	            this.line.redraw();
@@ -1412,9 +1413,6 @@
 	          return;
 	        if(cp.form != undefined)
 	          lk = _Register.findAllLink(cp);
-	        console.log("lk");
-	        console.log(lk);
-
 
 	        // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
 	        if ((cp != undefined && cp.ref == undefined) )
@@ -1436,7 +1434,6 @@
 	             * In this case, we start tracing a link.
 	             */
 	            state = "drawing_link";
-	            console.log("state = drawing_link");
 
 	            id = _uuid.generate();
 	            if (cp != source) {
@@ -1450,8 +1447,6 @@
 
 	        if (state == "moving") {
 
-	          console.log("state = moving");
-	  
 	          deltaX = e.offsetX - dx;
 	          deltaY = e.offsetY - dy;
 	  
@@ -1469,8 +1464,6 @@
 	                  sink = point;
 	              });
 	              if(sink) {
-	                console.log("dest");
-	                console.log(sink);
 	                link.line.dest_x += deltaX;
 	                link.line.dest_y += deltaY;
 
@@ -1593,9 +1586,6 @@
 	            });
 	          }
 	        }
-	        
-
-	       
 	      },
 	      mouseLeaveCb: function mouseleavecb(e){
 
@@ -1683,7 +1673,6 @@
 	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	        ];
 
-	        console.log("tedt log in line js");
 	        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
 	            if(this.config.line.ends.start.type == 'triangle'){
@@ -1702,7 +1691,6 @@
 	                    c.setRotateAngle(p.calculateAngle() - Math.PI);
 	                } );
 	            }
-	                
 	            else if(this.config.line.ends.start.type == 'circle')
 	                this.addChild(child, (p, c) => {
 	                    c.setOffsetX(p.x);
@@ -1720,7 +1708,6 @@
 	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
 	                } );
 	        }
-
 	        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, { x1 :this.dest_x - 8, y1: this.dest_y - 2, x2 : this.dest_x, y2 : this.dest_y, x3 : this.dest_x - 8, y3 :this.dest_y + 2}, this.svg, this.nativeEvent, this.config);
 	            if(this.config.line.ends.dest.type == 'triangle'){
@@ -1740,7 +1727,15 @@
 	                    c.setRotateAngle(p.calculateAngle());
 	                } );
 	            }
-	            else {
+	            else if(this.config.line.ends.start.type == 'circle')
+	                this.addChild(child, (p, c) => {
+	                    c.setOffsetX(p.x);
+	                    c.setOffsetY(p.y);
+	                },  (p, c) => {
+	                    c.setRotateCenter(c.x, c.y);
+	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
+	                } );
+	            else
 	                this.addChild(child, (p, c) => {
 	                    c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
 	                    c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
@@ -1748,7 +1743,6 @@
 	                    c.setRotateCenter(c.x, c.y);
 	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
 	                } );
-	            }
 	        }
 	    }
 
@@ -1796,20 +1790,20 @@
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
-	        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+	        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 
-	        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+	        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
 	        this.c_svg.setAttribute("id", this.uuid);
 	        this.c_svg.setAttribute("d", this.p);
-	        this.c_svg.setAttribute("fill", this.config.form.fill);
+	        this.c_svg.setAttribute("fill", this.config.line.fill);
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.line.strokeWidth);
 
 	        this.svg.appendChild(this.c_svg);
 
@@ -1864,18 +1858,22 @@
 	            vertex.redraw();
 	        });
 
-	        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
+	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+	        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
+	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
+	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
+	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
+	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
+	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
 
 	        this.c_svg.setAttribute("d", p);
 
 	        this.children.map ( ({child, translate, rotate}) => {
 	            translate(this, child);
+	            // if ((this.x == this.dest_x) && (child.type == "triangle")){
+	            //     if (child.x2 == this.x)
+	            //         child.setRotateAngle(this.calculateAngle());
+	            // }
 	            rotate(this, child);
 	            child.redraw();
 	        });
@@ -1885,8 +1883,10 @@
 	        var angle = 0;
 	        
 	        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
-	        if(this.dest_x == this.x)
-	            angle = -Math.PI/2;
+	        if(this.dest_x == this.x){
+	            console.log("vertical");
+	            angle = Math.PI/2;
+	        }
 	        if(pente == 0)
 	            angle = 0;
 	        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
@@ -1896,8 +1896,7 @@
 	        else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
 	            angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 	        else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
-	            angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-
+	            angle = Math.PI - Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
 	        return angle;
 	    }
 
@@ -3382,6 +3381,15 @@
 	        this.svg.appendChild(this.c_svg);
 	    }
 
+	    redraw(){
+		this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
+	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+	        this.c_svg.setAttributeNS(null, "textLength", this.size);
+		this.c_svg.textContent = this.text;
+	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+	    }
+	    
+
 	    updateWidthText(marge =  5){
 	        var subString = "", isSoLong = false;
 	        // lenght of text in pixels  || 6 pixels wide by 8 pixels high. 
@@ -3413,13 +3421,6 @@
 	        // this.title.textContent = "";
 	        // this.tspan.textContent = "";
 	        this.c_svg.textContent = "";
-	    }
-
-	    redraw(){
-	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
-	        // this.updateWidthText();
 	    }
 
 	    setOffsetX(x){
@@ -3503,7 +3504,7 @@
 	        else if(type == "group")
 	            return new Group(uuid, svg, events, config);
 	        else if(type == "text")
-	            return new Text(uuid, props.x, props.y, props.text, svg, events, config);
+	            return new Text(uuid, props.x, props.y, props.text, props.size, svg, events, config);
 	    }
 	}
 
@@ -4124,7 +4125,7 @@
 
 	        this.svg_width = width;
 	        this.svg_height = height;
-
+	 
 	        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
 	        this.svg.setAttribute("width", this.svg_width);
@@ -4212,7 +4213,6 @@
 	                line.deleteEvent(ev);
 	            });
 	        }
-
 	        this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
 	        this.svg.addEventListener("mouseup", this.events.mouseUpCb);
 	    }
@@ -4283,7 +4283,5 @@
 	}
 
 	exports.Init = Init;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

@@ -6,64 +6,78 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
-   <script src="./build/aya.js"></script>
+   <script type="application/javascript"  src="./build/aya.js"></script>
    <title>ayajs</title>
 </head>
 
-<body>
+<body >
 
-   <script>
-      var aya = new aya.Init();
+   <!-- <script>
       console.log(aya);
-      var active_component = "", active_method = "";
-      var state = "";
+      var aya = new aya.Init();
 
-   // aya.box.form.children.map(({child}) =>{
-   //    child.removeFromDOM();
-   // });
+      // aya.config.line.ends.start = "";
+      // aya.config.line.ends.dest = "";
 
-   var rg = aya._uuid();
 
-   console.log(rg);
+      // remove grid from the svg
+      aya.box.form.children.map(({child}) =>{
+         aya.svg.removeChild(child.c_svg);
+      });
 
-   var los = aya.Component("lozenge", {x: 100, y: 100, width: 100, height: 100});
+      var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
    
-   // var text = aya.Text(0,0,"{text}");
-   // los.form.addChild(text, (p,c)=>{
-   //    c.setOffsetX(p.x - p.width/4);
-   //    c.setOffsetY(p.y + p.height/2);
-   // }, (p,c)=>{}, true);
+      var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+
+      rec.form.c_svg.setAttributeNS(null, "fill", "red");
+
+      // removing connexion points fron the component form
+      // rec.form.c_points.map((pt)=>{
+      //    pt.removeFromDOM();
+      // })
+
+      // removing vertex fron the component form
+      rec.form.vertex.map((vertex)=>{
+         vertex.removeFromDOM();
+      })
 
 
-   // var circle = aya.Component("circle", {x: 200, y: 200, r: 80});
+      var lozenge = aya.Component("lozenge", {x: 500, y: 200, width: 200, height: 100});
 
-   // circle.form.addChild(aya.Text(0,0,'empty'), (p,c)=>{
-   //    c.setOffsetX(p.x);
-   //    c.setOffsetY(p.y);
-   // }, (p,c)=>{}, true);
-
-   //  var arrow = aya.Component("line", {x: 200, y: 100, dest_x: 400-50 - 10, dest_y: 100});
-   //  arrow.form.children.map( ({child, translate, rotate}, index) => {
-   //     if(child.type == 'circle')
-   //         child.c_svg.setAttribute("fill", "white");
-   //  });
-
-   var rec1 = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
-   var rec2 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+      lozenge.form.c_svg.setAttributeNS(null, "fill", "gray");
 
 
-   // var poly = aya.Polyline([100,100, 200,100, 300, 300, 100, 100]);
-   // poly.draw();
+      // lozenge.form.c_points.map((pt)=>{
+      //    pt.removeFromDOM();
+      // })
 
-   // poly.addEvent("mouseover", ()=>{
-   //    poly.c_svg.setAttribute("fill", "indigo");
-   // });
+      lozenge.form.vertex.map((vertex)=>{
+         vertex.removeFromDOM();
+      })
 
-   // poly.addEvent("mouseleave", ()=>{
-   //    poly.c_svg.setAttribute("fill", "white");
-   // });
-    document.body.append(aya.svg);
-   </script>
+      // removing the box in dotted line
+      aya.svg.removeChild(lozenge.form.box);
 
+      document.body.append(aya.svg);
+   </script> -->
+
+   <svg width="1000" height="1400" viewBox="0 0 400 300">
+      <path stroke="indigo" stroke-width="2" fill="gray"
+      d="M50,100
+      A100,50 135 0 1 250,100
+      " />
+
+      <circle cx="150" cy="100" r="2" style="fill: black;"/>
+
+      <circle cx="150" cy="50" r="2" style="fill: black;"/>
+
+      <!-- <circle cx="250" cy="100" r="2" style="fill: black;"/>
+
+      <circle cx="110" cy="100" r="2" style="fill: black;"/> -->
+
+      <ellipse cx="60" cy="50" rx="50" ry="20" stroke="indigo" stroke-width="2" style="fill: none;"/>
+      <path d="M 10, 50 A 50 20 0 0 0 110, 50"/>
+      <circle cx="60" cy="50" r="2" style="fill: red;"/>
+   </svg>
 </body>
 </html>

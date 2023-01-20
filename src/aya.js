@@ -24,7 +24,7 @@ class Init{
 
         this.svg_width = width;
         this.svg_height = height;
-
+ 
         this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
         this.svg.setAttribute("width", this.svg_width);
@@ -112,7 +112,6 @@ class Init{
                 line.deleteEvent(ev);
             });
         }
-
         this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);
     }

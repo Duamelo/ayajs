@@ -42,9 +42,6 @@ class Events {
           return;
         if(cp.form != undefined)
           lk = _Register.findAllLink(cp);
-        console.log("lk");
-        console.log(lk);
-
 
         // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
         if ((cp != undefined && cp.ref == undefined) )
@@ -69,7 +66,6 @@ class Events {
              * In this case, we start tracing a link.
              */
             state = "drawing_link";
-            console.log("state = drawing_link");
 
             id = _uuid.generate();
             if (cp != source) {
@@ -83,8 +79,6 @@ class Events {
 
         if (state == "moving") {
 
-          console.log("state = moving");
-  
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;
   
@@ -102,8 +96,6 @@ class Events {
                   sink = point;
               });
               if(sink) {
-                console.log("dest");
-                console.log(sink);
                 link.line.dest_x += deltaX;
                 link.line.dest_y += deltaY;
 
@@ -228,9 +220,6 @@ class Events {
             });
           }
         }
-        
-
-       
       },
       mouseLeaveCb: function mouseleavecb(e){
 

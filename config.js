@@ -38,10 +38,13 @@ var config =  {
 
     line : {
         fill : "black",
+        type: "broke",
         ends : {
-            start : { type : "circle"},
+            start : { type : "triangle"},
             dest : { type : "triangle"}
-        }
+        },
+        strokeWidth : "1pt",
+        strokeDasharray : "4"
     },
 
     text : {

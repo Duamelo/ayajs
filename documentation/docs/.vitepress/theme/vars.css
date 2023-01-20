@@ -81,3 +81,22 @@ flex-direction: column;
     color:#58768f1a;
    color:rgba(128, 128, 128, 0.202);
 }
+.text[data-v-a58bc588] {
+    line-height: 55px;
+    font-size: 30px;
+    max-width: 1100px;
+    text-align: center;
+}
+
+@media (min-width: 960px){
+    .tagline[data-v-a58bc588] {
+        line-height: 30px;
+        font-size: 20px;
+        text-align: center;
+    }
+}
+
+.tagline{
+    line-height: 36px;
+    /* font-size: 24px; */
+}

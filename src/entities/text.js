@@ -96,6 +96,15 @@ class Text{
         this.svg.appendChild(this.c_svg);
     }
 
+    redraw(){
+	this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
+        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
+        this.c_svg.setAttributeNS(null, "textLength", this.size);
+	this.c_svg.textContent = this.text;
+        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+    }
+    
+
     updateWidthText(marge =  5){
         var subString = "", isSoLong = false;
         // lenght of text in pixels  || 6 pixels wide by 8 pixels high. 
@@ -127,13 +136,6 @@ class Text{
         // this.title.textContent = "";
         // this.tspan.textContent = "";
         this.c_svg.textContent = "";
-    }
-
-    redraw(){
-        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
-        // this.updateWidthText();
     }
 
     setOffsetX(x){

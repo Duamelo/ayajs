@@ -44,7 +44,7 @@ class FactoryForm
         else if(type == "group")
             return new Group(uuid, svg, events, config);
         else if(type == "text")
-            return new Text(uuid, props.x, props.y, props.text, svg, events, config);
+            return new Text(uuid, props.x, props.y, props.text, props.size, svg, events, config);
     }
 }
 export {FactoryForm};

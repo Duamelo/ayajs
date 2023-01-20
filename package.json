@@ -1,8 +1,9 @@
 {
   "name": "ayajs",
-  "version": "0.0.12",
-  "description": "librairie javascript de création de forme géométrique",
+  "version": "0.1.1",
+  "description": "A JavaScript library for building any kind of diagrams quickly and in a programmatic way.",
   "module": "build/aya.module.js",
+  "type": "module",
   "main": "build/aya.js",
   "scripts": {
     "start": "rollup -c rollup.dev.js",
@@ -10,10 +11,15 @@
     "uglify": "uglifyjs --v8 --toplevel --compress --mangle --verbose  -m reserved=['$','require','exports'] --output build/aya.min.js build/aya.js"
   },
   "keywords": [
-    "tape",
+    "qunit",
     "js",
-    "node"
+    "node",
+    "cypress"
   ],
+  "bug":{
+    "url": "https://github.com/Duamelo/ayajs/issues"
+  },
+  "homepage": "https://ayajs.com",
   "author": "emack.io",
   "license": "ISC",
   "dependencies": {

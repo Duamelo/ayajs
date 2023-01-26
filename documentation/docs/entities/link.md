@@ -50,7 +50,7 @@ The link class exists to represent the link between two components.
 
 Here is an example of how you can create a link between two rectangles.
 
-```sh
+```js
 <script>
     var rec1 = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
     var rec2 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});

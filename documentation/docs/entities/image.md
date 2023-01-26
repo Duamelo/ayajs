@@ -55,7 +55,7 @@
 </body>
 
 Here is an example of how you can create a image form.
-```sh
+```js
 <script>
     var img = aya.Image(230, 245, 30,30, "icons/decorator.png");
     img.draw();

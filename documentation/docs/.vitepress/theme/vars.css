@@ -61,6 +61,21 @@ flex-direction: column;
     background:#58768f1a
 }
 
+.link[data-v-5c49c2bb] {
+    display: block;
+    border-radius: 6px;
+    padding: 0 12px;
+    line-height: 32px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vp-c-text-1);
+    white-space: nowrap;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+.link[data-v-5c49c2bb]:hover{
+    color:#0066b8;
+}
 .title[data-v-857cd014]{
     color:#0066b8;
     font-size: 32;

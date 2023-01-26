@@ -52,7 +52,7 @@
 Here is an example of how you can create a lozenge form.
 <p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
 
-```sh
+```js
 <script>
    var los = aya.Lozenge(100, 100, 100, 100);
    los.draw();

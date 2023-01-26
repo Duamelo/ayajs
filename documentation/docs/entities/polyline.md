@@ -39,7 +39,7 @@
 Here is an example of how you can create a polyline form.
 <p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
 
-```sh
+```js
 <script>
     var polyline = aya.Polyline([130, 123, 234, 349, 211, 293]);
     polyline.draw();

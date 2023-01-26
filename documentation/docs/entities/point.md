@@ -54,7 +54,7 @@ Here is an example of how you can create a point form.
     This shape is specially designed to represent the vertexes, the connection points of known geometric shapes (rectangle, lozenge, triangle, line).
 </strong>
 
-```sh
+```js
 <script>
     var pt = aya.Point(100, 150, 20);
     pt.draw();

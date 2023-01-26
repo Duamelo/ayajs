@@ -44,7 +44,7 @@
 Here is an example of how you can create a polyline component.
 <p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Polyline method of Init class.</p>
 
-```sh
+```js
 <script>
     var polyline = aya.Component("polyline", {points: [130, 123, 234, 349, 211, 293]});
 </script>

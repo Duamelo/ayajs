@@ -21,7 +21,7 @@ features:
   - title:  "➕ Designed to be simplicity first!"
     details: Aya is designed to be as minimal as possible and easy to use through its components.
   - title: "🎥 Video Tutorials!"
-    details: Aya has video tutorials for beginners and advanced users..
+    details: Aya has video tutorials for beginners and advanced users.
   - title: 🏆 Best minimal code base!
     details: Aya is the best code base you can use to build complex applications.
   - title: 🧩 Integrations available!
@@ -71,7 +71,7 @@ const members = [
   {
     avatar: 'profil.jpeg',
     name: 'David DOSSEH',
-    title: 'Creator',
+    title: 'Creator / Principal maintainer',
     links: [
       { icon: 'github', link: 'https://github.com/Duamelo' },
     ]
@@ -90,22 +90,6 @@ const members = [
     title: 'Developer',
     links: [
       { icon: 'github', link: 'https://github.com/MarieAngeLeslie' },
-    ]
-  },
-  {
-    avatar: 'abel.jpg',
-    name: 'Abel',
-    title: 'Developer',
-    links: [
-      { icon: 'github', link: 'https://github.com/abel2319' },
-    ]
-  },
-  {
-    avatar: 'tiffane.jpg',
-    name: 'Tiffane ZOHOUNGBOGBO',
-    title: 'Developer',
-    links: [
-      { icon: 'github', link: 'https://github.com/tiffan-source' },
     ]
   }
 ]

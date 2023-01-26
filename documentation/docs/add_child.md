@@ -9,7 +9,7 @@ The first callback defines a translation when needed, and the second a rotation.
 
 This is what it looks like:
 
-```sh
+```js
     addChild(child, translate = null, rotate = null, drawing = false){
         if(translate != null)
             translate(this, child);
@@ -18,7 +18,7 @@ This is what it looks like:
         if(drawing == true)
             child.draw();
         this.children.push({child, translate, rotate});
-}
+    }
 ```
 We also record all component's children.
 
@@ -30,7 +30,7 @@ The translation method takes two parameters: the parent component and the child.
 
 The rotation method like translation takes two parameters: the parent component and the child.
 
-```sh
+```js
 <script>
     var circle = aya.Component("circle", {x: 200, y: 200, r: 80});
 
@@ -47,7 +47,7 @@ The rotation method like translation takes two parameters: the parent component 
 Another example :
 
 
-```sh
+```js   
 <script>
     var arc = aya.Arc(100, 50, 210, 250, 45, 3/4);
 

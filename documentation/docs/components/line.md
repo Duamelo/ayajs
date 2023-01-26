@@ -58,7 +58,7 @@
 Here is an example of how you can create a line component.
 <p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Line method of Init class.</p>
 
-```sh
+```js
 <script>
     var line = aya.Component("line", {x: 50, y: 150, dest_x: 150, dest_y: 100});
 </script>

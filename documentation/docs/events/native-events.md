@@ -14,16 +14,16 @@ You can define events on your shapes or your components using the addEvent metho
 
 Here is the method to do it:
 
-```sh
+```js
     addEvent(event, callback){
         this.c_svg.addEventListener(event, callback);
         this.events[event] = callback;
     }
 ```
-For example I can define a mousedown event on a rectangle shape like this
+For example I can define a mousedown event on a rectangle jsape like this
 
 
-```sh
+```js
 <script>
     var rec = aya.Rectangle(100, 130, 200, 200);
     rec.draw();
@@ -36,7 +36,7 @@ For example I can define a mousedown event on a rectangle shape like this
 With a component, it goes like this:
 
 
-```sh
+```js
 <script>
    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
@@ -51,7 +51,7 @@ With a component, it goes like this:
 Aya gives you the possibility to delete your events with the deleteEvent method:
 
 
-```sh
+```js
     deleteEvent(event){
         var callback = this.events[event];
         this.c_svg.removeEventListener(event, callback);
@@ -62,7 +62,7 @@ Aya gives you the possibility to delete your events with the deleteEvent method:
 For example I can delete a mousedown event on a rectangle shape like this
 
 
-```sh
+```js
 <script>
     var rec = aya.Rectangle(100, 130, 200, 200);
     rec.draw();
@@ -77,7 +77,7 @@ For example I can delete a mousedown event on a rectangle shape like this
 With a component, it goes like this:
 
 
-```sh
+```js
 <script>
    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 

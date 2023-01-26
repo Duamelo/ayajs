@@ -7,14 +7,14 @@
 
 ## modifying the size of the svg
 
-```sh
+```js
     var aya = aya.Init(500, 500);
 ```
 ##  removing the default grid from the svg
 
-```sh
+```js
   aya.box.form.children.map(({child}) =>{
-         aya.svg.removeChild(child.c_svg);
+    aya.svg.removeChild(child.c_svg);
   });
 ```
 
@@ -25,7 +25,7 @@
     This file looks like this:
 </p>
 
-```sh
+```js
 var config =  {
     svg : {
         fill : "white",
@@ -95,7 +95,7 @@ export {config};
 you can do it by accessing the config property of the Init class in this way:
 </p>
 
-```sh
+```js
 <!DOCTYPE html>
 <html lang="en">
 <head>

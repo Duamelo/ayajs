@@ -59,7 +59,7 @@
 Here is an example of how you can create a text component.
 <p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Text method of Init class.</p>
 
-```sh
+```js
 <script>
    var text = aya.Component("text", {x: 100, y: 150, text: "hello world", size: 200});
 </script>

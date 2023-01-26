@@ -15,7 +15,7 @@ $ touch index.html
 
 ## Step. 2: populate this file with this code
 
-```sh
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,19 +32,19 @@ $ touch index.html
 
 ## Step. 3: include aya by copying this cdn link into head element
 
-```sh
-<script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@0.1.1/build/aya.js"></script>
+```js
+<script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
 ```
 <p> So your file will look like this</p>
 
-```sh
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@0.1.1/build/aya.js"></script>
+    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
     <title>aya demo</title>
 </head>
 <body>
@@ -54,15 +54,15 @@ $ touch index.html
 ```
 
 ## Step. 4: initialize aya
- You need to create a script inside the body element and instanciate ayaby calling the Init class like that:
-```sh
+ You need to create a script inside the body element and instanciate aya by calling the Init class like that:
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@0.1.1/build/aya.js"></script>
+    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
     <title>aya demo</title>
 </head>
 <body>
@@ -76,14 +76,15 @@ $ touch index.html
 ## Step. 5: create some basic rectangle component
  You need to call the constructor of the class Component and pass it the type of the component and the corresponding attributes.
  In this example, we have created a rectangle component whose shape is 200 wide and 100 high and is positioned at (100, 100).
-```sh
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@0.1.1/build/aya.js"></script>
+    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
     <title>aya demo</title>
 </head>
 <body>
@@ -101,20 +102,20 @@ $ touch index.html
 
 Once you have create a component and draw it into the svg, you need to add this svg inside the body element like this :
 
-```sh
+```js
     document.body.append(aya.svg);
 ```
 
 So the complete code looks like that:
 
-```sh
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@0.1.1/build/aya.js"></script>
+    <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
     <title>aya demo</title>
 </head>
 <body>

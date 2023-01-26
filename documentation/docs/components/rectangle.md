@@ -56,7 +56,7 @@
 Here is an example of how you can create a rectangle component.
 <p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Rectangle method of Init class.</p>
 
-```sh
+```js
 <script>
     var rect = aya.Component("rectangle", {x: 100, y: 150, width: 200, height: 120});
 </script>

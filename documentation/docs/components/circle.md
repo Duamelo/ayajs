@@ -55,7 +55,7 @@
 Here is an example of how you can create a circle component.
 <p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Circle method of Init class.</p>
 
-```sh
+```js
 <script>
     var circle = aya.Component("circle", {x: 100, y: 150, r: 20});
 </script>

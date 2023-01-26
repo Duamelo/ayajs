@@ -62,7 +62,7 @@
 Here is an example of how you can create a triangle form.
 <p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
 
-```sh
+```js
 <script>
     var triangle = aya.Triangle(50, 150, 150, 100, 200, 190);
     triangle.draw();

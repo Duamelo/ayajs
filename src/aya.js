@@ -22,8 +22,8 @@ class Init{
 
         this.uuid = _uuid.generate();
 
-        this.svg_width = width;
-        this.svg_height = height;
+        this.width = width;
+        this.height = height;
  
         this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
@@ -167,15 +167,7 @@ class Init{
     Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
         return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio, this.svg, this.events, this.config);
     }
-
-    Group(){
-        return new Group(_uuid.generate(),this.svg, this.events, this.config);
-    }
-
-    Ressource(x = 0, y = 0, r = 5, angle = 40, data = {}){
-        return new Ressource(x, y, r, angle, data, this.svg, this.config);
-    }
-
+    
     Image(x,y, width, height, path = "", name = ""){
         return new Image(_uuid.generate(), x, y, width, height, path, name, this.svg, this.events, this.config);
     }

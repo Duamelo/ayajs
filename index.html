@@ -6,13 +6,14 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
-   <script type="application/javascript"  src="./build/aya.js"></script>
+   <!-- <script type="application/javascript"  src="./build/aya.js"></script> -->
+   <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
    <title>ayajs</title>
 </head>
 
 <body >
 
-   <!-- <script>
+   <script>
       console.log(aya);
       var aya = new aya.Init();
 
@@ -25,9 +26,9 @@
          aya.svg.removeChild(child.c_svg);
       });
 
-      var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
+      // var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
    
-      var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+      var rec = aya.Component("triangle", {x1: 500, y1: 200, x2: 600, y2: 400, x2: 100, y2: 200});
 
       rec.form.c_svg.setAttributeNS(null, "fill", "red");
 
@@ -37,31 +38,31 @@
       // })
 
       // removing vertex fron the component form
-      rec.form.vertex.map((vertex)=>{
-         vertex.removeFromDOM();
-      })
+      // rec.form.vertex.map((vertex)=>{
+      //    vertex.removeFromDOM();
+      // })
 
 
-      var lozenge = aya.Component("lozenge", {x: 500, y: 200, width: 200, height: 100});
+      // var lozenge = aya.Component("lozenge", {x: 500, y: 200, width: 200, height: 100});
 
-      lozenge.form.c_svg.setAttributeNS(null, "fill", "gray");
+      // lozenge.form.c_svg.setAttributeNS(null, "fill", "gray");
 
 
       // lozenge.form.c_points.map((pt)=>{
       //    pt.removeFromDOM();
       // })
 
-      lozenge.form.vertex.map((vertex)=>{
-         vertex.removeFromDOM();
-      })
+      // lozenge.form.vertex.map((vertex)=>{
+      //    vertex.removeFromDOM();
+      // })
 
       // removing the box in dotted line
-      aya.svg.removeChild(lozenge.form.box);
+      // aya.svg.removeChild(lozenge.form.box);
 
       document.body.append(aya.svg);
-   </script> -->
+   </script>
 
-   <svg width="1000" height="1400" viewBox="0 0 400 300">
+    <!-- <svg width="1000" height="1400" viewBox="0 0 400 300">
       <path stroke="indigo" stroke-width="2" fill="gray"
       d="M50,100
       A100,50 135 0 1 250,100
@@ -71,13 +72,13 @@
 
       <circle cx="150" cy="50" r="2" style="fill: black;"/>
 
-      <!-- <circle cx="250" cy="100" r="2" style="fill: black;"/>
+      <circle cx="250" cy="100" r="2" style="fill: black;"/>
 
-      <circle cx="110" cy="100" r="2" style="fill: black;"/> -->
+      <circle cx="110" cy="100" r="2" style="fill: black;"/>
 
       <ellipse cx="60" cy="50" rx="50" ry="20" stroke="indigo" stroke-width="2" style="fill: none;"/>
       <path d="M 10, 50 A 50 20 0 0 0 110, 50"/>
       <circle cx="60" cy="50" r="2" style="fill: red;"/>
-   </svg>
+   </svg>  -->
 </body>
 </html>

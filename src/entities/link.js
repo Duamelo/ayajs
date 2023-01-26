@@ -46,9 +46,6 @@ class Link
              widthD = destination.form.width, 
              heightD = destination.form.height;
 
-            console.log(source.form.width);
-            console.log(destination.form.height);
-
             // if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
             //     this.line.c1.x = this.line.x;
             //     this.line.c1.y = this.line.y;

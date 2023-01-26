@@ -6,7 +6,7 @@
  * @class Form
  *  
  */
-class Form
+class Shape
 {
     addEvent(event, callback) {
 

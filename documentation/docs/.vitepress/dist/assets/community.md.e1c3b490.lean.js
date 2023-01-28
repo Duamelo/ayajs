@@ -1,1 +1,0 @@
-import{_ as e,o as t,c as o,b as a}from"./app.18ac86f1.js";const f=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"community.md"}'),n={name:"community.md"},s=a("p",null,"This community page is currently being edited.",-1),c=[s];function r(i,m,_,d,p,l){return t(),o("div",null,c)}var h=e(n,[["render",r]]);export{f as __pageData,h as default};

@@ -5,7 +5,7 @@ titleTemplate: A flexible JavaScript library for building any kind of diagrams q
 
 hero:
   # name: ayajs
-  text: A flexible JavaScript library for building any kind of diagrams quickly and in a programmatic way
+  text: The fastest way to learn about Aya is to try it for yourself.
   tagline: Simple, powerful and flexible. Meet the JavaScript library you've always needed.
   # image:
   #   src: /logo_aya.png
@@ -71,7 +71,7 @@ const members = [
   {
     avatar: 'profil.jpeg',
     name: 'David DOSSEH',
-    title: 'Creator / Principal maintainer',
+    title: 'Author of Aya, tech lead, software engineer.',
     links: [
       { icon: 'github', link: 'https://github.com/Duamelo' },
     ]
@@ -79,7 +79,7 @@ const members = [
   {
     avatar: 'romaric.jpg',
     name: 'Conité GBODOGBE',
-    title: 'Developer',
+    title: 'Software engineerr',
     links: [
       { icon: 'github', link: 'https://github.com/Conite002' },
     ]
@@ -87,7 +87,7 @@ const members = [
   {
     avatar: 'marie-ange.jpg',
     name: 'Marie-Ange AIKPE',
-    title: 'Developer',
+    title: 'Software engineer',
     links: [
       { icon: 'github', link: 'https://github.com/MarieAngeLeslie' },
     ]

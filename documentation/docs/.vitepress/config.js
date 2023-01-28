@@ -81,56 +81,56 @@ const apiSidebar = [
 ]
 
 export default {
-    base: '/ayajs/',
     lang: 'en-US',
     title: "aya",
     titleTemplate: "A flexible JavaScript library for building any kind of diagrams quickly and in a programmatic way",
     description: 'A flexible JavaScript library for building any kind of diagrams quickly and in a programmatic way.',
-    theme: 'reco',
-    themeConfig: {
-        // logo: 'logo_ayajs.png',
-        nav: [
-            { text: 'Development',
-              items: [
-                {text: 'Guide', link: '../guide/what-is-ayajs'},
-                {text: 'APIs', link: '../api/init'},
-                // {text: 'Architecture', link: '../guide/architecture'}
-              ]
-            },
-            { text: 'Contributing', link: '/contributing' },
-            { text: 'Community', link: '/community' },
-            { text: 'Examples', link: '/example' },
-            { text: 'Tutorials', link: '/tutorials/index' },
-            { text: 'Changelog',
-              items: [
-                {text: '1.0.1', link: '../changelog/changelog_1.0.1'},
-              ]
-            },
-          ],
-          socialLinks: [
-            { icon: 'github', link: 'https://github.com/Duamelo/ayajs'},
-          ],
-          docFooter: {
-            prev: 'Pagina prior',
-            next: 'Proxima pagina'
+    theme: 'home',
+    lastUpdated: true,
+    lastUpdatedText: 'Update Date',
+    themeConfig: {  
+      editLink: {
+        pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+        text: 'Suggest changes to this page'
+      },
+      nav: [
+          { text: 'Development',
+            items: [
+              {text: 'Guide', link: '../guide/what-is-ayajs'},
+              {text: 'APIs', link: '../api/init'},
+              // {text: 'Architecture', link: '../guide/architecture'}
+            ]
           },
-          carbonAds: {
-            code: 'your-carbon-code',
-            placement: 'your-carbon-placement'
+          { text: 'Contributing', link: '/contributing' },
+          { text: 'Community', link: '/community' },
+          { text: 'Examples', link: '/example' },
+          { text: 'Tutorials', link: '/tutorials/index' },
+          { text: 'Changelog',
+            items: [
+              {text: '1.0.1', link: '../changelog/changelog_1.0.1'},
+            ]
           },
-          sidebar: {
-            '/guide/': guideSidebar,
-            'components/': guideSidebar,
-            'entities/': guideSidebar,
-            '/api/': apiSidebar
-          },
-          footer: {
-            message: 'Released under the MIT License.',
-            copyright: 'Copyright © 2022-present David DOSSEH'
-          }
-    },
-    head: [
-       // ['link', { rel: 'icon', href: `/favicon-vuesax.png` }],
-        ['script', { src: 'https://cpwebassets.codepen.io/assets/embed/ei.js' }],
+        ],
+      socialLinks: [
+        { icon: 'github', link: 'https://github.com/Duamelo/ayajs'},
       ],
-  }
+      algolia: {
+        appId: '7H67QR5P0A',
+        apiKey: 'deaab78bcdfe96b599497d25acc6460e',
+        indexName: 'aya',
+        searchParameters: {
+          facetFilters: ['tags:en'],
+        },
+      },
+      sidebar: {
+        '/guide/': guideSidebar,
+        'components/': guideSidebar,
+        'entities/': guideSidebar,
+        '/api/': apiSidebar
+      },
+      footer: {
+        message: 'Released under the MIT License.',
+        copyright: 'Copyright © 2022-present David DOSSEH, Aya contributors'
+      }
+    },
+}

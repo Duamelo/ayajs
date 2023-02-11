@@ -40,7 +40,7 @@ var config =  {
         fill : "black",
         type: "broke",
         ends : {
-            start : { type : "triangle"},
+            start : { type : "circle"},
             dest : { type : "triangle"}
         },
         strokeWidth : "1pt",

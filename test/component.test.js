@@ -1,6 +1,5 @@
 QUnit.module('Component');
 
-
 // Rectangle Component Test
 
 QUnit.test("creating a rectangle component", assert =>{

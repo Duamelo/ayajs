@@ -1,14 +1,14 @@
 import { _uuid } from "./uuid";
 import { Point } from "./point";
-import { Form } from "../abstraction/form";
 import { _Register } from "../register";
+import { Shape } from "../abstraction/shape";
 
 
 /**
  * @class Arc
  */
 
-class Arc extends Form {
+class Arc extends Shape {
     /**
      * 
      * @param {string} uuid 

@@ -1,6 +1,6 @@
-import { Form } from "../abstraction/form.js";
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
+import { Shape } from "../abstraction/shape.js";
 
 
 /**
@@ -12,7 +12,7 @@ import { Point } from "./point.js";
  * 
  */
 
-class Rectangle extends Form {
+class Rectangle extends Shape {
 
   /**
    * Create a rectangular shape.

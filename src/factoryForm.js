@@ -11,8 +11,6 @@ import { Text } from "./entities/text.js";
 /**
  * @class FactoryForm
  */
-
-
 class FactoryForm
 {
     /**

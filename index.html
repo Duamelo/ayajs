@@ -5,9 +5,9 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="initial-scale=1.0">
-   <link rel="stylesheet" href="style.css">
-   <!-- <script type="application/javascript"  src="./build/aya.js"></script> -->
-   <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/style.css">
+   <script type="application/javascript"  src="./build/aya.js"></script>
+   <!-- <script type="application/javascript"  src="https://cdn.jsdelivr.net/npm/ayajs@1.0.1/build/aya.js"></script> -->
    <title>ayajs</title>
 </head>
 
@@ -26,11 +26,11 @@
          aya.svg.removeChild(child.c_svg);
       });
 
-      // var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
+      //  var line = aya.Component("line", {x: 100, y: 100, dest_x: 150, dest_y: 200});
    
-      var rec = aya.Component("triangle", {x1: 500, y1: 200, x2: 600, y2: 400, x2: 100, y2: 200});
+      // var rec = aya.Component("triangle", {x1: 500, y1: 200, x2: 600, y2: 400, x2: 100, y2: 200});
 
-      rec.form.c_svg.setAttributeNS(null, "fill", "red");
+      // rec.form.c_svg.setAttributeNS(null, "fill", "red");
 
       // removing connexion points fron the component form
       // rec.form.c_points.map((pt)=>{
@@ -43,8 +43,8 @@
       // })
 
 
-      // var lozenge = aya.Component("lozenge", {x: 500, y: 200, width: 200, height: 100});
-
+      var lozenge = aya.Component("rectangle", {x: 500, y: 200, width: 40, height: 8});
+      lozenge.form.c_svg.setAttribute("fill", "black");
       // lozenge.form.c_svg.setAttributeNS(null, "fill", "gray");
 
 

@@ -44,11 +44,13 @@
 
 	    line : {
 	        fill : "black",
+	        type: "broke",
 	        ends : {
-	            start : { type : "triangle"},
+	            start : { type : "circle"},
 	            dest : { type : "triangle"}
 	        },
-	        strokeWidth : "2pt",
+	        strokeWidth : "1pt",
+	        strokeDasharray : "4"
 	    },
 
 	    text : {
@@ -217,7 +219,7 @@
 	 * @class Form
 	 *  
 	 */
-	class Form
+	class Shape
 	{
 	    addEvent(event, callback) {
 
@@ -313,7 +315,7 @@
 	/**
 	 * @class Circle
 	 */
-	class Circle extends Form {
+	class Circle extends Shape {
 	    /**
 	     * 
 	     * @param {string} uuid 
@@ -636,7 +638,7 @@
 	 * 
 	 */
 
-	class Rectangle extends Form {
+	class Rectangle extends Shape {
 
 	  /**
 	   * Create a rectangular shape.
@@ -691,7 +693,7 @@
 
 	    /**
 	     * @description
-	     * A table listing all children of the form.
+	     * A table listing all children of the shape.
 	     * 
 	     * @type { Array.<(Form | null)>}
 	     */
@@ -828,7 +830,7 @@
 
 	  /**
 	   * @description
-	   * We can build any shape by adding to a basic component children form.
+	   * We can build any shape by adding to a basic component a children form.
 	   * 
 	   * @param { (Rectangle | Lozenge | Triangle | Circle | Line | Text) } child - This form ( @extend Form) is added 
 	   * as a child to a component with a form.
@@ -1120,34 +1122,34 @@
 	     * We finally return the corresponding connection point.
 	     */
 	    for (var i = 0; i <= 3; i++){
-	        if(i % 2 == 0){
-	            _y = this.vertex[i].y;
-	            _x = (_y - b)/a;
-	        }
-	        else {
-	            _x = this.vertex[i].x;
-	            _y = a * _x + b;
-	        }
+	      if(i % 2 == 0){
+	          _y = this.vertex[i].y;
+	          _x = (_y - b)/a;
+	      }
+	      else {
+	          _x = this.vertex[i].x;
+	          _y = a * _x + b;
+	      }
 
-	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
-	          continue;
+	      if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
+	        continue;
 
-	        if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
-	           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
-	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
-	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
-	        ){
-	            // return this.c_points[i];
-	            return i;
-	        }
+	      if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	          ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	          ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	          ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
+	      ){
+	          // return this.c_points[i];
+	          return i;
+	      }
 	    }
 	    return null;
 	  }
@@ -1197,9 +1199,6 @@
 	             source.form.height; 
 	             destination.form.width; 
 	             destination.form.height;
-
-	            console.log(source.form.width);
-	            console.log(destination.form.height);
 
 	            // if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
 	            //     this.line.c1.x = this.line.x;
@@ -1610,7 +1609,7 @@
 	 * @class Line
 	 */
 
-	class Line extends Form {
+	class Line extends Shape {
 
 	    /**
 	     * 
@@ -1668,10 +1667,7 @@
 	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	        ];
-	        this.c_points = [
-	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
-	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
-	        ];
+	        this.c_points = [];
 
 	        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
 	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
@@ -1809,10 +1805,6 @@
 
 	        this.drawVertex();
 
-	        this.c_points.map((point) => {
-	            point.draw();
-	        });
-
 	        this.vertex.map( (vertex) => {
 	            vertex.draw();
 	        });
@@ -1868,12 +1860,8 @@
 
 	        this.c_svg.setAttribute("d", p);
 
-	        this.children.map ( ({child, translate, rotate}) => {
+	        this.children.map (({child, translate, rotate}) => {
 	            translate(this, child);
-	            // if ((this.x == this.dest_x) && (child.type == "triangle")){
-	            //     if (child.x2 == this.x)
-	            //         child.setRotateAngle(this.calculateAngle());
-	            // }
 	            rotate(this, child);
 	            child.redraw();
 	        });
@@ -1883,10 +1871,8 @@
 	        var angle = 0;
 	        
 	        var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
-	        if(this.dest_x == this.x){
-	            console.log("vertical");
+	        if(this.dest_x == this.x)
 	            angle = Math.PI/2;
-	        }
 	        if(pente == 0)
 	            angle = 0;
 	        if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
@@ -1909,7 +1895,6 @@
 	            this.dest_x += dx;
 	            this.dest_y += dy;
 	        }
-
 	        this.children.map ( ({child, translate, rotate}) => {
 	            translate(this, child);
 	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
@@ -1972,7 +1957,7 @@
 	 * @class Triangle
 	 */
 
-	class Triangle extends Form {
+	class Triangle extends Shape {
 
 	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, svg, event, config)
 	  {
@@ -2270,7 +2255,7 @@
 	 */
 
 
-	class Lozenge extends Form{
+	class Lozenge extends Shape{
 
 	/**
 	 * 
@@ -2663,7 +2648,7 @@
 	 * @class Polyline
 	 */
 
-	class Polyline extends Form {
+	class Polyline extends Shape {
 	    constructor(uuid, points = [], svg, event, config){
 
 	        super();
@@ -2904,7 +2889,7 @@
 	 * @class Arc
 	 */
 
-	class Arc extends Form {
+	class Arc extends Shape {
 	    /**
 	     * 
 	     * @param {string} uuid 
@@ -3471,8 +3456,6 @@
 	/**
 	 * @class FactoryForm
 	 */
-
-
 	class FactoryForm
 	{
 	    /**
@@ -3525,532 +3508,6 @@
 	        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
 	        _Register.add(this);
 	        this.form.draw();
-	    }
-	}
-
-	class Method{
-	    constructor(x, y, r, min, name = "", svg){
-
-	        this.design_pattern = [
-	            aya.Text(0,0,"adapter"),
-	            aya.Text(0,0,"composite"),
-	            aya.Text(0,0,"chain of responsability"),
-	            aya.Text(0,0,"decorator"),
-	            aya.Text(0,0,"strategy")
-	        ];
-	        this.x_circle = x;
-	        this.y_circle = y;
-	        this.r_circle = r;
-
-	        this.points = [
-	            Math.cos( ( (60 - min * 30 ) * Math.PI) / 180) * this.r_circle + this.x_circle,
-	            Math.sin( ( (60 - min * 30 ) *  Math.PI) / 180) * this.r_circle + this.y_circle,
-	            this.x_circle + this.r_circle + 5 ,
-	            this.y_circle + 100 - min * 50,
-	            this.x_circle + this.r_circle + 5 + 50,
-	            this.y_circle + 100 - min * 50
-	        ];
-	       
-	        this.width = 125;
-	        this.height = 30;
-
-	        this.name = name;
-	       
-	        this.polyline = "";
-	        this.id = "";
-	        this.esquiss = "";
-
-	        this.svg = svg;
-
-	        this.type  = "method";
-	        this.draw();
-	    }
-
-	    draw(){
-	        this.polyline = aya.Polyline(this.points);
-	        this.ancre = aya.Circle(this.polyline.x, this.polyline.y, 5);
-	        this.ancre.draw();
-	        this.ancre.removeBoxFromDOM();
-	        this.ancre.c_svg.setAttribute("fill", "black");
-	        this.id = aya.Rectangle(this.polyline.dest_x, this.polyline.dest_y - 15, this.width, this.height);
-	        this.method_name = aya.Text(0,0,this.name);
-	        this.id.addChild(this.method_name, (p,c)=>{
-	            c.setOffsetX(p.x + p.width/3);
-	            c.setOffsetY(p.y + 20);
-	        }, (p,c)=>{}, false);
-	        this.polyline.draw();
-	        this.id.draw();
-
-	        this.polyline.c_svg.setAttribute("fill", "none");
-
-	        this.id.addEvent("mouseover", ()=>{
-	            RectangleEvent.mouseovercb(this);
-	        });
-	        this.id.addEvent("mouseleave", ()=>{
-	            RectangleEvent.mouseleavecb(this);
-	        });
-	    }
-
-	    removeFromDOM(){}
-
-	    createArtefact(){
-	        var points = [
-	            this.id.x + this.id.width +  -1/4 * this.width,
-	            this.id.y + this.id.height + 0,
-	            this.id.x + this.id.width + 0,
-	            this.id.y + this.id.height +0,
-	            this.id.x + this.id.width + 0,
-	            this.id.y + this.id.height +200,
-	            this.id.x + this.id.width + 300,
-	            this.id.y + this.id.height +200,
-	            this.id.x + this.id.width + 300,
-	            this.id.y + this.id.height + -(300 + 100 + this.height - 50),
-	            this.id.x + this.id.width + 0,
-	            this.id.y + this.id.height +-(300 + 100 + this.height - 50),
-	            this.id.x + this.id.width + 0,
-	            this.id.y + this.id.height +-this.height,
-	            this.id.x + this.id.width + -1/4 * this.width,
-	            this.id.y + this.id.height +-this.height
-	        ];
-	        this.esquiss = aya.Polyline(points);
-
-	        this.design_pattern.map((pattern, index) =>{
-	            this.esquiss.addChild(pattern, (p,c) =>{
-	                if(index == 0){
-	                    c.setOffsetX(p.x + (1/4 * 125) + 25 + 25 + 25);
-	                    c.setOffsetY((p.y - 30) + 30/2 - 25 - 25);
-	                }
-	                if(index == 1){
-	                    c.setOffsetX(p.x + (1/4 * 125) + 25 + 25);
-	                    c.setOffsetY((p.y - 30) + 30/2 - 25);
-	                }
-	                if(index == 2){
-	                    c.setOffsetX(p.x + (1/4 * 125) + 25);
-	                    c.setOffsetY((p.y - 30) + 30/2);
-	                }
-	                if(index == 3){
-	                    c.setOffsetX(p.x + (1/4 * 125) + 25 + 25);
-	                    c.setOffsetY((p.y - 30) + 30/2 + 25);
-	                }
-	                if(index == 4){
-	                    c.setOffsetX(p.x + (1/4 * 125) + 25 + 25 + 25);
-	                    c.setOffsetY((p.y - 30) + 30/2 + 25 + 25);
-	                }
-	            }, (p,c)=>{}, false);
-	        });
-	        this.esquiss.draw();
-	        this.esquiss.children.map(({child}) =>{
-	            child.draw();
-	        });
-	        this.esquiss.c_svg.setAttribute("stroke-width", "0px");
-	        this.esquiss.addEvent("mouseover", ()=>{
-	            EsquissEvent.mouseovercb(this);
-	        });
-	        this.esquiss.addEvent("mouseleave", ()=>{
-	            EsquissEvent.mouseleavecb(this);
-	        });
-	        this.esquiss.children.map(({child}) =>{
-	            child.addEvent("mouseover", () =>{
-	                PatternEvent.mouseovercb({self: this, child: child});
-	            });
-	            child.addEvent("mouseleave", () =>{
-	            });
-	            child.addEvent("mousedown", ()=>{
-	                PatternEvent.mousedowncb({self: this, child: child});
-	            });
-	        });
-	    }
-
-	    removeArtefact(){
-	        this.esquiss.removeFromDOM();
-	        this.svg.removeEventListener("mouseover", ()=>{});
-	    }
-	}
-
-	class CircleEvent{
-
-	    static mouseovercb(self){
-	        if(state == "mouseover")
-	            return;
-	        state = "mouseover";
-	        active_component = self;
-	        self.methods.map((m, index)=>{
-	            if(m.type == 'arc'){
-	                m.draw();
-	                console.log("arc drawing");
-	                console.log(m.children);
-	                m.children.map(({child})=>{
-	                    if(index == 0){
-	                        child.setRotateAngle(-20);
-	                        child.setOffsetX(2);
-	                        child.setOffsetY(-5);
-	                    }
-	                    if(index == 1){
-	                        child.setRotateAngle(-60);
-	                        child.setOffsetX(2);
-	                        child.setOffsetY(-10);
-	                    }
-	                    if(index == 2){
-	                        child.setRotateAngle(-90);
-	                        child.setOffsetX(5);
-	                        child.setOffsetY(-15);
-	                    }
-	                    if(index == 3){
-	                        child.setRotateAngle(-150);
-	                        child.setOffsetX(20);
-	                        child.setOffsetY(-2);
-	                    }
-	                    child.draw();
-	                });
-	                m.addEvent("mouseover", ()=>{
-	                    ArcEvent.mouseovercb(m);
-	                });
-	                m.addEvent("mouseleave", ()=>{
-	                    ArcEvent.mouseleavecb(m);
-	                });
-	                m.addEvent("mousedown", ()=>{
-	                    ArcEvent.mousedowncb({self: self, arc: m});
-	                });
-	            }
-	        });
-	        self.svg.addEventListener("mouseover", ()=>{
-	            console.log("mouseover svg");
-	            if(state == "mouseover" )
-	                return;
-	            console.log(active_component);
-	            if(active_component)
-	                active_component.removeArtefact();
-	            active_component = null;
-	        });
-	    }
-	    static mouseleavecb(self){
-	        state = "";
-	    }
-	}
-	class ArcEvent{
-	    static mouseovercb(arc){
-	        state = "mouseover";
-	        arc.c_svg.setAttribute("fill", "black");
-	    }
-
-	    static mouseleavecb(arc){
-	        arc.c_svg.setAttribute("fill", "white");
-	        state = "";
-	    }
-
-	    static mousedowncb(self){
-	        console.log("mousedown arc, comp actif");
-	        console.log(active_component);
-	        self.self.svg.removeEventListener("mouseover", ()=>{});
-	        active_component.removeArtefact();
-	        self.arc.children[0].child.draw();
-	        active_component = null;
-	        var method_name = ";";
-
-	        for(var m of self.self.data.methods){
-	            if(m.name == self.arc.children[0].child.text){
-	                method_name = m.id;
-	                break;
-	            }
-	        }
-	        state = "";
-	        self.self.methods[self.self.relocate(self.arc)] = new Method(self.self.x, self.self.y, self.self.r, self.self.relocate(self.arc), method_name, self.self.svg);
-	    }
-	}
-
-	class RectangleEvent{
-	    static mouseovercb(self){
-	        state = "mouseover";
-	        // self.id.c_svg.setAttribute("fill", "indigo");
-	        if(active_component)
-	            return;
-	        active_component = self;
-	        self.createArtefact();
-	        self.svg.addEventListener("mouseover", ()=>{
-	            console.log("mouseover svg from over rect");
-	            if(state == "mouseover" )
-	                return;
-	            console.log(active_component);
-	            if(active_component)
-	                active_component.removeArtefact();
-	            active_component = null;
-	        });
-	    }
-
-	    static mouseleavecb(self){
-	        state = "";
-	        // self.id.c_svg.setAttribute("fill", "white");
-	        
-	    }
-	}
-
-	class EsquissEvent{
-	    static mouseovercb(self){
-	    //    self.esquiss.c_svg.setAttribute("fill", "red");
-	        state = "mouseover";
-	    }
-
-	    static mouseleavecb(self){
-	        // self.esquiss.c_svg.setAttribute("fill", "white");
-	         state = "";
-	    }
-	}
-
-	class PatternEvent{
-	    static mouseovercb(self){
-	        state = "mouseover";
-	        self.child.c_svg.setAttribute("class", "scroll");
-	    }
-	    static mouseleavecb(self){
-	        // self.svg.addEventListener("mouseover", ()=>{
-	        //     console.log("mouseover svg from over mouseover");
-	        //     if(state == "mouseover")
-	        //         return;
-	        //     console.log(active_component);
-	        //     if(active_component)
-	        //         active_component.removeArtefact();
-	        //     active_component = null;
-	        // });
-	    }
-	    static mousedowncb(self){
-	        console.log("mousedown sur le text");
-	        if(self.child.text == 'adapter'){
-	            console.log(self.child.text);
-	            var img = aya.Image(self.self.id.x + 5, self.self.id.y - self.self.height/2, 30,30, "icons/adapter.png");
-	            self.self.id.addChild(img, null, null, false);
-	            self.child.removeFromDOM();
-	        }
-	        else if(self.child.text == "composite"){
-	            console.log(self.child.text);
-	            var img = aya.Image(self.self.id.x + 5, self.self.id.y - self.self.height/2, 30,30, "icons/composite.png");
-	            self.self.id.addChild(img, null, null, false);
-	        }
-	        else if(self.child.text == "chain of responsability"){
-	            console.log(self.child.text);
-	            var img = aya.Image(self.self.id.x + 5, self.self.id.y - self.self.height/2, 30,30, "icons/chain.png");
-	            self.self.id.addChild(img, null, null, false);
-	        }
-	        else if(self.child.text == "decorator"){
-	            console.log(self.child.text);
-	            var img = aya.Image(self.self.id.x + 5, self.self.id.y - self.self.height/2, 30,30, "icons/decorator.png");
-	            self.self.id.addChild(img, null, null, false);
-	        }
-	        else if(self.child.text == "strategy"){
-	            console.log(self.child.text);
-	            var img = aya.Image(self.self.id.x + 5, self.self.id.y - self.self.height/2, 30,30, "icons/strategy.png");
-	            self.self.id.addChild(img, null, null, false);
-	        }
-	    }
-	}
-
-	class AncreEvent{
-	    static mousedowncb(self){
-	        self.method.ancre.selected = true;
-	        self.self.methods.map((m) =>{
-	            if(m.type == 'method' && m != self.method && m.ancre.selected == true){
-	                 m.id.removeFromDOM();
-	                 m.polyline.removeFromDOM();
-	                 m.ancre.selected = false;
-	            }
-	            if(m.type == 'method' && m == self.method){
-	                if(active_method == self.method){
-	                    console.log("active_ancre");
-	                    m.id.removeFromDOM();
-	                    m.polyline.removeFromDOM();
-	                    active_method = "";
-	                }
-	                else {
-	                    self.method.id.draw();
-	                    self.method.polyline.draw();
-	                    self.method.id.addEvent("mouseover", ()=>{
-	                        RectangleEvent.mouseovercb(self.method);
-	                    });
-	                    self.method.id.addEvent("mouseleave", ()=>{
-	                        RectangleEvent.mouseleavecb(self.method);
-	                    });
-	                    self.method.polyline.c_svg.setAttribute("fill", "none");
-	                    active_method = m;
-	                }
-	            }
-	        });
-	    }
-	}
-
-	var methods = [
-	    "get",
-	    "post",
-	    "put",
-	    "del",
-	];
-	class Ressource{
-	    constructor(x = 0, y = 0, r = 5, angle = 40, data = {}, svg, config){
-	        this.x = x;
-	        this.y = y;
-	        this.r = r;
-	        this.circle = "";
-
-	        this.data = data;
-
-	        this.delta = 0;
-
-	        this.arc_angle = angle;
-
-	        this.methods = [];
-
-	        this.config = config;
-
-	        this.svg = svg;
-
-	        this.type = "ressource";
-
-	        this.draw();
-	    }
-
-	    draw(){
-	        if((!this.data.children && !this.data.params && !this.data.methods) ||
-	           (this.data.children && !this.data.methods && !this.data.params)  
-	        )
-	            this.drawPath(this.data.path);
-	        else if( (!this.data.children && this.data.params) ||
-	                 (this.data.children  && this.data.params)
-	        )
-	            this.drawParam(this.data.params);
-	        if(this.data.methods)
-	            this.drawRessource();
-
-	        if(this.data.children){
-	            this.data.children.map((m)=>{
-	                aya.Ressource(this.x + this.delta, this.y + 50, this.r, this.arc_angle, m);
-	                this.delta = 200;
-
-	            });
-	        }
-	    }
-
-	    drawPath(name){
-	        var path = aya.Component("circle", {x: this.x + 100, y: this.y + 50, r: 10});
-	        path.form.c_svg.setAttribute("fill", "#151e3e");
-	        path.form.addChild(aya.Text(0,0,name), (p,c)=>{
-	            c.setOffsetX(p.x - p.r);
-	            c.setOffsetY(p.y - p.r - 10);
-	        }, (p,c)=>{}, true);
-	    }
-
-	    drawParam(params){
-	        params.map((param)=>{
-	            var node = aya.Component("lozenge", {x: this.x + 80, y: this.y - 50, width: 30, height: 30});
-	            node.form.c_svg.setAttribute("fill", "#415682");
-	            var text = aya.Text(0,0,"{"+param.name+"}");
-	            node.form.addChild(text, (p,c)=>{
-	                c.setOffsetX(p.x - p.width/3 - 12);
-	                c.setOffsetY(p.y + p.height/2 + 5);
-	            }, (p, c) =>{}, true);
-	        });
-	    }
-
-	    drawRessource(){
-	        var x = this.x, y = this.y + this.r + 10, idx;
-
-	        this.circle = aya.Component("circle", {x: this.x, y: this.y, r: this.r});
-	        this.circle.form.c_svg.setAttribute("fill", "#909294");
-
-	        this.circle.form.removeBoxFromDOM();
-	        // this.circle.form.deleteEvent("mousedown");
-	        // this.circle.form.deleteEvent("mouseover");
-	        // this.circle.form.deleteEvent("mouseleave");
-
-	        if(Object.keys(this.data)){
-	            var text = aya.Text(0,0, "res");
-	            this.circle.form.addChild(text, (p,c) => {
-	                c.setOffsetX(p.x - p.r/2 + 10);
-	                c.setOffsetY(p.y + 5);
-	            }, (p,c) => {}, true);
-	            text.title.textContent = "ressource";
-	        }
-
-
-	        for(var m of methods){
-	            var arc = aya.Arc(this.x, this.y, x, y, this.arc_angle, 3/4);
-
-	            this.circle.form.addChild(arc, null, null, false);
-	            
-	            var text = aya.Text(arc.x + 10, arc.y, m);
-
-	            arc.addChild(text, (p,c)=>{
-	                c.setOffsetX(0);
-	                c.setOffsetY(0);
-	            }, (p,c) =>{
-	                c.setRotateCenter(c.x, c.y);
-	            }, false);
-
-	            this.circle.form.addChild(text, null, null, false);
-	            this.methods.push(arc);
-	            x = arc.dest_x;
-	            y = arc.dest_y;
-	        }
-	        if(this.data.methods){
-	            for(var m of this.data.methods){
-	                for(var mm of this.methods){
-	                    if(mm.type == 'arc' && mm.children[0].child.text == m.name){
-	                        console.log("idx");
-	                        idx = this.relocate(mm);
-	                        break;
-	                    }
-	                }
-	                console.log("this.methods[idx]");
-
-	                console.log(this.methods[idx]);
-	                delete this.methods[idx];
-	                this.methods[idx] = new Method(this.x, this.y, this.r, idx, m.id, this.svg);
-	                this.methods[idx].ancre.addChild(aya.Text(0,0,m.name), (p,c)=>{
-	                    c.setOffsetX(p.x + 10);
-	                    c.setOffsetY(p.y + 10);
-	                }, (p,c)=>{}, true);
-	                this.methods[idx].id.removeFromDOM();
-	                this.methods[idx].polyline.removeFromDOM();
-	            }
-	        }
-
-	        this.methods.map( (m) =>{
-	            if(m.type == 'method'){
-	                m.ancre.addEvent("mousedown", ()=>{
-	                    AncreEvent.mousedowncb({self: this, method: m});
-	                });
-	            }
-	        });
-	        this.circle.form.addEvent("mouseover", ()=>{
-	            CircleEvent.mouseovercb(this);
-	        });
-	        this.circle.form.addEvent("mouseleave", ()=>{
-	            CircleEvent.mouseleavecb(this);
-	        });
-
-	    }
-
-	    relocate(arc){
-	        var min = -1, temp;
-	            this.methods.map((m1, index) =>{
-	                console.log(m1);
-	                if( m1.type == 'arc' && min == -1 )
-	                    min = index;
-	            });
-	    
-	            console.log("this.methods[min]");
-	            console.log(this.methods[min]);
-	            temp = this.methods[min].children[0].child.text;
-	            console.log("temp");
-	            console.log(temp);
-	            this.methods[min].children[0].text = arc.children[0].child.text;
-	            arc.children[0].child.text = temp;
-	        return min;
-	    }
-
-	    removeArtefact(){
-	        this.methods.map((m) =>{
-	            if(m.type == 'arc')
-	                m.removeFromDOM();
-	        });
-	        this.svg.removeEventListener("mouseover", ()=>{});
 	    }
 	}
 
@@ -4123,27 +3580,27 @@
 
 	        this.uuid = _uuid.generate();
 
-	        this.svg_width = width;
-	        this.svg_height = height;
+	        this.width = width;
+	        this.height = height;
 	 
 	        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
-	        this.svg.setAttribute("width", this.svg_width);
-	        this.svg.setAttribute("height", this.svg_height);
+	        this.svg.setAttribute("width", this.width);
+	        this.svg.setAttribute("height", this.height);
 	        this.svg.setAttribute("id", this.uuid);
 
 	        this.config = config;
 	        this.events = Events.setup(this.svg, this.uuid,this.config);
 
 	        this.tail_px = 25;
-	        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
-	        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
+	        this.nc = Math.floor(this.width / this.tail_px) + 1; 
+	        this.nl = Math.floor(this.height / this.tail_px) + 1;
 
 	        this.box = this.Component("rectangle", {
 	            x: 0,
 	            y: 0,
-	            height: this.svg_height,
-	            width: this.svg_width
+	            height: this.height,
+	            width: this.width
 	        });
 
 	        this.box.form.c_svg.setAttributeNS(null, "fill", "#FFFF");
@@ -4163,7 +3620,7 @@
 	        });
 
 	        for(var j = 1; j <= this.nl - 1; j++){
-	            var line = this.Line(0, j * this.tail_px, this.svg_width, j * this.tail_px);
+	            var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
 
 	            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
@@ -4189,7 +3646,7 @@
 	        }
 
 	        for(var j = 1; j <= this.nc - 1; j++){
-	            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.svg_height);
+	            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.height);
 
 	            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
 
@@ -4268,15 +3725,7 @@
 	    Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
 	        return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio, this.svg, this.events, this.config);
 	    }
-
-	    Group(){
-	        return new Group(_uuid.generate(),this.svg, this.events, this.config);
-	    }
-
-	    Ressource(x = 0, y = 0, r = 5, angle = 40, data = {}){
-	        return new Ressource(x, y, r, angle, data, this.svg, this.config);
-	    }
-
+	    
 	    Image(x,y, width, height, path = "", name = ""){
 	        return new Image(_uuid.generate(), x, y, width, height, path, name, this.svg, this.events, this.config);
 	    }

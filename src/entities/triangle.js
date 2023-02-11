@@ -1,12 +1,12 @@
 import { _uuid } from "./uuid.js";
 import { Point } from "./point.js";
-import { Form } from "../abstraction/form.js";
+import { Shape } from "../abstraction/shape.js";
 
 /**
  * @class Triangle
  */
 
-class Triangle extends Form {
+class Triangle extends Shape {
 
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, svg, event, config)
   {

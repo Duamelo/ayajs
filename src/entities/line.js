@@ -3,14 +3,14 @@ import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
 import { FactoryForm } from "../factoryForm";
-import { Form } from "../abstraction/form";
 import { Events } from "../events";
+import { Shape } from "../abstraction/shape";
 
 /**
  * @class Line
  */
 
-class Line extends Form {
+class Line extends Shape {
 
     /**
      * 

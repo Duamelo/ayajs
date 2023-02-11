@@ -1,12 +1,12 @@
 import { _Register } from "../register";
 import { _uuid } from "./uuid";
 import { Point } from "./point";
-import { Form } from "../abstraction/form";
+import { Shape } from "../abstraction/shape";
 
 /**
  * @class Circle
  */
-class Circle extends Form {
+class Circle extends Shape {
     /**
      * 
      * @param {string} uuid 

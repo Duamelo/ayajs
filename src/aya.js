@@ -10,9 +10,7 @@ import { Events } from "./events";
 import { Line } from "./entities/line";
 import { Polyline } from "./entities/polyline";
 import { Point } from "./entities/point";
-import { Group } from "./entities/group";
 import { Arc } from "./entities/arc";
-import { Ressource } from "./usecases/ressource";
 import { Image } from "./entities/Image";
 import { _Register } from "./register";
 import { Link } from "./entities/link";
@@ -27,22 +25,22 @@ class Init{
  
         this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
-        this.svg.setAttribute("width", this.svg_width);
-        this.svg.setAttribute("height", this.svg_height);
+        this.svg.setAttribute("width", this.width);
+        this.svg.setAttribute("height", this.height);
         this.svg.setAttribute("id", this.uuid);
 
         this.config = config;
         this.events = Events.setup(this.svg, this.uuid,this.config);
 
         this.tail_px = 25;
-        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
-        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
+        this.nc = Math.floor(this.width / this.tail_px) + 1; 
+        this.nl = Math.floor(this.height / this.tail_px) + 1;
 
         this.box = this.Component("rectangle", {
             x: 0,
             y: 0,
-            height: this.svg_height,
-            width: this.svg_width
+            height: this.height,
+            width: this.width
         });
 
         this.box.form.c_svg.setAttributeNS(null, "fill", "#FFFF");
@@ -62,7 +60,7 @@ class Init{
         });
 
         for(var j = 1; j <= this.nl - 1; j++){
-            var line = this.Line(0, j * this.tail_px, this.svg_width, j * this.tail_px);
+            var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
 
             this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
 
@@ -88,7 +86,7 @@ class Init{
         }
 
         for(var j = 1; j <= this.nc - 1; j++){
-            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.svg_height);
+            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.height);
 
             this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
 

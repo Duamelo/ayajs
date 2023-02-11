@@ -1,13 +1,13 @@
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
-import { Form } from "../abstraction/form";
+import { Shape } from "../abstraction/shape";
 
 /**
  * @class Polyline
  */
 
-class Polyline extends Form {
+class Polyline extends Shape {
     constructor(uuid, points = [], svg, event, config){
 
         super();

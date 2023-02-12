@@ -63,18 +63,6 @@ class Polyline extends Shape {
         delete this.events[event];
     }
 
-    addChild(child, translate = null, rotate = null, drawing = true){
-        child.vertex = [];
-        child.c_points = [];
-        if(translate != null)
-            translate(this, child);
-        if(rotate != null)
-            rotate(this, child);
-        if(drawing == true)
-            child.draw();
-        this.children.push({child, translate, rotate});
-    }
-    
     drawVertex(){
         if(this.vertex.length == 0)
             return;
@@ -137,6 +125,9 @@ class Polyline extends Shape {
 
 
     shift(dx,dy){
+        this.children.map ( ({child}) => {
+            child.shift(dx, dy);
+        }); 
     }
 
     redraw(){

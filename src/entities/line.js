@@ -36,11 +36,6 @@ class Line extends Shape {
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
-        this.c1 = {x : this.x, y : this.y};
-        this.c2 = {x : this.x, y : this.y};
-        this.c3 = {x : this.x, y : this.y};
-        this.c4 = {x : this.x, y : this.y};
-
         this.events = {};
 
         this.config = config;
@@ -69,78 +64,6 @@ class Line extends Shape {
             new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
         ];
         this.c_points = [];
-
-        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
-            if(this.config.line.ends.start.type == 'triangle'){
-                this.addChild(child, (p, c) => {
-                    c.x2 = this.x;
-                    c.y2 = this.y;
-
-                    c.x1 = this.x - 8;
-                    c.y1 = this.y - 3;
-
-                    c.x3 = this.x - 8;
-                    c.y3 = this.y + 3;
-
-                },  (p, c) => {
-                    c.setRotateCenter(c.x2, c.y2);
-                    c.setRotateAngle(p.calculateAngle() - Math.PI);
-                } );
-            }
-            else if(this.config.line.ends.start.type == 'circle')
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x);
-                    c.setOffsetY(p.y);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-            else
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
-                    c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-        }
-        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
-            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, { x1 :this.dest_x - 8, y1: this.dest_y - 2, x2 : this.dest_x, y2 : this.dest_y, x3 : this.dest_x - 8, y3 :this.dest_y + 2}, this.svg, this.nativeEvent, this.config);
-            if(this.config.line.ends.dest.type == 'triangle'){
-                this.addChild(child, (p, c) => {
-                    
-                    c.x2 = this.dest_x;
-                    c.y2 = this.dest_y;
-
-                    c.x1 = this.dest_x - 8;
-                    c.y1 = this.dest_y - 3;
-
-                    c.x3 = this.dest_x - 8;
-                    c.y3 = this.dest_y + 3;
-
-                },  (p, c) => {
-                    c.setRotateCenter(c.x2, c.y2);
-                    c.setRotateAngle(p.calculateAngle());
-                } );
-            }
-            else if(this.config.line.ends.start.type == 'circle')
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x);
-                    c.setOffsetY(p.y);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-            else
-                this.addChild(child, (p, c) => {
-                    c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
-                    c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
-                },  (p, c) => {
-                    c.setRotateCenter(c.x, c.y);
-                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-                } );
-        }
     }
 
     addEvent(event, callback){
@@ -152,15 +75,6 @@ class Line extends Shape {
         var callback = this.events[event];
         this.c_svg.removeEventListener(event, callback);
         delete this.events[event];
-    }
-
-    addChild(child, translate, rotate){
-        child.vertex = [];
-        child.c_points = [];
-        translate(this, child);
-        rotate(this, child);
-        child.draw();
-        this.children.push({child, translate, rotate});
     }
     
     drawVertex(){
@@ -187,13 +101,6 @@ class Line extends Shape {
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
-
         this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
@@ -211,10 +118,9 @@ class Line extends Shape {
         });
 
         this.children.map( ({child}) =>{
-            if(child.type == 'triangle')
-                child.c_svg.setAttribute("fill", "black");
-            child.c_svg.setAttribute("fill", "black");
-        })
+            child.draw();
+        });
+
         this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
         this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
         this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
@@ -238,6 +144,10 @@ class Line extends Shape {
 
         this.dest_x += dx;
         this.dest_y += dy;
+
+        this.children.map ( ({child}, index) => {
+            child.shift(dx, dy);
+        }); 
     }
 
     updateLine(){
@@ -252,18 +162,9 @@ class Line extends Shape {
         });
 
         var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
-
         this.c_svg.setAttribute("d", p);
 
-        this.children.map (({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map (({child}) => {
             child.redraw();
         });
     }
@@ -291,15 +192,18 @@ class Line extends Shape {
         if(pos == 0){
             this.x += dx;
             this.y += dy;
+
+            if (this.children[0]) 
+                this.children[0].child.shift(dx, dy);
         }
         else{
             this.dest_x += dx;
             this.dest_y += dy;
+
+            if (this.children[1]) 
+                this.children[1].child.shift(dx, dy);
         }
-        this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
-            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
-            rotate(this, child);
+        this.children.map (({child}, index) => {
             child.redraw();
         });
     }

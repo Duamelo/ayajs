@@ -204,27 +204,6 @@ class Rectangle extends Shape {
 
   /**
    * @description
-   * We can build any shape by adding to a basic component a children form.
-   * 
-   * @param { (Rectangle | Lozenge | Triangle | Circle | Line | Text) } child - This form ( @extend Form) is added 
-   * as a child to a component with a form.
-   * @param { Function } translate - { parent, child } This function allows us to position the child relative to its parent.
-   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
-   * account its relative position and the center of rotation.
-   */
-  addChild(child, translate = null, rotate = null, drawing = true){
-    if(translate != null)
-      translate(this, child);
-    if(rotate != null)
-      rotate(this, child);
-    if(drawing == true)
-      child.draw();
-    this.children.push({child, translate, rotate});
-  }
-
-
-  /**
-   * @description
    * 
    */
   draw() {
@@ -378,6 +357,7 @@ class Rectangle extends Shape {
    * @param { Number } dx
    * @param { Number } dy 
    */
+
   shift(dx, dy) {
     this.x += dx;
     this.y += dy;
@@ -389,7 +369,12 @@ class Rectangle extends Shape {
     this.vertex.map((p) => {
       p.shift(dx, dy);
     });
-  }
+
+    this.children.map ( ({child}) => {
+      child.shift(dx, dy);
+    }); 
+ }
+
 
   redraw() {
     this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
@@ -408,9 +393,7 @@ class Rectangle extends Shape {
       p.redraw();
     });
 
-    this.children.map ( ({child, translate, rotate}) => {
-        translate(this, child);
-        rotate(this, child);
+    this.children.map ( ({child}) => {
         child.redraw();
     });
   }
@@ -423,30 +406,25 @@ class Rectangle extends Shape {
 
       if (pos == 0) {
 
-        this.shift(dx, dy);
-  
+        this.shift(dx, dy);  
+   
         this.width += -dx;
         this.height += -dy;
   
       } 
       else if (pos == 1) {
-  
-        this.y += dy;
-  
+        this.shift(0, dy);
+
         this.width += dx;
         this.height += -dy;
-  
       } 
       else if (pos == 2) {
-  
         this.width += dx;
-        this.height += dy;
-  
+        this.height += dy;  
       } 
       else if (pos == 3) {
-  
-        this.x += dx;
-  
+        this.shift(dx, 0);
+
         this.width += -dx;
         this.height += dy;
       }
@@ -458,11 +436,9 @@ class Rectangle extends Shape {
         this.height = this.config.form.limitHeight;
 
       /**
-       * After resizing, we redraw the children and apply translation or rotation if necessary.
+       * After resizing, we redraw the children.
        */
       this.children.map( ({child, translate, rotate}) => {
-        translate(this, child);
-        rotate(this, child);
         child.redraw();
       })
   }

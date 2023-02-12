@@ -82,18 +82,6 @@ class Lozenge extends Shape{
     delete this.events[event];
   }
 
-
-  addChild(child, translate = null, rotate = null, drawing = true){
-    if(translate != null)
-      translate(this, child);
-    if(rotate != null)
-      rotate(this, child);
-    if(drawing)
-      child.draw();
-    this.children.push({child, translate, rotate});
-  }
-
-
   drawVertex(){
     if(this.vertex.length == 0)
       return;
@@ -315,6 +303,10 @@ class Lozenge extends Shape{
     this.vertex.map((v) => {
       v.shift(dx, dy);
     });
+
+    this.children.map ( ({child}) => {
+      child.shift(dx, dy);
+    }); 
   }
 
   setRotateCenter(centerX, centerY){

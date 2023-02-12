@@ -1,0 +1,2 @@
+- resizing the component and its children
+- breaking line for connection link

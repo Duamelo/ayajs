@@ -62,7 +62,7 @@ class Init{
         for(var j = 1; j <= this.nl - 1; j++){
             var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
 
-            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
+            this.box.addChild(line);
 
             line.c_svg.setAttribute("fill", "#B266FF");
             line.c_svg.setAttribute("stroke", "#57564F");
@@ -88,7 +88,7 @@ class Init{
         for(var j = 1; j <= this.nc - 1; j++){
             var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.height);
 
-            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
+            this.box.addChild(line);
 
             line.c_svg.setAttribute("fill", "#B266FF");
             line.c_svg.setAttribute("stroke", "#57564F");

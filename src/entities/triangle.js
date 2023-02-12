@@ -75,9 +75,6 @@ class Triangle extends Shape {
     delete this.events[event];
   }
 
-  addChild(child, translate, rotate){  }
-
-
   setOffsetX(x){
     this.offsetX = x;
   }
@@ -134,7 +131,6 @@ class Triangle extends Shape {
 
 
   draw() {
-      
     const ns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(ns, "path");
 
@@ -174,7 +170,6 @@ class Triangle extends Shape {
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
     this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
     this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
-
   }
 
   removeFromDOM(){
@@ -210,6 +205,10 @@ class Triangle extends Shape {
     this.vertex.map((v) => {
       v.shift(dx, dy);
     });
+
+    this.children.map ( ({child}) => {
+      child.shift(dx, dy);
+    }); 
   }
 
 

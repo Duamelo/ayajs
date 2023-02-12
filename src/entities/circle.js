@@ -73,16 +73,6 @@ class Circle extends Shape {
         delete this.events[event];
     }
 
-    addChild(child, translate = null, rotate = null, drawing = false){
-        if(translate != null)
-            translate(this, child);
-        if(rotate != null)
-            rotate(this, child);
-        if(drawing == true)
-            child.draw();
-        this.children.push({child, translate, rotate});
-    }
-  
     drawVertex(){
         if(this.vertex.length == 0)
             return;
@@ -144,12 +134,10 @@ class Circle extends Shape {
         this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
         this.c_svg.setAttribute("r", (this.r * this.scale));
-        
 
         this.c_svg.setAttribute("fill", this.config.form.fill);
 
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
-
     
         this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
     
@@ -179,9 +167,7 @@ class Circle extends Shape {
             point.draw();
         });
 
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map( ({child}) => {
             child.redraw();
         });
 
@@ -212,6 +198,10 @@ class Circle extends Shape {
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
+
+        this.children.map ( ({child}) => {
+            child.shift(dx, dy);
+        }); 
     }
 
     redraw(){
@@ -231,9 +221,7 @@ class Circle extends Shape {
             point.redraw();
         });
 
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map( ({child}) => {
             child.redraw();
         });
     }

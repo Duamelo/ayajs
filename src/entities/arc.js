@@ -78,18 +78,6 @@ class Arc extends Shape {
         this.c_svg.removeEventListener(event, callback);
         delete this.events[event];
     }
-
-    addChild(child, translate = null, rotate = null, draw = true){
-        child.vertex = [];
-        child.c_points = [];
-        if(translate != null)
-            translate(this, child);
-        if(rotate != null)
-            rotate(this, child);
-        if(draw == true)
-            child.draw();
-        this.children.push({child, translate, rotate});
-    }
     
     drawVertex(){
         if(this.vertex.length == 0)
@@ -151,6 +139,10 @@ class Arc extends Shape {
 
         this.x += dx;
         this.y += dy;
+
+        this.children.map ( ({child}) => {
+            child.shift(dx, dy);
+        });   
     }
 
 
@@ -166,9 +158,7 @@ class Arc extends Shape {
         this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
         this.c_svg.setAttribute("d", this.p);
 
-        this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map ( ({child}) => {
             child.redraw();
         });
     }

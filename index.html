@@ -26,7 +26,10 @@
          aya.svg.removeChild(child.c_svg);
       });
 
-      //  var line = aya.Component("line", {x: 100, y: 100, dest_x: 150, dest_y: 200});
+      var pol = aya.Polyline([100, 200, 32, 341, 302, 232]);
+
+      
+      // var line = aya.Component("line", {x: 400, y: 500, dest_x: 600, dest_y: 500});
    
       // var rec = aya.Component("triangle", {x1: 500, y1: 200, x2: 600, y2: 400, x2: 100, y2: 200});
 
@@ -43,9 +46,21 @@
       // })
 
 
-      var lozenge = aya.Component("rectangle", {x: 500, y: 200, width: 40, height: 8});
-      lozenge.form.c_svg.setAttribute("fill", "black");
-      // lozenge.form.c_svg.setAttributeNS(null, "fill", "gray");
+      var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 200});
+
+
+      rec.addChild(pol, {x: 0, y: 0}, {}, true);
+
+      // var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 200});
+
+      // rec.form.c_svg.setAttributeNS(null, "fill", "gray");
+
+      // var cir = aya.Component("circle", {x: 500, y: 200, r:20});
+      
+      // var alias_x = rec.form.width;
+      // var alias_y = rec.form.height;
+
+      // rec.addChild(cir.form, {x: alias_x, y: alias_y}, {x: alias_x, y: alias_y, angle: 90}, true);
 
 
       // lozenge.form.c_points.map((pt)=>{

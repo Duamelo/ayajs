@@ -46,7 +46,7 @@
 	        fill : "black",
 	        type: "broke",
 	        ends : {
-	            start : { type : "circle"},
+	            start : { type : "triangle"},
 	            dest : { type : "triangle"}
 	        },
 	        strokeWidth : "1pt",
@@ -382,16 +382,6 @@
 	        delete this.events[event];
 	    }
 
-	    addChild(child, translate = null, rotate = null, drawing = false){
-	        if(translate != null)
-	            translate(this, child);
-	        if(rotate != null)
-	            rotate(this, child);
-	        if(drawing == true)
-	            child.draw();
-	        this.children.push({child, translate, rotate});
-	    }
-	  
 	    drawVertex(){
 	        if(this.vertex.length == 0)
 	            return;
@@ -453,12 +443,10 @@
 	        this.c_svg.setAttribute("cy", (this.y + this.offsetY));
 
 	        this.c_svg.setAttribute("r", (this.r * this.scale));
-	        
 
 	        this.c_svg.setAttribute("fill", this.config.form.fill);
 
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-
 	    
 	        this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
 	    
@@ -488,9 +476,7 @@
 	            point.draw();
 	        });
 
-	        this.children.map( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
+	        this.children.map( ({child}) => {
 	            child.redraw();
 	        });
 
@@ -521,6 +507,10 @@
 	    shift(dx, dy){
 	        this.x += dx;
 	        this.y += dy;
+
+	        this.children.map ( ({child}) => {
+	            child.shift(dx, dy);
+	        }); 
 	    }
 
 	    redraw(){
@@ -540,9 +530,7 @@
 	            point.redraw();
 	        });
 
-	        this.children.map( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
+	        this.children.map( ({child}) => {
 	            child.redraw();
 	        });
 	    }
@@ -830,27 +818,6 @@
 
 	  /**
 	   * @description
-	   * We can build any shape by adding to a basic component a children form.
-	   * 
-	   * @param { (Rectangle | Lozenge | Triangle | Circle | Line | Text) } child - This form ( @extend Form) is added 
-	   * as a child to a component with a form.
-	   * @param { Function } translate - { parent, child } This function allows us to position the child relative to its parent.
-	   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
-	   * account its relative position and the center of rotation.
-	   */
-	  addChild(child, translate = null, rotate = null, drawing = true){
-	    if(translate != null)
-	      translate(this, child);
-	    if(rotate != null)
-	      rotate(this, child);
-	    if(drawing == true)
-	      child.draw();
-	    this.children.push({child, translate, rotate});
-	  }
-
-
-	  /**
-	   * @description
 	   * 
 	   */
 	  draw() {
@@ -1004,6 +971,7 @@
 	   * @param { Number } dx
 	   * @param { Number } dy 
 	   */
+
 	  shift(dx, dy) {
 	    this.x += dx;
 	    this.y += dy;
@@ -1015,7 +983,12 @@
 	    this.vertex.map((p) => {
 	      p.shift(dx, dy);
 	    });
-	  }
+
+	    this.children.map ( ({child}) => {
+	      child.shift(dx, dy);
+	    }); 
+	 }
+
 
 	  redraw() {
 	    this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
@@ -1034,9 +1007,7 @@
 	      p.redraw();
 	    });
 
-	    this.children.map ( ({child, translate, rotate}) => {
-	        translate(this, child);
-	        rotate(this, child);
+	    this.children.map ( ({child}) => {
 	        child.redraw();
 	    });
 	  }
@@ -1049,30 +1020,25 @@
 
 	      if (pos == 0) {
 
-	        this.shift(dx, dy);
-	  
+	        this.shift(dx, dy);  
+	   
 	        this.width += -dx;
 	        this.height += -dy;
 	  
 	      } 
 	      else if (pos == 1) {
-	  
-	        this.y += dy;
-	  
+	        this.shift(0, dy);
+
 	        this.width += dx;
 	        this.height += -dy;
-	  
 	      } 
 	      else if (pos == 2) {
-	  
 	        this.width += dx;
-	        this.height += dy;
-	  
+	        this.height += dy;  
 	      } 
 	      else if (pos == 3) {
-	  
-	        this.x += dx;
-	  
+	        this.shift(dx, 0);
+
 	        this.width += -dx;
 	        this.height += dy;
 	      }
@@ -1084,11 +1050,9 @@
 	        this.height = this.config.form.limitHeight;
 
 	      /**
-	       * After resizing, we redraw the children and apply translation or rotation if necessary.
+	       * After resizing, we redraw the children.
 	       */
 	      this.children.map( ({child, translate, rotate}) => {
-	        translate(this, child);
-	        rotate(this, child);
 	        child.redraw();
 	      });
 	  }
@@ -1635,11 +1599,6 @@
 	        this.dest_x = dest_x;
 	        this.dest_y = dest_y;
 
-	        this.c1 = {x : this.x, y : this.y};
-	        this.c2 = {x : this.x, y : this.y};
-	        this.c3 = {x : this.x, y : this.y};
-	        this.c4 = {x : this.x, y : this.y};
-
 	        this.events = {};
 
 	        this.config = config;
@@ -1668,78 +1627,6 @@
 	            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
 	        ];
 	        this.c_points = [];
-
-	        if(this.config.line != undefined && Object.keys(this.config.line.ends.start).length > 0){
-	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.start.type, {}, this.svg, this.nativeEvent, this.config);
-	            if(this.config.line.ends.start.type == 'triangle'){
-	                this.addChild(child, (p, c) => {
-	                    c.x2 = this.x;
-	                    c.y2 = this.y;
-
-	                    c.x1 = this.x - 8;
-	                    c.y1 = this.y - 3;
-
-	                    c.x3 = this.x - 8;
-	                    c.y3 = this.y + 3;
-
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x2, c.y2);
-	                    c.setRotateAngle(p.calculateAngle() - Math.PI);
-	                } );
-	            }
-	            else if(this.config.line.ends.start.type == 'circle')
-	                this.addChild(child, (p, c) => {
-	                    c.setOffsetX(p.x);
-	                    c.setOffsetY(p.y);
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x, c.y);
-	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	                } );
-	            else
-	                this.addChild(child, (p, c) => {
-	                    c.setOffsetX(p.x - this.config.line.ends.start.props.height/2);
-	                    c.setOffsetY(p.y - this.config.line.ends.start.props.height/2);
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x, c.y);
-	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	                } );
-	        }
-	        if(this.config.line != undefined && Object.keys(this.config.line.ends.dest).length > 0){
-	            var child = FactoryForm.createForm(_uuid.generate(), this.config.line.ends.dest.type, { x1 :this.dest_x - 8, y1: this.dest_y - 2, x2 : this.dest_x, y2 : this.dest_y, x3 : this.dest_x - 8, y3 :this.dest_y + 2}, this.svg, this.nativeEvent, this.config);
-	            if(this.config.line.ends.dest.type == 'triangle'){
-	                this.addChild(child, (p, c) => {
-	                    
-	                    c.x2 = this.dest_x;
-	                    c.y2 = this.dest_y;
-
-	                    c.x1 = this.dest_x - 8;
-	                    c.y1 = this.dest_y - 3;
-
-	                    c.x3 = this.dest_x - 8;
-	                    c.y3 = this.dest_y + 3;
-
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x2, c.y2);
-	                    c.setRotateAngle(p.calculateAngle());
-	                } );
-	            }
-	            else if(this.config.line.ends.start.type == 'circle')
-	                this.addChild(child, (p, c) => {
-	                    c.setOffsetX(p.x);
-	                    c.setOffsetY(p.y);
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x, c.y);
-	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	                } );
-	            else
-	                this.addChild(child, (p, c) => {
-	                    c.setOffsetX(p.x - this.config.line.ends.dest.props.height/2);
-	                    c.setOffsetY(p.y - this.config.line.ends.dest.props.height/2);
-	                },  (p, c) => {
-	                    c.setRotateCenter(c.x, c.y);
-	                    c.setRotateAngle(p.calculateAngle() + ( Math.PI * 90)/180 );
-	                } );
-	        }
 	    }
 
 	    addEvent(event, callback){
@@ -1751,15 +1638,6 @@
 	        var callback = this.events[event];
 	        this.c_svg.removeEventListener(event, callback);
 	        delete this.events[event];
-	    }
-
-	    addChild(child, translate, rotate){
-	        child.vertex = [];
-	        child.c_points = [];
-	        translate(this, child);
-	        rotate(this, child);
-	        child.draw();
-	        this.children.push({child, translate, rotate});
 	    }
 	    
 	    drawVertex(){
@@ -1786,13 +1664,6 @@
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
-	        // this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
-
 	        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
 	        this.c_svg.setAttribute("id", this.uuid);
@@ -1810,10 +1681,9 @@
 	        });
 
 	        this.children.map( ({child}) =>{
-	            if(child.type == 'triangle')
-	                child.c_svg.setAttribute("fill", "black");
-	            child.c_svg.setAttribute("fill", "black");
+	            child.draw();
 	        });
+
 	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
 	        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
@@ -1837,6 +1707,10 @@
 
 	        this.dest_x += dx;
 	        this.dest_y += dy;
+
+	        this.children.map ( ({child}, index) => {
+	            child.shift(dx, dy);
+	        }); 
 	    }
 
 	    updateLine(){
@@ -1851,18 +1725,9 @@
 	        });
 
 	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-	        // var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " 
-	        // + (this.c1.x + this.offsetX) + ","+ (this.c1.y + this.offsetY) + " "
-	        // + (this.c2.x + this.offsetX) + ","+ (this.c2.y + this.offsetY)  + " " 
-	        // + (this.c3.x + this.offsetX) + ","+ (this.c3.y + this.offsetY)  + " " 
-	        // + (this.c4.x + this.offsetX) + ","+ (this.c4.y + this.offsetY)  + " "
-	        // + (this.dest_x + this.offsetX )  + "," + (this.dest_y + this.offsetY);
-
 	        this.c_svg.setAttribute("d", p);
 
-	        this.children.map (({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
+	        this.children.map (({child}) => {
 	            child.redraw();
 	        });
 	    }
@@ -1890,15 +1755,18 @@
 	        if(pos == 0){
 	            this.x += dx;
 	            this.y += dy;
+
+	            if (this.children[0]) 
+	                this.children[0].child.shift(dx, dy);
 	        }
 	        else {
 	            this.dest_x += dx;
 	            this.dest_y += dy;
+
+	            if (this.children[1]) 
+	                this.children[1].child.shift(dx, dy);
 	        }
-	        this.children.map ( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
-	            rotate(this, child);
+	        this.children.map (({child}, index) => {
 	            child.redraw();
 	        });
 	    }
@@ -2026,9 +1894,6 @@
 	    delete this.events[event];
 	  }
 
-	  addChild(child, translate, rotate){  }
-
-
 	  setOffsetX(x){
 	    this.offsetX = x;
 	  }
@@ -2085,7 +1950,6 @@
 
 
 	  draw() {
-	      
 	    const ns = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(ns, "path");
 
@@ -2125,7 +1989,6 @@
 	    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
 	    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
 	    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
-
 	  }
 
 	  removeFromDOM(){
@@ -2161,6 +2024,10 @@
 	    this.vertex.map((v) => {
 	      v.shift(dx, dy);
 	    });
+
+	    this.children.map ( ({child}) => {
+	      child.shift(dx, dy);
+	    }); 
 	  }
 
 
@@ -2329,18 +2196,6 @@
 	    this.c_svg.removeEventListener(event, callback);
 	    delete this.events[event];
 	  }
-
-
-	  addChild(child, translate = null, rotate = null, drawing = true){
-	    if(translate != null)
-	      translate(this, child);
-	    if(rotate != null)
-	      rotate(this, child);
-	    if(drawing)
-	      child.draw();
-	    this.children.push({child, translate, rotate});
-	  }
-
 
 	  drawVertex(){
 	    if(this.vertex.length == 0)
@@ -2563,6 +2418,10 @@
 	    this.vertex.map((v) => {
 	      v.shift(dx, dy);
 	    });
+
+	    this.children.map ( ({child}) => {
+	      child.shift(dx, dy);
+	    }); 
 	  }
 
 	  setRotateCenter(centerX, centerY){
@@ -2704,18 +2563,6 @@
 	        delete this.events[event];
 	    }
 
-	    addChild(child, translate = null, rotate = null, drawing = true){
-	        child.vertex = [];
-	        child.c_points = [];
-	        if(translate != null)
-	            translate(this, child);
-	        if(rotate != null)
-	            rotate(this, child);
-	        if(drawing == true)
-	            child.draw();
-	        this.children.push({child, translate, rotate});
-	    }
-	    
 	    drawVertex(){
 	        if(this.vertex.length == 0)
 	            return;
@@ -2758,11 +2605,16 @@
 	            vertex.draw();
 	        });
 
+	        this.children.map(({child}) =>{
+	            child.draw();
+	        });
+
 	        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
 	    }
 
 	    removeFromDOM(){
 	        this.svg.removeChild(this.c_svg);
+	       
 	        this.children.map(({child}) =>{
 	            child.removeFromDOM();
 	        });
@@ -2778,6 +2630,15 @@
 
 
 	    shift(dx,dy){
+	        for (var i = 0; i < this.points.length; i++){
+	            if (i%2)
+	                this.points[i] += dx;
+	            else
+	                this.points[i] += dy;
+	        }
+	        this.children.map ( ({child}) => {
+	            child.shift(dx, dy);
+	        }); 
 	    }
 
 	    redraw(){
@@ -2786,16 +2647,18 @@
 	            vertex.redraw();
 	        });
 
-	        var path = "" + this.points.map((pt, index) => {
-	        }) + " ";
+	        var path = "";
+	        for(var i = 0; i < this.points.length; i++){
+	            if(i % 2 == 0)
+	                path += this.points[i] + this.offsetX + ",";
+	            else
+	                path += this.points[i] + this.offsetY + " ";
+	        }
 
-	        this.c_svg.setAttribute("point", path);
+	        console.log(path);
+	        this.c_svg.setAttribute("points", path);
 
-	        this.children.map ( ({child, translate, rotate}) => {
-	            if(translate != null)
-	                translate(this, child);
-	            if(rotate != null)
-	                rotate(this, child);
+	        this.children.map ( ({child}) => {
 	            child.redraw();
 	        });
 	    }
@@ -2827,10 +2690,8 @@
 	            this.dest_x += dx;
 	            this.dest_y += dy;
 	        }
-	        this.children.map ( ({child, translate, rotate}) => {
-	            translate(this, child);
+	        this.children.map ( ({child}) => {
 	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
-	            rotate(this, child);
 	            child.redraw();
 	        });
 	    }
@@ -2959,18 +2820,6 @@
 	        this.c_svg.removeEventListener(event, callback);
 	        delete this.events[event];
 	    }
-
-	    addChild(child, translate = null, rotate = null, draw = true){
-	        child.vertex = [];
-	        child.c_points = [];
-	        if(translate != null)
-	            translate(this, child);
-	        if(rotate != null)
-	            rotate(this, child);
-	        if(draw == true)
-	            child.draw();
-	        this.children.push({child, translate, rotate});
-	    }
 	    
 	    drawVertex(){
 	        if(this.vertex.length == 0)
@@ -3032,6 +2881,10 @@
 
 	        this.x += dx;
 	        this.y += dy;
+
+	        this.children.map ( ({child}) => {
+	            child.shift(dx, dy);
+	        });   
 	    }
 
 
@@ -3047,9 +2900,7 @@
 	        this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
 	        this.c_svg.setAttribute("d", this.p);
 
-	        this.children.map ( ({child, translate, rotate}) => {
-	            translate(this, child);
-	            rotate(this, child);
+	        this.children.map ( ({child}) => {
 	            child.redraw();
 	        });
 	    }
@@ -3505,9 +3356,38 @@
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
-	        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
 	        _Register.add(this);
+	        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
 	        this.form.draw();
+	    }
+
+	  /**
+	   * @description
+	   * We can build any shape by adding to a basic component a children form.
+	   * 
+	   * @param { (Rectangle | Lozenge | Triangle | Circle | Line | Text) } child - This form ( @extend Form) is added 
+	   * as a child to a component with a form.
+	   * @param { Function } translate - { parent, child } This function allows us to position the child relative to its parent.
+	   * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
+	   * account its relative position and the center of rotation.
+	   */
+	    addChild(child, translate = null, rotate = null, drawing = true){
+	        /* resizing and connection to child isn't possible */
+	        child.vertex = [];
+	        child.c_points = [];
+
+	        if(translate != null){
+	            child.offsetX = translate.x;
+	            child.offsetY = translate.y;
+	        }
+	        if(rotate != null){
+	            child.centerX = rotate.x;
+	            child.centerY = rotate.y;
+	            child.angle = rotate.angle;
+	        }       
+	        if(drawing == true)
+	            child.draw();
+	        this.form.children.push({child});
 	    }
 	}
 
@@ -3622,7 +3502,7 @@
 	        for(var j = 1; j <= this.nl - 1; j++){
 	            var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
 
-	            this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
+	            this.box.addChild(line);
 
 	            line.c_svg.setAttribute("fill", "#B266FF");
 	            line.c_svg.setAttribute("stroke", "#57564F");
@@ -3648,7 +3528,7 @@
 	        for(var j = 1; j <= this.nc - 1; j++){
 	            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.height);
 
-	            this.box.form.addChild(line, (p, c)=> {},  (p,c)=>{});
+	            this.box.addChild(line);
 
 	            line.c_svg.setAttribute("fill", "#B266FF");
 	            line.c_svg.setAttribute("stroke", "#57564F");

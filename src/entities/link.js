@@ -1,224 +1,301 @@
 import  {_uuid}  from "./uuid.js";
 import {_Register}  from "../register.js"
-import { config } from "../../config.js";
+import { EndsDecorator } from "../decorators/endsDecorator.js";
+
 /**
  * @class Link
  */
 class Link
 {
-    constructor(src_point, dest_point, line = undefined)
+    constructor(src_point, dest_point, line = undefined, svg, config = null)
     {
        this.uuid = _uuid.generate();
        
-       /* référence sur les points de connexions*/
+       /* reference on the connexion points*/
        this.source = src_point;
        this.destination = dest_point;
+
        this.line = line;
        this.type = "link";
-       _Register.add(this);
-       if(config.linkcb)
-        config.linkcb(this);
+        
+       this.svg = svg;
+
+       this.line_t = config ? config.line.type : null;
+
+       var c_line = _Register.find(this.line.uuid);
+
+       if (c_line)
+            new EndsDecorator(c_line, c_line.shape.config, this.svg, c_line.shape.nativeEvent);
+
+        /* set config.linkcb to retrieve the current link */
+       if(config && config.current_link)
+            config.current_link(this);
+        _Register.add(this);
     }
 
     redraw(){
         var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
 
         if(this.line != null){
-
-            var i_src = source.form.optimalPath(this.line);
-            var i_dest = destination.form.optimalPath(this.line);
-            var source_point = source.form.c_points[i_src];
-            var dest_point = destination.form.c_points[i_dest];
+            var i_src = source.shape.optimalPath(this.line);
+            var i_dest = destination.shape.optimalPath(this.line);
+            if (i_src == null)
+                source.shape.c_points.map((pt, index) => { if (pt.x == this.source.x && pt.y == this.source.y) i_src = index});
+            if (i_dest == null)
+                destination.shape.c_points.map((pt, index) => { if (pt.x == this.destination.x && pt.y == this.destination.y) i_dest = index});
     
-            if(source_point)
-                this.source = source_point;
-            if(dest_point)
-                this.destination = dest_point;
-
+            this.source = source.shape.c_points[i_src];            
+            this.destination = destination.shape.c_points[i_dest];
 
             this.line.x = this.source.x;
             this.line.y = this.source.y;
             this.line.dest_x = this.destination.x;
             this.line.dest_y = this.destination.y;
 
-            var dy = 10, widthS = source.form.width,
-             heightS = source.form.height, 
-             widthD = destination.form.width, 
-             heightD = destination.form.height;
+            this.setTypeLink();
 
-            // if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
-            //     this.line.c1.x = this.line.x;
-            //     this.line.c1.y = this.line.y;
+            if (this.line_t){
+                if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
+                    if (i_src == 0 &&  i_dest == 2){
+                        this.line.c2.x = this.line.x;
+                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+            
+                        this.line.c3.y = this.line.c2.y;
+                        this.line.c3.x = this.line.dest_x;
+                        
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(-Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                    else if (i_src == 0 && i_dest == 3){
+                        this.line.c3.x = this.line.x;
+                        this.line.c3.y = this.line.dest_y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(2 * Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c3]);
+                    }
+                    else if (i_src == 1 && i_dest == 2){
+                        this.line.c2.x = this.line.dest_x;
+                        this.line.c2.y = this.line.y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(-Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI);
+                        });
 
-            //     this.line.c2.x = this.line.dest_x;
-            //     this.line.c2.y = this.line.y;
+                        this.line.setPath([this.line.c2]);
+                    }
+                    else if (i_src == 1 && i_dest == 3){
+                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c2.y = this.line.y;
+            
+                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c3.y = this.line.dest_y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(0);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI);
+                        });
 
-            //     this.line.c4.x = this.line.dest_x;
-            //     this.line.c4.y = this.line.dest_y;
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                }
+                else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
+                    if (i_src == 1 && i_dest == 0){
+                        this.line.c3.x = this.line.dest_x;
+                        this.line.c3.y = this.line.y;
+    
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI);
+                        });
+                        this.line.setPath([this.line.c3]);
+                    }
+                    else if (i_src == 1 && i_dest == 3){
+                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c2.y = this.line.y;
+            
+                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c3.y = this.line.dest_y;
+    
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(2 * Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                    else if (i_src == 2 && i_dest == 3){
+                        this.line.c1.x = this.line.x;
+                        this.line.c1.y = this.line.dest_y;
+    
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(2 * Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(-Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c1]);
+                    }
+                    else if (i_src == 2 && i_dest == 0){
+                        this.line.c2.x = this.line.x;
+                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+            
+                        this.line.c3.y = this.line.c2.y;
+                        this.line.c3.x = this.line.dest_x;
 
-            //     this.line.c3.x = this.line.c2.x;
-            //     this.line.c3.y = this.line.c4.y;
-
-            //     if(this.line.dest_x >= (source.form.x + widthS/2) ){
-            //         this.line.c1.x = this.line.x;
-            //         this.line.c1.y = this.line.y;
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
-
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.c2.y;
-            //         this.line.c4.x = this.line.dest_x;
-            //         this.line.c4.y = this.line.dest_y;
-            //     }
-
-            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-            //         this.line.c2.y = this.line.y;
-            //         this.line.c3.x = this.line.c2.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-
-            //     if( this.line.x == (source.form.x + widthS/2) &&  this.line.dest_x == (destination.form.x + widthD/2)){
-            //         // 0 2
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.c2.y;
-
-            //     }
-
-            //     if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x))){
-            //         // 0 3
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
-
-            //         this.line.c3.x = this.line.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-            // }
-            // else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
-            //     this.line.c1.x = this.line.x;
-            //     this.line.c1.y = this.line.y;
-
-            //     this.line.c2.x = this.line.x; 
-            //     this.line.c2.y = this.line.y;
-
-            //     this.line.c4.x = this.line.dest_x;
-            //     this.line.c4.y = this.line.dest_y;
-
-            //     this.line.c3.x = this.line.dest_x;
-            //     this.line.c3.y <= this.line.y;
-
-            //     if((this.line.x < source.form.x + widthS) && (this.line.dest_x <= destination.form.x ) ){
-            //         // 2 1
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
-            //         this.line.c3.x = this.line.c2.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-
-            //      if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x <= destination.form.x)){
-            //          //1 3
-            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-            //         this.line.c2.y = this.line.y;
-            //         this.line.c3.x = this.line.c2.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-
-            //     if(this.line.x >= (source.form.x + widthS) && (this.line.dest_x == (destination.form.x + widthD/2))){
-            //         // 1 0
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.c2.y;
-            //     }
-
-            //      if(this.line.x == (source.form.x + widthS/2) && (this.line.dest_x == (destination.form.x + widthD/2))){
-            //         // 2 0
-            //         this.line.c2.x = this.line.x                  
-            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;    
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.c2.y;
-            //     }
-
-
-            // }
-
-            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
-            //     this.line.c1.x = this.line.x;
-            //     this.line.c1.y = this.line.y;
-
-            //     this.line.c2.x = this.line.x;
-            //     this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
-
-            //     this.line.c4.x = this.line.dest_x;
-            //     this.line.c4.y = this.line.dest_y;
-
-            //     this.line.c3.x = this.line.dest_x;
-            //     this.line.c3.y = this.line.c2.y;
-
-            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD/2)){
-            //         // 3 0
-            //          this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
- 
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.y;
-            //     }
-
-            //     if(this.line.x == source.form.x && this.line.dest_x == (destination.form.x + widthD)){
-            //         // 3 1
-            //         this.line.c2.x = (this.line.x + this.line.dest_x)/2;
-            //         this.line.c2.y = this.line.y;
-            //         this.line.c3.x = this.line.c2.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-
-
-            // }
-            // else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){
-
-            //     this.line.c1.x = this.line.x;
-            //     this.line.c1.y = this.line.y;
-
-            //     this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
-            //     this.line.c2.y = this.line.c1.y;
-            //     this.line.c4.x = this.line.dest_x;
-            //     this.line.c4.y = this.line.dest_y;
-                
-            //     this.line.c3.x = this.line.c2.x;
-            //     this.line.c3.y = this.line.c4.y;
-
-            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD/2)){
-            //         // 0 2
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = (this.line.y + this.line.dest_y)/2;
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.c2.y;
-            //     }
-
-            //     if(this.line.x == (source.form.x + widthS/2)  && this.line.dest_x == (destination.form.x + widthD)){
-            //         // 0 1
-            //         this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
-
-            //         this.line.c3.x = this.line.x;
-            //         this.line.c3.y = this.line.dest_y;
-            //     }
-
-            //      if(this.line.x == (source.form.x)  && this.line.dest_x == (destination.form.x + widthD/2)){
-            //         // 3 2
-            //          this.line.c2.x = this.line.x;
-            //         this.line.c2.y = this.line.y;
- 
-            //         this.line.c3.x = this.line.dest_x;
-            //         this.line.c3.y = this.line.y;
-            //     }
-            // }
-
-            this.line.c_svg.setAttribute("fill", "none");
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(-Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                }
+                else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
+                    if (i_dest == 0 &&  i_src == 2){
+                        this.line.c2.x = this.line.x;
+                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+            
+                        this.line.c3.y = this.line.c2.y;
+                        this.line.c3.x = this.line.dest_x;
+    
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(-Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                    else if (i_dest == 0 && i_src == 3){
+                        this.line.c3.x = this.line.dest_x;
+                        this.line.c3.y = this.line.y;
+                       
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(2 * Math.PI);
+                        });
+                        this.line.setPath([this.line.c3]);
+                    }
+                    else if (i_dest == 1 && i_src == 2){
+                        this.line.c3.x = this.line.x;
+                        this.line.c3.y = this.line.dest_y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(-Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c3]);
+                    }
+                    else if (i_dest == 1 && i_src == 3){
+                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c2.y = this.line.y;
+            
+                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
+                        this.line.c3.y = this.line.dest_y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(2 * Math.PI);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                }
+                else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){   
+                    if (i_src == 0 && i_dest == 1){
+                        this.line.c2.x = this.line.x;
+                        this.line.c2.y = this.line.dest_y;
+    
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c2]);
+                    }         
+                    else if (i_src == 3 && i_dest == 1){
+                        this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
+                        this.line.c2.y = this.line.y;
+    
+                        this.line.c3.x = (this.line.x + this.line.dest_x) / 2;
+                        this.line.c3.y = this.line.dest_y;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(Math.PI);
+                            else if (child.src)
+                                child.setRotateAngle(2 * Math.PI);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                    else if (i_src == 0 && i_dest == 2){
+                        this.line.c2.x = this.line.x;
+                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
+            
+                        this.line.c3.x = this.line.dest_x;
+                        this.line.c3.y = (this.line.y + this.line.dest_y) / 2;
+            
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(-Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(Math.PI/2);
+                        });
+                        this.line.setPath([this.line.c2, this.line.c3]);
+                    }
+                    else if (i_src == 3 && i_dest == 2){
+                        this.line.c3.x = this.line.dest_x;
+                        this.line.c3.y = this.line.y;
+                                
+                        this.line.children.map(({child})=>{
+                            if (child.dest)
+                                child.setRotateAngle(-Math.PI/2);
+                            else if (child.src)
+                                child.setRotateAngle(2 * Math.PI);
+                        });
+                        this.line.setPath([this.line.c3]);
+                    }
+                }
+            }
+            else
+                this.line.children.map(({child})=>{
+                    if (child.dest)
+                        child.setRotateAngle(this.line.calculateAngle());
+                    else if (child.src)
+                        child.setRotateAngle(this.line.calculateAngle() - Math.PI);
+                });
+            this.line.setStyles({fill: "none"});
             this.line.redraw();
         }
+    }
+
+    setTypeLink(){
+        this.line.setTypeLink(this.line_t);
     }
 }
 export {Link};

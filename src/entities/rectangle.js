@@ -203,6 +203,33 @@ class Rectangle extends Shape {
   }
 
   /**
+   * *@description
+   * This method allows us to delete all events defined on the c_svg property.
+   */
+  deleteAllEvents(){
+    Object.keys(this.events).map((event) => {
+      this.deleteEvent(event);
+    });
+  }
+
+  setStyles(o){
+    if (o.fill)
+      this.c_svg.setAttribute("fill", o.fill);
+    if (o.stroke)
+      this.c_svg.setAttribute("stroke", o.stroke);
+    if (o.strokewidth)
+      this.c_svg.setAttribute("stroke-width", o.strokewidth);
+    if (o.fillopacity)
+      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+    if (o.strokeopacity)
+      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+      if (o.strokedasharray)
+      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+    if (o.strokedashoffset)
+      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+  }
+
+  /**
    * @description
    * 
    */
@@ -242,20 +269,49 @@ class Rectangle extends Shape {
     this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
   }
 
-  removeFromDOM(){
-    this.svg.removeChild(this.c_svg);
-    this.children.map(({child}) =>{
-      child.removeFromDOM();
-    });
-    this.c_points.map((pt)=>{
-      pt.removeFromDOM();
-    });
-
-    this.vertex.map((vt)=>{
-      vt.removeFromDOM();
+  makeHiddenCpoints(){
+    this.c_points.map((pt) => {
+      pt.c_svg.setAttribute("fill", "none");
     });
   }
 
+  makeVisibleCpoints(){
+    this.c_points.map((pt) => {
+      pt.c_svg.setAttribute("fill", "black");
+    });
+  }
+
+  makeHiddenVertex(){
+    this.vertex.map((vt) => {
+      vt.c_svg.setAttribute("fill", "none");
+    });
+  }
+
+  makeVisibleVertex(){
+    this.vertex.map((vt) => {
+      vt.c_svg.setAttribute("fill", "black");
+    });
+  }
+
+  removeChildren(){
+    this.children.map(({child}) => {
+        child.removeFromDOM();
+    });
+  }
+    
+    removeFromDOM(){
+	this.c_points.map((pt)=>{
+	    pt.removeFromDOM();
+	});
+	this.vertex.map((vt)=>{
+	    vt.removeFromDOM();
+	});
+	this.children.map(({child}) => {
+            child.removeFromDOM();
+	});
+	this.svg.removeChild(this.c_svg);
+    }
+    
   setRotateCenter(centerX, centerY){
     this.centerX = centerX;
     this.centerY = centerY;
@@ -370,7 +426,7 @@ class Rectangle extends Shape {
       p.shift(dx, dy);
     });
 
-    this.children.map ( ({child}) => {
+    this.children.map(({child}) => {
       child.shift(dx, dy);
     }); 
  }
@@ -393,7 +449,7 @@ class Rectangle extends Shape {
       p.redraw();
     });
 
-    this.children.map ( ({child}) => {
+    this.children.map(({child}) => {
         child.redraw();
     });
   }
@@ -446,7 +502,7 @@ class Rectangle extends Shape {
 
   /**
    * 
-   * @param { Line } line - It represents an instance of line form.
+   * @param { Line } line - It represents an instance of line shape.
    * @returns 
    */
   optimalPath(line){
@@ -458,7 +514,6 @@ class Rectangle extends Shape {
      */
     var a = (line.dest_y - line.y)/(line.dest_x - line.x);
     var b = line.y - a * line.x;
-
 
     /**
      * A basic shape has 4 vertices.
@@ -496,10 +551,8 @@ class Rectangle extends Shape {
           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
             (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
             ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
-      ){
-          // return this.c_points[i];
-          return i;
-      }
+      )
+        return i;
     }
     return null;
   }

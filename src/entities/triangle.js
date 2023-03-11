@@ -75,8 +75,35 @@ class Triangle extends Shape {
     delete this.events[event];
   }
 
+  /**
+   * *@description
+   * This method allows us to delete all events defined on the c_svg property.
+   */
+  deleteAllEvents(){
+    Object.keys(this.events).map((event) => {
+      this.deleteEvent(event);
+    });
+  }
+
   setOffsetX(x){
     this.offsetX = x;
+  } 
+  
+  setStyles(o){
+    if (o.fill)
+      this.c_svg.setAttribute("fill", o.fill);
+    if (o.stroke)
+      this.c_svg.setAttribute("stroke", o.stroke);
+    if (o.strokewidth)
+      this.c_svg.setAttribute("stroke-width", o.strokewidth);
+    if (o.fillopacity)
+      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+    if (o.strokeopacity)
+      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+      if (o.strokedasharray)
+      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+    if (o.strokedashoffset)
+      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
   }
 
   setOffsetY(y){
@@ -165,27 +192,29 @@ class Triangle extends Shape {
 
 
     this.svg.appendChild(this.c_svg);
-
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
     this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
     this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
   }
-
-  removeFromDOM(){
-    this.svg.removeChild(this.c_svg);
-
-    this.children.map(({child})=>{
+  
+  removeChildren(){
+    this.children.map(({child}) => {
       child.removeFromDOM();
     });
-    
-    this.c_points.map((pt)=>{
-      pt.removeFromDOM();
-    });
+  }
 
-    this.vertex.map((vt)=>{
-      vt.removeFromDOM();
-    });
+    removeFromDOM(){
+	this.c_points.map((pt)=>{
+	    pt.removeFromDOM();
+	});
+	this.vertex.map((vt)=>{
+	    vt.removeFromDOM();
+	});
+	this.children.map(({child}) => {
+	    child.removeFromDOM();
+	});
+	this.svg.removeChild(this.c_svg);    
   }
 
   shift(dx, dy) {
@@ -206,12 +235,10 @@ class Triangle extends Shape {
       v.shift(dx, dy);
     });
 
-    this.children.map ( ({child}) => {
+    this.children.map(({child}) => {
       child.shift(dx, dy);
     }); 
   }
-
-
 
   redraw() {
     if(this.angle != 0){
@@ -237,7 +264,7 @@ class Triangle extends Shape {
     else
       this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
 
-  this.c_svg.setAttribute("d", this.p);
+    this.c_svg.setAttribute("d", this.p);
   }
 
   resize(pos, dx, dy) {

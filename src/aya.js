@@ -30,7 +30,7 @@ class Init{
         this.svg.setAttribute("id", this.uuid);
 
         this.config = config;
-        this.events = Events.setup(this.svg, this.uuid,this.config);
+        this.events = Events.setup(this.svg, this.uuid, this.config);
 
         this.tail_px = 25;
         this.nc = Math.floor(this.width / this.tail_px) + 1; 
@@ -43,21 +43,17 @@ class Init{
             width: this.width
         });
 
-        this.box.form.c_svg.setAttributeNS(null, "fill", "#FFFF");
-        this.box.form.c_svg.setAttribute("stroke", "#57564F");
-        this.box.form.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
+        this.box.grid = true;
 
-        this.box.form.vertex.map( (vt) => {
-            vt.removeFromDOM();
-        });
+        this.box.shape.c_svg.setAttributeNS(null, "fill", "#FFFF");
+        this.box.shape.c_svg.setAttribute("stroke", "#57564F");
+        this.box.shape.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
 
-        this.box.form.c_points.map( (cp) => {
-            cp.removeFromDOM();
-        });
+        this.box.shape.makeHiddenVertex();
 
-        Object.keys(this.box.form.events).map((ev) => {
-            this.box.form.deleteEvent(ev);
-        });
+        this.box.shape.makeHiddenCpoints();
+
+        this.box.shape.deleteAllEvents();
 
         for(var j = 1; j <= this.nl - 1; j++){
             var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
@@ -68,21 +64,8 @@ class Init{
             line.c_svg.setAttribute("stroke", "#57564F");
             line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
 
-            line.children.map( ({child}) => {
-                child.removeFromDOM();
-            });
-
-            line.vertex.map( (vt) => {
-                vt.removeFromDOM();
-            });
-
-            line.c_points.map( (point) => {
-                point.removeFromDOM();
-            });
-
-            Object.keys(line.events).map((ev) => {
-                line.deleteEvent(ev);
-            });
+            line.makeHiddenVertex();
+            line.deleteAllEvents();
         }
 
         for(var j = 1; j <= this.nc - 1; j++){
@@ -94,28 +77,16 @@ class Init{
             line.c_svg.setAttribute("stroke", "#57564F");
             line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
 
-            line.children.map( ({child}) => {
-                child.removeFromDOM();
-            });
-
-            line.vertex.map( (vt) => {
-                vt.removeFromDOM();
-            });
-
-            line.c_points.map( (point) => {
-                point.removeFromDOM();
-            });
-
-            Object.keys(line.events).map((ev) => {
-                line.deleteEvent(ev);
-            });
+            line.makeHiddenVertex();
+            line.deleteAllEvents();
         }
         this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);
     }
 
-    setlinkcb(cb){
-        this.config.linkcb = cb;
+    /* set the current link */
+    setCurrentLink(lk){
+        this.config.current_link = lk;
     }
 
     _uuid(){
@@ -151,7 +122,7 @@ class Init{
     }
 
     Link(src_point, dest_point, line = undefined){
-        return new Link(src_point, dest_point, line);
+        return new Link(src_point, dest_point, line, this.svg, this.config);
     }
 
     Polyline( points = []){

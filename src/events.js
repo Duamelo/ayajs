@@ -1,7 +1,7 @@
-import { Line } from "./entities/line.js";
 import { _Register } from "./register.js";
 import { _uuid } from "./entities/uuid.js";
 import { Link } from "./entities/link.js";
+import { Component } from "./component.js";
 
 
 class Events {
@@ -31,7 +31,6 @@ class Events {
         id = e.srcElement.id;
   
         cp = _Register.find(id);
-        console.log(cp);
   
         // Only the points have the ref property to refer to form that instantiates them.
         // In source we have the component instance created.
@@ -40,7 +39,7 @@ class Events {
   
         if(cp == undefined)
           return;
-        if(cp.form != undefined)
+        if(cp.shape != undefined)
           lk = _Register.findAllLink(cp);
 
         // The displacement of the form is triggered when the mousedown is done on the form, and neither on the point nor the svg.
@@ -48,7 +47,7 @@ class Events {
             state = "moving";
         else {
           // Resizing is triggered when the mousedown takes place on one of the summits.
-          if (  (source.form.vertex != undefined) && (pos = source.form.vertex.indexOf(cp)) >= 0) {
+          if (  (source.shape.vertex != undefined) && (pos = source.shape.vertex.indexOf(cp)) >= 0) {
             state = "resizing";
             dx = e.offsetX;
             dy = e.offsetY;
@@ -68,10 +67,8 @@ class Events {
             state = "drawing_link";
 
             id = _uuid.generate();
-            if (cp != source) {
-              line = new Line( id_svg, svg, null, config, id, cp.x, cp.y);
-              line.draw();
-            }
+            if (cp != source)
+              line = new Component("line", {x: cp.x, y: cp.y}, svg, source.shape.nativeEvent, config);
           }
         }
       },
@@ -86,39 +83,41 @@ class Events {
           dy = e.offsetY;
 
           // Ensure cp is a component
-          var src, sink;
-          if(cp.form != undefined){
+          var src, dest;
+          if(cp.shape != undefined){
             lk.map((link) => {
-              cp.form.c_points.map( (point) => {
+              cp.shape.c_points.map( (point) => {
                 if(point == link.source)
                   src = point;
                 else if(point == link.destination)
-                  sink = point;
+                  dest = point;
               });
-              if(sink) {
-                link.line.dest_x += deltaX;
-                link.line.dest_y += deltaY;
+              if(dest) {
 
+                link.line.dest_x = dest.x;
+                link.line.dest_y = dest.y;
+                
                 link.redraw();
               }
               else{
-                link.line.x += deltaX;
-                link.line.y += deltaY;
+
+                link.line.x = src.x;
+                link.line.y = src.y;
 
                 link.redraw();
               }
             });
-            cp.form.shift(deltaX, deltaY);
-            cp.form.redraw();
-            lk.map( (link) => {
+            cp.shape.shift(deltaX, deltaY);
+            cp.shape.redraw();
+            lk.map((link) => {
               link.redraw();
             });
           }
         }
         else if (state == "drawing_link") {
-          line.dest_x = e.clientX;
-          line.dest_y = e.clientY;
-          line.redraw();
+          line.shape.dest_x = e.clientX;
+          line.shape.dest_y = e.clientY;
+          line.shape.redraw();
         }
         else if (state == "resizing") {
             deltaX = e.offsetX - dx;
@@ -127,10 +126,10 @@ class Events {
             dx = e.offsetX;
             dy = e.offsetY;
   
-            source.form.resize(pos, deltaX, deltaY);
-            source.form.redraw();
+            source.shape.resize(pos, deltaX, deltaY);
+            source.shape.redraw();
   
-            lk.map( (link ) => {
+            lk.map((link ) => {
               link.redraw();
             });
         }
@@ -139,50 +138,32 @@ class Events {
         if (state == "drawing_link") {
           id = e.srcElement.id;
           var pnt = _Register.find(id);
-          
-          if (pnt != undefined && pnt.ref != undefined) {
-            line.dest_x = pnt.x;
-            line.dest_y = pnt.y;
+
+          if (pnt && !pnt.grid && pnt.x == line.x){
+            var ref = document.getElementById(line.shape.uuid);
+            ref.remove();
+            return;
+          }          
+          if (pnt && pnt.ref) {
+            line.shape.dest_x = pnt.x;
+            line.shape.dest_y = pnt.y;
   
-            var link = new Link(cp, pnt, line);
+            var link = new Link(cp, pnt, line.shape, svg, config);
             link.redraw();
           }
-          else if (id == id_svg || pnt.ref == undefined) {
-            var ref = document.getElementById(line.uuid);
-            line.children.map( ({child}) => {
+          else{
+            var ref = document.getElementById(line.shape.uuid);
+            line.shape.children.map(({child}) => {
               var rf = document.getElementById(child.uuid);
               rf.remove();
             });
-            line.vertex.map( (point) => {
+            line.shape.vertex.map((point) => {
               var rf = document.getElementById(point.uuid);
               rf.remove();
             })
             ref.remove();
           }
         }
-        // else if(state == "resizing" && source.type == 'line'){
-        //   console.log("mouseup");
-        //   id = e.srcElement.id;
-
-        //   var pnt = _Register.find(id);
-
-        //   if(pnt.ref){/* this is a form's connection point*/
-        //     var cp = _Register.find(pnt.ref);
-        //     console.log("pnt.ref != undefined");
-
-        //     if(point.x == source.form.x){
-        //       console.log("source.form.x == point.x");
-        //       source.form.x = pnt.x;
-        //       source.form.y = pnt.y;
-        //     }
-        //     else if(point.x == source.form.dest_x){
-        //       console.log("source.form.dest_x == point.x");
-        //       source.form.dest_x = pnt.x;
-        //       source.form.dest_y = pnt.y;
-        //     }
-        //     new Link(point, pnt, source.form).redraw();
-        //   }
-        // }
         state = "";
       },
       mouseOverCb: function mouseovercb(e){
@@ -195,19 +176,19 @@ class Events {
 
         if(local_cp == undefined)
           return;
-        if(local_cp.form.type == "line"){
-          local_cp.form.c_svg.setAttribute("class", "move");
-          local_cp.form.vertex.map((vt) =>{
+        if(local_cp.shape.type == "line"){
+          local_cp.shape.c_svg.setAttribute("class", "move");
+          local_cp.shape.vertex.map((vt) =>{
             vt.c_svg.setAttribute("class", "default");
           });
         }
         else {
-          if(local_cp.form != undefined){
-            local_cp.form.c_svg.setAttribute("class", "move");
-            local_cp.form.c_points.map( (point) => {
+          if(local_cp.shape != undefined){
+            local_cp.shape.c_svg.setAttribute("class", "move");
+            local_cp.shape.c_points.map( (point) => {
               point.c_svg.setAttribute("class", "show_point");
             });
-            local_cp.form.vertex.map( (vertex, index) => {
+            local_cp.shape.vertex.map( (vertex, index) => {
               vertex.c_svg.setAttribute("class", "show_point");
               if(index == 0)
                 vertex.c_svg.setAttribute("class", "resize_left_top");
@@ -222,15 +203,14 @@ class Events {
         }
       },
       mouseLeaveCb: function mouseleavecb(e){
-
           var components = _Register.findAllComponents();
 
           components.map( async (component) => {
             setTimeout(()=> {
-              component.form.c_points.map( (point) => {
+              component.shape.c_points.map( (point) => {
                 point.c_svg.setAttribute("class", "hidden_point");
               });
-              component.form.vertex.map( (vertex) => {
+              component.shape.vertex.map( (vertex) => {
                 vertex.c_svg.setAttribute("class", "hidden_point");
               });
             }, 5000);

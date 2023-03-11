@@ -13,6 +13,9 @@ class Image{
         this.name = name;
 
         this.c_svg = "";
+
+        this.offsetX = 0;
+        this.offsetY = 0;
         
         this.events = {};
         this.nativeEvent = event;
@@ -34,16 +37,22 @@ class Image{
         delete this.events[event];
     }
 
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
+    }
+
     draw(){
         this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
+        this.c_svg.setAttributeNS(null,'id',this.uuid);
         this.c_svg.setAttributeNS(null,'height',this.height);
         this.c_svg.setAttributeNS(null,'width',this.width);
         this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.path);
-        this.c_svg.setAttributeNS(null,'x',this.x);
-        this.c_svg.setAttributeNS(null,'y',this.y);
+        this.c_svg.setAttributeNS(null,'x',this.x + this.offsetX);
+        this.c_svg.setAttributeNS(null,'y',this.y + this.offsetY);
 
         this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-
         this.svg.append(this.c_svg);
     }
 
@@ -53,8 +62,8 @@ class Image{
     }
 
     redraw(){
-        this.c_svg.setAttributeNS(null,'x',this.x);
-        this.c_svg.setAttributeNS(null,'y',this.y);
+        this.c_svg.setAttributeNS(null,'x',this.x + this.offsetX);
+        this.c_svg.setAttributeNS(null,'y',this.y + this.offsetY);
     }
 
     removeFromDOM(){

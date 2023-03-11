@@ -17,7 +17,6 @@ class Lozenge extends Shape{
  * @param {number} width 
  * @param {number} height 
  */
-
   constructor(uuid, x = 0, y = 0, width = 10, height = 30, svg, event, config)
   {
       super();
@@ -80,6 +79,18 @@ class Lozenge extends Shape{
     var callback = this.events[event];
     this.c_svg.removeEventListener(event, callback);
     delete this.events[event];
+  }
+
+  deleteAllEvents(){
+    Object.keys(this.events).map((event) => {
+      this.deleteEvent(event);
+    });
+  }
+
+  removeChildren(){
+    this.children.map(({child}) => {
+        child.removeFromDOM();
+    });
   }
 
   drawVertex(){
@@ -174,21 +185,46 @@ class Lozenge extends Shape{
 
   }
 
-  removeFromDOM(){
-    this.svg.removeChild(this.box);
-    this.svg.removeChild(this.c_svg);
-    this.children.map(({child})=>{
-      child.removeFromDOM();
-    });
-
-    this.c_points.map((pt)=>{
-      pt.removeFromDOM();
-    });
-
-    this.vertex.map((vt)=>{
-      vt.removeFromDOM();
+  makeHiddenCpoints(){
+    this.c_points.map((pt) => {
+        pt.c_svg.setAttribute("fill", "none");
     });
   }
+
+  makeVisibleCpoints(){
+    this.c_points.map((pt) => {
+        pt.c_svg.setAttribute("fill", "black");
+    });
+  }
+
+  makeHiddenVertex(){
+    this.vertex.map((vt) => {
+        vt.c_svg.setAttribute("fill", "none");
+    });
+  }
+
+  makeVisibleVertex(){
+    this.vertex.map((vt) => {
+        vt.c_svg.setAttribute("fill", "black");
+    });
+  }
+    
+    removeFromDOM(){    
+	this.c_points.map((pt)=>{
+	    pt.removeFromDOM();
+	});
+	this.vertex.map((vt)=>{
+	    vt.removeFromDOM();
+	});
+	this.children.map(({child}) => {
+	    child.removeFromDOM();
+	});
+	this.svg.removeChild(this.c_svg);  
+    }
+    
+    removeBoxFromDOM(){
+	this.svg.removeChild(this.box);
+    }
 
   redraw() {
     if(this.angle != 0){
@@ -223,9 +259,7 @@ class Lozenge extends Shape{
         p.redraw();
       });
 
-    this.children.map( ({child, translate, rotate}) => {
-      translate(this, child);
-      rotate(this, child);
+    this.children.map(({child}) => {
       child.redraw();
     })
   }
@@ -269,11 +303,9 @@ class Lozenge extends Shape{
       this.height = this.config.form.limitHeight;
 
 
-    this.children.map( ({child, translate, rotate}) => {
-      translate(this, child);
-      rotate(this, child);
+    this.children.map(({child}) => {
       child.redraw();
-    })
+    });
   }
 
   drawBox(){

@@ -1,2 +1,4 @@
 - resizing the component and its children
 - breaking line for connection link
+- add offset to images
+- desactiver les events sur les c_points/vertex avec une methode

@@ -1,5 +1,4 @@
 import { _uuid } from "./uuid";
-import { Point } from "./point";
 import { _Register } from "../register";
 import { Shape } from "../abstraction/shape";
 
@@ -7,7 +6,6 @@ import { Shape } from "../abstraction/shape";
 /**
  * @class Arc
  */
-
 class Arc extends Shape {
     /**
      * 
@@ -43,12 +41,10 @@ class Arc extends Shape {
 
         this.config = config;
 
-
         this.c_svg = "";
         this.svg = svg;
 
         this.type = "arc";
-
 
         this.scaleX = 1;
         this.scaleY = 1;
@@ -58,14 +54,8 @@ class Arc extends Shape {
 
         this.children = [];
 
-        this.vertex = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-        ];
-        this.c_points = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-        ];
+        this.vertex = [];
+        this.c_points = [];
     }
 
     addEvent(event, callback){
@@ -78,6 +68,12 @@ class Arc extends Shape {
         this.c_svg.removeEventListener(event, callback);
         delete this.events[event];
     }
+
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
+    }
     
     drawVertex(){
         if(this.vertex.length == 0)
@@ -88,6 +84,24 @@ class Arc extends Shape {
         if(this.c_points.length == 0)
             return;
     }
+
+    setStyles(o){
+        if (o.fill)
+          this.c_svg.setAttribute("fill", o.fill);
+        if (o.stroke)
+          this.c_svg.setAttribute("stroke", o.stroke);
+        if (o.strokewidth)
+          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+        if (o.fillopacity)
+          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+        if (o.strokeopacity)
+          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+          if (o.strokedasharray)
+          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+        if (o.strokedashoffset)
+          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+    }
+
 
     draw(){
         const ns = "http://www.w3.org/2000/svg";
@@ -113,24 +127,28 @@ class Arc extends Shape {
 
         this.svg.appendChild(this.c_svg);
 
-        this.c_points.map((point) => {
-            point.draw();
-        });
-
-        this.vertex.map( (vertex) => {
-            vertex.draw();
-        });
-
         this.addEvent("mouseover", () =>{
             this.c_svg.setAttribute("class", "move");
         });
     }
 
-    removeFromDOM(){
-        this.svg.removeChild(this.c_svg);
-        this.children.map( ({child}) =>{
+    removeChildren(){
+        this.children.map(({child}) => {
             child.removeFromDOM();
         });
+    }
+
+    removeFromDOM(){
+        this.c_points.map((pt) => {
+            pt.removeFromDOM();
+        });
+        this.vertex.map((vt) => {
+            vt.removeFromDOM();
+        });
+        this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
+        this.svg.removeChild(this.c_svg);
     }
 
     shift(dx,dy){
@@ -140,25 +158,20 @@ class Arc extends Shape {
         this.x += dx;
         this.y += dy;
 
-        this.children.map ( ({child}) => {
+        this.children.map(({child}) => {
             child.shift(dx, dy);
         });   
     }
 
 
     redraw(){
-        this.drawVertex();
-        this.vertex.map( (vertex) => {
-            vertex.redraw();
-        });
-
         this.dest_x = Math.round ((this.x0 + this.offsetX0) + ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.cos ((this.angle * Math.PI )/ 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.sin ((this.angle * Math.PI) / 180));
         this.dest_y = Math.round ((this.y0 + this.offsetY0) - ((this.x + this.offsetX) - (this.x0 + this.offsetX0)) * Math.sin ((this.angle * Math.PI) / 180) + ((this.y + this.offsetY) - (this.y0 + this.offsetY0)) * Math.cos ((this.angle * Math.PI) / 180));
 
         this.p = "M " + this.x + " " + this.y + " A " + this.radius + " " + this.radius + " 0 " + (this.angle > 180 ? 1 : 0) + " 0 " + this.dest_x + " " + this.dest_y;
         this.c_svg.setAttribute("d", this.p);
 
-        this.children.map ( ({child}) => {
+        this.children.map(({child}) => {
             child.redraw();
         });
     }
@@ -190,10 +203,8 @@ class Arc extends Shape {
             this.dest_x += dx;
             this.dest_y += dy;
         }
-        this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
+        this.children.map(({child}) => {
             child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
-            rotate(this, child);
             child.redraw();
         });
     }

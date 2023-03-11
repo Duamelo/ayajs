@@ -43,6 +43,12 @@ class Point {
     this.c_svg.removeEventListener(event, callback);
     delete this.events[event];
   }
+
+  deleteAllEvents(){
+    Object.keys(this.events).map((event) => {
+      this.deleteEvent(event);
+    });
+  }
  
   setScale(sc){
     this.scale = sc;
@@ -50,6 +56,23 @@ class Point {
 
   getScale(){
     return this.scale;
+  }
+
+  setStyles(o){
+    if (o.fill)
+      this.c_svg.setAttribute("fill", o.fill);
+    if (o.stroke)
+      this.c_svg.setAttribute("stroke", o.stroke);
+    if (o.strokewidth)
+      this.c_svg.setAttribute("stroke-width", o.strokewidth);
+    if (o.fillopacity)
+      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+    if (o.strokeopacity)
+      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+      if (o.strokedasharray)
+      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+    if (o.strokedashoffset)
+      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
   }
 
   draw() {
@@ -67,7 +90,6 @@ class Point {
 
     // this.c_svg.setAttribute("class", "point");
     this.c_svg.setAttribute("class", "hidden_point");
-
     
     this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     this.addEvent("mouseover", (e)=>{
@@ -78,7 +100,6 @@ class Point {
       this.r = this.config.point.radius;
       this.c_svg.setAttribute("r", this.r);
     });
-
     this.svg.appendChild(this.c_svg);
   }
 

@@ -3,7 +3,7 @@
  * 
  * @abstract 
  * 
- * @class Form
+ * @class Shape
  *  
  */
 class Shape

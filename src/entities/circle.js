@@ -73,6 +73,12 @@ class Circle extends Shape {
         delete this.events[event];
     }
 
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
+    }
+
     drawVertex(){
         if(this.vertex.length == 0)
             return;
@@ -120,6 +126,23 @@ class Circle extends Shape {
 
         this.box.setAttribute("d", p);
     }
+
+    setStyles(o){
+        if (o.fill)
+          this.c_svg.setAttribute("fill", o.fill);
+        if (o.stroke)
+          this.c_svg.setAttribute("stroke", o.stroke);
+        if (o.strokewidth)
+          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+        if (o.fillopacity)
+          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+        if (o.strokeopacity)
+          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+          if (o.strokedasharray)
+          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+        if (o.strokedashoffset)
+          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+    }
     
     draw(){
         var ns="http://www.w3.org/2000/svg";
@@ -141,9 +164,7 @@ class Circle extends Shape {
     
         this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
     
-      
         /** draw box */
-
         this.drawVertex();
         this.drawConnector();
         this.drawBox();  
@@ -154,11 +175,9 @@ class Circle extends Shape {
         this.box.setAttributeNS(null, "stroke-width", this.config.box.strokeWidth);
         this.box.setAttribute("stroke-dasharray", this.config.box.strokeDasharray);
 
-        
         this.svg.appendChild(this.c_svg);
         this.svg.appendChild(this.box);
 
-    
         this.c_points.map((point) => {
             point.draw();
         });
@@ -167,7 +186,7 @@ class Circle extends Shape {
             point.draw();
         });
 
-        this.children.map( ({child}) => {
+        this.children.map(({child}) => {
             child.redraw();
         });
 
@@ -176,30 +195,59 @@ class Circle extends Shape {
         this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
     }
 
-    removeBoxFromDOM(){
-        this.svg.removeChild(this.box);
-    }
-
-    removeFromDOM(){
-        this.svg.removeChild(this.box);
-        this.svg.removeChild(this.c_svg);
+    removeChildren(){
         this.children.map(({child}) => {
             child.removeFromDOM();
         });
-        this.c_points.map((pt)=>{
+    }
+    
+    makeHiddenCpoints(){
+        this.c_points.map((pt) => {
+            pt.c_svg.setAttribute("fill", "none");
+        });
+    }
+    
+    makeHiddenVertex(){
+        this.vertex.map((vt) => {
+            vt.c_svg.setAttribute("fill", "none");
+        });
+    }
+
+    makeVisibleCpoints(){
+        this.c_points.map((pt) => {
+            pt.c_svg.setAttribute("fill", "black");
+        });
+    }
+
+    makeVisibleVertex(){
+        this.vertex.map((vt) => {
+            vt.c_svg.setAttribute("fill", "black");
+        });
+    }
+
+    removeBoxFromDOM(){
+        this.svg.removeChild(this.box);
+    }
+   
+
+    removeFromDOM(){
+        this.c_points.map((pt) => {
             pt.removeFromDOM();
         });
-      
-        this.vertex.map((vt)=>{
-        vt.removeFromDOM();
+        this.vertex.map((vt) => {
+            vt.removeFromDOM();
         });
+        this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
+        this.svg.removeChild(this.c_svg);
     }
     
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
 
-        this.children.map ( ({child}) => {
+        this.children.map(({child}) => {
             child.shift(dx, dy);
         }); 
     }
@@ -213,15 +261,15 @@ class Circle extends Shape {
         this.drawVertex();
         this.drawBox();
 
-        this.vertex.map((vert) => {
-            vert.redraw();
+        this.vertex.map((vt) => {
+            vt.redraw();
         });
 
-        this.c_points.map( (point) => {
-            point.redraw();
+        this.c_points.map((pt) => {
+            pt.redraw();
         });
 
-        this.children.map( ({child}) => {
+        this.children.map(({child}) => {
             child.redraw();
         });
     }
@@ -236,9 +284,7 @@ class Circle extends Shape {
         else
             this.r -= dx;
 
-        this.children.map( ({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map(({child}) => {
             child.redraw();
         });
     }

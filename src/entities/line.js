@@ -1,15 +1,11 @@
-
 import { _uuid } from "./uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
-import { FactoryForm } from "../factoryForm";
-import { Events } from "../events";
 import { Shape } from "../abstraction/shape";
 
 /**
  * @class Line
  */
-
 class Line extends Shape {
 
     /**
@@ -32,7 +28,27 @@ class Line extends Shape {
 
         this.x = x;
         this.y = y;
-        
+
+        this.c1 = {
+            x: this.x,
+            y: this.y
+        };
+
+        this.c2 = {
+            x: this.x,
+            y: this.y
+        };
+
+        this.c3 = {
+            x: this.dest_x,
+            y: this.dest_y
+        };
+
+        this.c4 = {
+            x: this.dest_x,
+            y: this.dest_y
+        };
+
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
@@ -44,10 +60,11 @@ class Line extends Shape {
 
         this.id_svg = id_svg;
 
-        this.nativeEvent = event || Events.setup(this.svg, this.id_svg, this.config);
+        this.nativeEvent = event;
 
         this.c_svg = "";
         this.type = "line";
+        this.line_t = null;
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -66,6 +83,10 @@ class Line extends Shape {
         this.c_points = [];
     }
 
+    setTypeLink(type){
+        this.line_t = type;
+    }
+
     addEvent(event, callback){
         this.c_svg.addEventListener(event, callback);
         this.events[event] = callback;
@@ -75,6 +96,12 @@ class Line extends Shape {
         var callback = this.events[event];
         this.c_svg.removeEventListener(event, callback);
         delete this.events[event];
+    }
+
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
     }
     
     drawVertex(){
@@ -97,11 +124,37 @@ class Line extends Shape {
         return;
     }
 
+    setStyles(o){
+        if (o.fill)
+          this.c_svg.setAttribute("fill", o.fill);
+        if (o.stroke)
+          this.c_svg.setAttribute("stroke", o.stroke);
+        if (o.strokewidth)
+          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+        if (o.fillopacity)
+          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+        if (o.strokeopacity)
+          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+          if (o.strokedasharray)
+          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+        if (o.strokedashoffset)
+          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+    }
+
+    setPath(points = [{}]){ 
+        this.p = "M "+  (this.x) + ","+ (this.y) + " ";
+
+        points.map((pt)=>{
+            this.p += "L"  + (pt.x) + ","+ (pt.y) + " ";
+        });
+        this.p += "L" + (this.dest_x)  + "," + (this.dest_y);
+    }
     draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+        if (!this.line_t)
+            this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
         this.c_svg.setAttribute("d", this.p);
@@ -113,11 +166,11 @@ class Line extends Shape {
 
         this.drawVertex();
 
-        this.vertex.map( (vertex) => {
+        this.vertex.map((vertex) => {
             vertex.draw();
         });
 
-        this.children.map( ({child}) =>{
+        this.children.map(({child}) =>{
             child.draw();
         });
 
@@ -126,17 +179,37 @@ class Line extends Shape {
         this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
     }
 
+    makeHiddenVertex(){
+        this.vertex.map((vt) => {
+            vt.c_svg.setAttribute("fill", "none");
+        });
+    }
+
+    makeVisibleVertex(){
+        this.vertex.map((vt) => {
+            vt.c_svg.setAttribute("fill", "black");
+        });
+    }
+
+
+    removeChildren(){
+	this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
+    }
+    
     removeFromDOM(){
         this.c_points.map((pt)=>{
             pt.removeFromDOM();
         });
-    
         this.vertex.map((vt)=>{
             vt.removeFromDOM();
         });
+        this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
         this.svg.removeChild(this.c_svg);
     }
-
 
     shift(dx,dy){
         this.x += dx;
@@ -145,29 +218,29 @@ class Line extends Shape {
         this.dest_x += dx;
         this.dest_y += dy;
 
-        this.children.map ( ({child}, index) => {
+        this.children.map(({child}, index) => {
             child.shift(dx, dy);
         }); 
-    }
-
-    updateLine(){
-
     }
 
     redraw(){
         this.drawVertex();
 
-        this.vertex.map( (vertex) => {
+        this.vertex.map((vertex) => {
             vertex.redraw();
         });
 
-        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
-        this.c_svg.setAttribute("d", p);
+        if (!this.line_t)
+            this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
-        this.children.map (({child}) => {
+        this.c_svg.setAttribute("d", this.p);
+
+        this.children.map(({child, translate, rotate}) => {
+            translate(this, child);
+            rotate(this, child);
             child.redraw();
         });
-    }
+   }
 
     calculateAngle(){
         var angle = 0;
@@ -203,7 +276,7 @@ class Line extends Shape {
             if (this.children[1]) 
                 this.children[1].child.shift(dx, dy);
         }
-        this.children.map (({child}, index) => {
+        this.children.map(({child}, index) => {
             child.redraw();
         });
     }
@@ -253,8 +326,6 @@ class Line extends Shape {
         return this.scaleY;
     }
 
-    optimalPath(){
-        
-    }
+    optimalPath(){}
 }
 export {Line};

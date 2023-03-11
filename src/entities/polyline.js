@@ -63,6 +63,12 @@ class Polyline extends Shape {
         delete this.events[event];
     }
 
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
+    }
+
     drawVertex(){
         if(this.vertex.length == 0)
             return;
@@ -74,6 +80,23 @@ class Polyline extends Shape {
     }
 
     drawBox(){
+    }
+
+    setStyles(o){
+        if (o.fill)
+          this.c_svg.setAttribute("fill", o.fill);
+        if (o.stroke)
+          this.c_svg.setAttribute("stroke", o.stroke);
+        if (o.strokewidth)
+          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+        if (o.fillopacity)
+          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+        if (o.strokeopacity)
+          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+          if (o.strokedasharray)
+          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+        if (o.strokedashoffset)
+          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
     }
 
     draw(){
@@ -105,26 +128,40 @@ class Polyline extends Shape {
             vertex.draw();
         });
 
+        this.children.map(({child}) =>{
+            child.draw();
+        });
+
         this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
-    removeFromDOM(){
-        this.svg.removeChild(this.c_svg);
-        this.children.map(({child}) =>{
+    removeChildren(){
+        this.children.map(({child}) => {
             child.removeFromDOM();
         });
-
+    }
+    
+    removeFromDOM(){
         this.c_points.map((pt)=>{
             pt.removeFromDOM();
-        });
-      
+        });        
         this.vertex.map((vt)=>{
-        vt.removeFromDOM();
+            vt.removeFromDOM();
         });
+	this.children.map(({child}) => {
+            child.removeFromDOM();
+        });
+        this.svg.removeChild(this.c_svg);
     }
 
 
     shift(dx,dy){
+        for (var i = 0; i < this.points.length; i++){
+            if (i%2)
+                this.points[i] += dx;
+            else
+                this.points[i] += dy;
+        }
         this.children.map ( ({child}) => {
             child.shift(dx, dy);
         }); 
@@ -136,20 +173,17 @@ class Polyline extends Shape {
             vertex.redraw();
         });
 
-        var path = "" + this.points.map((pt, index) => {
-            if(index % 2 == 0)
-                pt + ",";
+        var path = "";
+        for(var i = 0; i < this.points.length; i++){
+            if(i % 2 == 0)
+                path += this.points[i] + this.offsetX + ",";
             else
-                pt + " ";
-        }) + " ";
+                path += this.points[i] + this.offsetY + " ";
+        }
 
-        this.c_svg.setAttribute("point", path);
+        this.c_svg.setAttribute("points", path);
 
-        this.children.map ( ({child, translate, rotate}) => {
-            if(translate != null)
-                translate(this, child);
-            if(rotate != null)
-                rotate(this, child);
+        this.children.map ( ({child}) => {
             child.redraw();
         });
     }
@@ -181,10 +215,8 @@ class Polyline extends Shape {
             this.dest_x += dx;
             this.dest_y += dy;
         }
-        this.children.map ( ({child, translate, rotate}) => {
-            translate(this, child);
+        this.children.map ( ({child}) => {
             child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
-            rotate(this, child);
             child.redraw();
         });
     }

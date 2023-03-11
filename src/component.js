@@ -1,6 +1,6 @@
 import {_Register}  from "./register.js";
 import {_uuid} from "./entities/uuid.js";
-import {FactoryForm} from "./factoryForm.js";
+import {Factory} from "./factory.js";
 
 class Component
 {
@@ -17,8 +17,21 @@ class Component
         this.uuid = _uuid.generate();
         this.type = type;
         _Register.add(this);
-        this.form = FactoryForm.createForm(this.uuid, type, props, svg, events, config);
-        this.form.draw();
+        this.shape = Factory.createForm(this.uuid, type, props, svg, events, config);
+        this.shape.draw();
+    }
+
+    move(dx,dy){
+        this.shape.x += dx;
+        this.shape.y += dy;
+
+        this.shape.redraw();
+
+        var lk = _Register.findAllLink(this);
+        
+         lk.map((link) => {
+            link.redraw();
+         });
     }
 
   /**
@@ -31,23 +44,14 @@ class Component
    * @param {Function } rotate  - { parent, child } This function allows us to apply a rotation of the child taking into 
    * account its relative position and the center of rotation.
    */
-    addChild(child, translate = null, rotate = null, drawing = true){
-        /* resizing and connection to child isn't possible */
-        child.vertex = [];
-        child.c_points = [];
-
-        if(translate != null){
-            child.offsetX = translate.x;
-            child.offsetY = translate.y;
-        }
-        if(rotate != null){
-            child.centerX = rotate.x;
-            child.centerY = rotate.y;
-            child.angle = rotate.angle;
-        }       
-        if(drawing == true)
-            child.draw();
-        this.form.children.push({child});
-    }
+  addChild(child, translate = null, rotate = null, drawing = true){
+    if(translate != null)
+      translate(this.shape, child);
+    if(rotate != null)
+      rotate(this.shape, child);
+    if(drawing == true)
+      child.draw();
+    this.shape.children.push({child, translate, rotate});
+  }
 }
-export  {Component};
+export {Component};

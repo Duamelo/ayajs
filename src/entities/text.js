@@ -42,8 +42,9 @@ class Text{
 
         this.tspan = "";
         this.title = "";
-    };
 
+        this.path_id = null;
+    };
 
     addEvent(event, callback){
         this.c_svg.addEventListener(event, callback);
@@ -56,6 +57,15 @@ class Text{
         delete this.events[event];
     }
 
+    /**
+     * *@description
+     * This method allows us to delete all events defined on the c_svg property.
+     */
+    deleteAllEvents(){
+        Object.keys(this.events).map((event) => {
+            this.deleteEvent(event);
+        });
+    }
 
     setRotateCenter(centerX, centerY){
         this.centerX = centerX;
@@ -65,6 +75,40 @@ class Text{
     setRotateAngle(angle){
         this.angle = angle;
     }
+
+    setPath(id){
+        this.path_id = id;
+    }
+
+    setStyles(o){
+        if (o.fill)
+          this.c_svg.setAttribute("fill", o.fill);
+        if (o.stroke)
+          this.c_svg.setAttribute("stroke", o.stroke);
+        if (o.strokewidth)
+          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+        if (o.fillopacity)
+          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+        if (o.strokeopacity)
+          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+          if (o.strokedasharray)
+          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+        if (o.strokedashoffset)
+          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+        if (o.fontsize)
+            this.c_svg.setAttribute("font-size", o.fontsize);
+        if (o.fontfamily)
+            this.c_svg.setAttribute("font-family", o.fontfamily);
+        if (o.fontstyle)        
+            this.c_svg.setAttribute("font-style", o.fontstyle);
+        if (o.wordspacing)
+            this.c_svg.setAttribute("word-spacing", o.wordspacing);
+        if (o.letterspacing)
+            this.c_svg.setAttribute("letter-spacing", o.letterspacing);
+        if (o.textlength)
+            this.c_svg.setAttributeNS(null, "textLength", o.textlength);
+    }
+    
 
     draw(){
         const svgns = "http://www.w3.org/2000/svg";
@@ -82,14 +126,12 @@ class Text{
         this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
         this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
 
-        // this.tspan = document.createElementNS(svgns, "tspan");
         this.title = document.createElementNS(svgns, "title");
 
         this.title.textContent = this.text;
-        // this.tspan.textContent = this.text;
 
         this.c_svg.textContent = this.text;
-        // this.c_svg.appendChild(this.tspan);
+
         this.c_svg.appendChild(this.title);
 
         // this.updateWidthText();
@@ -97,10 +139,10 @@ class Text{
     }
 
     redraw(){
-	this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
+    	this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
         this.c_svg.setAttributeNS(null, "textLength", this.size);
-	this.c_svg.textContent = this.text;
+	    this.c_svg.textContent = this.text;
         this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
     }
     
@@ -133,8 +175,6 @@ class Text{
     }
     
     removeFromDOM(){
-        // this.title.textContent = "";
-        // this.tspan.textContent = "";
         this.c_svg.textContent = "";
     }
 

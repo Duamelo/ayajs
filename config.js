@@ -41,7 +41,11 @@ var config =  {
         type: "broke",
         ends : {
             start : { type : "triangle"},
-            dest : { type : "triangle"}
+            dest : { type : "triangle"},
+	    h_dx: 10,
+	    h_dy: 4,
+	    v_dx: 5,
+	    v_dy: 8
         },
         strokeWidth : "1pt",
         strokeDasharray : "4"

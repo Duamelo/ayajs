@@ -96,7 +96,7 @@ class Events {
 
                 link.line.dest_x = dest.x;
                 link.line.dest_y = dest.y;
-                
+
                 link.redraw();
               }
               else{

@@ -17,14 +17,16 @@
       var aya = new aya.Init();
 
       // remove grid from the svg
-      aya.box.shape.children.map(({child}) =>{
-         aya.svg.removeChild(child.c_svg);
-      });
+      // aya.box.shape.children.map(({child}) =>{
+      //    aya.svg.removeChild(child.c_svg);
+      // });
 
       // aya.config.line.type = null;
       var rec1 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 200});
 
-      var sha = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 200});
+      var sh = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 200});
+
+      // var sha = aya.Component("triangle", {x1: 500, y1: 200, x2: 234, y2: 320, x3: 100, y3: 213});
 
       // var line = aya.Line(rec1.shape.c_points[0].x, rec1.shape.c_points[0].y, sha.shape.c_points[0].x, sha.shape.c_points[0].y);
       // line.draw();

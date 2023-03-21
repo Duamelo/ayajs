@@ -83,7 +83,7 @@ class Line extends Shape {
         this.c_points = [];
     }
 
-    setTypeLink(type){
+    setTypeLine(type){
         this.line_t = type;
     }
 
@@ -118,10 +118,6 @@ class Line extends Shape {
     drawConnector(){
         if(this.c_points.length == 0)
             return;
-    }
-
-    drawBox(){
-        return;
     }
 
     setStyles(o){
@@ -193,7 +189,7 @@ class Line extends Shape {
 
 
     removeChildren(){
-	this.children.map(({child}) => {
+	    this.children.map(({child}) => {
             child.removeFromDOM();
         });
     }
@@ -235,9 +231,7 @@ class Line extends Shape {
 
         this.c_svg.setAttribute("d", this.p);
 
-        this.children.map(({child, translate, rotate}) => {
-            translate(this, child);
-            rotate(this, child);
+        this.children.map(({child}) => {
             child.redraw();
         });
    }

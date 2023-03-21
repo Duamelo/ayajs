@@ -50,17 +50,9 @@ class Triangle extends Shape {
     this.centerY = 0;
 
     this.c_points = [
-      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
 
     this.vertex = [
-        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0, 0, 5, this.svg, this.nativeEvent, this.config),
     ];
   }
 
@@ -218,6 +210,7 @@ class Triangle extends Shape {
   }
 
   shift(dx, dy) {
+
     this.x1 += dx;
     this.y1 += dy;
 
@@ -268,24 +261,24 @@ class Triangle extends Shape {
   }
 
   resize(pos, dx, dy) {
-      if (pos == 0) {
-        this.x1 = dx;
-        this.y1 = dy;
-        this.vertex[0].x = dx;
-        this.vertex[0].y = dy;
-      }
-      else if (pos == 1) {
-        this.x2 = dx;
-        this.y2 = dy;
-        this.vertex[1].x = dx;
-        this.vertex[1].y = dy;
-      }
-      else if (pos == 2) {
-        this.x3 = dx;
-        this.y3 = dy;
-        this.vertex[2].x = dx;
-        this.vertex[2].y = dy;
-      }
+    if (pos == 0) {
+      this.x1 = dx;
+      this.y1 = dy;
+      this.vertex[0].x = dx;
+      this.vertex[0].y = dy;
+    }
+    else if (pos == 1) {
+      this.x2 = dx;
+      this.y2 = dy;
+      this.vertex[1].x = dx;
+      this.vertex[1].y = dy;
+    }
+    else if (pos == 2) {
+      this.x3 = dx;
+      this.y3 = dy;
+      this.vertex[2].x = dx;
+      this.vertex[2].y = dy;
+    }
   }
 
   optimalPath(line){

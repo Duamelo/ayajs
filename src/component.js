@@ -16,9 +16,9 @@ class Component
     {
         this.uuid = _uuid.generate();
         this.type = type;
-        _Register.add(this);
         this.shape = Factory.createForm(this.uuid, type, props, svg, events, config);
         this.shape.draw();
+        _Register.add(this);
     }
 
     move(dx,dy){
@@ -45,13 +45,26 @@ class Component
    * account its relative position and the center of rotation.
    */
   addChild(child, translate = null, rotate = null, drawing = true){
-    if(translate != null)
-      translate(this.shape, child);
-    if(rotate != null)
-      rotate(this.shape, child);
+    /* resizing and connection to child isn't possible */
+    child.vertex = [];
+    child.c_points = [];
+
+    if(translate != null){
+        child.offsetX = translate.x;
+        child.offsetY = translate.y;
+    }
+    if(rotate != null){
+        child.centerX = rotate.x;
+        child.centerY = rotate.y;
+        child.angle = rotate.angle;
+    }       
     if(drawing == true)
-      child.draw();
-    this.shape.children.push({child, translate, rotate});
+        child.draw();
+    this.shape.children.push({child});
+  }
+
+  remove(){
+    this.shape.removeFromDOM();
   }
 }
 export {Component};

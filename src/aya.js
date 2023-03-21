@@ -32,9 +32,11 @@ class Init{
         this.config = config;
         this.events = Events.setup(this.svg, this.uuid, this.config);
 
-        this.tail_px = 25;
-        this.nc = Math.floor(this.width / this.tail_px) + 1; 
-        this.nl = Math.floor(this.height / this.tail_px) + 1;
+        this.wtail_px = 20;
+        this.htail_px = 20;
+
+        this.nc = Math.floor(this.width / this.wtail_px) + 1; 
+        this.nl = Math.floor(this.height / this.htail_px) + 1;
 
         this.box = this.Component("rectangle", {
             x: 0,
@@ -56,7 +58,7 @@ class Init{
         this.box.shape.deleteAllEvents();
 
         for(var j = 1; j <= this.nl - 1; j++){
-            var line = this.Line(0, j * this.tail_px, this.width, j * this.tail_px);
+            var line = this.Line(0, j * this.htail_px, this.width, j * this.htail_px);
 
             this.box.addChild(line);
 
@@ -69,7 +71,7 @@ class Init{
         }
 
         for(var j = 1; j <= this.nc - 1; j++){
-            var line = this.Line(j * this.tail_px, 0, this.tail_px * j, this.height);
+            var line = this.Line(j * this.wtail_px, 0, this.wtail_px * j, this.height);
 
             this.box.addChild(line);
 

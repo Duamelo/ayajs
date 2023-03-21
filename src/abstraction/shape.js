@@ -16,8 +16,8 @@ class Shape
 
     }
 
-    addChild(child, translate, rotate){
-
+    deleteAllEvents(){
+        
     }
 
     setOffsetX(x){

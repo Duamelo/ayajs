@@ -16,49 +16,39 @@ class EndsDecorator extends Decorator{
     addDestEnd(type){
         if (!type)
             throw new Error("type is required");
+        var props = {
+            x1: this.component.shape.dest_x - 10,
+            y1: this.component.shape.dest_y - 4,
+            x2: this.component.shape.dest_x,
+            y2: this.component.shape.dest_y,
+            x3: this.component.shape.dest_x - 10,
+            y3: this.component.shape.dest_y + 4,
+
+        }
         if(type == 'triangle'){
-            var child = Factory.createForm(_uuid.generate(), 'triangle', {}, this.svg, this.events, this.config);    
-            this.addChild(child, 
-                (p, c) => {
-                    c.setOffsetX(0);
-                    c.setOffsetY(0);
-                    c.x1 =  p.dest_x - 10;
-                    c.y1 =  p.dest_y - 4;
-                    c.x2 =  p.dest_x;
-                    c.y2 =  p.dest_y;
-                    c.x3 =  p.dest_x - 10;
-                    c.y3 =  p.dest_y + 4;   
-                    c.dest = true;         
-                }, 
-                (p, c) => {
-                    c.setRotateCenter(c.x2, c.y2);
-                }, 
-            true);
+            var child = Factory.createForm(_uuid.generate(), 'triangle', props, this.svg, this.events, this.config);   
+            child.dest = true; 
+            this.addChild(child, {x: 0, y: 0}, {x: props.x2, y: props.y2}, true);
         }
     }
 
     addStartEnd(type){
         if (!type)
             throw new Error("type is required");
-        if(type == 'triangle'){
-            var child = Factory.createForm(_uuid.generate(), 'triangle', {}, this.svg, this.events, this.config);    
-            this.addChild(child, 
-                (p, c) => {
-                    c.setOffsetX(0);
-                    c.setOffsetY(0);
-                    c.x1 =  p.x - 10;
-                    c.y1 =  p.y - 4;
-                    c.x2 =  p.x;
-                    c.y2 =  p.y;
-                    c.x3 =  p.x - 10;
-                    c.y3 =  p.y + 4;       
-                    c.src = true;     
-                }, 
-                (p, c) => {
-                    c.setRotateCenter(c.x2, c.y2);
-                }, 
-            true);
-        }
+            var props = {
+                x1: this.component.shape.x - 10,
+                y1: this.component.shape.y - 4,
+                x2: this.component.shape.x,
+                y2: this.component.shape.y,
+                x3: this.component.shape.x - 10,
+                y3: this.component.shape.y + 4,
+    
+            }
+            if(type == 'triangle'){
+                var child = Factory.createForm(_uuid.generate(), 'triangle', props, this.svg, this.events, this.config);
+                child.src = true;
+                this.addChild(child, {x: 0, y: 0}, {x: props.x2, y: props.y2}, true);
+            }
     }
 
 }

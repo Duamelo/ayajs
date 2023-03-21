@@ -79,9 +79,6 @@ class Polyline extends Shape {
             return;
     }
 
-    drawBox(){
-    }
-
     setStyles(o){
         if (o.fill)
           this.c_svg.setAttribute("fill", o.fill);

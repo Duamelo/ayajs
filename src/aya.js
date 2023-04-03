@@ -14,6 +14,7 @@ import { Arc } from "./entities/arc";
 import { Image } from "./entities/Image";
 import { _Register } from "./register";
 import { Link } from "./entities/link";
+import { Grid } from "./grid";
 
 class Init{
     constructor(width = 1343, height = 1343){
@@ -29,61 +30,35 @@ class Init{
         this.svg.setAttribute("height", this.height);
         this.svg.setAttribute("id", this.uuid);
 
+        this.grid = new Grid(this.svg, 40, 80, 2, 4);
+
         this.config = config;
         this.events = Events.setup(this.svg, this.uuid, this.config);
 
-        this.wtail_px = 20;
-        this.htail_px = 20;
-
-        this.nc = Math.floor(this.width / this.wtail_px) + 1; 
-        this.nl = Math.floor(this.height / this.htail_px) + 1;
-
-        this.box = this.Component("rectangle", {
-            x: 0,
-            y: 0,
-            height: this.height,
-            width: this.width
-        });
-
-        this.box.grid = true;
-
-        this.box.shape.c_svg.setAttributeNS(null, "fill", "#FFFF");
-        this.box.shape.c_svg.setAttribute("stroke", "#57564F");
-        this.box.shape.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
-
-        this.box.shape.makeHiddenVertex();
-
-        this.box.shape.makeHiddenCpoints();
-
-        this.box.shape.deleteAllEvents();
-
-        for(var j = 1; j <= this.nl - 1; j++){
-            var line = this.Line(0, j * this.htail_px, this.width, j * this.htail_px);
-
-            this.box.addChild(line);
-
-            line.c_svg.setAttribute("fill", "#B266FF");
-            line.c_svg.setAttribute("stroke", "#57564F");
-            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
-
-            line.makeHiddenVertex();
-            line.deleteAllEvents();
-        }
-
-        for(var j = 1; j <= this.nc - 1; j++){
-            var line = this.Line(j * this.wtail_px, 0, this.wtail_px * j, this.height);
-
-            this.box.addChild(line);
-
-            line.c_svg.setAttribute("fill", "#B266FF");
-            line.c_svg.setAttribute("stroke", "#57564F");
-            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
-
-            line.makeHiddenVertex();
-            line.deleteAllEvents();
-        }
         this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
         this.svg.addEventListener("mouseup", this.events.mouseUpCb);
+    }
+
+    setGridSize(o){
+        if (o.cellw)
+            this.grid.cellW = o.cellw;
+        if (o.cellh)
+            this.grid.cellH = o.cellh;
+        if (o.subdx)
+            this.grid.subdivisionX = o.subdx;
+        if (o.subdy)
+            this.grid.subdivisionY = o.subdy;
+        if (o.bgc)
+            this.grid.bgColor = o.bgc;
+        if (o.lc)
+            this.grid.lineColor = o.lc;
+        if (o.border)
+            this.grid.lineThicness = o.border;
+        if (o.width)
+            this.svg.setAttribute("width", o.width);
+        if (o.height)
+            this.svg.setAttribute("height", o.height);    
+        this.grid.redraw();
     }
 
     /* set the current link */

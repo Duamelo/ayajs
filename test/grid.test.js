@@ -57,7 +57,7 @@ QUnit.test("Grid without definition has gray lines", assert => {
 QUnit.test("Grid without definition has default lines thicness", assert => {
   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   let grid = new Grid(svg);
-  assert.equal(grid.lineThicness, 0.2, "Line thicness");
+  assert.equal(grid.lineThicness, 0.5, "Line thicness");
 });
 
 QUnit.test("Grid use user cell definition when provided", assert => {

@@ -32,9 +32,9 @@ class Init{
 
         this.grid = new Grid(this.svg, 40, 80, 2, 4);
 
-        config.svg = this.svg;
-
         this.config = config;
+
+        config.svg = this.svg;
 
         this.svg.addEventListener("mousemove", Events.mousemovecb);
         this.svg.addEventListener("mouseup", Events.mouseupcb);

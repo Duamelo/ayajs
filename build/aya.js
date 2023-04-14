@@ -518,299 +518,11 @@
 	}
 
 	/**
-	 * @class Triangle
-	 */
-
-	class Triangle extends Shape {
-
-	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
-	  {
-
-	    super();
-
-	    this.uuid = uuid;
-
-	    this.x1 = x1;
-	    this.y1 = y1;
-
-	    this.x2 = x2;
-	    this.y2 = y2;
-
-
-	    this.x3 = x3;
-	    this.y3 = y3;
-
-	    this.events = {};
-	    
-	    this.config = config;
-
-	    this.c_svg = "";
-	    this.svg = this.config.svg;
-
-	    this.type = "triangle";
-
-	    this.children = [];
-
-	    this.offsetX = 0;
-	    this.offsetY = 0;
-
-	    this.scaleX = 0;
-	    this.scaleY = 0;
-
-	    this.angle = 0;
-	    
-	    this.centerX = 0;
-	    this.centerY = 0;
-
-	    this.c_points = [];
-
-	    this.vertex = [];
-	  }
-
-	  addEvent(event, callback){
-	    this.c_svg.addEventListener(event, callback);
-	    this.events[event] = callback;
-	  }
-
-	  deleteEvent(event){
-	    var callback = this.events[event];
-	    this.c_svg.removeEventListener(event, callback);
-	    delete this.events[event];
-	  }
-
-	  /**
-	   * *@description
-	   * This method allows us to delete all events defined on the c_svg property.
-	   */
-	  deleteAllEvents(){
-	    Object.keys(this.events).map((event) => {
-	      this.deleteEvent(event);
-	    });
-	  }
-
-	  setOffsetX(x){
-	    this.offsetX = x;
-	  } 
-	  
-	  setStyles(o){
-	    if (o.fill)
-	      this.c_svg.setAttribute("fill", o.fill);
-	    if (o.stroke)
-	      this.c_svg.setAttribute("stroke", o.stroke);
-	    if (o.strokewidth)
-	      this.c_svg.setAttribute("stroke-width", o.strokewidth);
-	    if (o.fillopacity)
-	      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
-	    if (o.strokeopacity)
-	      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-	      if (o.strokedasharray)
-	      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
-	    if (o.strokedashoffset)
-	      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
-	  }
-
-	  setOffsetY(y){
-	    this.offsetY = y;
-	  }
-
-	  setScaleX(x){
-	    this.scaleX = x;
-	  }
-
-	  setScaleY(y){
-	    this.scaleY = y;
-	  }
-
-	  getOffsetX(){
-	    return this.offsetX;
-	  }
-
-	  getOffsetY(){
-	    return this.offsetY;
-	  }
-
-	  getScaleX(){
-	    return this.scaleX;
-	  }
-
-	  getScaleY(){
-	    return this.scaleY;
-	  }
-
-	  setRotateCenter(centerX, centerY){
-	    this.centerX = centerX;
-	    this.centerY = centerY;
-	  }
-
-	  setRotateAngle(angle){
-	    this.angle = angle;
-	  }
-
-	  drawVertex(){
-	    if(this.vertex.length == 0)
-	      return;
-	  }
-
-	  drawConnector() {
-	    if(this.c_points.length == 0)
-	      return;
-	  }
-
-	  drawBox(){
-	  }
-
-
-	  draw() {
-	    const ns = "http://www.w3.org/2000/svg";
-	    this.c_svg = document.createElementNS(ns, "path");
-
-	    if(this.angle != 0){
-	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
-	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
-
-	      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
-	      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
-
-	      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
-	      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
-
-	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
-	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
-
-	      dx = _x - this.centerX;
-	      dy = _y - this.centerY;
-
-	      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
-	    }
-	    else
-	      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
-
-	    this.c_svg.setAttribute("id", this.uuid);
-	    this.c_svg.setAttribute("d", this.p);
-	    this.c_svg.setAttribute("fill", this.config.form.fill);
-	    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
-	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-
-
-	    this.svg.appendChild(this.c_svg);
-
-	    this.addEvent("mousedown", (e) => {
-	      Events.mousedowncb(e);
-	    });
-	 
-	    this.addEvent("mouseleave", (e) => {
-	        Events.mouseleavecb(e);
-	    });
-	    this.addEvent("mouseover", (e) => {
-	        Events.mouseovercb(e);
-	    });
-	  }
-	  
-	  removeChildren(){
-	    this.children.map(({child}) => {
-	      child.removeFromDOM();
-	    });
-	  }
-
-	    removeFromDOM(){
-		this.c_points.map((pt)=>{
-		    pt.removeFromDOM();
-		});
-		this.vertex.map((vt)=>{
-		    vt.removeFromDOM();
-		});
-		this.children.map(({child}) => {
-		    child.removeFromDOM();
-		});
-		this.svg.removeChild(this.c_svg);    
-	  }
-
-	  shift(dx, dy) {
-
-	    this.x1 += dx;
-	    this.y1 += dy;
-
-	    this.x2 += dx;
-	    this.y2 += dy;
-
-	    this.x3 += dx;
-	    this.y3 += dy;
-
-	    this.c_points.map((p) => {
-	      p.shift(dx, dy);
-	    });
-
-	    this.vertex.map((v) => {
-	      v.shift(dx, dy);
-	    });
-
-	    this.children.map(({child}) => {
-	      child.shift(dx, dy);
-	    }); 
-	  }
-
-	  redraw() {
-	    if(this.angle != 0){
-	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
-
-	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
-	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
-
-	      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
-	      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
-
-	      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
-	      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
-
-	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
-	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
-
-	      dx = _x - this.centerX;
-	      dy = _y - this.centerY;
-
-	      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
-	    }
-	    else
-	      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
-
-	    this.c_svg.setAttribute("d", this.p);
-	  }
-
-	  resize(pos, dx, dy) {
-	    if (pos == 0) {
-	      this.x1 = dx;
-	      this.y1 = dy;
-	      this.vertex[0].x = dx;
-	      this.vertex[0].y = dy;
-	    }
-	    else if (pos == 1) {
-	      this.x2 = dx;
-	      this.y2 = dy;
-	      this.vertex[1].x = dx;
-	      this.vertex[1].y = dy;
-	    }
-	    else if (pos == 2) {
-	      this.x3 = dx;
-	      this.y3 = dy;
-	      this.vertex[2].x = dx;
-	      this.vertex[2].y = dy;
-	    }
-	  }
-	}
-
-	/**
 	 * @class Line
 	 */
 	class Line extends Shape{
 
 	    /**
-	     * 
-	     * @param {String} id_svg 
-	     * @param {DomElement} svg 
-	     * @param {Function} event 
-	     * @param {Object} config 
 	     * @param {String} uuid 
 	     * @param {Number} x 
 	     * @param {Number} y 
@@ -819,7 +531,7 @@
 	     */
 	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
-	        super();
+		super();
 
 	        this.uuid = uuid;
 
@@ -2352,6 +2064,289 @@
 	}
 
 	/**
+	 * @class Triangle
+	 */
+
+	class Triangle extends Shape {
+
+	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
+	  {
+
+	    super();
+
+	    this.uuid = uuid;
+
+	    this.x1 = x1;
+	    this.y1 = y1;
+
+	    this.x2 = x2;
+	    this.y2 = y2;
+
+
+	    this.x3 = x3;
+	    this.y3 = y3;
+
+	    this.events = {};
+	    
+	    this.config = config;
+
+	    this.c_svg = "";
+	    this.svg = this.config.svg;
+
+	    this.type = "triangle";
+
+	    this.children = [];
+
+	    this.offsetX = 0;
+	    this.offsetY = 0;
+
+	    this.scaleX = 0;
+	    this.scaleY = 0;
+
+	    this.angle = 0;
+	    
+	    this.centerX = 0;
+	    this.centerY = 0;
+
+	    this.c_points = [];
+
+	    this.vertex = [];
+	  }
+
+	  addEvent(event, callback){
+	    this.c_svg.addEventListener(event, callback);
+	    this.events[event] = callback;
+	  }
+
+	  deleteEvent(event){
+	    var callback = this.events[event];
+	    this.c_svg.removeEventListener(event, callback);
+	    delete this.events[event];
+	  }
+
+	  /**
+	   * *@description
+	   * This method allows us to delete all events defined on the c_svg property.
+	   */
+	  deleteAllEvents(){
+	    Object.keys(this.events).map((event) => {
+	      this.deleteEvent(event);
+	    });
+	  }
+
+	  setOffsetX(x){
+	    this.offsetX = x;
+	  } 
+	  
+	  setStyles(o){
+	    if (o.fill)
+	      this.c_svg.setAttribute("fill", o.fill);
+	    if (o.stroke)
+	      this.c_svg.setAttribute("stroke", o.stroke);
+	    if (o.strokewidth)
+	      this.c_svg.setAttribute("stroke-width", o.strokewidth);
+	    if (o.fillopacity)
+	      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+	    if (o.strokeopacity)
+	      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+	      if (o.strokedasharray)
+	      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+	    if (o.strokedashoffset)
+	      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+	  }
+
+	  setOffsetY(y){
+	    this.offsetY = y;
+	  }
+
+	  setScaleX(x){
+	    this.scaleX = x;
+	  }
+
+	  setScaleY(y){
+	    this.scaleY = y;
+	  }
+
+	  getOffsetX(){
+	    return this.offsetX;
+	  }
+
+	  getOffsetY(){
+	    return this.offsetY;
+	  }
+
+	  getScaleX(){
+	    return this.scaleX;
+	  }
+
+	  getScaleY(){
+	    return this.scaleY;
+	  }
+
+	  setRotateCenter(centerX, centerY){
+	    this.centerX = centerX;
+	    this.centerY = centerY;
+	  }
+
+	  setRotateAngle(angle){
+	    this.angle = angle;
+	  }
+
+	  drawVertex(){
+	    if(this.vertex.length == 0)
+	      return;
+	  }
+
+	  drawConnector() {
+	    if(this.c_points.length == 0)
+	      return;
+	  }
+
+	  drawBox(){
+	  }
+
+
+	  draw() {
+	    const ns = "http://www.w3.org/2000/svg";
+	    this.c_svg = document.createElementNS(ns, "path");
+
+	    if(this.angle != 0){
+	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
+
+	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
+	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
+
+	      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
+	      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
+
+	      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
+	      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
+
+	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+	      dx = _x - this.centerX;
+	      dy = _y - this.centerY;
+
+	      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+	    }
+	    else
+	      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+
+	    this.c_svg.setAttribute("id", this.uuid);
+	    this.c_svg.setAttribute("d", this.p);
+	    this.c_svg.setAttribute("fill", this.config.form.fill);
+	    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
+	    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+
+
+	    this.svg.appendChild(this.c_svg);
+
+	    this.addEvent("mousedown", (e) => {
+	      Events.mousedowncb(e);
+	    });
+	 
+	    this.addEvent("mouseleave", (e) => {
+	        Events.mouseleavecb(e);
+	    });
+	    this.addEvent("mouseover", (e) => {
+	        Events.mouseovercb(e);
+	    });
+	  }
+	  
+	  removeChildren(){
+	    this.children.map(({child}) => {
+	      child.removeFromDOM();
+	    });
+	  }
+
+	    removeFromDOM(){
+		this.c_points.map((pt)=>{
+		    pt.removeFromDOM();
+		});
+		this.vertex.map((vt)=>{
+		    vt.removeFromDOM();
+		});
+		this.children.map(({child}) => {
+		    child.removeFromDOM();
+		});
+		this.svg.removeChild(this.c_svg);    
+	  }
+
+	  shift(dx, dy) {
+
+	    this.x1 += dx;
+	    this.y1 += dy;
+
+	    this.x2 += dx;
+	    this.y2 += dy;
+
+	    this.x3 += dx;
+	    this.y3 += dy;
+
+	    this.c_points.map((p) => {
+	      p.shift(dx, dy);
+	    });
+
+	    this.vertex.map((v) => {
+	      v.shift(dx, dy);
+	    });
+
+	    this.children.map(({child}) => {
+	      child.shift(dx, dy);
+	    }); 
+	  }
+
+	  redraw() {
+	    if(this.angle != 0){
+	      var _x1, _x2, _x3, _y1, _y2, _y3, _x, _y, dx, dy;
+
+	      _x1 = this.x1  * Math.cos(this.angle) - this.y1   * Math.sin(this.angle) ;
+	      _y1 = this.x1  * Math.sin(this.angle) + this.y1   * Math.cos(this.angle) ;
+
+	      _x2 = this.x2   * Math.cos(this.angle) - this.y2   * Math.sin(this.angle) ;
+	      _y2 = this.x2   * Math.sin(this.angle) + this.y2   * Math.cos(this.angle) ;
+
+	      _x3 = this.x3    * Math.cos(this.angle) - this.y3  * Math.sin(this.angle);
+	      _y3 = this.x3    * Math.sin(this.angle) + this.y3  * Math.cos(this.angle);
+
+	      _x = this.centerX  * Math.cos(this.angle) - this.centerY   * Math.sin(this.angle);
+	      _y = this.centerX  * Math.sin(this.angle) + this.centerY   * Math.cos(this.angle);
+
+	      dx = _x - this.centerX;
+	      dy = _y - this.centerY;
+
+	      this.p = "M " + (_x1 - dx + this.offsetX) +  "," + (_y1 - dy + this.offsetY) + " " + "L " + (_x2 - dx + this.offsetX) + "," + (_y2 - dy + this.offsetY) + " " + "L " + (_x3 - dx + this.offsetX) + "," + (_y3 - dy + this.offsetY) + " Z";
+	    }
+	    else
+	      this.p = "M " + (this.x1 + this.offsetX) +  "," + (this.y1 + this.offsetY) + " " + "L " + (this.x2 + this.offsetX) + "," + (this.y2 + this.offsetY) + " " + "L " + (this.x3 + this.offsetX) + "," + (this.y3 + this.offsetY) + " Z";
+
+	    this.c_svg.setAttribute("d", this.p);
+	  }
+
+	  resize(pos, dx, dy) {
+	    if (pos == 0) {
+	      this.x1 = dx;
+	      this.y1 = dy;
+	      this.vertex[0].x = dx;
+	      this.vertex[0].y = dy;
+	    }
+	    else if (pos == 1) {
+	      this.x2 = dx;
+	      this.y2 = dy;
+	      this.vertex[1].x = dx;
+	      this.vertex[1].y = dy;
+	    }
+	    else if (pos == 2) {
+	      this.x3 = dx;
+	      this.y3 = dy;
+	      this.vertex[2].x = dx;
+	      this.vertex[2].y = dy;
+	    }
+	  }
+	}
+
+	/**
 	 * @class Lozenge
 	 */
 
@@ -2643,7 +2638,7 @@
 	            new Link(_uuid.generate(), 
 	            Events.source.uuid, 
 	            Events.destination.uuid,
-	            {}).redraw();
+	            {});
 	            Events.line.removeFromDOM();
 	            Events.line = null;
 	            Events.source = null;
@@ -3812,9 +3807,9 @@
 
 	        this.grid = new Grid(this.svg, 40, 80, 2, 4);
 
-	        config.svg = this.svg;
-
 	        this.config = config;
+
+	        config.svg = this.svg;
 
 	        this.svg.addEventListener("mousemove", Events.mousemovecb);
 	        this.svg.addEventListener("mouseup", Events.mouseupcb);

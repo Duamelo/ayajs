@@ -1,28 +1,25 @@
-import { _uuid } from "./uuid";
+import { _uuid } from "../uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
 import { Shape } from "../abstraction/shape";
+import { config } from "../../config";
+import { Events } from "../events";
 
 /**
  * @class Line
  */
-class Line extends Shape {
+class Line extends Shape{
 
     /**
-     * 
-     * @param {String} id_svg 
-     * @param {DomElement} svg 
-     * @param {Function} event 
-     * @param {Object} config 
      * @param {String} uuid 
      * @param {Number} x 
      * @param {Number} y 
      * @param {Number} dest_x 
      * @param {Number} dest_y 
      */
-    constructor(id_svg, svg, event, config, uuid, x=0, y=0, dest_x = x, dest_y = y){
+    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
-        super();
+	super();
 
         this.uuid = uuid;
 
@@ -39,16 +36,6 @@ class Line extends Shape {
             y: this.y
         };
 
-        this.c3 = {
-            x: this.dest_x,
-            y: this.dest_y
-        };
-
-        this.c4 = {
-            x: this.dest_x,
-            y: this.dest_y
-        };
-
         this.dest_x = dest_x;
         this.dest_y = dest_y;
 
@@ -56,15 +43,12 @@ class Line extends Shape {
 
         this.config = config;
 
-        this.svg = svg;
-
-        this.id_svg = id_svg;
-
-        this.nativeEvent = event;
+        this.svg = this.config.svg;
 
         this.c_svg = "";
         this.type = "line";
-        this.line_t = null;
+        this.p = null;
+	this.path_is_set = false;
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -77,14 +61,10 @@ class Line extends Shape {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 3, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 3),
+            new Point(this.uuid, 0, 0, 3),
         ];
         this.c_points = [];
-    }
-
-    setTypeLine(type){
-        this.line_t = type;
     }
 
     addEvent(event, callback){
@@ -122,22 +102,23 @@ class Line extends Shape {
 
     setStyles(o){
         if (o.fill)
-          this.c_svg.setAttribute("fill", o.fill);
+            this.c_svg.setAttribute("fill", o.fill);
         if (o.stroke)
-          this.c_svg.setAttribute("stroke", o.stroke);
+            this.c_svg.setAttribute("stroke", o.stroke);
         if (o.strokewidth)
-          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+            this.c_svg.setAttribute("stroke-width", o.strokewidth);
         if (o.fillopacity)
-          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+            this.c_svg.setAttribute("fill-opacity", o.fillopacity);
         if (o.strokeopacity)
-          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-          if (o.strokedasharray)
-          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+            this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+        if (o.strokedasharray)
+            this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
         if (o.strokedashoffset)
-          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+            this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
     }
-
-    setPath(points = [{}]){ 
+    
+    setPath(points = [{}]){
+	this.path_is_set = true;
         this.p = "M "+  (this.x) + ","+ (this.y) + " ";
 
         points.map((pt)=>{
@@ -145,11 +126,12 @@ class Line extends Shape {
         });
         this.p += "L" + (this.dest_x)  + "," + (this.dest_y);
     }
+
     draw(){
         const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
-        if (!this.line_t)
+        if (this.p == null)
             this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
 
         this.c_svg.setAttribute("id", this.uuid);
@@ -169,10 +151,15 @@ class Line extends Shape {
         this.children.map(({child}) =>{
             child.draw();
         });
-
-        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-        this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
-        this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+        this.addEvent("mousedown", (e) => {
+            Events.mousedowncb(e)
+        });
+        this.addEvent("mouseleave", (e) => {
+            Events.mouseleavecb(e);
+        });
+        this.addEvent("mouseover", (e) => {
+            Events.mouseovercb(e);
+        });
     }
 
     makeHiddenVertex(){
@@ -216,7 +203,7 @@ class Line extends Shape {
 
         this.children.map(({child}, index) => {
             child.shift(dx, dy);
-        }); 
+        });
     }
 
     redraw(){
@@ -226,8 +213,10 @@ class Line extends Shape {
             vertex.redraw();
         });
 
-        if (!this.line_t)
+	if (!this.path_is_set)
             this.p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
+	else
+	    this.path_is_set = false;
 
         this.c_svg.setAttribute("d", this.p);
 
@@ -238,20 +227,42 @@ class Line extends Shape {
 
     calculateAngle(){
         var angle = 0;
-        
+        // we can ommit the slope
         var pente = (this.dest_y - this.y) / (this.dest_x - this.x);
         if(this.dest_x == this.x)
             angle = Math.PI/2;
         if(pente == 0)
             angle = 0;
         if( pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
-            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + 
+            Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + 
+            Math.pow((this.y - this.dest_y), 2))) );
         else if(pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
-            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+            angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + 
+            Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + 
+            Math.pow((this.y - this.dest_y), 2))) );
         else if( pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
             angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
         else if(pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
             angle = Math.PI - Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+        return angle;
+    }
+
+    inclination(){
+        var angle = 0;
+        // we can ommit the slope
+        var slope = (this.dest_y - this.y) / (this.dest_x - this.x);
+        if(this.dest_x == this.x)
+            angle = Math.PI/2;
+        else if(slope == 0)
+            angle = 0;
+        else 
+            angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + 
+                Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + 
+                Math.pow((this.y - this.dest_y), 2))) );
+
+        if (slope > 0)
+            angle *= -1;
         return angle;
     }
 
@@ -319,7 +330,5 @@ class Line extends Shape {
     getScaleY(){
         return this.scaleY;
     }
-
-    optimalPath(){}
 }
 export {Line};

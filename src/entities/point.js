@@ -1,5 +1,7 @@
+import { config } from "../../config.js";
+import { Events } from "../events.js";
 import {_Register} from "../register.js";
-import {_uuid} from "./uuid.js";
+import {_uuid} from "../uuid.js";
 
 /**
  *
@@ -10,7 +12,7 @@ import {_uuid} from "./uuid.js";
  */
 
 class Point {
-  constructor(uuid, x = 0, y = 0, r = 5, svg, event, config) {
+  constructor(uuid, x = 0, y = 0, r = 5) {
 
     this.ref = uuid;
     this.uuid = _uuid.generate();
@@ -22,13 +24,12 @@ class Point {
     this.scale = 1;
 
     this.events = {};
-    this.nativeEvent = event;
     this.config = config;
 
     this.type = "point";
 
     this.c_svg = "";
-    this.svg = svg;
+    this.svg = this.config.svg;
 
     _Register.add(this);
   }
@@ -91,7 +92,7 @@ class Point {
     // this.c_svg.setAttribute("class", "point");
     this.c_svg.setAttribute("class", "hidden_point");
     
-    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
+    this.addEvent("mousedown", Events.mousedowncb);
     this.addEvent("mouseover", (e)=>{
       this.r += 4;
       this.c_svg.setAttribute("r", this.r);

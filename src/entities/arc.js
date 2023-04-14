@@ -1,6 +1,8 @@
-import { _uuid } from "./uuid";
+import { _uuid } from "../uuid";
 import { _Register } from "../register";
 import { Shape } from "../abstraction/shape";
+import { config } from "../../config";
+import { Events } from "../events";
 
 
 /**
@@ -11,7 +13,7 @@ class Arc extends Shape {
      * 
      * @param {string} uuid 
      */
-    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2, svg, event, config){
+    constructor(uuid, x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
 
         super();
 
@@ -37,12 +39,10 @@ class Arc extends Shape {
 
         this.events = {};
 
-        this.nativeEvent = event;
-
         this.config = config;
 
         this.c_svg = "";
-        this.svg = svg;
+        this.svg = this.config.svg;
 
         this.type = "arc";
 
@@ -129,6 +129,13 @@ class Arc extends Shape {
 
         this.addEvent("mouseover", () =>{
             this.c_svg.setAttribute("class", "move");
+            Events.mouseovercb(e);
+        });
+        this.addEvent("mousedown", (e) => {
+            Events.mousedowncb(e)
+        });
+        this.addEvent("mouseleave", (e) => {
+            Events.mouseleavecb(e);
         });
     }
 
@@ -268,11 +275,6 @@ class Arc extends Shape {
 
     getScaleY(){
         return this.scaleY;
-    }
-
-
-    optimalPath(){
-
     }
 }
 export {Arc};

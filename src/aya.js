@@ -5,7 +5,7 @@ import { Lozenge } from "./entities/lozenge";
 import { Rectangle } from "./entities/rectangle";
 import { Triangle } from "./entities/triangle";
 import { Text } from "./entities/text";
-import { _uuid } from "./entities/uuid";
+import { _uuid } from "./uuid";
 import { Events } from "./events";
 import { Line } from "./entities/line";
 import { Polyline } from "./entities/polyline";
@@ -14,6 +14,7 @@ import { Arc } from "./entities/arc";
 import { Image } from "./entities/Image";
 import { _Register } from "./register";
 import { Link } from "./entities/link";
+import { Grid } from "./grid";
 
 class Init{
     constructor(width = 1343, height = 1343){
@@ -29,118 +30,93 @@ class Init{
         this.svg.setAttribute("height", this.height);
         this.svg.setAttribute("id", this.uuid);
 
+        this.grid = new Grid(this.svg, 40, 80, 2, 4);
+
+        config.svg = this.svg;
+
         this.config = config;
-        this.events = Events.setup(this.svg, this.uuid, this.config);
 
-        this.wtail_px = 20;
-        this.htail_px = 20;
+        this.svg.addEventListener("mousemove", Events.mousemovecb);
+        this.svg.addEventListener("mouseup", Events.mouseupcb);
+    }
 
-        this.nc = Math.floor(this.width / this.wtail_px) + 1; 
-        this.nl = Math.floor(this.height / this.htail_px) + 1;
-
-        this.box = this.Component("rectangle", {
-            x: 0,
-            y: 0,
-            height: this.height,
-            width: this.width
-        });
-
-        this.box.grid = true;
-
-        this.box.shape.c_svg.setAttributeNS(null, "fill", "#FFFF");
-        this.box.shape.c_svg.setAttribute("stroke", "#57564F");
-        this.box.shape.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
-
-        this.box.shape.makeHiddenVertex();
-
-        this.box.shape.makeHiddenCpoints();
-
-        this.box.shape.deleteAllEvents();
-
-        for(var j = 1; j <= this.nl - 1; j++){
-            var line = this.Line(0, j * this.htail_px, this.width, j * this.htail_px);
-
-            this.box.addChild(line);
-
-            line.c_svg.setAttribute("fill", "#B266FF");
-            line.c_svg.setAttribute("stroke", "#57564F");
-            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
-
-            line.makeHiddenVertex();
-            line.deleteAllEvents();
-        }
-
-        for(var j = 1; j <= this.nc - 1; j++){
-            var line = this.Line(j * this.wtail_px, 0, this.wtail_px * j, this.height);
-
-            this.box.addChild(line);
-
-            line.c_svg.setAttribute("fill", "#B266FF");
-            line.c_svg.setAttribute("stroke", "#57564F");
-            line.c_svg.setAttributeNS(null, "stroke-width", "0.8pt");
-
-            line.makeHiddenVertex();
-            line.deleteAllEvents();
-        }
-        this.svg.addEventListener("mousemove", this.events.mouseMoveCb);
-        this.svg.addEventListener("mouseup", this.events.mouseUpCb);
+    setGridSize(o){
+        if (o.cellw)
+            this.grid.cellW = o.cellw;
+        if (o.cellh)
+            this.grid.cellH = o.cellh;
+        if (o.subdx)
+            this.grid.subdivisionX = o.subdx;
+        if (o.subdy)
+            this.grid.subdivisionY = o.subdy;
+        if (o.bgc)
+            this.grid.bgColor = o.bgc;
+        if (o.lc)
+            this.grid.lineColor = o.lc;
+        if (o.border)
+            this.grid.lineThicness = o.border;
+        if (o.width)
+            this.svg.setAttribute("width", o.width);
+        if (o.height)
+            this.svg.setAttribute("height", o.height);    
+        this.grid.redraw();
     }
 
     /* set the current link */
-    setCurrentLink(lk){
-        this.config.current_link = lk;
-    }
+    // setCurrentLink(lk){
+    //     this.config.current_link = lk;
+    // }
 
     _uuid(){
         return _uuid;
     }
 
     Component(type, props){
-        return new Component(type, props, this.svg, this.events, this.config);
+        return new Component(type, props);
     }
 
     Rectangle(x = 0, y = 0, width = 10, height = 10){
-        return new Rectangle(_uuid.generate(), x, y, width, height, this.svg, this.events, this.config);
+        return new Rectangle(_uuid.generate(), x, y, width, height);
     }
 
     Lozenge(x = 0, y = 0, width = 10, height = 10){
-        return new Lozenge(_uuid.generate(), x, y, width, height, this.svg, this.events, this.config);
+        return new Lozenge(_uuid.generate(), x, y, width, height);
     }
 
     Triangle(x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10){
-        return new Triangle(_uuid.generate(), x1, y1, x2, y2, x3, y3, this.svg, this.events, this.config);
+        return new Triangle(_uuid.generate(), x1, y1, x2, y2, x3, y3);
     }
 
     Circle( x = 0, y = 0, r = 5){
-        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
+        return new Circle(_uuid.generate(), x, y, r);
     }
 
     Text(x = 0, y = 0, text = "text", size = 100){
-        return new Text(_uuid.generate(), x, y, text, size, this.svg, this.events, this.config);
+        return new Text(_uuid.generate(), x, y, text, size);
     }
 
     Line(x=0, y=0, dest_x = x, dest_y = y){
-        return new Line(this.uuid, this.svg, this.events, this.config, _uuid.generate(), x, y, dest_x, dest_y);
+        return new Line(_uuid.generate(), x, y, dest_x, dest_y);
     }
 
-    Link(src_point, dest_point, line = undefined){
-        return new Link(src_point, dest_point, line, this.svg, this.config);
+    Link(src_id, dest_id, userconfig = {}){
+        return new Link(src_id, dest_id, userconfig);
     }
 
     Polyline( points = []){
-        return new Polyline(_uuid.generate(), points, this.svg, this.events, this.config);
+        return new Polyline(_uuid.generate(), points);
     }
 
     Point( x = 0, y = 0, r = 5){
-        return new Point(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
+        return new Point(_uuid.generate(), x, y, r);
     }
 
     Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
-        return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio, this.svg, this.events, this.config);
+        return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio);
     }
     
     Image(x,y, width, height, path = "", name = ""){
-        return new Image(_uuid.generate(), x, y, width, height, path, name, this.svg, this.events, this.config);
+        return new Image(_uuid.generate(), x, y, width, height, path, name);
     }
 }
 export {Init};

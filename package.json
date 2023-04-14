@@ -11,15 +11,14 @@
     "uglify": "uglifyjs --v8 --toplevel --compress --mangle --verbose  -m reserved=['$','require','exports'] --output build/aya.min.js build/aya.js"
   },
   "keywords": [
-    "qunit",
-    "js",
-    "node",
-    "cypress"
+    "diagram",
+    "aya",
+    "ayajs"
   ],
   "bug":{
     "url": "https://github.com/Duamelo/ayajs/issues"
   },
-  "homepage": "https://ayajs.emack.io",
+  "homepage": "https://ayajs.com",
   "author": "emack.io",
   "license": "ISC",
   "dependencies": {

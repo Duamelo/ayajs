@@ -1,6 +1,10 @@
 import { Shape } from "../abstraction/shape.js";
 import { Point } from "./point.js";
-import { _uuid } from "./uuid.js";
+import { _uuid } from "../uuid.js";
+import { config } from "../../config.js";
+import { Events } from "../events.js";
+import { Line } from "./line.js";
+import { Link } from "./link.js";
 
 /**
  * @class Lozenge
@@ -17,7 +21,7 @@ class Lozenge extends Shape{
  * @param {number} width 
  * @param {number} height 
  */
-  constructor(uuid, x = 0, y = 0, width = 10, height = 30, svg, event, config)
+  constructor(uuid, x = 0, y = 0, width = 10, height = 30,)
   {
       super();
   
@@ -30,13 +34,11 @@ class Lozenge extends Shape{
       this.height =  height;
 
       this.events = {};
-      
-      this.nativeEvent = event;
-      
+            
       this.config = config;
 
       this.c_svg = "";
-      this.svg = svg;
+      this.svg = this.config.svg;
       this.box = "";
 
       this.type = "lozenge";
@@ -56,18 +58,35 @@ class Lozenge extends Shape{
       this.children = [];
 
       this.c_points = [
-        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid,0,0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid,0,0, 5),
+        new Point(this.uuid,0,0, 5),
+        new Point(this.uuid,0,0, 5),
+        new Point(this.uuid,0,0, 5),
       ];
 
       this.vertex = [
-        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-        new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+        new Point(this.uuid, 0, 0, 5),
+        new Point(this.uuid, 0, 0, 5),
+        new Point(this.uuid, 0, 0, 5),
+        new Point(this.uuid, 0, 0, 5),
       ];
+  }
+
+  setStyles(o){
+    if (o.fill)
+      this.c_svg.setAttribute("fill", o.fill);
+    if (o.stroke)
+      this.c_svg.setAttribute("stroke", o.stroke);
+    if (o.strokewidth)
+      this.c_svg.setAttribute("stroke-width", o.strokewidth);
+    if (o.fillopacity)
+      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+    if (o.strokeopacity)
+      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+      if (o.strokedasharray)
+      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+    if (o.strokedashoffset)
+      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
   }
 
   addEvent(event, callback){
@@ -177,12 +196,6 @@ class Lozenge extends Shape{
 
     this.svg.appendChild(this.c_svg);
     this.svg.appendChild(this.box);
-    
-    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
-    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
-    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
-
   }
 
   makeHiddenCpoints(){
@@ -261,7 +274,43 @@ class Lozenge extends Shape{
 
     this.children.map(({child}) => {
       child.redraw();
-    })
+    });
+
+    this.addEvent("mousedown", (e) => {
+      Events.mousedowncb(e)
+    });
+    this.c_points.map((point)=>{
+        point.addEvent("mousedown", (e) => {
+          Events.mousedowncb(e);
+          if (Events.state == "drawing_link"){
+              Events.line = new Line(
+              _uuid.generate(),
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              );
+              Events.line.draw();
+          }
+        });
+        point.addEvent("mouseup", (e) => {
+            Events.mouseupcb(e);
+            new Link(_uuid.generate(), 
+            Events.source.uuid, 
+            Events.destination.uuid,
+            {});
+            Events.line.removeFromDOM();
+            Events.line = null;
+            Events.source = null;
+            Events.destination = null;
+        });
+    });
+    this.addEvent("mouseleave", (e) => {
+        Events.mouseleavecb(e);
+    });
+    this.addEvent("mouseover", (e) => {
+        Events.mouseovercb(e);
+    });
   }
 
   resize(pos, dx, dy) {
@@ -380,43 +429,6 @@ class Lozenge extends Shape{
 
   getScaleY(){
     return this.scaleY;
-  }
-
-  optimalPath(line){
-    var _x, _y;
-    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
-    var b = line.y - a * line.x;
-
-    for (var i = 0; i <= 3; i++){
-        if(i % 2 == 0){
-            _y = this.vertex[i].y;
-            _x = (_y - b)/a;
-        }
-        else{
-            _x = this.vertex[i].x;
-            _y = a * _x + b;
-        }
-
-        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
-          continue;
-
-          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
-           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
-           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
-            // return this.c_points[i];
-            return i;
-           }
-      }
-    return null;
   }
 }
 

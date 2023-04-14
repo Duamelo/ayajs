@@ -1,14 +1,15 @@
-import { _uuid } from "./uuid";
+import { _uuid } from "../uuid";
 import { _Register } from "../register";
 import { Point } from "./point";
 import { Shape } from "../abstraction/shape";
+import { config } from "../../config";
 
 /**
  * @class Polyline
  */
 
 class Polyline extends Shape {
-    constructor(uuid, points = [], svg, event, config){
+    constructor(uuid, points = []){
 
         super();
 
@@ -24,12 +25,11 @@ class Polyline extends Shape {
 
         this.events = {};
         
-        this.nativeEvent = event;
-        
         this.config = config;
 
         this.c_svg = "";
-        this.svg = svg;
+        this.svg = this.config.svg;
+
         this.type = "polyline";
 
         this.offsetX = 0;
@@ -43,12 +43,12 @@ class Polyline extends Shape {
         this.children = [];
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5),
+            new Point(this.uuid, 0, 0, 5),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-            new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+            new Point(this.uuid, 0, 0, 5),
+            new Point(this.uuid, 0, 0, 5),
         ];
     }
 
@@ -128,8 +128,6 @@ class Polyline extends Shape {
         this.children.map(({child}) =>{
             child.draw();
         });
-
-        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
     }
 
     removeChildren(){
@@ -145,7 +143,7 @@ class Polyline extends Shape {
         this.vertex.map((vt)=>{
             vt.removeFromDOM();
         });
-	this.children.map(({child}) => {
+        this.children.map(({child}) => {
             child.removeFromDOM();
         });
         this.svg.removeChild(this.c_svg);
@@ -261,10 +259,6 @@ class Polyline extends Shape {
 
     getScaleY(){
         return this.scaleY;
-    }
-
-    optimalPath(){
-
     }
 }
 export {Polyline}; 

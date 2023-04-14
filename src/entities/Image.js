@@ -1,5 +1,8 @@
+import { config } from "../../config";
+import { Events } from "../events";
+
 class Image{
-    constructor(uuid, x = 0, y = 0, width = 50, height = 50, path, name, svg, event, config){
+    constructor(uuid, x = 0, y = 0, width = 50, height = 50, path, name){
        
         this.uuid = uuid;
        
@@ -18,12 +21,11 @@ class Image{
         this.offsetY = 0;
         
         this.events = {};
-        this.nativeEvent = event;
         
         this.config = config;
         
         this.type = 'image';
-        this.svg = svg;
+        this.svg = this.config.svg;
     }
 
     addEvent(event, callback){
@@ -52,7 +54,6 @@ class Image{
         this.c_svg.setAttributeNS(null,'x',this.x + this.offsetX);
         this.c_svg.setAttributeNS(null,'y',this.y + this.offsetY);
 
-        this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
         this.svg.append(this.c_svg);
     }
 

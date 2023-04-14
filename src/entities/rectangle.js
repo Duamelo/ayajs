@@ -1,6 +1,10 @@
-import { _uuid } from "./uuid.js";
+import { _uuid } from "../uuid.js";
 import { Point } from "./point.js";
 import { Shape } from "../abstraction/shape.js";
+import { config } from "../../config.js";
+import { Events } from "../events.js";
+import { Link } from "./link.js";
+import { Line } from "./line.js";
 
 
 /**
@@ -12,24 +16,26 @@ import { Shape } from "../abstraction/shape.js";
  * 
  */
 
-class Rectangle extends Shape {
+class Rectangle extends Shape{
 
   /**
    * Create a rectangular shape.
-   * 
-   * @param { String } uuid - The unique id of the shape in the svg.
    * @param { Number } x - The abscissa of the beginning of the shape drawing, located at the left end of the navigator.
    * @param { Number } y - The ordinate of the beginning of the shape drawing, located at the left end of the navigator.
    * @param { Number } width - The width of the rectangular shape.
    * @param { Number } height - The height of the rectangular shape.
    */
-  constructor(uuid, x = 0, y = 0, width = 10, height = 10, svg, event, config) {
+    constructor(uuid, x = 100, y = 100, width = 200, height = 300) {
+      super();
 
-    super();
+      if (typeof x != "number")
+	  throw new Error("x must be a number");
+      if (typeof y != "number")
+	  throw new Error("y must be a number");
 
-    this.uuid = uuid;
+      this.uuid = uuid;
 
-    this.x = x;
+      this.x = x;
     this.y = y;
 
     this.width = width;
@@ -43,10 +49,7 @@ class Rectangle extends Shape {
      */
     this.events = {};
 
-    this.nativeEvent = event;
-
     this.config = config;
-
 
     /**
      * @description
@@ -61,7 +64,7 @@ class Rectangle extends Shape {
      * 
      * @type { DomElement}
      */
-    this.svg = svg;
+    this.svg = this.config.svg;
 
     this.type = "rectangle";
 
@@ -151,12 +154,11 @@ class Rectangle extends Shape {
      * @type { Array<(Point | Null)> }
      */
     this.c_points = [
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
     ];
-
 
     /**
      * 
@@ -167,10 +169,10 @@ class Rectangle extends Shape {
      * @type { Array<(Point | Null)> }
      */
     this.vertex = [
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
-      new Point(this.uuid, 0, 0, 5, this.svg, this.nativeEvent, this.config),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
+      new Point(this.uuid, 0, 0, 5),
     ];
   }
 
@@ -263,10 +265,42 @@ class Rectangle extends Shape {
       child.draw();
     });
 
-    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
-    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
-    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+    this.addEvent("mousedown", (e) => {
+      Events.mousedowncb(e)
+    });
+  
+    this.c_points.map((point)=>{
+        point.addEvent("mousedown", (e) => {
+          Events.mousedowncb(e);
+          if (Events.state == "drawing_link"){
+              Events.line = new Line(
+              _uuid.generate(),
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              );
+              Events.line.draw();
+          }
+        });
+        point.addEvent("mouseup", (e) => {
+            Events.mouseupcb(e);
+            new Link(
+		Events.source.uuid,
+		Events.destination.uuid,
+		{});
+            Events.line.removeFromDOM();
+            Events.line = null;
+            Events.source = null;
+            Events.destination = null;
+        });
+    });
+    this.addEvent("mouseleave", (e) => {
+        Events.mouseleavecb(e);
+    });
+    this.addEvent("mouseover", (e) => {
+        Events.mouseovercb(e);
+    });
   }
 
   makeHiddenCpoints(){
@@ -499,62 +533,5 @@ class Rectangle extends Shape {
       })
   }
 
-
-  /**
-   * 
-   * @param { Line } line - It represents an instance of line shape.
-   * @returns 
-   */
-  optimalPath(line){
-    var _x, _y;
-    /**
-     * We determine the equation of the line passed as a parameter.
-     * @var { Number } a - The slope of the line.
-     * @var { Number } b - The ordinate at the origin.
-     */
-    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
-    var b = line.y - a * line.x;
-
-    /**
-     * A basic shape has 4 vertices.
-     * And the vertices are indexed from 0 to 3, starting with the top left extremity and counting clockwise.
-     * The equation is determined on each side of the form. _y = a * _x + b
-     * The junction points of the line and forms are not important.
-     * We use a and b of the line to calculate _x or _y because this is the possible intersection point of the
-     * line and a specific side of the form.
-     * We check that the top point belongs to the segment of the form and the line segment.
-     * In addition, we base on the slope of the line to locate more precisely the correct intersection.
-     * We finally return the corresponding connection point.
-     */
-    for (var i = 0; i <= 3; i++){
-      if(i % 2 == 0){
-          _y = this.vertex[i].y;
-          _x = (_y - b)/a;
-      }
-      else{
-          _x = this.vertex[i].x;
-          _y = a * _x + b;
-      }
-
-      if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
-        continue;
-
-      if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-          ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
-          ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
-            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
-          ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-            (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-            ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )
-      )
-        return i;
-    }
-    return null;
-  }
 }
 export { Rectangle };

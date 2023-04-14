@@ -1,7 +1,6 @@
 var config =  {
-    svg : {
-        fill : "white",
-    },
+    svg : null,
+
     form : {
         stroke : "black",
         fill : "white",
@@ -38,19 +37,14 @@ var config =  {
 
     line : {
         fill : "black",
-        type: "broke",
-        ends : {
-            start : { type : "triangle"},
-            dest : { type : "triangle"},
-	    h_dx: 10,
-	    h_dy: 4,
-	    v_dx: 5,
-	    v_dy: 8
-        },
         strokeWidth : "1pt",
         strokeDasharray : "4"
     },
-
+    link: {
+	type: "broke",
+        end_start : "triangle",
+        end_dest : "triangle",
+    },
     text : {
         fill : "black",
         fillOpacity : "100",
@@ -60,7 +54,19 @@ var config =  {
         strokeDasharray : 10.5,
         strokeDashoffset : 10.5,
     },
+    ends : {
+        tri: {
+            h: 10,
+            base: 10,
+        },
+        circle: {
+            r: 10
+        },
+        lozenge: {
 
+        },
+	minspace: 10
+    },
     linkcb: null
 }
 

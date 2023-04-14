@@ -1,5 +1,5 @@
 /**
- * Abstract class representing a generic prototype for all forms
+ * Abstract class representing a generic prototype for all shapes
  * 
  * @abstract 
  * 
@@ -91,10 +91,6 @@ class Shape
     }
 
     resize(pos, dx, dy){
-
-    };
-
-    optimalPath(line){
 
     };
 }

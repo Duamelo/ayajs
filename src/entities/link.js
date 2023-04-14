@@ -1,282 +1,352 @@
-import  {_uuid}  from "./uuid.js";
+import  {_uuid}  from "../uuid.js";
 import {_Register}  from "../register.js"
-import { EndsDecorator } from "../decorators/endsDecorator.js";
 import { config } from "../../config.js";
+import { Line } from "./line.js";
 
 /**
  * @class Link
  */
 class Link
 {
-    constructor(src_point, dest_point, line = undefined, svg, config = null)
+    static src_csvg = null;
+    static dest_csvg = null;
+    constructor(src_id, dest_id, userconfig = {})
     {
-       this.uuid = _uuid.generate();
-       
-       /* reference on the connexion points*/
-       this.source = src_point;
-       this.destination = dest_point;
+	var obj = {};
+        this.uuid = _uuid.generate();
 
-       this.line = line;
-       this.type = "link";
+        var src =  _Register.find(src_id);
+        var dest =  _Register.find(dest_id);
+
+	if (!src || !dest)
+            throw new Error("component is missing");
         
-       this.svg = svg;
+        this.type = "link";
 
-       this.line_t = config && config.line.type ? config.line.type : null;
+	if (userconfig.subtype)
+	    this.subtype = userconfig.subtype;
+	else
+	    this.subtype = config.link.type;
 
-       var c_line = _Register.find(this.line.uuid);
+	if (userconfig.end_start)
+	    this.end_start = userconfig.end_start;
+	else
+	    this.end_start = config.link.end_start;
 
-       if (c_line)
-            new EndsDecorator(c_line, c_line.shape.config, this.svg, c_line.shape.nativeEvent);
+	if (userconfig.end_dest)
+	    this.end_dest = userconfig.end_dest;
+	else
+	    this.end_dest = config.link.end_dest;
 
-        /* set config.linkcb to retrieve the current link */
-       if(config && config.current_link)
-            config.current_link(this);
-        _Register.add(this);
+
+	if (this.subtype != "broke")
+	    obj = this.optimal(src, dest);
+	else
+            obj = this.breakline(src, dest);
+
+	/* reference on connexion points*/
+        this.source = src.shape.c_points[obj.src];
+        this.destination = dest.shape.c_points[obj.dest];
+
+	this.line = new Line(_uuid.generate(),
+			     this.source.x,
+			     this.source.y,
+			     this.destination.x,
+			     this.destination.y
+			    );
+
+	if (this.subtype == "broke"){
+	    this.line.c1.x = obj.c1.x;
+            this.line.c1.y = obj.c1.y;
+            this.line.c2.x = obj.c2.x;
+            this.line.c2.y = obj.c2.y;
+	    this.line.setPath([this.line.c1, this.line.c2]);
+	}
+	this.line.draw();
+	this.line.setStyles({fill: "none"});
+
+	if (this.end_start)
+	    this.addEnd(this.end_start, "source");
+
+	if (this.end_dest)
+	    this.addEnd(this.end_dest, "destination");
+
+	_Register.add(this);
+    }
+
+    addEnd(type, target){
+	if (type != "triangle")
+	    return;
+	var x, y, h, base, angle, dxa, dya, dx, dy, obj = {}, elt;
+	var line_x, line_y, line_dest_x, line_dest_y;
+
+	line_x = this.line.x;
+	line_y = this.line.y;
+	line_dest_x = this.line.dest_x;
+	line_dest_y = this.line.dest_y;
+
+	if (type == "triangle"){
+	    h = config.ends.tri.h;
+	    base = config.ends.tri.base;
+	    angle = this.line.inclination();
+   	}
+	if (target == "source"){
+	    x = this.line.x;
+	    y = this.line.y;
+	    if (Link.src_csvg){
+		elt = document.getElementById(Link.src_csvg.getAttribute('id'));
+		elt.remove();
+	    }
+	    if ((this.line.x != this.line.c1.x &&
+                this.line.c1.x == (this.line.x + this.line.dest_x)/2 &&
+                this.line.x != this.line.dest_x) ||
+                (this.line.y != this.line.c1.y &&
+                this.line.c1.y == (this.line.y + this.line.dest_y)/2 &&
+                this.line.x != this.line.dest_x)){
+
+                line_dest_x = this.line.c1.x;
+                line_dest_y = this.line.c1.y;
+            }
+	}
+	else if (target == "destination"){
+	    x = this.line.dest_x;
+	    y = this.line.dest_y;
+	    h = -h;
+	    if (Link.dest_csvg){
+		elt = document.getElementById(Link.dest_csvg.getAttribute('id'));
+		elt.remove();
+	    }
+	    if ((this.line.dest_x != this.line.c2.x &&
+		 this.line.c2.x == (this.line.x + this.line.dest_x)/2 &&
+                 this.line.x != this.line.dest_x) ||
+                (this.line.dest_y != this.line.c2.y &&
+                 this.line.c2.y == (this.line.y + this.line.dest_y)/2 &&
+                 this.line.x != this.line.dest_x)){
+
+                line_x = this.line.c2.x;
+                line_y = this.line.c2.y;
+	    }
+	}
+        if (line_y == line_dest_y){
+            if (line_x < line_dest_x){
+                obj.x1 = x;
+                obj.y1 = y;
+
+                obj.x2 = x + h;
+                obj.y2 = y - base / 2;
+
+                obj.x3 = x + h;
+                obj.y3 = y + base / 2;
+            }
+            else{
+                obj.x1 = x;
+                obj.y1 = y;
+
+                obj.x2 = x - h;
+                obj.y2 = y + base / 2;
+
+                obj.x3 = x - h;
+                obj.y3 = y - base / 2;
+            }
+        }
+        else if (line_x == line_dest_x){
+            if (line_y < line_dest_y){
+                obj.x1 = x;
+                obj.y1 = y;
+
+                obj.x2 = x + base / 2;
+                obj.y2 = y + h;
+
+                obj.x3 = x - base / 2;
+                obj.y3 = y + h;
+            }
+            else{
+                obj.x1 = x;
+                obj.y1 = y;
+
+                obj.x2 = x - base / 2;
+                obj.y2 = y - h;
+
+                obj.x3 = x + base / 2;
+                obj.y3 = y - h;
+            }
+        }
+        else{
+            dxa = h * Math.cos(angle);
+            dya = h * Math.sin(angle < 0 ? - angle : angle);
+
+            dy = (base / 2) * Math.cos(angle);
+            dx = (base / 2) * Math.sin(angle < 0 ? - angle : angle);
+
+            if (angle < 0){
+                if (line_x < line_dest_x){
+                    obj.x1 = x;
+                    obj.y1 = y;
+
+                    obj.x2 = x + dxa + dx;
+                    obj.y2 = y + dya - dy;
+
+                    obj.x3 = x + dxa - dx;
+                    obj.y3 = y + dya + dy;
+                }
+                else if (line_x > line_dest_x){
+                    obj.x1 = x;
+                    obj.y1 = y;
+
+                    obj.x2 = x - dxa + dx;
+                    obj.y2 = y - dya - dy;
+
+                    obj.x3 = x - dxa - dx;
+                    obj.y3 = y - dya + dy;
+                }
+            }
+            else{
+                if (line_x < line_dest_x){
+                    obj.x1 = x;
+                    obj.y1 = y;
+
+                    obj.x2 = x + dxa - dx;
+                    obj.y2 = y - dya - dy;
+
+                    obj.x3 = x + dxa + dx;
+                    obj.y3 = y - dya + dy;
+                }
+                else if (line_x > line_dest_x){
+                    obj.x1 = x;
+                    obj.y1 = y;
+
+                    obj.x2 = x - dxa + dx;
+                    obj.y2 = y + dya + dy;
+
+                    obj.x3 = x - dxa - dx;
+                    obj.y3 = y + dya - dy;
+                }
+            }
+        }
+	const ns = "http://www.w3.org/2000/svg";
+	var c_svg = document.createElementNS(ns, "path");
+	var p = "M " + obj.x1 +  "," + obj.y1 + " " + "L " + obj.x2 + "," + obj.y2 + " " + "L " + obj.x3 + "," + obj.y3 + " Z";
+	c_svg.setAttribute("d", p);
+	c_svg.setAttribute("id", _uuid.generate());
+	this.line.svg.appendChild(c_svg);
+	if (target == "source")
+	    Link.src_csvg = c_svg;
+	if (target == "destination")
+	    Link.dest_csvg = c_svg;
+    }
+
+    breakline(source, destination){
+	var obj = {
+	    src: 1,
+	    dest: 3,
+	    c1: {},
+	    c2: {}
+	};
+	var inflexion = "horizontal";
+
+	if ((source.shape.c_points[1].y == destination.shape.c_points[3].y && (obj.src = 1) && (obj.dest = 3)) ||
+	    (source.shape.c_points[3].y == destination.shape.c_points[1].y && (obj.src = 3) && (obj.dest = 1)) ||
+	    (source.shape.c_points[0].x == destination.shape.c_points[2].x && (obj.src = 0) && (obj.dest = 2)) ||
+	    (source.shape.c_points[2].x == destination.shape.c_points[0].x && (obj.src = 2) && (obj.dest = 0)))
+	    inflexion = false;
+	else{
+	    if (source.shape.c_points[obj.src].x > destination.shape.c_points[obj.dest].x){
+		obj.src = 3;
+		obj.dest = 1;
+	    }
+	    if (source.shape.c_points[obj.src].y > destination.shape.c_points[obj.dest].y){
+                if ((Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace)){
+                    obj.src = 0;
+                    obj.dest = 2;
+                    inflexion = "vertical";
+                }
+            }
+            else{
+                if (Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace){
+                    obj.src = 2;
+                    obj.dest = 0;
+                    inflexion = "vertical";
+                }
+            }
+	}
+	if (inflexion == "vertical"){
+            obj.c1.x = source.shape.c_points[obj.src].x;
+            obj.c1.y = (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
+            obj.c2.x = destination.shape.c_points[obj.dest].x;
+            obj.c2.y =  (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
+        }
+        else if (inflexion == "horizontal"){
+            obj.c1.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
+            obj.c1.y = source.shape.c_points[obj.src].y;
+            obj.c2.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
+            obj.c2.y = destination.shape.c_points[obj.dest].y;
+        }
+        else{
+            obj.c1.x = source.shape.c_points[obj.src].x;
+            obj.c1.y = source.shape.c_points[obj.src].y;
+            obj.c2.x = destination.shape.c_points[obj.dest].x;
+            obj.c2.y = destination.shape.c_points[obj.dest].y;
+        }
+	return obj;
     }
 
     redraw(){
-        var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
+        var source = _Register.find(this.source.ref);
+        var destination = _Register.find(this.destination.ref);
+	var obj = {};
 
-        if(this.line != null){
-            var i_src = source.shape.optimalPath(this.line);
-            var i_dest = destination.shape.optimalPath(this.line);
-            if (i_src == null)
-                source.shape.c_points.map((pt, index) => { if (pt.x == this.source.x && pt.y == this.source.y) i_src = index});
-            if (i_dest == null)
-                destination.shape.c_points.map((pt, index) => { if (pt.x == this.destination.x && pt.y == this.destination.y) i_dest = index});
-    
-            this.source = source.shape.c_points[i_src];            
-            this.destination = destination.shape.c_points[i_dest];
+	if (this.subtype != "broke")
+            obj = this.optimal(source, destination);
+	else
+            obj = this.breakline(source, destination);
 
-            this.line.x = this.source.x;
-            this.line.y = this.source.y;
-            this.line.dest_x = this.destination.x;
-            this.line.dest_y = this.destination.y;
+	/* reference on connexion points*/
+        this.source = source.shape.c_points[obj.src];
+        this.destination = destination.shape.c_points[obj.dest];
 
-            this.setTypeLink();
+	this.line.x = this.source.x;
+        this.line.y = this.source.y;
+        this.line.dest_x = this.destination.x;
+        this.line.dest_y = this.destination.y;
 
-          
-            if (this.line_t){
-		var h_dx = config.line.ends.h_dx, h_dy = config.line.ends.h_dy;
-		var v_dx = config.line.ends.v_dx, v_dy = config.line.ends.v_dy;
-		
-		this.line.children.map(({child})=>{
-		    if (child.src || child.dest)
-			child.setRotateAngle(2 * Math.PI);
-		    if (child.src){
-			if (i_src == 0){
-                            child.x1 = this.line.x - v_dx;
-                            child.y1 = this.line.y - v_dy;
-                            child.x2 = this.line.x;
-                            child.y2 = this.line.y;
-                            child.x3 = this.line.x + v_dx;
-                            child.y3 = this.line.y - v_dy;
-                        }
-			else if (i_src == 1){
-			    child.x1 = this.line.x + h_dx;
-                            child.y1 = this.line.y - h_dy;
-                            child.x2 = this.line.x;
-                            child.y2 = this.line.y;
-                            child.x3 = this.line.x + h_dx;
-                            child.y3 = this.line.y + h_dy;
-                        }
-			else if (i_src == 2){
-                            child.x1 = this.line.x - v_dx;
-                            child.y1 = this.line.y + v_dy;
-                            child.x2 = this.line.x;
-                            child.y2 = this.line.y;
-                            child.x3 = this.line.x + v_dx;
-                            child.y3 = this.line.y + v_dy;
-                        }
-			else if (i_src == 3){
-			    child.x1 = this.line.x - h_dx;
-			    child.y1 = this.line.y - h_dy;
-			    child.x2 = this.line.x;
-			    child.y2 = this.line.y;
-			    child.x3 = this.line.x - h_dx;
-			    child.y3 = this.line.y + h_dy;
-			}
-                    }
-                    if (child.dest){
-			if (i_dest == 3){
-                            child.x1 = this.line.dest_x - h_dx;
-                            child.y1 = this.line.dest_y - h_dy;
-                            child.x2 = this.line.dest_x;
-                            child.y2 = this.line.dest_y;
-                            child.x3 = this.line.dest_x - h_dx;
-                            child.y3 = this.line.dest_y + h_dy;
-			}
-			else if (i_dest == 2){
-                            child.x1 = this.line.dest_x - v_dx;
-                            child.y1 = this.line.dest_y + v_dy;
-                            child.x2 = this.line.dest_x;
-                            child.y2 = this.line.dest_y;
-                            child.x3 = this.line.dest_x + v_dx;
-                            child.y3 = this.line.dest_y + v_dy;
-                        }
-			else if (i_dest == 1){
-                            child.x1 = this.line.dest_x + h_dx;
-                            child.y1 = this.line.dest_y - h_dy;
-                            child.x2 = this.line.dest_x;
-                            child.y2 = this.line.dest_y;
-                            child.x3 = this.line.dest_x + h_dx;
-                            child.y3 = this.line.dest_y + h_dy;
-                        }
-			else if (i_dest == 0){
-                            child.x1 = this.line.dest_x - v_dx;
-                            child.y1 = this.line.dest_y - v_dy;
-                            child.x2 = this.line.dest_x;
-                            child.y2 = this.line.dest_y;
-                            child.x3 = this.line.dest_x + v_dx;
-                            child.y3 = this.line.dest_y - v_dy;
-                        }
-                    }
-		});
-		
-                if(this.line.x < this.line.dest_x && this.line.y > this.line.dest_y){
-                    if (i_src == 0 &&  i_dest == 2){
-                        this.line.c2.x = this.line.x;
-                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
-            
-                        this.line.c3.y = this.line.c2.y;
-                        this.line.c3.x = this.line.dest_x;
-                        
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                    else if (i_src == 0 && i_dest == 3){
-                        this.line.c3.x = this.line.x;
-                        this.line.c3.y = this.line.dest_y;
-            
-                        this.line.setPath([this.line.c3]);
-                    }
-                    else if (i_src == 1 && i_dest == 2){
-                        this.line.c2.x = this.line.dest_x;
-                        this.line.c2.y = this.line.y;
-            
-                        this.line.setPath([this.line.c2]);
-                    }
-                    else if (i_src == 1 && i_dest == 3){
-                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c2.y = this.line.y;
-            
-                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c3.y = this.line.dest_y;
-            
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                }
-                else if(this.line.x < this.line.dest_x && this.line.y < this.line.dest_y){
-                    if (i_src == 1 && i_dest == 0){
-                        this.line.c3.x = this.line.dest_x;
-                        this.line.c3.y = this.line.y;
-    
-                        this.line.setPath([this.line.c3]);
-                    }
-                    else if (i_src == 1 && i_dest == 3){
-                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c2.y = this.line.y;
-            
-                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c3.y = this.line.dest_y;
-    
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                    else if (i_src == 2 && i_dest == 3){
-                        this.line.c1.x = this.line.x;
-                        this.line.c1.y = this.line.dest_y;
-    
-                        this.line.setPath([this.line.c1]);
-                    }
-                    else if (i_src == 2 && i_dest == 0){
-                        this.line.c2.x = this.line.x;
-                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
-            
-                        this.line.c3.y = this.line.c2.y;
-                        this.line.c3.x = this.line.dest_x;
 
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                }
-                else if(this.line.dest_x < this.line.x &&  this.line.dest_y > this.line.y){
-                    if (i_dest == 0 &&  i_src == 2){
-                        this.line.c2.x = this.line.x;
-                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
-            
-                        this.line.c3.y = this.line.c2.y;
-                        this.line.c3.x = this.line.dest_x;
-    
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                    else if (i_dest == 0 && i_src == 3){
-                        this.line.c3.x = this.line.dest_x;
-                        this.line.c3.y = this.line.y;
-                       
-                        this.line.setPath([this.line.c3]);
-                    }
-                    else if (i_dest == 1 && i_src == 2){
-                        this.line.c3.x = this.line.x;
-                        this.line.c3.y = this.line.dest_y;
-            
-                        this.line.setPath([this.line.c3]);
-                    }
-                    else if (i_dest == 1 && i_src == 3){
-                        this.line.c2.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c2.y = this.line.y;
-            
-                        this.line.c3.x = (this.line.dest_x + this.line.x)/2;
-                        this.line.c3.y = this.line.dest_y;
-            
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                }
-                else if(this.line.dest_x < this.line.x &&  this.line.dest_y < this.line.y){   
-                    if (i_src == 0 && i_dest == 1){
-                        this.line.c2.x = this.line.x;
-                        this.line.c2.y = this.line.dest_y;
-    
-                        this.line.setPath([this.line.c2]);
-                    }         
-                    else if (i_src == 3 && i_dest == 1){
-                        this.line.c2.x = (this.line.x + this.line.dest_x) / 2;
-                        this.line.c2.y = this.line.y;
-    
-                        this.line.c3.x = (this.line.x + this.line.dest_x) / 2;
-                        this.line.c3.y = this.line.dest_y;
-            
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                    else if (i_src == 0 && i_dest == 2){
-                        this.line.c2.x = this.line.x;
-                        this.line.c2.y = (this.line.y + this.line.dest_y) / 2;
-            
-                        this.line.c3.x = this.line.dest_x;
-                        this.line.c3.y = (this.line.y + this.line.dest_y) / 2;
-            
-                        this.line.setPath([this.line.c2, this.line.c3]);
-                    }
-                    else if (i_src == 3 && i_dest == 2){
-                        this.line.c3.x = this.line.dest_x;
-                        this.line.c3.y = this.line.y;
-                                
-                        this.line.setPath([this.line.c3]);
-                    }
-                }
-            }
-            else
-                this.line.children.map(({child})=>{
-                    if (child.dest)
-                        child.setRotateAngle(this.line.calculateAngle());
-                    else if (child.src)
-                        child.setRotateAngle(this.line.calculateAngle() - Math.PI);
-                });
-                
-            this.line.setStyles({fill: "none"});
-            this.line.redraw();
-        }
+	if (this.subtype == "broke"){
+	    this.line.c1.x = obj.c1.x;
+            this.line.c1.y = obj.c1.y;
+            this.line.c2.x = obj.c2.x;
+            this.line.c2.y = obj.c2.y;
+	    this.line.setPath([this.line.c1, this.line.c2]);
+	}
+
+	this.line.redraw();
+
+	if (this.end_start)
+	    this.addEnd(this.end_start, "source");
+
+	if (this.end_dest)
+	    this.addEnd(this.end_dest, "destination");
+
     }
 
-    setTypeLink(){
-        this.line.setTypeLine(this.line_t);
+    optimal(src, dest){
+        var obj = {}, dmin;
+        var i,j, d;
+
+        for (i = 0; i < 4; i++){
+            for (j = 0; j < 4; j++){
+                d = (src.shape.c_points[i].x - dest.shape.c_points[j].x) * 
+                        (src.shape.c_points[i].x - dest.shape.c_points[j].x) + 
+                        (src.shape.c_points[i].y - dest.shape.c_points[j].y) * 
+                        (src.shape.c_points[i].y - dest.shape.c_points[j].y);
+                if (!dmin || 
+                    (d < dmin)){
+                        obj.src = i;
+                        obj.dest = j;
+                        dmin = d;
+                    }
+            }
+        }
+        return obj;
     }
 }
 export {Link};

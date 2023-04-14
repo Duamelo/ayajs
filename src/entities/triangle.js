@@ -1,6 +1,7 @@
-import { _uuid } from "./uuid.js";
-import { Point } from "./point.js";
+import { _uuid } from "../uuid.js";
 import { Shape } from "../abstraction/shape.js";
+import { config } from "../../config.js";
+import { Events } from "../events.js";
 
 /**
  * @class Triangle
@@ -8,7 +9,7 @@ import { Shape } from "../abstraction/shape.js";
 
 class Triangle extends Shape {
 
-  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, svg, event, config)
+  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10)
   {
 
     super();
@@ -27,12 +28,10 @@ class Triangle extends Shape {
 
     this.events = {};
     
-    this.nativeEvent = event;
-
     this.config = config;
 
     this.c_svg = "";
-    this.svg = svg;
+    this.svg = this.config.svg;
 
     this.type = "triangle";
 
@@ -49,11 +48,9 @@ class Triangle extends Shape {
     this.centerX = 0;
     this.centerY = 0;
 
-    this.c_points = [
-    ];
+    this.c_points = [];
 
-    this.vertex = [
-    ];
+    this.vertex = [];
   }
 
   addEvent(event, callback){
@@ -184,10 +181,17 @@ class Triangle extends Shape {
 
 
     this.svg.appendChild(this.c_svg);
-    this.addEvent("mousedown", this.nativeEvent.mouseDownCb);
-    this.addEvent("mouseup", this.nativeEvent.mouseUpCb);
-    this.addEvent("mouseover", this.nativeEvent.mouseOverCb);
-    this.addEvent("mouseleave", this.nativeEvent.mouseLeaveCb);
+
+    this.addEvent("mousedown", (e) => {
+      Events.mousedowncb(e)
+    });
+ 
+    this.addEvent("mouseleave", (e) => {
+        Events.mouseleavecb(e);
+    });
+    this.addEvent("mouseover", (e) => {
+        Events.mouseovercb(e);
+    });
   }
   
   removeChildren(){
@@ -279,42 +283,6 @@ class Triangle extends Shape {
       this.vertex[2].x = dx;
       this.vertex[2].y = dy;
     }
-  }
-
-  optimalPath(line){
-    var _x, _y;
-    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
-    var b = line.y - a * line.x;
-
-    for (var i = 0; i <= 3; i++){
-        if(i % 2 == 0){
-            _y = this.vertex[i].y;
-            _x = (_y - b)/a;
-        }
-        else{
-            _x = this.vertex[i].x;
-            _y = a * _x + b;
-        }
-
-        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
-          continue;
-
-          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
-           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
-           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
-           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
-              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
-              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
-            return this.c_points[i];
-           }
-      }
-    return null;
   }
 }
 export { Triangle };

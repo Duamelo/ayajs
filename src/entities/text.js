@@ -1,3 +1,5 @@
+import { config } from "../../config";
+
 /**
  * @class
  * 
@@ -5,7 +7,7 @@
  * 
  */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text", size, svg, event, config){
+    constructor(uuid, x = 0, y = 0, text = "text", size){
 
         this.uuid = uuid;
 
@@ -18,13 +20,12 @@ class Text{
 
         this.type = 'text';
 
-        this.svg = svg;
+        this.config = config;
+
+        this.svg = this.config.svg;
         this.c_svg = "";
 
         this.events = {};
-        this.nativeEvent = event;
-
-        this.config = config;
 
         this.offsetX = 0;
         this.offsetY = 0;

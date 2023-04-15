@@ -3,9 +3,6 @@ import { Point } from "./point.js";
 import { Shape } from "../abstraction/shape.js";
 import { config } from "../../config.js";
 import { Events } from "../events.js";
-import { Link } from "./link.js";
-import { Line } from "./line.js";
-
 
 /**
  *  Class representing a rectangle form.
@@ -267,33 +264,6 @@ class Rectangle extends Shape{
 
     this.addEvent("mousedown", (e) => {
       Events.mousedowncb(e)
-    });
-  
-    this.c_points.map((point)=>{
-        point.addEvent("mousedown", (e) => {
-          Events.mousedowncb(e);
-          if (Events.state == "drawing_link"){
-              Events.line = new Line(
-              _uuid.generate(),
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              );
-              Events.line.draw();
-          }
-        });
-        point.addEvent("mouseup", (e) => {
-            Events.mouseupcb(e);
-            new Link(
-		Events.source.uuid,
-		Events.destination.uuid,
-		{});
-            Events.line.removeFromDOM();
-            Events.line = null;
-            Events.source = null;
-            Events.destination = null;
-        });
     });
     this.addEvent("mouseleave", (e) => {
         Events.mouseleavecb(e);

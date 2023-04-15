@@ -3,8 +3,6 @@ import { Point } from "./point";
 import { Shape } from "../abstraction/shape";
 import { config } from "../../config";
 import { Events } from "../events";
-import { Link } from "./link";
-import { Line } from "./line";
 
 /**
  * @class Circle
@@ -190,35 +188,8 @@ class Circle extends Shape {
         this.children.map(({child}) => {
             child.draw();
         });
-     
         this.addEvent("mousedown", (e) => {
             Events.mousedowncb(e)
-        });
-        this.c_points.map((point)=>{
-            point.addEvent("mousedown", (e) => {
-            Events.mousedowncb(e);
-            if (Events.state == "drawing_link"){
-                Events.line = new Line(
-                _uuid.generate(),
-                Events.current_cpoint.x,
-                Events.current_cpoint.y,
-                Events.current_cpoint.x,
-                Events.current_cpoint.y,
-                );
-                Events.line.draw();
-            }
-            });
-            point.addEvent("mouseup", (e) => {
-                Events.mouseupcb(e);
-                new Link(
-                    Events.source.uuid, 
-                    Events.destination.uuid,
-                    {});
-                Events.line.removeFromDOM();
-                Events.line = null;
-                Events.source = null;
-                Events.destination = null;
-            });
         });
         this.addEvent("mouseleave", (e) => {
             Events.mouseleavecb(e);

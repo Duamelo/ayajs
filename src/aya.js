@@ -30,7 +30,7 @@ class Init{
         this.svg.setAttribute("height", this.height);
         this.svg.setAttribute("id", this.uuid);
 
-        this.grid = new Grid(this.svg, 40, 80, 2, 4);
+        this.grid = new Grid(this.svg, 40, 40, 2, 4);
 
         this.config = config;
 
@@ -61,11 +61,6 @@ class Init{
             this.svg.setAttribute("height", o.height);    
         this.grid.redraw();
     }
-
-    /* set the current link */
-    // setCurrentLink(lk){
-    //     this.config.current_link = lk;
-    // }
 
     _uuid(){
         return _uuid;

@@ -27,8 +27,6 @@ class Factory
             return new Rectangle(uuid, props.x, props.y, props.width, props.height);
         else if(type == "line")
             return new Line(uuid, props.x, props.y, props.dest_x, props.dest_y);
-        else if(type == "link")
-            return new LinkShape(uuid, props.src, props.dest, props.config);
         else if(type == "triangle")
             return new Triangle(uuid, props.x1, props.y1, props.x2, props.y2, props.x3, props.y3);
         else if(type == "lozenge")

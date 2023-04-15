@@ -3,8 +3,6 @@ import { Point } from "./point.js";
 import { _uuid } from "../uuid.js";
 import { config } from "../../config.js";
 import { Events } from "../events.js";
-import { Line } from "./line.js";
-import { Link } from "./link.js";
 
 /**
  * @class Lozenge
@@ -192,12 +190,21 @@ class Lozenge extends Shape{
     this.c_svg.setAttribute("d", this.p);
     this.c_svg.setAttribute("fill", this.config.form.fill);
     this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
-    this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
-
-    this.svg.appendChild(this.c_svg);
-    this.svg.appendChild(this.box);
+      this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+      
+      this.addEvent("mousedown", (e) => {
+	  Events.mousedowncb(e)
+      });
+      this.addEvent("mouseleave", (e) => {
+          Events.mouseleavecb(e);
+      });
+      this.addEvent("mouseover", (e) => {
+          Events.mouseovercb(e);
+      });
+      this.svg.appendChild(this.c_svg);
+      this.svg.appendChild(this.box);
   }
-
+    
   makeHiddenCpoints(){
     this.c_points.map((pt) => {
         pt.c_svg.setAttribute("fill", "none");
@@ -279,32 +286,7 @@ class Lozenge extends Shape{
     this.addEvent("mousedown", (e) => {
       Events.mousedowncb(e)
     });
-    this.c_points.map((point)=>{
-        point.addEvent("mousedown", (e) => {
-          Events.mousedowncb(e);
-          if (Events.state == "drawing_link"){
-              Events.line = new Line(
-              _uuid.generate(),
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              );
-              Events.line.draw();
-          }
-        });
-        point.addEvent("mouseup", (e) => {
-            Events.mouseupcb(e);
-            new Link(_uuid.generate(), 
-            Events.source.uuid, 
-            Events.destination.uuid,
-            {});
-            Events.line.removeFromDOM();
-            Events.line = null;
-            Events.source = null;
-            Events.destination = null;
-        });
-    });
+   
     this.addEvent("mouseleave", (e) => {
         Events.mouseleavecb(e);
     });

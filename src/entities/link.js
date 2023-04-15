@@ -8,8 +8,6 @@ import { Line } from "./line.js";
  */
 class Link
 {
-    static src_csvg = null;
-    static dest_csvg = null;
     constructor(src_id, dest_id, userconfig = {})
     {
 	var obj = {};
@@ -20,8 +18,11 @@ class Link
 
 	if (!src || !dest)
             throw new Error("component is missing");
-        
+
         this.type = "link";
+
+	this.src_end_csvg = null;
+	this.dest_end_csvg = null;
 
 	if (userconfig.subtype)
 	    this.subtype = userconfig.subtype;
@@ -93,10 +94,10 @@ class Link
 	if (target == "source"){
 	    x = this.line.x;
 	    y = this.line.y;
-	    if (Link.src_csvg){
-		elt = document.getElementById(Link.src_csvg.getAttribute('id'));
-		elt.remove();
-	    }
+
+	    if (this.src_end_csvg)
+		this.src_end_csvg.remove();
+
 	    if ((this.line.x != this.line.c1.x &&
                 this.line.c1.x == (this.line.x + this.line.dest_x)/2 &&
                 this.line.x != this.line.dest_x) ||
@@ -112,10 +113,10 @@ class Link
 	    x = this.line.dest_x;
 	    y = this.line.dest_y;
 	    h = -h;
-	    if (Link.dest_csvg){
-		elt = document.getElementById(Link.dest_csvg.getAttribute('id'));
-		elt.remove();
-	    }
+
+	    if (this.dest_end_csvg)
+		this.dest_end_csvg.remove();
+
 	    if ((this.line.dest_x != this.line.c2.x &&
 		 this.line.c2.x == (this.line.x + this.line.dest_x)/2 &&
                  this.line.x != this.line.dest_x) ||
@@ -230,9 +231,9 @@ class Link
 	c_svg.setAttribute("id", _uuid.generate());
 	this.line.svg.appendChild(c_svg);
 	if (target == "source")
-	    Link.src_csvg = c_svg;
+	    this.src_end_csvg = c_svg;
 	if (target == "destination")
-	    Link.dest_csvg = c_svg;
+	    this.dest_end_csvg = c_svg;
     }
 
     breakline(source, destination){
@@ -309,7 +310,6 @@ class Link
         this.line.dest_x = this.destination.x;
         this.line.dest_y = this.destination.y;
 
-
 	if (this.subtype == "broke"){
 	    this.line.c1.x = obj.c1.x;
             this.line.c1.y = obj.c1.y;
@@ -325,7 +325,6 @@ class Link
 
 	if (this.end_dest)
 	    this.addEnd(this.end_dest, "destination");
-
     }
 
     optimal(src, dest){

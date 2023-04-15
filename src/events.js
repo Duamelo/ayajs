@@ -1,5 +1,7 @@
 import { _Register } from "./register.js";
 import { _uuid } from "./uuid.js";
+import { Line } from "./entities/line.js";
+import { Link } from "./entities/link.js";
 
 class Events {
   static source = null;
@@ -42,8 +44,18 @@ class Events {
          * In this case, we start tracing a link.
          */
 
-        Events.state = "drawing_link";
-        Events.current_cpoint = {x: cp.x, y: cp.y};
+          Events.state = "drawing_link";
+          Events.current_cpoint = {x: cp.x, y: cp.y};
+          Events.line = new Line(
+              _uuid.generate(),
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              Events.current_cpoint.x,
+              Events.current_cpoint.y,
+              );
+
+          Events.line.draw();
+          Events.line.makeHiddenVertex();
       }
     }
     return Events.state;
@@ -104,35 +116,41 @@ class Events {
   }
 
   static mouseupcb(e) {
-    var id = e.srcElement.id;
+      var id = e.srcElement.id;
+      if (Events.state == "drawing_link") {
+	  var pnt = _Register.find(id);
 
-    if (Events.state == "drawing_link") {
-      var pnt = _Register.find(id);
-      
-      if (pnt && pnt.ref == Events.source.uuid){
+	  if (pnt && pnt.ref == Events.source.uuid){
         var ref = document.getElementById(Events.line.uuid);
         ref.remove();
         return;
-      }          
-      if (pnt && pnt.ref) {
-        Events.line.dest_x = pnt.x;
-        Events.line.dest_y = pnt.y;
-        Events.destination = _Register.find(pnt.ref);
       }
-      else{
-        var ref = document.getElementById(Events.line.uuid);
-        Events.line.children.map(({child}) => {
-          var rf = document.getElementById(child.uuid);
-          rf.remove();
-        });
-        Events.line.vertex.map((point) => {
-          var rf = document.getElementById(point.uuid);
-          rf.remove();
-        })
-        ref.remove();
+	if (pnt && pnt.ref) {
+            Events.line.dest_x = pnt.x;
+            Events.line.dest_y = pnt.y;
+            var destination = _Register.find(pnt.ref);
+	    new Link(
+		Events.source.uuid,
+		destination.uuid,
+		{});
+            Events.line.removeFromDOM();
+            Events.line = null;
+            Events.source = null;
+	}
+	else{
+          var ref = document.getElementById(Events.line.uuid);
+          Events.line.children.map(({child}) => {
+              var rf = document.getElementById(child.uuid);
+              rf.remove();
+          });
+          Events.line.vertex.map((point) => {
+              var rf = document.getElementById(point.uuid);
+              rf.remove();
+          })
+          ref.remove();
       }
     }
-    Events.state = "";
+      Events.state = "";
   }
   static mouseovercb(e){
     var id = e.srcElement.id;

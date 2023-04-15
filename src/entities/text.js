@@ -119,6 +119,8 @@ class Text{
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
         this.c_svg.setAttributeNS(null, "textLength", this.size);
         this.c_svg.setAttributeNS(null, "id", this.uuid);
+        this.c_svg.setAttribute("font-family", this.config.text.fontfamily);
+        this.c_svg.setAttribute("font-size", this.config.text.fontsize);
         this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
         this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);
         this.c_svg.setAttributeNS(null, "stroke-width", this.config.text.strokeWidth);

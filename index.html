@@ -17,45 +17,17 @@
       console.log(aya);
       var aya = new aya.Init();
 
-      // remove grid from the svg
-      // aya.box.shape.children.map(({child}) =>{
-      //    aya.svg.removeChild(child.c_svg);
-      // });
+     try{
+      // var rec1 = aya.Component("rectangle", {x: 200, y: 500, width: 30, height: 60});
+      var text = aya.Text(100, 100, "component", 100);
+      text.draw();
+   
 
-      // aya.config.line.type = null;
-      var rec1 = aya.Component("rectangle", {x: 200, y: 500, width: 30, height: 60});
-
-      var sh = aya.Component("circle", {x: 500, y: 200, r: 30});
-
-      var sh = aya.Component("circle", {x: 500, y: 200, r: 30});
-
-      // var sh = aya.Component("rectangle", {x: 500, y: 200, width: 30, height: 60});
-
-      // var sh = aya.Component("rectangle", {x: 500, y: 200, width: 30, height: 60});
-
-      var rec2 = aya.Component("rectangle", {x: 200, y: 200, width: 30, height: 60});
-
-  //    var sh = aya.Component("rectangle", {x: 500, y: 300, width: 30, height: 60});
-
-      //  var line = aya.Component("line", {x: 100, y: 304, dest_x: 200, dest_y: 100});
-      //  var line = aya.Component("line", {x: 300, y: 204, dest_x: 120, dest_y: 500});
-
-      //  var line = aya.Component("line", {x: 300, y: 204, dest_x: 120, dest_y: 100});
-
-      //  var line = aya.Component("line", {dest_x: 2 * 564 - 489, dest_y: 304, x: 564, y: 437});
-
-   //   var line = aya.Component("line", {x: 639, y: 304, dest_x: 564, dest_y: 437});
-   //   var line = aya.Component("line", {x: 601, y: 400, dest_x: 2 * 601 - 638 , dest_y: 2 * 400 - 363});
-      // var sha = aya.Component("triangle", {x1: 500, y1: 200, x2: 234, y2: 320, x3: 100, y3: 213});
-
-      // var line = aya.Line(rec1.shape.c_points[0].x, rec1.shape.c_points[0].y, sha.shape.c_points[0].x, sha.shape.c_points[0].y);
-      // line.draw();
-      // var lk = aya.Link(rec1.shape.c_points[0], sha.shape.c_points[0], line);
-      var d = document.getElementsByClassName("lorem");
-      console.log(d);
+     }
+     catch(e){
+      console.log(e);
+     }
       document.body.append(aya.svg);
    </script>
-
-<div id="div" class="lorem"></div>
 </body>
 </html>

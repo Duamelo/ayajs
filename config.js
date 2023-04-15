@@ -47,6 +47,8 @@ var config =  {
     },
     text : {
         fill : "black",
+        fontfamily: "helvetica",
+        fontsize: 15,
         fillOpacity : "100",
         stroke : "black",
         strokeWidth : "0.5pt",

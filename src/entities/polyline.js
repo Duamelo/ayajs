@@ -151,12 +151,20 @@ class Polyline extends Shape {
 
 
     shift(dx,dy){
+        console.log("sift de aya" + dx + " " + dy);
+        this.points.map(pt =>{
+            console.table(pt);
+        });
         for (var i = 0; i < this.points.length; i++){
-            if (i%2)
+            if (i%2 == 0)
                 this.points[i] += dx;
             else
                 this.points[i] += dy;
         }
+        console.log("after shifting in aya");
+        this.points.map(pt =>{
+            console.table(pt);
+        });
         this.children.map ( ({child}) => {
             child.shift(dx, dy);
         }); 
@@ -167,7 +175,6 @@ class Polyline extends Shape {
         this.vertex.map( (vertex) => {
             vertex.redraw();
         });
-
         var path = "";
         for(var i = 0; i < this.points.length; i++){
             if(i % 2 == 0)

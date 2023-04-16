@@ -49,6 +49,7 @@ var config =  {
         fill : "black",
         fontfamily: "helvetica",
         fontsize: 15,
+        size: 80,
         fillOpacity : "100",
         stroke : "black",
         strokeWidth : "0.5pt",

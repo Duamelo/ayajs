@@ -7,7 +7,7 @@ import { config } from "../../config";
  * 
  */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text", size){
+    constructor(uuid, x = 0, y = 0, text = "text", size = 0){
 
         this.uuid = uuid;
 
@@ -117,7 +117,7 @@ class Text{
         this.c_svg = document.createElementNS(svgns, "text");
         this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-        this.c_svg.setAttributeNS(null, "textLength", this.size);
+        this.c_svg.setAttributeNS(null, "textLength", this.size || this.config.text.size);
         this.c_svg.setAttributeNS(null, "id", this.uuid);
         this.c_svg.setAttribute("font-family", this.config.text.fontfamily);
         this.c_svg.setAttribute("font-size", this.config.text.fontsize);

@@ -55,6 +55,7 @@
 	        fill : "black",
 	        fontfamily: "helvetica",
 	        fontsize: 15,
+	        size: 80,
 	        fillOpacity : "100",
 	        stroke : "black",
 	        strokeWidth : "0.5pt",
@@ -781,6 +782,16 @@
 		    this.src_end_csvg = c_svg;
 		if (target == "destination")
 		    this.dest_end_csvg = c_svg;
+	    }
+
+	    removeFromDOM(){
+	        this.line.removeFromDOM();
+	        if (this.src_end_csvg)
+	            config.svg.removeChild(this.src_end_csvg);
+	        if (this.dest_end_csvg)
+	            config.svg.removeChild(this.dest_end_csvg);
+	        var lk = _Register.find(this.uuid);
+	        _Register.clear(lk.uuid);
 	    }
 
 	    breakline(source, destination){
@@ -2866,12 +2877,20 @@
 
 
 	    shift(dx,dy){
+	        console.log("sift de aya" + dx + " " + dy);
+	        this.points.map(pt =>{
+	            console.table(pt);
+	        });
 	        for (var i = 0; i < this.points.length; i++){
-	            if (i%2)
+	            if (i%2 == 0)
 	                this.points[i] += dx;
 	            else
 	                this.points[i] += dy;
 	        }
+	        console.log("after shifting in aya");
+	        this.points.map(pt =>{
+	            console.table(pt);
+	        });
 	        this.children.map ( ({child}) => {
 	            child.shift(dx, dy);
 	        }); 
@@ -2882,7 +2901,6 @@
 	        this.vertex.map( (vertex) => {
 	            vertex.redraw();
 	        });
-
 	        var path = "";
 	        for(var i = 0; i < this.points.length; i++){
 	            if(i % 2 == 0)
@@ -3257,7 +3275,7 @@
 	 * 
 	 */
 	class Text{
-	    constructor(uuid, x = 0, y = 0, text = "text", size){
+	    constructor(uuid, x = 0, y = 0, text = "text", size = 0){
 
 	        this.uuid = uuid;
 
@@ -3367,7 +3385,7 @@
 	        this.c_svg = document.createElementNS(svgns, "text");
 	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-	        this.c_svg.setAttributeNS(null, "textLength", this.size);
+	        this.c_svg.setAttributeNS(null, "textLength", this.size || this.config.text.size);
 	        this.c_svg.setAttributeNS(null, "id", this.uuid);
 	        this.c_svg.setAttribute("font-family", this.config.text.fontfamily);
 	        this.c_svg.setAttribute("font-size", this.config.text.fontsize);

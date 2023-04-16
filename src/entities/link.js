@@ -236,6 +236,16 @@ class Link
 	    this.dest_end_csvg = c_svg;
     }
 
+    removeFromDOM(){
+        this.line.removeFromDOM();
+        if (this.src_end_csvg)
+            config.svg.removeChild(this.src_end_csvg);
+        if (this.dest_end_csvg)
+            config.svg.removeChild(this.dest_end_csvg);
+        var lk = _Register.find(this.uuid);
+        _Register.clear(lk.uuid);
+    }
+
     breakline(source, destination){
 	var obj = {
 	    src: 1,

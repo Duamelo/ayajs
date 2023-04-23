@@ -118,13 +118,58 @@ class Line extends Shape{
     }
     
     setPath(points = [{}]){
-	this.path_is_set = true;
+        this.path_is_set = true;
         this.p = "M "+  (this.x) + ","+ (this.y) + " ";
 
         points.map((pt)=>{
-            this.p += "L"  + (pt.x) + ","+ (pt.y) + " ";
+            this.p +=  "L "  + (pt.x) + ","+ (pt.y) + " ";
         });
-        this.p += "L" + (this.dest_x)  + "," + (this.dest_y);
+        this.p += "L " +  (this.dest_x)  + "," + (this.dest_y);
+    }
+
+    setPathCur(points = [{}]){
+        this.path_is_set = true;
+        var vertical = false;
+        var y_inverse = 1;
+        var x_inverse = 1;
+        var i_inverse = 1;
+        var i_xinverse = 1;
+        this.p = "M "+  (this.x) + ","+ (this.y) + " ";
+
+        if ((this.y < points[0].y && this.dest_y < points[1].y) ||
+            (this.y > points[0].y && this.dest_y > points[1].y))
+            i_inverse = -1;
+
+        if ((this.x < points[0].x && this.dest_x < points[1].x) ||
+            (this.x > points[0].x && this.dest_x > points[1].x))
+            i_xinverse = -1;
+
+        if (this.x > this.dest_x)
+            x_inverse = -1;
+
+        if (this.dest_y > this.y)
+            y_inverse = -1;
+
+        if (points[0].x == points[1].x)
+            vertical = true;
+        
+        for (var i = 0; i < points.length; i++){
+            if (vertical){
+                this.p += "L " + (points[i].x - 5 * (i == 0) * x_inverse * i_xinverse) + "," + (points[i].y + 5 * i * y_inverse) + " ";
+
+                this.p += "C " + (points[i].x - 2.5 * (i == 0) * x_inverse * i_xinverse) + "," + (points[i].y + 2.5 * i * y_inverse) + " , " + 
+                                (points[i].x  + 2.5 * i * x_inverse) + "," + (points[i].y - 2.5 * (i == 0) * y_inverse) + " , " + 
+                                (points[i].x + 5 * i * x_inverse) + "," + (points[i].y - 5 * (i == 0) * y_inverse); 
+            }
+            else{
+                this.p += "L " + (points[i].x - 5 * i * x_inverse) + "," + (points[i].y + 5 * y_inverse *  !i) + " ";
+        
+                this.p += "C " + (points[i].x - 2.5 * i * x_inverse) + "," + (points[i].y + 2.5 * y_inverse * !i) + " , " + 
+                                (points[i].x + 2.5 * x_inverse * !i) + "," + (points[i].y -( 2.5 * y_inverse * i * i_inverse)) + " , " + 
+                                (points[i].x + 5 * x_inverse * !i) + "," + (points[i].y - 5 * y_inverse * i * i_inverse); 
+            }
+        }
+        this.p += "L " + (this.dest_x) + "," + (this.dest_y) + " ";
     }
 
     draw(){
@@ -139,6 +184,9 @@ class Line extends Shape{
         this.c_svg.setAttribute("fill", this.config.line.fill);
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
         this.c_svg.setAttributeNS(null, "stroke-width", this.config.line.strokeWidth);
+        // this.c_svg.setAttributeNS(null, "stroke-linejoin","round");
+        this.c_svg.setAttribute("class", "strokelinejoin");
+
 
         this.svg.appendChild(this.c_svg);
 

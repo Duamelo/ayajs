@@ -36,9 +36,11 @@ var config =  {
     },
 
     line : {
-        fill : "black",
-        strokeWidth : "1pt",
-        strokeDasharray : "4"
+        stroke: "black",
+        fill : "white",
+        strokeWidth : "1px",
+        strokeDasharray : "4",
+        strokelinejoin: "round"
     },
     link: {
 	type: "broke",
@@ -59,11 +61,17 @@ var config =  {
     },
     ends : {
         tri: {
-            h: 10,
-            base: 10,
+            h: 8,
+            base: 8,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: "1px"
         },
         circle: {
-            r: 10
+            r: 3.5,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: "1px"
         },
         lozenge: {
 

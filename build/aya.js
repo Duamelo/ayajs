@@ -42,9 +42,11 @@
 	    },
 
 	    line : {
-	        fill : "black",
-	        strokeWidth : "1pt",
-	        strokeDasharray : "4"
+	        stroke: "black",
+	        fill : "white",
+	        strokeWidth : "1px",
+	        strokeDasharray : "4",
+	        strokelinejoin: "round"
 	    },
 	    link: {
 		type: "broke",
@@ -65,11 +67,17 @@
 	    },
 	    ends : {
 	        tri: {
-	            h: 10,
-	            base: 10,
+	            h: 8,
+	            base: 8,
+	            fill: "white",
+	            stroke: "black",
+	            strokeWidth: "1px"
 	        },
 	        circle: {
-	            r: 10
+	            r: 3.5,
+	            fill: "white",
+	            stroke: "black",
+	            strokeWidth: "1px"
 	        },
 	        lozenge: {
 
@@ -337,13 +345,58 @@
 	    }
 	    
 	    setPath(points = [{}]){
-		this.path_is_set = true;
+	        this.path_is_set = true;
 	        this.p = "M "+  (this.x) + ","+ (this.y) + " ";
 
 	        points.map((pt)=>{
-	            this.p += "L"  + (pt.x) + ","+ (pt.y) + " ";
+	            this.p +=  "L "  + (pt.x) + ","+ (pt.y) + " ";
 	        });
-	        this.p += "L" + (this.dest_x)  + "," + (this.dest_y);
+	        this.p += "L " +  (this.dest_x)  + "," + (this.dest_y);
+	    }
+
+	    setPathCur(points = [{}]){
+	        this.path_is_set = true;
+	        var vertical = false;
+	        var y_inverse = 1;
+	        var x_inverse = 1;
+	        var i_inverse = 1;
+	        var i_xinverse = 1;
+	        this.p = "M "+  (this.x) + ","+ (this.y) + " ";
+
+	        if ((this.y < points[0].y && this.dest_y < points[1].y) ||
+	            (this.y > points[0].y && this.dest_y > points[1].y))
+	            i_inverse = -1;
+
+	        if ((this.x < points[0].x && this.dest_x < points[1].x) ||
+	            (this.x > points[0].x && this.dest_x > points[1].x))
+	            i_xinverse = -1;
+
+	        if (this.x > this.dest_x)
+	            x_inverse = -1;
+
+	        if (this.dest_y > this.y)
+	            y_inverse = -1;
+
+	        if (points[0].x == points[1].x)
+	            vertical = true;
+	        
+	        for (var i = 0; i < points.length; i++){
+	            if (vertical){
+	                this.p += "L " + (points[i].x - 5 * (i == 0) * x_inverse * i_xinverse) + "," + (points[i].y + 5 * i * y_inverse) + " ";
+
+	                this.p += "C " + (points[i].x - 2.5 * (i == 0) * x_inverse * i_xinverse) + "," + (points[i].y + 2.5 * i * y_inverse) + " , " + 
+	                                (points[i].x  + 2.5 * i * x_inverse) + "," + (points[i].y - 2.5 * (i == 0) * y_inverse) + " , " + 
+	                                (points[i].x + 5 * i * x_inverse) + "," + (points[i].y - 5 * (i == 0) * y_inverse); 
+	            }
+	            else {
+	                this.p += "L " + (points[i].x - 5 * i * x_inverse) + "," + (points[i].y + 5 * y_inverse *  !i) + " ";
+	        
+	                this.p += "C " + (points[i].x - 2.5 * i * x_inverse) + "," + (points[i].y + 2.5 * y_inverse * !i) + " , " + 
+	                                (points[i].x + 2.5 * x_inverse * !i) + "," + (points[i].y -( 2.5 * y_inverse * i * i_inverse)) + " , " + 
+	                                (points[i].x + 5 * x_inverse * !i) + "," + (points[i].y - 5 * y_inverse * i * i_inverse); 
+	            }
+	        }
+	        this.p += "L " + (this.dest_x) + "," + (this.dest_y) + " ";
 	    }
 
 	    draw(){
@@ -358,6 +411,9 @@
 	        this.c_svg.setAttribute("fill", this.config.line.fill);
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
 	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.line.strokeWidth);
+	        // this.c_svg.setAttributeNS(null, "stroke-linejoin","round");
+	        this.c_svg.setAttribute("class", "strokelinejoin");
+
 
 	        this.svg.appendChild(this.c_svg);
 
@@ -587,6 +643,7 @@
 		else
 		    this.end_dest = config.link.end_dest;
 
+	    this.altpath = userconfig.altpath ? true : false;
 
 		if (this.subtype != "broke")
 		    obj = this.optimal(src, dest);
@@ -624,164 +681,220 @@
 	    }
 
 	    addEnd(type, target){
-		if (type != "triangle")
-		    return;
-		var x, y, h, base, angle, dxa, dya, dx, dy, obj = {};
-		var line_x, line_y, line_dest_x, line_dest_y;
+	        var x, y, line_x, line_y, line_dest_x, line_dest_y, obj = {}, angle, c_svg = null;
+	        var r = config.ends.circle.r, h = config.ends.tri.h;	
 
-		line_x = this.line.x;
-		line_y = this.line.y;
-		line_dest_x = this.line.dest_x;
-		line_dest_y = this.line.dest_y;
+	        const ns = "http://www.w3.org/2000/svg";
 
-		if (type == "triangle"){
-		    h = config.ends.tri.h;
-		    base = config.ends.tri.base;
-		    angle = this.line.inclination();
-	   	}
-		if (target == "source"){
-		    x = this.line.x;
-		    y = this.line.y;
+	        line_x = this.line.x;
+	        line_y = this.line.y;
+	        line_dest_x = this.line.dest_x;
+	        line_dest_y = this.line.dest_y;
+	        angle = this.line.inclination();
 
-		    if (this.src_end_csvg)
-			this.src_end_csvg.remove();
+	        if (type != "triangle" && type != "circle")
+	            return;
 
-		    if ((this.line.x != this.line.c1.x &&
-	                this.line.c1.x == (this.line.x + this.line.dest_x)/2 &&
-	                this.line.x != this.line.dest_x) ||
-	                (this.line.y != this.line.c1.y &&
-	                this.line.c1.y == (this.line.y + this.line.dest_y)/2 &&
-	                this.line.x != this.line.dest_x)){
+	        if (target == "source"){
+	            x = this.line.x;
+	            y = this.line.y;
 
-	                line_dest_x = this.line.c1.x;
-	                line_dest_y = this.line.c1.y;
-	            }
-		}
-		else if (target == "destination"){
-		    x = this.line.dest_x;
-		    y = this.line.dest_y;
-		    h = -h;
+	            if (this.src_end_csvg)
+	                this.src_end_csvg.remove();
 
-		    if (this.dest_end_csvg)
-			this.dest_end_csvg.remove();
+	            if (this.line.x != this.line.c1.x &&
+	                this.line.y != this.line.c1.y){
+	    
+	                    line_dest_x = this.line.c1.x;
+	                    line_dest_y = this.line.c1.y;
+	                }
+	        }
+	        else if (target == "destination"){
+	            x = this.line.dest_x;
+	            y = this.line.dest_y;
+	            h = -h;
+	            r = -r;
 
-		    if ((this.line.dest_x != this.line.c2.x &&
-			 this.line.c2.x == (this.line.x + this.line.dest_x)/2 &&
-	                 this.line.x != this.line.dest_x) ||
-	                (this.line.dest_y != this.line.c2.y &&
-	                 this.line.c2.y == (this.line.y + this.line.dest_y)/2 &&
-	                 this.line.x != this.line.dest_x)){
-
-	                line_x = this.line.c2.x;
-	                line_y = this.line.c2.y;
-		    }
-		}
-	        if (line_y == line_dest_y){
-	            if (line_x < line_dest_x){
-	                obj.x1 = x;
-	                obj.y1 = y;
-
-	                obj.x2 = x + h;
-	                obj.y2 = y - base / 2;
-
-	                obj.x3 = x + h;
-	                obj.y3 = y + base / 2;
-	            }
-	            else {
-	                obj.x1 = x;
-	                obj.y1 = y;
-
-	                obj.x2 = x - h;
-	                obj.y2 = y + base / 2;
-
-	                obj.x3 = x - h;
-	                obj.y3 = y - base / 2;
+	            if (this.dest_end_csvg)
+	                this.dest_end_csvg.remove();
+	            if (this.line.x != this.line.c2.x &&
+	                this.line.y != this.line.c2.y){
+	    
+	                    line_x = this.line.c2.x;
+	                    line_y = this.line.c2.y;
 	            }
 	        }
-	        else if (line_x == line_dest_x){
-	            if (line_y < line_dest_y){
-	                obj.x1 = x;
-	                obj.y1 = y;
 
-	                obj.x2 = x + base / 2;
-	                obj.y2 = y + h;
+	        if (type == "triangle"){
+	            var base, dxa, dya, dx, dy;
 
-	                obj.x3 = x - base / 2;
-	                obj.y3 = y + h;
-	            }
-	            else {
-	                obj.x1 = x;
-	                obj.y1 = y;
+	            base = config.ends.tri.base;
 
-	                obj.x2 = x - base / 2;
-	                obj.y2 = y - h;
-
-	                obj.x3 = x + base / 2;
-	                obj.y3 = y - h;
-	            }
-	        }
-	        else {
-	            dxa = h * Math.cos(angle);
-	            dya = h * Math.sin(angle < 0 ? - angle : angle);
-
-	            dy = (base / 2) * Math.cos(angle);
-	            dx = (base / 2) * Math.sin(angle < 0 ? - angle : angle);
-
-	            if (angle < 0){
+	            if (line_y == line_dest_y){
 	                if (line_x < line_dest_x){
 	                    obj.x1 = x;
 	                    obj.y1 = y;
-
-	                    obj.x2 = x + dxa + dx;
-	                    obj.y2 = y + dya - dy;
-
-	                    obj.x3 = x + dxa - dx;
-	                    obj.y3 = y + dya + dy;
+	    
+	                    obj.x2 = x + h;
+	                    obj.y2 = y - base / 2;
+	    
+	                    obj.x3 = x + h;
+	                    obj.y3 = y + base / 2;
 	                }
-	                else if (line_x > line_dest_x){
+	                else {
 	                    obj.x1 = x;
 	                    obj.y1 = y;
-
-	                    obj.x2 = x - dxa + dx;
-	                    obj.y2 = y - dya - dy;
-
-	                    obj.x3 = x - dxa - dx;
-	                    obj.y3 = y - dya + dy;
+	    
+	                    obj.x2 = x - h;
+	                    obj.y2 = y + base / 2;
+	    
+	                    obj.x3 = x - h;
+	                    obj.y3 = y - base / 2;
+	                }
+	            }
+	            else if (line_x == line_dest_x){
+	                if (line_y < line_dest_y){
+	                    obj.x1 = x;
+	                    obj.y1 = y;
+	    
+	                    obj.x2 = x + base / 2;
+	                    obj.y2 = y + h;
+	    
+	                    obj.x3 = x - base / 2;
+	                    obj.y3 = y + h;
+	                }
+	                else {
+	                    obj.x1 = x;
+	                    obj.y1 = y;
+	    
+	                    obj.x2 = x - base / 2;
+	                    obj.y2 = y - h;
+	    
+	                    obj.x3 = x + base / 2;
+	                    obj.y3 = y - h;
 	                }
 	            }
 	            else {
-	                if (line_x < line_dest_x){
-	                    obj.x1 = x;
-	                    obj.y1 = y;
-
-	                    obj.x2 = x + dxa - dx;
-	                    obj.y2 = y - dya - dy;
-
-	                    obj.x3 = x + dxa + dx;
-	                    obj.y3 = y - dya + dy;
+	                dxa = h * Math.cos(angle);
+	                dya = h * Math.sin(angle < 0 ? - angle : angle);
+	    
+	                dy = (base / 2) * Math.cos(angle);
+	                dx = (base / 2) * Math.sin(angle < 0 ? - angle : angle);
+	    
+	                if (angle < 0){
+	                    if (line_x < line_dest_x){
+	                        obj.x1 = x;
+	                        obj.y1 = y;
+	    
+	                        obj.x2 = x + dxa + dx;
+	                        obj.y2 = y + dya - dy;
+	    
+	                        obj.x3 = x + dxa - dx;
+	                        obj.y3 = y + dya + dy;
+	                    }
+	                    else if (line_x > line_dest_x){
+	                        obj.x1 = x;
+	                        obj.y1 = y;
+	    
+	                        obj.x2 = x - dxa + dx;
+	                        obj.y2 = y - dya - dy;
+	    
+	                        obj.x3 = x - dxa - dx;
+	                        obj.y3 = y - dya + dy;
+	                    }
 	                }
-	                else if (line_x > line_dest_x){
-	                    obj.x1 = x;
-	                    obj.y1 = y;
-
-	                    obj.x2 = x - dxa + dx;
-	                    obj.y2 = y + dya + dy;
-
-	                    obj.x3 = x - dxa - dx;
-	                    obj.y3 = y + dya - dy;
+	                else {
+	                    if (line_x < line_dest_x){
+	                        obj.x1 = x;
+	                        obj.y1 = y;
+	    
+	                        obj.x2 = x + dxa - dx;
+	                        obj.y2 = y - dya - dy;
+	    
+	                        obj.x3 = x + dxa + dx;
+	                        obj.y3 = y - dya + dy;
+	                    }
+	                    else if (line_x > line_dest_x){
+	                        obj.x1 = x;
+	                        obj.y1 = y;
+	    
+	                        obj.x2 = x - dxa + dx;
+	                        obj.y2 = y + dya + dy;
+	    
+	                        obj.x3 = x - dxa - dx;
+	                        obj.y3 = y + dya - dy;
+	                    }
 	                }
 	            }
+	           
+	            c_svg = document.createElementNS(ns, "path");
+	            var p = "M " + obj.x1 +  "," + obj.y1 + " " + "L " + obj.x2 + "," + obj.y2 + " " + "L " + obj.x3 + "," + obj.y3 + " Z";
+	            c_svg.setAttribute("d", p);
+	            c_svg.setAttribute("id", _uuid.generate());
+	            c_svg.setAttribute("fill", config.ends.tri.fill);
+	            c_svg.setAttribute("stroke", config.ends.tri.stroke);
+	            c_svg.setAttribute("stroke-width", config.ends.tri.strokeWidth);
 	        }
-		const ns = "http://www.w3.org/2000/svg";
-		var c_svg = document.createElementNS(ns, "path");
-		var p = "M " + obj.x1 +  "," + obj.y1 + " " + "L " + obj.x2 + "," + obj.y2 + " " + "L " + obj.x3 + "," + obj.y3 + " Z";
-		c_svg.setAttribute("d", p);
-		c_svg.setAttribute("id", _uuid.generate());
-		this.line.svg.appendChild(c_svg);
-		if (target == "source")
-		    this.src_end_csvg = c_svg;
-		if (target == "destination")
-		    this.dest_end_csvg = c_svg;
+	        else if (type == "circle"){
+
+	            if (line_y == line_dest_y){
+	                if (line_x < line_dest_x){
+	                   obj.x = x + r;
+	                   obj.y = y;
+	                }
+	                else {
+	                    obj.x = x - r;
+	                    obj.y = y;
+	                }
+	            }
+	            else if (line_x == line_dest_x){
+	                if (line_y < line_dest_y){
+	                    obj.x = x;
+	                    obj.y = y + r;
+	                }
+	                else {
+	                    obj.x = x;
+	                    obj.y = y - r;
+	                }
+	            }
+	            else {
+	                var slope = (line_dest_y - line_y) / (line_dest_x - line_x);
+
+	                if (angle < 0){
+	                    if (line_x < line_dest_x){
+	                        obj.x = x + r * Math.cos(angle);
+	                        obj.y = slope * obj.x + (line_y - slope * line_x);
+	                    }
+	                    else if (line_x > line_dest_x){
+	                        obj.x = x - r * Math.cos(angle);
+	                        obj.y = slope * obj.x + (line_y - slope * line_x);
+	                    }
+	                }
+	                else {
+	                    if (line_x < line_dest_x){
+	                        obj.x = x + r * Math.cos(angle);
+	                        obj.y = slope * obj.x + (line_y - slope * line_x);
+	                    }
+	                    else if (line_x > line_dest_x){
+	                        obj.x = x - r * Math.cos(angle);
+	                        obj.y = slope * obj.x + (line_y - slope * line_x);
+	                    }
+	                }
+	            }
+	            c_svg = document.createElementNS(ns, "circle");
+	            c_svg.setAttribute("cx", obj.x);
+	            c_svg.setAttribute("cy", obj.y);
+	            c_svg.setAttribute("r", config.ends.circle.r);
+	            c_svg.setAttribute("fill", config.ends.circle.fill);
+	            c_svg.setAttribute("stroke", config.ends.circle.stroke);
+	            c_svg.setAttribute("stroke-width", config.ends.circle.strokeWidth);
+	            c_svg.setAttribute("id", _uuid.generate());
+	        }
+	        config.svg.appendChild(c_svg);
+	        if (target == "source")
+	            this.src_end_csvg = c_svg;
+	        if (target == "destination")
+	            this.dest_end_csvg = c_svg;
 	    }
 
 	    removeFromDOM(){
@@ -799,7 +912,7 @@
 		    src: 1,
 		    dest: 3,
 		    c1: {},
-		    c2: {}
+		    c2: {},
 		};
 		var inflexion = "horizontal";
 
@@ -814,38 +927,77 @@
 			obj.dest = 1;
 		    }
 		    if (source.shape.c_points[obj.src].y > destination.shape.c_points[obj.dest].y){
-	                if ((Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace)){
-	                    obj.src = 0;
-	                    obj.dest = 2;
-	                    inflexion = "vertical";
-	                }
+	            if ((Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace)){
+	                obj.src = 0;
+	                obj.dest = 2;
+	                inflexion = "vertical";
+	            }
+	        }
+	        else {
+	            if (Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace){
+	                obj.src = 2;
+	                obj.dest = 0;
+	                inflexion = "vertical";
+	            }
+	        }
+		}
+	    if (this.altpath){
+	        if ((obj.src == 1 && obj.dest == 3) ||
+	            (obj.src == 3 && obj.dest == 1)){
+	            if (source.shape.c_points[obj.src].y < destination.shape.c_points[obj.dest].y){
+	                obj.src = 2;
+	                obj.dest = 2;
 	            }
 	            else {
-	                if (Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace){
-	                    obj.src = 2;
-	                    obj.dest = 0;
-	                    inflexion = "vertical";
-	                }
+	                obj.src = 0;
+	                obj.dest = 0;
 	            }
-		}
+	        }
+	        else if ((obj.src == 0 && obj.dest == 2) ||
+	                (obj.src == 2 && obj.dest == 0)){
+	            obj.src = 3;
+	            obj.dest = 3;
+	        }
+	        inflexion = "altpath";
+	    }
 		if (inflexion == "vertical"){
 	            obj.c1.x = source.shape.c_points[obj.src].x;
 	            obj.c1.y = (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
 	            obj.c2.x = destination.shape.c_points[obj.dest].x;
 	            obj.c2.y =  (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
 	        }
-	        else if (inflexion == "horizontal"){
-	            obj.c1.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
-	            obj.c1.y = source.shape.c_points[obj.src].y;
-	            obj.c2.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
-	            obj.c2.y = destination.shape.c_points[obj.dest].y;
+	    else if (inflexion == "horizontal"){
+	        obj.c1.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
+	        obj.c1.y = source.shape.c_points[obj.src].y;
+	        obj.c2.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
+	        obj.c2.y = destination.shape.c_points[obj.dest].y;
+	    }
+	    else if (inflexion == "altpath"){
+	        if(obj.src == 0){
+	            obj.c1.x =  source.shape.c_points[obj.src].x;
+	            obj.c1.y = destination.shape.c_points[obj.dest].y - 2 * config.ends.minspace;
+	            obj.c2.x =  destination.shape.c_points[obj.dest].x;
+	            obj.c2.y = destination.shape.c_points[obj.dest].y - 2 * config.ends.minspace;
+	        }
+	        else if (obj.src == 2){
+	            obj.c1.x =  source.shape.c_points[obj.src].x;
+	            obj.c1.y = destination.shape.c_points[obj.dest].y + 2 * config.ends.minspace;
+	            obj.c2.x =  destination.shape.c_points[obj.dest].x;
+	            obj.c2.y = destination.shape.c_points[obj.dest].y + 2 * config.ends.minspace;
 	        }
 	        else {
-	            obj.c1.x = source.shape.c_points[obj.src].x;
+	            obj.c1.x =  source.shape.c_points[obj.src].x - 3 * config.ends.minspace;
 	            obj.c1.y = source.shape.c_points[obj.src].y;
-	            obj.c2.x = destination.shape.c_points[obj.dest].x;
+	            obj.c2.x =  source.shape.c_points[obj.src].x - 3 * config.ends.minspace;
 	            obj.c2.y = destination.shape.c_points[obj.dest].y;
 	        }
+	    }
+	    else {
+	        obj.c1.x = source.shape.c_points[obj.src].x;
+	        obj.c1.y = source.shape.c_points[obj.src].y;
+	        obj.c2.x = source.shape.c_points[obj.src].x;
+	        obj.c2.y = source.shape.c_points[obj.src].y;
+	    }   
 		return obj;
 	    }
 
@@ -868,13 +1020,17 @@
 	        this.line.dest_x = this.destination.x;
 	        this.line.dest_y = this.destination.y;
 
-		if (this.subtype == "broke"){
-		    this.line.c1.x = obj.c1.x;
+		if (this.subtype == "broke"){ 
+	            this.line.c1.x = obj.c1.x;
 	            this.line.c1.y = obj.c1.y;
 	            this.line.c2.x = obj.c2.x;
 	            this.line.c2.y = obj.c2.y;
-		    this.line.setPath([this.line.c1, this.line.c2]);
-		}
+	        if (Math.abs(this.line.y - this.line.dest_y) > 9  &&
+	            (obj.c1.x != obj.c2.x || obj.c1.y != obj.c2.y))
+	            this.line.setPathCur([this.line.c1, this.line.c2]);
+	        else
+	            this.line.setPath([this.line.c1, this.line.c2]);
+	    }
 
 		this.line.redraw();
 

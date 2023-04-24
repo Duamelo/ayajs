@@ -2,6 +2,7 @@ import  {_uuid}  from "../uuid.js";
 import {_Register}  from "../register.js"
 import { config } from "../../config.js";
 import { Line } from "./line.js";
+import { Text } from "./text.js";
 
 /**
  * @class Link
@@ -73,6 +74,8 @@ class Link
 	if (this.end_dest)
 	    this.addEnd(this.end_dest, "destination");
 
+    this.text = null;
+    this.text_c_svg = null;
 	_Register.add(this);
     }
 
@@ -293,12 +296,91 @@ class Link
             this.dest_end_csvg = c_svg;
     }
 
+    addText(text, position){
+        if (!text)
+            return;
+        this.text = text;
+        if (position != "top" && position != "bottom" && position != "middle")
+            position = "top";
+        this.position = position;
+        if (!this.text_c_svg){
+            var coordonate = this.textCoordonate();
+            this.text_c_svg = new Text(_uuid.generate(), coordonate.x, coordonate.y, 
+                                        this.text, 0, coordonate.dest_x, coordonate.dest_y);
+            this.text_c_svg.draw();
+        }
+        else{
+            var coordonate = this.textCoordonate();
+            this.text_c_svg.x = coordonate.x;
+            this.text_c_svg.y = coordonate.y;
+            this.text_c_svg.dest_x = coordonate.dest_x;
+            this.text_c_svg.dest_y = coordonate.dest_y;
+            this.text_c_svg.text = this.text;
+            this.text_c_svg.redraw();
+        }
+    }
+
+    textCoordonate(){
+        var c = {
+            x: 0,
+            y: 0,
+            dest_x: 0,
+            dest_y: 0
+        };
+
+        if (this.subtype == "broke"){
+            if (this.line.c2.y == this.line.dest_y && this.line.dest_x > this.line.c2.x){
+                //path c2 dest
+                c.x = this.line.c2.x;
+                c.y = this.line.c2.y;
+                c.dest_x = this.line.dest_x;
+                c.dest_y = this.line.dest_y;
+            }
+            else if (this.line.c2.y == this.line.dest_y && this.line.dest_x < this.line.c2.x){
+                //path c2 dest
+                c.x = this.line.dest_x;
+                c.y = this.line.dest_y;
+                c.dest_x = this.line.c2.x;
+                c.dest_y = this.line.c2.y;
+            }
+            else if (this.line.c1.x < this.line.c2.x){
+                // path c1 c2
+                c.x = this.line.c1.x;
+                c.y = this.line.c1.y;
+                c.dest_x = this.line.c2.x;
+                c.dest_y = this.line.c2.y;
+            }
+            else {
+                //path c2 c1
+                c.x = this.line.c2.x;
+                c.y = this.line.c2.y;
+                c.dest_x = this.line.c1.x;
+                c.dest_y = this.line.c1.y;
+            }
+            if (this.position == "top"){
+                c.y -= 10;
+                c.dest_y -= 10;
+            }
+            else if (this.position == "bottom"){
+                c.y += 10 + 12; 
+                c.dest_y += 10 + 12; // 12 for text height
+            }
+            else{
+                c.y += 15/2 - 3;
+                c.dest_y += 15/2 - 3;
+            }
+        }
+        return c;
+    }
+
     removeFromDOM(){
         this.line.removeFromDOM();
         if (this.src_end_csvg)
             config.svg.removeChild(this.src_end_csvg);
         if (this.dest_end_csvg)
             config.svg.removeChild(this.dest_end_csvg);
+        if (this.text)
+            this.text_c_svg.removeFromDOM();
         var lk = _Register.find(this.uuid);
         _Register.clear(lk.uuid);
     }
@@ -428,13 +510,22 @@ class Link
             this.line.setPath([this.line.c1, this.line.c2]);
     }
 
-	this.line.redraw();
+        this.line.redraw();
 
-	if (this.end_start)
-	    this.addEnd(this.end_start, "source");
+        if (this.end_start)
+            this.addEnd(this.end_start, "source");
 
-	if (this.end_dest)
-	    this.addEnd(this.end_dest, "destination");
+        if (this.end_dest)
+            this.addEnd(this.end_dest, "destination");
+
+        if (this.text != undefined){ // text must be different of ""
+            var c = this.textCoordonate();
+            this.text_c_svg.x = c.x;
+            this.text_c_svg.y = c.y;
+            this.text_c_svg.dest_x = c.dest_x;
+            this.text_c_svg.dest_y = c.dest_y;
+            this.text_c_svg.redraw();
+        }
     }
 
     optimal(src, dest){

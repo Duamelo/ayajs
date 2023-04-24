@@ -50,26 +50,23 @@
 	    },
 	    link: {
 		type: "broke",
-	        end_start : "triangle",
+	        end_start : "cirle",
 	        end_dest : "triangle",
 	    },
 	    text : {
 	        fill : "black",
-	        fontfamily: "helvetica",
-	        fontsize: 15,
-	        size: 80,
-	        fillOpacity : "100",
-	        stroke : "black",
-	        strokeWidth : "0.5pt",
-	        strokeOpacity : 100,
-	        strokeDasharray : 10.5,
-	        strokeDashoffset : 10.5,
+	        fontfamily: "sans-serif",
+	        fontstyle: "normal", // normal || italic || oblic
+	        fontsize: "medium", // smaller || value in em unit
+	        fontweight: "normal", // normal || bold || bolder || lighter
+	        size: 100,
+	        textanchor: "middle",  //start || middle || end 
 	    },
 	    ends : {
 	        tri: {
 	            h: 8,
 	            base: 8,
-	            fill: "white",
+	            fill: "black",
 	            stroke: "black",
 	            strokeWidth: "1px"
 	        },
@@ -411,9 +408,6 @@
 	        this.c_svg.setAttribute("fill", this.config.line.fill);
 	        this.c_svg.setAttribute("stroke", this.config.form.stroke);
 	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.line.strokeWidth);
-	        // this.c_svg.setAttributeNS(null, "stroke-linejoin","round");
-	        this.c_svg.setAttribute("class", "strokelinejoin");
-
 
 	        this.svg.appendChild(this.c_svg);
 
@@ -434,6 +428,7 @@
 	        });
 	        this.addEvent("mouseover", (e) => {
 	            Events.mouseovercb(e);
+	            this.c_svg.setAttribute("class","move");
 	        });
 	    }
 
@@ -608,6 +603,186 @@
 	}
 
 	/**
+	 * @class
+	 * 
+	 * @description
+	 * 
+	 */
+	class Text{
+	    constructor(uuid, x = 0, y = 0, text = "text", size = 0, dest_x, dest_y){
+
+	        this.uuid = uuid;
+
+	        this.x = x;
+	        this.y = y;
+
+	        if (dest_x && dest_y){
+	            this.dest_x = dest_x;
+	            this.dest_y =dest_y;
+	        }
+	        else if (size)
+	            this.size = size;
+	        else 
+	            this.size = config.text.size;
+
+	        this.text = text;
+
+	        this.type = 'text';
+
+	        this.svg = config.svg;
+	        
+	        
+	        this.events = {};
+	        
+	        this.offsetX = 0;
+	        this.offsetY = 0;
+	        
+	        this.centerX = 0;
+	        this.centerY = 0;
+	        
+	        this.angle = 0;
+	        
+	        this.title = "";
+	        
+	        this.c_svg = null;
+	        this.textPath = null;
+	        this.path_text = null;
+	    };
+
+	    addEvent(event, callback){
+	        this.c_svg.addEventListener(event, callback);
+	        this.events[event] = callback;
+	    }
+	    
+	    deleteEvent(event){
+	        var callback = this.events[event];
+	        this.c_svg.removeEventListener(event, callback);
+	        delete this.events[event];
+	    }
+
+	    /**
+	     * *@description
+	     * This method allows us to delete all events defined on the c_svg property.
+	     */
+	    deleteAllEvents(){
+	        Object.keys(this.events).map((event) => {
+	            this.deleteEvent(event);
+	        });
+	    }
+
+	    setStyles(o){
+	        if (o.fill)
+	          this.c_svg.setAttribute("fill", o.fill);
+	        if (o.stroke)
+	          this.c_svg.setAttribute("stroke", o.stroke);
+	        if (o.strokewidth)
+	          this.c_svg.setAttribute("stroke-width", o.strokewidth);
+	        if (o.fillopacity)
+	          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
+	        if (o.strokeopacity)
+	          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
+	          if (o.strokedasharray)
+	          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
+	        if (o.strokedashoffset)
+	          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
+	        if (o.fontsize)
+	            this.c_svg.setAttribute("font-size", o.fontsize);
+	        if (o.fontfamily)
+	            this.c_svg.setAttribute("font-family", o.fontfamily);
+	        if (o.fontstyle)        
+	            this.c_svg.setAttribute("font-style", o.fontstyle);
+	        if (o.wordspacing)
+	            this.c_svg.setAttribute("word-spacing", o.wordspacing);
+	        if (o.letterspacing)
+	            this.c_svg.setAttribute("letter-spacing", o.letterspacing);
+	        if (o.textlength)
+	            this.c_svg.setAttributeNS(null, "textLength", o.textlength);
+	    }
+
+	    draw(){
+	        const ns = "http://www.w3.org/2000/svg";
+	        var p = "M " + this.x + "," + this.y + " ";
+
+	        if (this.dest_x)
+	            p += this.dest_x + "," + this.dest_y;
+	        else
+	            p += this.x + this.size + "," + this.y;
+
+	        this.path_text = document.createElementNS(ns,'path');
+	        this.path_text.setAttribute("id", _uuid.generate());
+	        this.path_text.setAttribute("d", p);
+	        this.svg.appendChild(this.path_text);
+
+	        this.c_svg = document.createElementNS(ns, "text");
+	        this.c_svg.setAttribute("id", _uuid.generate());
+	        this.c_svg.setAttributeNS(null, "letter-spacing", "0");
+	        this.c_svg.setAttributeNS(null, "font-family", config.text.fontfamily);
+	        this.c_svg.setAttributeNS(null, "font-size", config.text.fontsize);
+	        this.c_svg.setAttributeNS(null, "font-style", config.text.fontstyle);
+
+	        this.textPath = document.createElementNS(ns, "textPath");
+	        this.textPath.setAttribute("id", _uuid.generate());
+	        this.textPath.setAttribute("href", "#" + this.path_text.getAttribute("id"));
+	        this.textPath.setAttribute("startOffset", "50%");
+	        this.textPath.setAttribute("text-anchor", config.text.textanchor);
+	        this.textPath.textContent = this.text;
+
+	        this.c_svg.appendChild(this.textPath);
+	        this.svg.appendChild(this.c_svg);
+
+	        this.title = document.createElementNS(ns, "title");
+
+	        this.title.textContent = this.text;
+
+	        this.c_svg.appendChild(this.title);
+
+	        this.svg.appendChild(this.c_svg);
+	    }
+
+	    redraw(){
+	        this.path_text.remove();
+	        this.c_svg.remove();
+	        this.textPath.remove();
+	        this.draw();
+	    }
+	    
+	    shift(dx, dy){
+	        this.x += dx;
+	        this.y += dy;
+	        if (this.dest_x){
+	            this.dest_x += dx;
+	            this.dest_y += dy;
+	        }
+	    }
+	    
+	    removeFromDOM(){
+	        this.path_text.remove();
+	        this.c_svg.remove();
+	        this.textPath.remove();
+	    }
+
+	    setOffsetX(x){
+	        this.offsetX = x;
+	    }
+
+	    setOffsetY(y){
+	        this.offsetY = y;
+	    }
+
+	    setText(text){
+	        this.text = text;
+	    }
+
+	    getOffsetX(){
+	        return this.offsetX;
+	    }
+
+	    getOffsetY(){
+	        return this.offsetY;
+	    }
+	}
+
+	/**
 	 * @class Link
 	 */
 	class Link
@@ -677,6 +852,8 @@
 		if (this.end_dest)
 		    this.addEnd(this.end_dest, "destination");
 
+	    this.text = null;
+	    this.text_c_svg = null;
 		_Register.add(this);
 	    }
 
@@ -897,12 +1074,91 @@
 	            this.dest_end_csvg = c_svg;
 	    }
 
+	    addText(text, position){
+	        if (!text)
+	            return;
+	        this.text = text;
+	        if (position != "top" && position != "bottom" && position != "middle")
+	            position = "top";
+	        this.position = position;
+	        if (!this.text_c_svg){
+	            var coordonate = this.textCoordonate();
+	            this.text_c_svg = new Text(_uuid.generate(), coordonate.x, coordonate.y, 
+	                                        this.text, 0, coordonate.dest_x, coordonate.dest_y);
+	            this.text_c_svg.draw();
+	        }
+	        else {
+	            var coordonate = this.textCoordonate();
+	            this.text_c_svg.x = coordonate.x;
+	            this.text_c_svg.y = coordonate.y;
+	            this.text_c_svg.dest_x = coordonate.dest_x;
+	            this.text_c_svg.dest_y = coordonate.dest_y;
+	            this.text_c_svg.text = this.text;
+	            this.text_c_svg.redraw();
+	        }
+	    }
+
+	    textCoordonate(){
+	        var c = {
+	            x: 0,
+	            y: 0,
+	            dest_x: 0,
+	            dest_y: 0
+	        };
+
+	        if (this.subtype == "broke"){
+	            if (this.line.c2.y == this.line.dest_y && this.line.dest_x > this.line.c2.x){
+	                //path c2 dest
+	                c.x = this.line.c2.x;
+	                c.y = this.line.c2.y;
+	                c.dest_x = this.line.dest_x;
+	                c.dest_y = this.line.dest_y;
+	            }
+	            else if (this.line.c2.y == this.line.dest_y && this.line.dest_x < this.line.c2.x){
+	                //path c2 dest
+	                c.x = this.line.dest_x;
+	                c.y = this.line.dest_y;
+	                c.dest_x = this.line.c2.x;
+	                c.dest_y = this.line.c2.y;
+	            }
+	            else if (this.line.c1.x < this.line.c2.x){
+	                // path c1 c2
+	                c.x = this.line.c1.x;
+	                c.y = this.line.c1.y;
+	                c.dest_x = this.line.c2.x;
+	                c.dest_y = this.line.c2.y;
+	            }
+	            else {
+	                //path c2 c1
+	                c.x = this.line.c2.x;
+	                c.y = this.line.c2.y;
+	                c.dest_x = this.line.c1.x;
+	                c.dest_y = this.line.c1.y;
+	            }
+	            if (this.position == "top"){
+	                c.y -= 10;
+	                c.dest_y -= 10;
+	            }
+	            else if (this.position == "bottom"){
+	                c.y += 10 + 12; 
+	                c.dest_y += 10 + 12; // 12 for text height
+	            }
+	            else {
+	                c.y += 15/2 - 3;
+	                c.dest_y += 15/2 - 3;
+	            }
+	        }
+	        return c;
+	    }
+
 	    removeFromDOM(){
 	        this.line.removeFromDOM();
 	        if (this.src_end_csvg)
 	            config.svg.removeChild(this.src_end_csvg);
 	        if (this.dest_end_csvg)
 	            config.svg.removeChild(this.dest_end_csvg);
+	        if (this.text)
+	            this.text_c_svg.removeFromDOM();
 	        var lk = _Register.find(this.uuid);
 	        _Register.clear(lk.uuid);
 	    }
@@ -1032,13 +1288,22 @@
 	            this.line.setPath([this.line.c1, this.line.c2]);
 	    }
 
-		this.line.redraw();
+	        this.line.redraw();
 
-		if (this.end_start)
-		    this.addEnd(this.end_start, "source");
+	        if (this.end_start)
+	            this.addEnd(this.end_start, "source");
 
-		if (this.end_dest)
-		    this.addEnd(this.end_dest, "destination");
+	        if (this.end_dest)
+	            this.addEnd(this.end_dest, "destination");
+
+	        if (this.text != undefined){ // text must be different of ""
+	            var c = this.textCoordonate();
+	            this.text_c_svg.x = c.x;
+	            this.text_c_svg.y = c.y;
+	            this.text_c_svg.dest_x = c.dest_x;
+	            this.text_c_svg.dest_y = c.dest_y;
+	            this.text_c_svg.redraw();
+	        }
 	    }
 
 	    optimal(src, dest){
@@ -3425,232 +3690,6 @@
 	}
 
 	/**
-	 * @class
-	 * 
-	 * @description
-	 * 
-	 */
-	class Text{
-	    constructor(uuid, x = 0, y = 0, text = "text", size = 0){
-
-	        this.uuid = uuid;
-
-	        this.x = x;
-	        this.y = y;
-
-	        this.size = size;
-
-	        this.text = text;
-
-	        this.type = 'text';
-
-	        this.config = config;
-
-	        this.svg = this.config.svg;
-	        this.c_svg = "";
-
-	        this.events = {};
-
-	        this.offsetX = 0;
-	        this.offsetY = 0;
-
-	        this.centerX = 0;
-	        this.centerY = 0;
-
-	        this.parentWidth = 0;
-	        this.parentHeight = 0;
-
-	        this.parentX = 0;
-	        this.parentY = 0;
-
-	        this.angle = 0;
-
-	        this.tspan = "";
-	        this.title = "";
-
-	        this.path_id = null;
-	    };
-
-	    addEvent(event, callback){
-	        this.c_svg.addEventListener(event, callback);
-	        this.events[event] = callback;
-	    }
-	    
-	    deleteEvent(event){
-	        var callback = this.events[event];
-	        this.c_svg.removeEventListener(event, callback);
-	        delete this.events[event];
-	    }
-
-	    /**
-	     * *@description
-	     * This method allows us to delete all events defined on the c_svg property.
-	     */
-	    deleteAllEvents(){
-	        Object.keys(this.events).map((event) => {
-	            this.deleteEvent(event);
-	        });
-	    }
-
-	    setRotateCenter(centerX, centerY){
-	        this.centerX = centerX;
-	        this.centerY = centerY;
-	    }
-
-	    setRotateAngle(angle){
-	        this.angle = angle;
-	    }
-
-	    setPath(id){
-	        this.path_id = id;
-	    }
-
-	    setStyles(o){
-	        if (o.fill)
-	          this.c_svg.setAttribute("fill", o.fill);
-	        if (o.stroke)
-	          this.c_svg.setAttribute("stroke", o.stroke);
-	        if (o.strokewidth)
-	          this.c_svg.setAttribute("stroke-width", o.strokewidth);
-	        if (o.fillopacity)
-	          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
-	        if (o.strokeopacity)
-	          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-	          if (o.strokedasharray)
-	          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
-	        if (o.strokedashoffset)
-	          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
-	        if (o.fontsize)
-	            this.c_svg.setAttribute("font-size", o.fontsize);
-	        if (o.fontfamily)
-	            this.c_svg.setAttribute("font-family", o.fontfamily);
-	        if (o.fontstyle)        
-	            this.c_svg.setAttribute("font-style", o.fontstyle);
-	        if (o.wordspacing)
-	            this.c_svg.setAttribute("word-spacing", o.wordspacing);
-	        if (o.letterspacing)
-	            this.c_svg.setAttribute("letter-spacing", o.letterspacing);
-	        if (o.textlength)
-	            this.c_svg.setAttributeNS(null, "textLength", o.textlength);
-	    }
-	    
-
-	    draw(){
-	        const svgns = "http://www.w3.org/2000/svg";
-
-	        this.c_svg = document.createElementNS(svgns, "text");
-	        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-	        this.c_svg.setAttributeNS(null, "textLength", this.size || this.config.text.size);
-	        this.c_svg.setAttributeNS(null, "id", this.uuid);
-	        this.c_svg.setAttribute("font-family", this.config.text.fontfamily);
-	        this.c_svg.setAttribute("font-size", this.config.text.fontsize);
-	        this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
-	        this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);
-	        this.c_svg.setAttributeNS(null, "stroke-width", this.config.text.strokeWidth);
-	        this.c_svg.setAttributeNS(null, "fill-opacity", this.config.text.fillOpacity);
-	        this.c_svg.setAttributeNS(null, "stroke-dasharray", this.config.text.strokeDasharray);
-	        this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
-	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
-
-	        this.title = document.createElementNS(svgns, "title");
-
-	        this.title.textContent = this.text;
-
-	        this.c_svg.textContent = this.text;
-
-	        this.c_svg.appendChild(this.title);
-
-	        // this.updateWidthText();
-	        this.svg.appendChild(this.c_svg);
-	    }
-
-	    redraw(){
-	    	this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-	        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-	        this.c_svg.setAttributeNS(null, "textLength", this.size);
-		    this.c_svg.textContent = this.text;
-	        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
-	    }
-	    
-
-	    updateWidthText(marge =  5){
-	        var subString = "", isSoLong = false;
-	        // lenght of text in pixels  || 6 pixels wide by 8 pixels high. 
-	        var validLength = this.parentWidth + this.parentX - this.offsetX;
-	        var deltaLength =( validLength < (this.text.length * 6) ) ? (validLength / 6) : 0;
-
-	        if(deltaLength == 0){
-	            marge = 0;
-	            subString = this.text.substring(0,(this.text.length));
-	        }
-	        else {
-	            subString = this.text.substring(0,(deltaLength  - marge));
-	            isSoLong  = true;
-	        }
-
-	        if(isSoLong)
-	            subString = subString.concat('...');
-
-	        this.tspan.textContent = subString;
-	        this.title.textContent = this.text;
-	    }
-
-	    shift(dx, dy){
-	        this.x += dx;
-	        this.y += dy;
-	    }
-	    
-	    removeFromDOM(){
-	        this.c_svg.textContent = "";
-	    }
-
-	    setOffsetX(x){
-	        this.offsetX = x;
-	    }
-
-	    setOffsetY(y){
-	        this.offsetY = y;
-	    }
-
-	    setText(text){
-	        this.text = text;
-	    }
-
-	    getOffsetX(){
-	        return this.offsetX;
-	    }
-
-	    getOffsetY(){
-	        return this.offsetY;
-	    }
-
-	    getParentWidth(){
-	        return this.parentWidth;
-	    }
-
-	    setParentWidth(width){
-	        this.parentWidth = width;
-	    }
-
-	    getParentHeight(){
-	        return this.parentHeight;
-	    }
-
-	    setParentHeight(height){
-	        this.parentHeight = height;
-	    }
-
-	    setParentX(x){
-	        this.parentX = x;
-	    }
-
-	    setParentY(y){
-	        this.parentY = y;
-	    }
-	}
-
-	/**
 	 * @class FactoryShape
 	 */
 	class Factory
@@ -3958,7 +3997,7 @@
 	        this.grid.redraw();
 	    }
 
-	    _uuid(){
+	    uuid(){
 	        return _uuid;
 	    }
 
@@ -3982,8 +4021,8 @@
 	        return new Circle(_uuid.generate(), x, y, r);
 	    }
 
-	    Text(x = 0, y = 0, text = "text", size = 100){
-	        return new Text(_uuid.generate(), x, y, text, size);
+	    Text(x = 0, y = 0, text = "text", size = 100, dest_x, dest_y){
+	        return new Text(_uuid.generate(), x, y, text, size, dest_x, dest_y);
 	    }
 
 	    Line(x=0, y=0, dest_x = x, dest_y = y){

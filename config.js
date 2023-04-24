@@ -44,26 +44,23 @@ var config =  {
     },
     link: {
 	type: "broke",
-        end_start : "triangle",
+        end_start : "cirle",
         end_dest : "triangle",
     },
     text : {
         fill : "black",
-        fontfamily: "helvetica",
-        fontsize: 15,
-        size: 80,
-        fillOpacity : "100",
-        stroke : "black",
-        strokeWidth : "0.5pt",
-        strokeOpacity : 100,
-        strokeDasharray : 10.5,
-        strokeDashoffset : 10.5,
+        fontfamily: "sans-serif",
+        fontstyle: "normal", // normal || italic || oblic
+        fontsize: "medium", // smaller || value in em unit
+        fontweight: "normal", // normal || bold || bolder || lighter
+        size: 100,
+        textanchor: "middle",  //start || middle || end 
     },
     ends : {
         tri: {
             h: 8,
             base: 8,
-            fill: "white",
+            fill: "black",
             stroke: "black",
             strokeWidth: "1px"
         },

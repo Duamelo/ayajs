@@ -184,9 +184,6 @@ class Line extends Shape{
         this.c_svg.setAttribute("fill", this.config.line.fill);
         this.c_svg.setAttribute("stroke", this.config.form.stroke);
         this.c_svg.setAttributeNS(null, "stroke-width", this.config.line.strokeWidth);
-        // this.c_svg.setAttributeNS(null, "stroke-linejoin","round");
-        this.c_svg.setAttribute("class", "strokelinejoin");
-
 
         this.svg.appendChild(this.c_svg);
 
@@ -207,6 +204,7 @@ class Line extends Shape{
         });
         this.addEvent("mouseover", (e) => {
             Events.mouseovercb(e);
+            this.c_svg.setAttribute("class","move");
         });
     }
 

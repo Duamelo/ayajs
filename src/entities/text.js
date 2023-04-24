@@ -1,4 +1,5 @@
 import { config } from "../../config";
+import { _uuid } from "../uuid";
 
 /**
  * @class
@@ -7,44 +8,44 @@ import { config } from "../../config";
  * 
  */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text", size = 0){
+    constructor(uuid, x = 0, y = 0, text = "text", size = 0, dest_x, dest_y){
 
         this.uuid = uuid;
 
         this.x = x;
         this.y = y;
 
-        this.size = size;
+        if (dest_x && dest_y){
+            this.dest_x = dest_x;
+            this.dest_y =dest_y;
+        }
+        else if (size)
+            this.size = size;
+        else 
+            this.size = config.text.size;
 
         this.text = text;
 
         this.type = 'text';
 
-        this.config = config;
-
-        this.svg = this.config.svg;
-        this.c_svg = "";
-
+        this.svg = config.svg;
+        
+        
         this.events = {};
-
+        
         this.offsetX = 0;
         this.offsetY = 0;
-
+        
         this.centerX = 0;
         this.centerY = 0;
-
-        this.parentWidth = 0;
-        this.parentHeight = 0;
-
-        this.parentX = 0;
-        this.parentY = 0;
-
+        
         this.angle = 0;
-
-        this.tspan = "";
+        
         this.title = "";
-
-        this.path_id = null;
+        
+        this.c_svg = null
+        this.textPath = null;
+        this.path_text = null;
     };
 
     addEvent(event, callback){
@@ -66,19 +67,6 @@ class Text{
         Object.keys(this.events).map((event) => {
             this.deleteEvent(event);
         });
-    }
-
-    setRotateCenter(centerX, centerY){
-        this.centerX = centerX;
-        this.centerY = centerY;
-    }
-
-    setRotateAngle(angle){
-        this.angle = angle;
-    }
-
-    setPath(id){
-        this.path_id = id;
     }
 
     setStyles(o){
@@ -109,76 +97,67 @@ class Text{
         if (o.textlength)
             this.c_svg.setAttributeNS(null, "textLength", o.textlength);
     }
-    
 
     draw(){
-        const svgns = "http://www.w3.org/2000/svg";
+        const ns = "http://www.w3.org/2000/svg";
+        var p = "M " + this.x + "," + this.y + " ";
 
-        this.c_svg = document.createElementNS(svgns, "text");
-        this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-        this.c_svg.setAttributeNS(null, "textLength", this.size || this.config.text.size);
-        this.c_svg.setAttributeNS(null, "id", this.uuid);
-        this.c_svg.setAttribute("font-family", this.config.text.fontfamily);
-        this.c_svg.setAttribute("font-size", this.config.text.fontsize);
-        this.c_svg.setAttributeNS(null, "fill", this.config.text.fill);
-        this.c_svg.setAttributeNS(null, "stroke", this.config.text.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", this.config.text.strokeWidth);
-        this.c_svg.setAttributeNS(null, "fill-opacity", this.config.text.fillOpacity);
-        this.c_svg.setAttributeNS(null, "stroke-dasharray", this.config.text.strokeDasharray);
-        this.c_svg.setAttributeNS(null, "stroke-dashoffset", this.config.text.strokeDashoffset);
-        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+        if (this.dest_x)
+            p += this.dest_x + "," + this.dest_y;
+        else
+            p += this.x + this.size + "," + this.y;
 
-        this.title = document.createElementNS(svgns, "title");
+        this.path_text = document.createElementNS(ns,'path');
+        this.path_text.setAttribute("id", _uuid.generate());
+        this.path_text.setAttribute("d", p);
+        this.svg.appendChild(this.path_text);
+
+        this.c_svg = document.createElementNS(ns, "text");
+        this.c_svg.setAttribute("id", _uuid.generate());
+        this.c_svg.setAttributeNS(null, "letter-spacing", "0");
+        this.c_svg.setAttributeNS(null, "font-family", config.text.fontfamily);
+        this.c_svg.setAttributeNS(null, "font-size", config.text.fontsize);
+        this.c_svg.setAttributeNS(null, "font-style", config.text.fontstyle);
+
+        this.textPath = document.createElementNS(ns, "textPath");
+        this.textPath.setAttribute("id", _uuid.generate());
+        this.textPath.setAttribute("href", "#" + this.path_text.getAttribute("id"));
+        this.textPath.setAttribute("startOffset", "50%");
+        this.textPath.setAttribute("text-anchor", config.text.textanchor);
+        this.textPath.textContent = this.text;
+
+        this.c_svg.appendChild(this.textPath);
+        this.svg.appendChild(this.c_svg);
+
+        this.title = document.createElementNS(ns, "title");
 
         this.title.textContent = this.text;
 
-        this.c_svg.textContent = this.text;
-
         this.c_svg.appendChild(this.title);
 
-        // this.updateWidthText();
         this.svg.appendChild(this.c_svg);
     }
 
     redraw(){
-    	this.c_svg.setAttributeNS(null, "x", this.x + this.offsetX);
-        this.c_svg.setAttributeNS(null, "y", this.y + this.offsetY);
-        this.c_svg.setAttributeNS(null, "textLength", this.size);
-	    this.c_svg.textContent = this.text;
-        this.c_svg.setAttribute("transform", "rotate(" + `${this.angle}` + "," + `${this.centerX}` + "," + `${this.centerY}` + ")");
+        this.path_text.remove();
+        this.c_svg.remove();
+        this.textPath.remove();
+        this.draw();
     }
     
-
-    updateWidthText(marge =  5){
-        var subString = "", isSoLong = false;
-        // lenght of text in pixels  || 6 pixels wide by 8 pixels high. 
-        var validLength = this.parentWidth + this.parentX - this.offsetX;
-        var deltaLength =( validLength < (this.text.length * 6) ) ? (validLength / 6) : 0;
-
-        if(deltaLength == 0){
-            marge = 0;
-            subString = this.text.substring(0,(this.text.length));
-        }
-        else{
-            subString = this.text.substring(0,(deltaLength  - marge));
-            isSoLong  = true;
-        }
-
-        if(isSoLong)
-            subString = subString.concat('...');
-
-        this.tspan.textContent = subString;
-        this.title.textContent = this.text;
-    }
-
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
+        if (this.dest_x){
+            this.dest_x += dx;
+            this.dest_y += dy;
+        }
     }
     
     removeFromDOM(){
-        this.c_svg.textContent = "";
+        this.path_text.remove();
+        this.c_svg.remove();
+        this.textPath.remove();
     }
 
     setOffsetX(x){
@@ -199,30 +178,6 @@ class Text{
 
     getOffsetY(){
         return this.offsetY;
-    }
-
-    getParentWidth(){
-        return this.parentWidth;
-    }
-
-    setParentWidth(width){
-        this.parentWidth = width;
-    }
-
-    getParentHeight(){
-        return this.parentHeight;
-    }
-
-    setParentHeight(height){
-        this.parentHeight = height;
-    }
-
-    setParentX(x){
-        this.parentX = x;
-    }
-
-    setParentY(y){
-        this.parentY = y;
     }
 }
 export {Text};

@@ -63,7 +63,3 @@ body {
 .drawing{
     cursor: crosshair;
 }
-
-.strokelinejoin{
-    stroke-linejoin: round;
-}

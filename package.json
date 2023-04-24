@@ -1,6 +1,6 @@
 {
   "name": "ayajs",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "A flexible JavaScript library for building any kind of diagrams quickly and in a programmatic way",
   "module": "build/aya.module.js",
   "type": "module",

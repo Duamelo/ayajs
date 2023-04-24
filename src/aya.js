@@ -62,7 +62,7 @@ class Init{
         this.grid.redraw();
     }
 
-    _uuid(){
+    uuid(){
         return _uuid;
     }
 
@@ -86,8 +86,8 @@ class Init{
         return new Circle(_uuid.generate(), x, y, r);
     }
 
-    Text(x = 0, y = 0, text = "text", size = 100){
-        return new Text(_uuid.generate(), x, y, text, size);
+    Text(x = 0, y = 0, text = "text", size = 100, dest_x, dest_y){
+        return new Text(_uuid.generate(), x, y, text, size, dest_x, dest_y);
     }
 
     Line(x=0, y=0, dest_x = x, dest_y = y){

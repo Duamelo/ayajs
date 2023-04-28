@@ -62,8 +62,8 @@ class Init{
         this.grid.redraw();
     }
 
-    uuid(){
-        return _uuid;
+    id(){
+        return _uuid.generate();
     }
 
     Component(type, props){

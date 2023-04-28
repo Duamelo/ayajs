@@ -2181,6 +2181,11 @@
 	      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
 	  }
 
+	  arroundCorners(rx = 3, ry = 3){
+	    this.c_svg.setAttributeNS(null, "rx", rx);
+	    this.c_svg.setAttributeNS(null, "ry", ry);
+	  }
+
 	  /**
 	   * @description
 	   * 

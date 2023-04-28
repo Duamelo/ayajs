@@ -63,6 +63,7 @@ class Component
 
   remove(){
     this.shape.removeFromDOM();
+    _Register.clear(this.uuid);
   }
 }
 export {Component};

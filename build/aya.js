@@ -2261,18 +2261,18 @@
 	    });
 	  }
 	    
-	    removeFromDOM(){
-		this.c_points.map((pt)=>{
-		    pt.removeFromDOM();
-		});
-		this.vertex.map((vt)=>{
-		    vt.removeFromDOM();
-		});
-		this.children.map(({child}) => {
-	            child.removeFromDOM();
-		});
-		this.svg.removeChild(this.c_svg);
-	    }
+	  removeFromDOM(){
+	    this.c_points.map((pt)=>{
+	      pt.removeFromDOM();
+	    });
+	    this.vertex.map((vt)=>{
+	      vt.removeFromDOM();
+	    });
+	    this.children.map(({child}) => {
+	      child.removeFromDOM();
+	    });
+	    this.svg.removeChild(this.c_svg);
+	  }
 	    
 	  setRotateCenter(centerX, centerY){
 	    this.centerX = centerX;
@@ -3788,6 +3788,7 @@
 
 	  remove(){
 	    this.shape.removeFromDOM();
+	    _Register.clear(this.uuid);
 	  }
 	}
 

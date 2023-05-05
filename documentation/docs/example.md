@@ -1,6 +1,4 @@
----
-layout: home
----
+
 <style scoped>
 
 body{
@@ -56,18 +54,9 @@ p{
 }
 </style>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-                                                      More examples are comming soon. Be patient!
+ More examples are comming soon. Be patient please!
 
 <body>
-<br/>
-<br/>
 <br/>
 <br/>
     <div class="container">
@@ -75,10 +64,10 @@ p{
         <img src="./images/game_of_life.gif" width="400px" height="100px">
       </div>
       <div class="box">
-        <img src="./images/game_of_life.gif" width="400px" height="100px">
+        <img src="./images/petri.gif" width="400px" height="100px">
       </div>
-      <div class="box">
-        <img src="./images/game_of_life.gif" width="400px" height="100px">
+        <div class="box">
+        <img src="./images/strategy.gif" width="400px" height="100px">
       </div>
     </div>
   </body>

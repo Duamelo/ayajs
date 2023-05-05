@@ -1,4 +1,4 @@
-## aya.Link(src_point, dest_point, line)
+## aya.Link(src_id, dest_id, userconfig = {})
 
 <style>
 .empty-space{
@@ -26,19 +26,19 @@
     </thead>
     <tbody>
     <tr>
-        <td class="type_style">Point</td>
-        <td>src_point</td>
-        <td>The starting point of the link.</td>
+        <td class="type_style">String</td>
+        <td>src_id</td>
+        <td>id of the source component</td>
     </tr>
     <tr>
-        <td class="type_style">Point</td>
-        <td>dest_point</td>
-        <td>The end point of the link.</td>
+        <td class="type_style">String</td>
+        <td>dest_id</td>
+        <td>id of the source component</td>
     </tr>
      <tr>
-        <td class="type_style">Line</td>
-        <td>line</td>
-        <td>The line that represents the link.</td>
+        <td class="type_style">Object</td>
+        <td>userconfig</td>
+        <td>local configuration of the link</td>
     </tr>
     </tbody>
 </table>
@@ -49,15 +49,13 @@ By default, aya registers every link created.
 The link class exists to represent the link between two components.
 
 Here is an example of how you can create a link between two rectangles.
+Here we specified the extremities of the link in the userconfig object.
 
 ```js
 <script>
     var rec1 = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
     var rec2 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-
-    var line = aya.Line(rec1.form.c_points[1].x, rec1.form.c_points[1].y, rec2.form.c_points[3].x, rec2.form.c_points[3].y);
-    line.draw();
-    var lk = aya.Link(rec1.form.c_points[1], rec2.form.c_points[3], line);
+    var lk = aya.Link(rec1.shape.uuid, rec2.shape.uuid, {end_start: "triangle", end_dest: "triangle"});
 </script>
 ```

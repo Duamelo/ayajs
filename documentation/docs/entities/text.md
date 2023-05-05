@@ -54,8 +54,9 @@
 </body>
 
 
-Here is an example of how you can create a text form.
-<p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
+Here is an example of how you can create a text shape.
+<p>This kind of creation doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.
+If the value of size attribute is not big enough, the text will be cut </p>
 
 ```js
 <script>

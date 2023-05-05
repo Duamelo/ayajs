@@ -57,7 +57,9 @@
 
 
 Here is an example of how you can create a text component.
-<p>This kind of creation, draw immediately the corresponding form into the svg document unlike for calling the Text method of Init class.</p>
+<p>This kind of creation draw immediately the corresponding form into the svg document unlike for calling the Text method of Init class.
+If the value of size attribute is not big enough, the text will be cut 
+</p>
 
 ```js
 <script>

@@ -114,7 +114,7 @@ class Text{
 
         this.c_svg = document.createElementNS(ns, "text");
         this.c_svg.setAttribute("id", _uuid.generate());
-        this.c_svg.setAttributeNS(null, "letter-spacing", "0");
+        this.c_svg.setAttributeNS(null, "letter-spacing", config.text.letterspacing);
         this.c_svg.setAttributeNS(null, "font-family", config.text.fontfamily);
         this.c_svg.setAttributeNS(null, "font-size", config.text.fontsize);
         this.c_svg.setAttributeNS(null, "font-style", config.text.fontstyle);
@@ -122,7 +122,7 @@ class Text{
         this.textPath = document.createElementNS(ns, "textPath");
         this.textPath.setAttribute("id", _uuid.generate());
         this.textPath.setAttribute("href", "#" + this.path_text.getAttribute("id"));
-        this.textPath.setAttribute("startOffset", "50%");
+        this.textPath.setAttribute("startOffset", config.text.startoffset);
         this.textPath.setAttribute("text-anchor", config.text.textanchor);
         this.textPath.textContent = this.text;
 

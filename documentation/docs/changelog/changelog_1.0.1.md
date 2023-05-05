@@ -1,1 +1,0 @@
-There are currently no changes in the first version

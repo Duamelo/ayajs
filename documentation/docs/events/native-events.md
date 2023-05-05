@@ -15,12 +15,12 @@ You can define events on your shapes or your components using the addEvent metho
 Here is the method to do it:
 
 ```js
-    addEvent(event, callback){
-        this.c_svg.addEventListener(event, callback);
-        this.events[event] = callback;
-    }
+addEvent(event, callback){
+    this.c_svg.addEventListener(event, callback);
+    this.events[event] = callback;
+}
 ```
-For example I can define a mousedown event on a rectangle jsape like this
+For example I can define a mousedown event on a rectangle shape like this:
 
 
 ```js
@@ -40,7 +40,7 @@ With a component, it goes like this:
 <script>
    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-    rec.form.addEvent("mousedown", ()=> {
+    rec.shape.addEvent("mousedown", ()=> {
         console.log("this is the callback for mousedown event");
     });
 </script>
@@ -52,11 +52,11 @@ Aya gives you the possibility to delete your events with the deleteEvent method:
 
 
 ```js
-    deleteEvent(event){
-        var callback = this.events[event];
-        this.c_svg.removeEventListener(event, callback);
-        delete this.events[event];
-    }
+deleteEvent(event){
+    var callback = this.events[event];
+    this.c_svg.removeEventListener(event, callback);
+    delete this.events[event];
+}
 ```
 
 For example I can delete a mousedown event on a rectangle shape like this
@@ -74,17 +74,41 @@ For example I can delete a mousedown event on a rectangle shape like this
     rec.deleteEvent("mousedown");
 </script>
 ```
-With a component, it goes like this:
+With a component, it is like this:
 
 
 ```js
 <script>
    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
 
-    rec.form.addEvent("mousedown", ()=> {
+    rec.shape.addEvent("mousedown", ()=> {
         console.log("this is the callback for mousedown event");
     });
 
-    rec.form.deleteEvent("mousedown");
+    rec.shape.deleteEvent("mousedown");
+</script>
+```
+
+
+## Delete all events
+
+Aya gives you the possibility to delete all your events at the same time with the deleteAllEvents method:
+
+
+```js
+deleteAllEvents(){
+    Object.keys(this.events).map((event) => {
+        this.deleteEvent(event);
+    });
+}
+```
+
+For example I can delete all the event (mousedown, mousemove,mouseup, mouseleave) on a rectangle shape like this
+
+```js
+<script>
+    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+
+    rec.shape.deleteAllEvents();
 </script>
 ```

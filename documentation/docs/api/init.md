@@ -1,25 +1,35 @@
 When you instantiate aya from the Init class, a set of useful attributes is made available to customize the use of the library.
 The table below shows the main attributes: their names and descriptions.
-## aya.Init(width = 1343, height = 1343)
+## aya.Init(width = 1000, height = 1000)
 
 <b>Specification : </b>  The init class is the entry point of aya. Its constructor takes two parameters: the width and height of the svg.
 
 
 | Attributes's name             | Description
 | :-------------:               |:-------------:|
+| uuid                          | Id of svg. |
 | width                         | Width of svg. |
 | height                        | Height of svg.     |
+| grid                          | Grid of svg.     |
 | svg                           | Represents the svg document in which we draw all the shapes created from the current instantiation of aya.|
 | config                        | Allows you to access the basic configurations of aya.      |
-| events                        | Allows to access the events defined by aya and to apply them to the forms.|
-| box                           | This is the object component representing the default grid of aya.      |
 
 
-Now we're going to talk about some function available in the Init class.
+Below we have some functions available in the Init class.
 
-## setlinkcb(cb)
+<!-- ## setlinkcb(cb)
 
-Set a callback that represente the instance of link just created.
+Set a callback that represente the instance of link just created. -->
+
+## setGridSize(object)
+
+    Update the svg grid according to the value of object attributes.
+   * @param { Object } object - { cellw, cellh, subdx, subdy, bgc, lc, border, width, height }.
+
+
+## id()
+
+Return a unique string that can reprensent an id.
 
 ## Component(type, props)
 
@@ -50,7 +60,7 @@ Return a new text based on parameters.
 Return a new Line shape based on parameters.
 
 
-## Link(src_point, dest_point, line = undefined)
+## Link(src_id, dest_id, userconfig = {})
 
 Return a new Link object that abstractly représente the link materialised by the line's shape.
 

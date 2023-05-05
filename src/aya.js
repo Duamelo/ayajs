@@ -29,7 +29,7 @@ class Init{
         this.svg.setAttribute("width", this.width);
         this.svg.setAttribute("height", this.height);
         this.svg.setAttribute("id", this.uuid);
-
+	
         this.grid = new Grid(this.svg, 40, 40, 2, 4);
 
         this.config = config;

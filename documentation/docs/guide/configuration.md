@@ -13,9 +13,7 @@
 ##  removing the default grid from the svg
 
 ```js
-  aya.box.form.children.map(({child}) =>{
-    aya.svg.removeChild(child.c_svg);
-  });
+  aya.grid.remove();
 ```
 
 ## config file
@@ -27,9 +25,8 @@
 
 ```js
 var config =  {
-    svg : {
-        fill : "white",
-    },
+    svg : null,
+
     form : {
         stroke : "black",
         fill : "white",
@@ -48,7 +45,6 @@ var config =  {
         fillOpacity : "1",
         limitWidth: 20,
         limitHeight: 20
-
     },
 
     box : {
@@ -65,25 +61,45 @@ var config =  {
     },
 
     line : {
-        fill : "black",
-        ends : {
-            start : { type : "triangle"},
-            dest : { type : "triangle"}
-        },
-        strokeWidth : "1pt",
-        strokeDasharray : "4"
+        stroke: "black",
+        fill : "white",
+        strokeWidth : "1px",
+        strokeDasharray : "4",
+        strokelinejoin: "round"
     },
-
+    link: {
+	    type: "broke",
+        end_start : "cirle",
+        end_dest : "triangle",
+    },
     text : {
         fill : "black",
-        fillOpacity : "100",
-        stroke : "black",
-        strokeWidth : "0.5pt",
-        strokeOpacity : 100,
-        strokeDasharray : 10.5,
-        strokeDashoffset : 10.5,
+        fontfamily: "sans-serif",
+        fontstyle: "normal", // normal || italic || oblic
+        fontsize: "medium", // smaller || value in em unit
+        fontweight: "normal", // normal || bold || bolder || lighter
+        size: 100,
+        textanchor: "middle",  //start || middle || end 
     },
+    ends : {
+        tri: {
+            h: 8,
+            base: 8,
+            fill: "black",
+            stroke: "black",
+            strokeWidth: "1px"
+        },
+        circle: {
+            r: 3.5,
+            fill: "white",
+            stroke: "black",
+            strokeWidth: "1px"
+        },
+        lozenge: {
 
+        },
+	minspace: 10
+    },
     linkcb: null
 }
 
@@ -109,8 +125,8 @@ you can do it by accessing the config property of the Init class in this way:
     <script>
         var aya = new aya.Init();
 
-       aya.config.line.ends.start = "";
-       aya.config.line.ends.dest = "";
+       aya.config.link.end_start = "";
+       aya.config.link.end_dest = "";
 
        var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
       

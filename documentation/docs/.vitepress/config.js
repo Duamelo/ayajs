@@ -23,7 +23,7 @@ const guideSidebar = [
     ]
   },
   {
-    text: 'Simple form classes',
+    text: 'Simple shape classes',
     collapsible: true,
     items: [
       { text: 'Arc', link: '../entities/arc' },
@@ -50,11 +50,11 @@ const guideSidebar = [
     text: 'Adding children to a component',
     collapsible: true,
     items: [
-      { text: 'How to customise a component ?', link: '/add_child' },
+      { text: 'How to customise a component ?', link: './add_child' },
     ]
   }
 
-]
+];
 
 const apiSidebar = [
   {
@@ -78,7 +78,7 @@ const apiSidebar = [
       { text: 'abstract class Shape', link: '../api/basic-shapes' },
     ]
   },
-]
+];
 
 export default {
     lang: 'en-US',
@@ -90,7 +90,7 @@ export default {
     lastUpdatedText: 'Update Date',
     themeConfig: {  
       editLink: {
-        pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+        pattern: 'https://github.com/Duamelo/ayajs/discussions/categories/general',
         text: 'Suggest changes to this page'
       },
       nav: [
@@ -98,18 +98,13 @@ export default {
             items: [
               {text: 'Guide', link: '../guide/what-is-ayajs'},
               {text: 'APIs', link: '../api/init'},
-              // {text: 'Architecture', link: '../guide/architecture'}
+              {text: 'Architecture', link: '../guide/architecture'}
             ]
           },
           { text: 'Contributing', link: '/contributing' },
           { text: 'Community', link: '/community' },
           { text: 'Examples', link: '/example' },
-          { text: 'Tutorials', link: '/tutorials/index' },
-          { text: 'Changelog',
-            items: [
-              {text: '1.0.1', link: '../changelog/changelog_1.0.1'},
-            ]
-          },
+          // { text: 'Tutorials', link: '/tutorials/index' },
         ],
       socialLinks: [
         { icon: 'github', link: 'https://github.com/Duamelo/ayajs'},
@@ -126,7 +121,9 @@ export default {
         '/guide/': guideSidebar,
         'components/': guideSidebar,
         'entities/': guideSidebar,
-        '/api/': apiSidebar
+        '/api/': apiSidebar,
+        '/event': guideSidebar,
+        '/': guideSidebar
       },
       footer: {
         message: 'Released under the MIT License.',

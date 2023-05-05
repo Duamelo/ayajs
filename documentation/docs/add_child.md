@@ -2,67 +2,42 @@
 
 In order to build more complex components, aya allows to add child shapes to a basic component.
 
-To do this, we use the addChild method of the abstract class Form.
-It takes the form, two callbacks as parameters and a boolean specifying if the form should be drawn in the svg.
+To do this, we use the addChild method of the abstract class Shape.
+It takes the shape, two objects as parameters and a boolean specifying if the form should be drawn in the svg.
 
-The first callback defines a translation when needed, and the second a rotation.
+The first object defines a translation when needed, and the second a rotation.
 
 This is what it looks like:
 
 ```js
-    addChild(child, translate = null, rotate = null, drawing = false){
-        if(translate != null)
-            translate(this, child);
-        if(rotate != null)
-            rotate(this, child);
-        if(drawing == true)
-            child.draw();
-        this.children.push({child, translate, rotate});
+addChild(child, translate = null, rotate = null, drawing = true){
+    /* resizing and connection to child isn't possible */
+    child.vertex = [];
+    child.c_points = [];
+
+    if(translate != null){
+        child.offsetX = translate.x;
+        child.offsetY = translate.y;
     }
+    if(rotate != null){
+        child.centerX = rotate.x;
+        child.centerY = rotate.y;
+        child.angle = rotate.angle;
+    }       
+    if(drawing == true)
+        child.draw();
+    this.shape.children.push({child});
+}
 ```
 We also record all component's children.
-
-## translate(p,c)
-
-The translation method takes two parameters: the parent component and the child.
-
-## rotate(p,c)
-
-The rotation method like translation takes two parameters: the parent component and the child.
-
-```js
-<script>
-    var circle = aya.Component("circle", {x: 200, y: 200, r: 80});
-
-    circle.form.addChild(aya.Text(0,0,'the text inside the rectangle shape'), 
-        (p,c)=>{
-            c.setOffsetX(p.x);
-            c.setOffsetY(p.y);
-        }, 
-        (p,c)=>{}, 
-        true
-    );
-</script>
-```
-Another example :
 
 
 ```js   
 <script>
-    var arc = aya.Arc(100, 50, 210, 250, 45, 3/4);
+    var rec = aya.Component("rectangle", {x: 100, y: 350, width: 200, height: 200});
 
-    var text = aya.Text(arc.x + 10, arc.y, "some text inside arc");
+    var text = aya.Text(100, 100, "text example", 300);
 
-    arc.addChild(text, 
-        (p,c)=>{
-            c.setOffsetX(0);
-            c.setOffsetY(0);
-        }, 
-        (p,c) =>{
-            c.setRotateAngle(-90)
-            c.setRotateCenter(c.x, c.y);
-        }, 
-        false
-    );
+    arc.addChild(text, {x: -10, y: -30}, {x: rec.shape.x, y: rec.shape.y}, true);
 </script>
 ```

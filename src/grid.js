@@ -11,7 +11,8 @@ class Grid {
     this.bgColor = bgColor;
     this.lineColor = lineColor;
     this.lineThicness = lineThicness;
-
+      this.svg = svg;
+      
     this.subpattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
     this.subpattern.setAttribute("id", "subpatternId");
     this.subpattern.setAttribute("width", this.cellW / this.subdivisionX);
@@ -26,7 +27,7 @@ class Grid {
     this.subpatternRect.setAttribute("stroke", this.lineColor);
     this.subpatternRect.setAttribute("stroke-width", this.lineThicness / 2);
     this.subpattern.append(this.subpatternRect );
-    svg.append(this.subpattern);
+    this.svg.append(this.subpattern);
 
     this.pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 
@@ -43,14 +44,14 @@ class Grid {
     this.patternrect.setAttribute("stroke", this.lineColor);
     this.patternrect.setAttribute("stroke-width", this.lineThicness);
     this.pattern.append(this.patternrect );
-    svg.append(this.pattern);
+    this.svg.append(this.pattern);
 
     this.rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");   
     this.rect.setAttribute("id", "gridRect");
     this.rect.setAttribute("fill", "url(#patternId)");
     this.rect.setAttribute("width", "100%");
     this.rect.setAttribute("height", "100%");
-    svg.append(this.rect);
+    this.svg.append(this.rect);
 
     this.subpattern.addEventListener("mousemove", ()=>{});
     this.subpattern.addEventListener("mouseup", ()=>{});
@@ -90,5 +91,11 @@ class Grid {
     this.rect.setAttribute("width", "100%");
     this.rect.setAttribute("height", "100%");
   }
+
+    remove(){
+	this.svg.removeChild(this.subpattern);
+	this.svg.removeChild(this.pattern);
+	this.svg.removeChild(this.rect);
+    }
 }
 export {Grid};

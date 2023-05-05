@@ -61,6 +61,8 @@
 	        fontweight: "normal", // normal || bold || bolder || lighter
 	        size: 100,
 	        textanchor: "middle",  //start || middle || end 
+	        letterspacing: 0,
+	        startoffset: "50%"
 	    },
 	    ends : {
 	        tri: {
@@ -715,7 +717,7 @@
 
 	        this.c_svg = document.createElementNS(ns, "text");
 	        this.c_svg.setAttribute("id", _uuid.generate());
-	        this.c_svg.setAttributeNS(null, "letter-spacing", "0");
+	        this.c_svg.setAttributeNS(null, "letter-spacing", config.text.letterspacing);
 	        this.c_svg.setAttributeNS(null, "font-family", config.text.fontfamily);
 	        this.c_svg.setAttributeNS(null, "font-size", config.text.fontsize);
 	        this.c_svg.setAttributeNS(null, "font-style", config.text.fontstyle);
@@ -723,7 +725,7 @@
 	        this.textPath = document.createElementNS(ns, "textPath");
 	        this.textPath.setAttribute("id", _uuid.generate());
 	        this.textPath.setAttribute("href", "#" + this.path_text.getAttribute("id"));
-	        this.textPath.setAttribute("startOffset", "50%");
+	        this.textPath.setAttribute("startOffset", config.text.startoffset);
 	        this.textPath.setAttribute("text-anchor", config.text.textanchor);
 	        this.textPath.textContent = this.text;
 
@@ -3876,7 +3878,8 @@
 	    this.bgColor = bgColor;
 	    this.lineColor = lineColor;
 	    this.lineThicness = lineThicness;
-
+	      this.svg = svg;
+	      
 	    this.subpattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 	    this.subpattern.setAttribute("id", "subpatternId");
 	    this.subpattern.setAttribute("width", this.cellW / this.subdivisionX);
@@ -3891,7 +3894,7 @@
 	    this.subpatternRect.setAttribute("stroke", this.lineColor);
 	    this.subpatternRect.setAttribute("stroke-width", this.lineThicness / 2);
 	    this.subpattern.append(this.subpatternRect );
-	    svg.append(this.subpattern);
+	    this.svg.append(this.subpattern);
 
 	    this.pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 
@@ -3908,14 +3911,14 @@
 	    this.patternrect.setAttribute("stroke", this.lineColor);
 	    this.patternrect.setAttribute("stroke-width", this.lineThicness);
 	    this.pattern.append(this.patternrect );
-	    svg.append(this.pattern);
+	    this.svg.append(this.pattern);
 
 	    this.rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");   
 	    this.rect.setAttribute("id", "gridRect");
 	    this.rect.setAttribute("fill", "url(#patternId)");
 	    this.rect.setAttribute("width", "100%");
 	    this.rect.setAttribute("height", "100%");
-	    svg.append(this.rect);
+	    this.svg.append(this.rect);
 
 	    this.subpattern.addEventListener("mousemove", ()=>{});
 	    this.subpattern.addEventListener("mouseup", ()=>{});
@@ -3955,6 +3958,12 @@
 	    this.rect.setAttribute("width", "100%");
 	    this.rect.setAttribute("height", "100%");
 	  }
+
+	    remove(){
+		this.svg.removeChild(this.subpattern);
+		this.svg.removeChild(this.pattern);
+		this.svg.removeChild(this.rect);
+	    }
 	}
 
 	class Init{
@@ -3970,7 +3979,7 @@
 	        this.svg.setAttribute("width", this.width);
 	        this.svg.setAttribute("height", this.height);
 	        this.svg.setAttribute("id", this.uuid);
-
+		
 	        this.grid = new Grid(this.svg, 40, 40, 2, 4);
 
 	        this.config = config;

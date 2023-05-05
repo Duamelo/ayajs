@@ -55,6 +55,8 @@ var config =  {
         fontweight: "normal", // normal || bold || bolder || lighter
         size: 100,
         textanchor: "middle",  //start || middle || end 
+        letterspacing: 0,
+        startoffset: "50%"
     },
     ends : {
         tri: {

@@ -136,6 +136,10 @@ class Circle extends Component{
         });
     }
 
+    removeBoxFromDOM(){
+        this.svg.removeChild(this.box);
+    }
+
     shift(dx, dy){
         this.x += dx;
         this.y += dy;

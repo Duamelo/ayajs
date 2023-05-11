@@ -20,12 +20,8 @@ class Polyline extends Component {
         this.type = "polyline";
 
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5, config),
-            new Point(this.uuid, 0, 0, 5, config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5, config),
-            new Point(this.uuid, 0, 0, 5, config),
         ];
         if (isdrawing)
             this.draw();
@@ -89,7 +85,7 @@ class Polyline extends Component {
 
     redraw(){
         this.drawVertex();
-        this.vertex.map( (vertex) => {
+        this.vertex.map((vertex) => {
             vertex.redraw();
         });
         var path = "";
@@ -99,10 +95,9 @@ class Polyline extends Component {
             else
                 path += this.points[i] + this.offsetY + " ";
         }
-
         this.c_svg.setAttribute("points", path);
 
-        this.children.map ( ({child}) => {
+        this.children.map(({child}) => {
             child.redraw();
         });
     }
@@ -135,7 +130,7 @@ class Polyline extends Component {
             this.dest_y += dy;
         }
         this.children.map ( ({child}) => {
-            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
+            child = this.calculateAngle() + (Math.PI * 90)/180;
             child.redraw();
         });
     }

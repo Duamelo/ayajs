@@ -11,7 +11,7 @@ class Grid {
     this.bgColor = bgColor;
     this.lineColor = lineColor;
     this.lineThicness = lineThicness;
-      this.svg = svg;
+    this.svg = svg;
       
     this.subpattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
     this.subpattern.setAttribute("id", "subpatternId");
@@ -92,10 +92,31 @@ class Grid {
     this.rect.setAttribute("height", "100%");
   }
 
-    remove(){
-	this.svg.removeChild(this.subpattern);
-	this.svg.removeChild(this.pattern);
-	this.svg.removeChild(this.rect);
-    }
+  remove(){
+    this.svg.removeChild(this.subpattern);
+    this.svg.removeChild(this.pattern);
+    this.svg.removeChild(this.rect);
+  }
+  setGridSize(o){
+    if (o.cellw)
+        this.cellW = o.cellw;
+    if (o.cellh)
+        this.cellH = o.cellh;
+    if (o.subdx)
+        this.subdivisionX = o.subdx;
+    if (o.subdy)
+        this.subdivisionY = o.subdy;
+    if (o.bgc)
+        this.bgColor = o.bgc;
+    if (o.lc)
+        this.lineColor = o.lc;
+    if (o.border)
+        this.lineThicness = o.border;
+    if (o.width)
+        this.svg.setAttribute("width", o.width);
+    if (o.height)
+        this.svg.setAttribute("height", o.height);    
+    this.redraw();
+  }
 }
 export {Grid};

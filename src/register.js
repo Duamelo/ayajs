@@ -30,7 +30,7 @@ class _Register
         var result = [];
         Object.keys(_Register.store).map((id) => {
             var obj = _Register.find(id);
-            if(obj.shape && obj.type != 'link') // it means the obj is a component
+            if(obj.type != 'point' && obj.type != 'link') // it means the obj is a component
                 result.push(obj);
         });
         return result;

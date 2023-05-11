@@ -1,13 +1,10 @@
-import { _uuid } from "../uuid";
-import { Point } from "./point";
-import { Shape } from "../abstraction/shape";
-import { config } from "../../config";
 import { Events } from "../events";
+import { Component } from "../component";
 
 /**
  * @class Circle
  */
-class Circle extends Shape {
+class Circle extends Component{
     /**
      * 
      * @param {string} uuid 
@@ -15,67 +12,24 @@ class Circle extends Shape {
      * @param {number} y 
      * @param {number} r 
      */
-    constructor(uuid, x = 0, y = 0, r = 3){
-
-        super();
-
-        this.uuid = uuid;
+    constructor(x = 0, y = 0, r = 3, isdrawing = true, save = true, id = undefined, config){
+        super({uuid: id, isSave: save, config: config});
 
         this.x = x;
         this.y = y;
         this.r = r;
 
-        this.events = {};
-
-        this.config = config;
-
         this.box = "";
 
         this.c_svg = "";
 
-        this.svg = this.config.svg;
-
         this.type = "circle";
 
         this.scale = 1;
-
-        this.offsetX = 0;
-        this.offsetY = 0;
     
         this.angle = 0;
-  
-        this.children = [];
-      
-        this.c_points = [
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3)
-        ];
-
-        this.vertex = [
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3),
-            new Point(this.uuid,0, 0, 3)
-        ];
-    }
-
-    addEvent(event, callback){
-        this.c_svg.addEventListener(event, callback);
-        this.events[event] = callback;
-    }
-    
-    deleteEvent(event){
-        var callback = this.events[event];
-        this.c_svg.removeEventListener(event, callback);
-        delete this.events[event];
-    }
-
-    deleteAllEvents(){
-        Object.keys(this.events).map((event) => {
-            this.deleteEvent(event);
-        });
+        if (isdrawing)
+            this.draw();
     }
 
     drawVertex(){
@@ -125,23 +79,6 @@ class Circle extends Shape {
 
         this.box.setAttribute("d", p);
     }
-
-    setStyles(o){
-        if (o.fill)
-          this.c_svg.setAttribute("fill", o.fill);
-        if (o.stroke)
-          this.c_svg.setAttribute("stroke", o.stroke);
-        if (o.strokewidth)
-          this.c_svg.setAttribute("stroke-width", o.strokewidth);
-        if (o.fillopacity)
-          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
-        if (o.strokeopacity)
-          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-          if (o.strokedasharray)
-          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
-        if (o.strokedashoffset)
-          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
-    }
     
     draw(){
         var ns="http://www.w3.org/2000/svg";
@@ -157,11 +94,11 @@ class Circle extends Shape {
 
         this.c_svg.setAttribute("r", (this.r * this.scale));
 
-        this.c_svg.setAttribute("fill", this.config.form.fill);
+        this.c_svg.setAttribute("fill", this.config.shape.fill);
 
-        this.c_svg.setAttribute("stroke", this.config.form.stroke);
+        this.c_svg.setAttribute("stroke", this.config.shape.stroke);
     
-        this.c_svg.setAttribute("stroke-width", this.config.form.strokeWidth);
+        this.c_svg.setAttribute("stroke-width", this.config.shape.strokeWidth);
     
         /** draw box */
         this.drawVertex();
@@ -189,64 +126,16 @@ class Circle extends Shape {
             child.draw();
         });
         this.addEvent("mousedown", (e) => {
-            Events.mousedowncb(e)
+            Events.mousedowncb(e, this.config)
         });
         this.addEvent("mouseleave", (e) => {
-            Events.mouseleavecb(e);
+            Events.mouseleavecb(e, this.config);
         });
         this.addEvent("mouseover", (e) => {
-            Events.mouseovercb(e);
+            Events.mouseovercb(e, this.config);
         });
     }
 
-    removeChildren(){
-        this.children.map(({child}) => {
-            child.removeFromDOM();
-        });
-    }
-    
-    makeHiddenCpoints(){
-        this.c_points.map((pt) => {
-            pt.c_svg.setAttribute("fill", "none");
-        });
-    }
-    
-    makeHiddenVertex(){
-        this.vertex.map((vt) => {
-            vt.c_svg.setAttribute("fill", "none");
-        });
-    }
-
-    makeVisibleCpoints(){
-        this.c_points.map((pt) => {
-            pt.c_svg.setAttribute("fill", "black");
-        });
-    }
-
-    makeVisibleVertex(){
-        this.vertex.map((vt) => {
-            vt.c_svg.setAttribute("fill", "black");
-        });
-    }
-
-    removeBoxFromDOM(){
-        this.svg.removeChild(this.box);
-    }
-   
-
-    removeFromDOM(){
-        this.c_points.map((pt) => {
-            pt.removeFromDOM();
-        });
-        this.vertex.map((vt) => {
-            vt.removeFromDOM();
-        });
-        this.children.map(({child}) => {
-            child.removeFromDOM();
-        });
-        this.svg.removeChild(this.c_svg);
-    }
-    
     shift(dx, dy){
         this.x += dx;
         this.y += dy;
@@ -291,33 +180,6 @@ class Circle extends Shape {
         this.children.map(({child}) => {
             child.redraw();
         });
-    }
-
-    setRotateAngle(angle){
-        this.angle = angle;
-    }
-    
-    setOffsetX(x){
-       this.offsetX = x;
-    }
-
-    setOffsetY(y){
-        this.offsetY = y;
-    }
-
-    setScale(sc){
-        this.scale = sc;
-    }
-    getOffsetX(){
-        return this.offsetX;
-    }
-
-    getOffsetY(){
-        return this.offsetY;
-    }
-
-    getScale(){
-        return this.scale;
     }
 }
 export {Circle};

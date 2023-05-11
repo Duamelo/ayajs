@@ -1,5 +1,3 @@
-import { config } from "../config";
-import { Component } from "./component";
 import { Circle } from "./entities/circle";
 import { Lozenge } from "./entities/lozenge";
 import { Rectangle } from "./entities/rectangle";
@@ -15,103 +13,72 @@ import { Image } from "./entities/Image";
 import { _Register } from "./register";
 import { Link } from "./entities/link";
 import { Grid } from "./grid";
+import {config as configuration} from "../config";
 
-class Init{
-    constructor(width = 1343, height = 1343){
+export let ayaconfig = configuration;
 
-        this.uuid = _uuid.generate();
+export let init = (width = 1343, height = 1343) => {
+    try{
+        var uuid = _uuid.generate();
 
-        this.width = width;
-        this.height = height;
- 
-        this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+        var width = width;
+        var height = height;
 
-        this.svg.setAttribute("width", this.width);
-        this.svg.setAttribute("height", this.height);
-        this.svg.setAttribute("id", this.uuid);
-	
-        this.grid = new Grid(this.svg, 40, 40, 2, 4);
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
-        this.config = config;
-
-        config.svg = this.svg;
-
-        this.svg.addEventListener("mousemove", Events.mousemovecb);
-        this.svg.addEventListener("mouseup", Events.mouseupcb);
+        svg.setAttribute("width", width);
+        svg.setAttribute("height", height);
+        svg.setAttribute("id", uuid);
+        var _config = structuredClone(configuration);
+        _config.svg = svg;
+        svg.addEventListener("mousemove", (e)=>{Events.mousemovecb(e, _config)});
+        svg.addEventListener("mouseup", (e)=>{Events.mouseupcb(e, _config)});
+        return {
+            uuid: uuid,
+            svg: svg,
+            config: _config,
+            id: () => {
+                return _uuid.generate();
+            },
+            grid: (svg, cellW = 40, cellH = 40, subdx = 2, subdy = 4) =>{
+                return new Grid(svg, cellW, cellH, subdx, subdy);
+            },
+            rectangle: (x = 0, y = 0, width = 10, height = 10, isdrawing = true, save = true, uuid = undefined) => {
+                return new Rectangle(x, y, width, height, isdrawing, save, uuid, _config);
+            },
+            lozenge: (x = 0, y = 0, width = 10, height = 10, isdrawing = true, save = true, uuid = undefined) => {
+                return new Lozenge(x, y, width, height, isdrawing, save, uuid, _config);
+            },
+            triangle: (x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, isdrawing = true, save = true, uuid = undefined) => {
+                return new Triangle(x1, y1, x2, y2, x3, y3, isdrawing, save, uuid, _config);
+            },
+            circle: ( x = 0, y = 0, r = 5, isdrawing = true, save = true, uuid = undefined) => {
+                return new Circle(x, y, r, isdrawing, save, uuid, _config);
+            },
+            text: (x = 0, y = 0, text = "text", size = 100, dest_x, dest_y, isdrawing = true) => {
+                return new Text(x, y, text, size, dest_x, dest_y, isdrawing, _config);
+            },
+            line: (x=0, y=0, dest_x = x, dest_y = y, isdrawing = true, save = true, uuid = undefined) => {
+                return new Line(x, y, dest_x, dest_y, isdrawing, save, uuid, _config);
+            },
+            link: (src_id, dest_id, userconfig = {}) =>{
+                return new Link(src_id, dest_id, userconfig, _config);
+            },
+            polyline: (points = [], isdrawing = true, save = true, uuid = undefined) => {
+                return new Polyline(points, isdrawing, save, uuid, _config);
+            },
+            point: (x = 0, y = 0, r = 5, isdrawing = true, save, uuid = undefined) => {
+                return new Point(null, x, y, r, isdrawing, save, uuid, _config);
+            },
+            arc: (x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2, isdrawing = true, save = true, uuid = undefined) => {
+                return new Arc(x0, y0, x, y, angle, ratio, isdrawing, save, uuid, _config);
+            },
+            image: (x,y, width, height, path = "", name = "", isdrawing = true, save = true, uuid = undefined) => {
+                return new Image(x, y, width, height, path, name, isdrawing, save, uuid, _config);
+            }
+        }
     }
-
-    setGridSize(o){
-        if (o.cellw)
-            this.grid.cellW = o.cellw;
-        if (o.cellh)
-            this.grid.cellH = o.cellh;
-        if (o.subdx)
-            this.grid.subdivisionX = o.subdx;
-        if (o.subdy)
-            this.grid.subdivisionY = o.subdy;
-        if (o.bgc)
-            this.grid.bgColor = o.bgc;
-        if (o.lc)
-            this.grid.lineColor = o.lc;
-        if (o.border)
-            this.grid.lineThicness = o.border;
-        if (o.width)
-            this.svg.setAttribute("width", o.width);
-        if (o.height)
-            this.svg.setAttribute("height", o.height);    
-        this.grid.redraw();
-    }
-
-    id(){
-        return _uuid.generate();
-    }
-
-    Component(type, props){
-        return new Component(type, props);
-    }
-
-    Rectangle(x = 0, y = 0, width = 10, height = 10){
-        return new Rectangle(_uuid.generate(), x, y, width, height);
-    }
-
-    Lozenge(x = 0, y = 0, width = 10, height = 10){
-        return new Lozenge(_uuid.generate(), x, y, width, height);
-    }
-
-    Triangle(x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10){
-        return new Triangle(_uuid.generate(), x1, y1, x2, y2, x3, y3);
-    }
-
-    Circle( x = 0, y = 0, r = 5){
-        return new Circle(_uuid.generate(), x, y, r);
-    }
-
-    Text(x = 0, y = 0, text = "text", size = 100, dest_x, dest_y){
-        return new Text(_uuid.generate(), x, y, text, size, dest_x, dest_y);
-    }
-
-    Line(x=0, y=0, dest_x = x, dest_y = y){
-        return new Line(_uuid.generate(), x, y, dest_x, dest_y);
-    }
-
-    Link(src_id, dest_id, userconfig = {}){
-        return new Link(src_id, dest_id, userconfig);
-    }
-
-    Polyline( points = []){
-        return new Polyline(_uuid.generate(), points);
-    }
-
-    Point( x = 0, y = 0, r = 5){
-        return new Point(_uuid.generate(), x, y, r);
-    }
-
-    Arc(x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2){
-        return new Arc(_uuid.generate(), x0, y0, x, y, angle, ratio);
-    }
-    
-    Image(x,y, width, height, path = "", name = ""){
-        return new Image(_uuid.generate(), x, y, width, height, path, name);
+    catch(e){
+        console.log(e);
     }
 }
-export {Init};

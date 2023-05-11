@@ -15,39 +15,12 @@
 <body >
 
    <script>
-      console.log(aya);
-      var aya = new aya.Init();
+      var a = aya.init();
+      a.grid(a.svg);
+      console.log(a);
 
-     try{
-      var text = aya.Text(100, 100, "caaaaaonffffffpppppppppp", 600);
-      text.draw();
-
-      var cir = aya.Component("circle", {x: 260, y: 530, r: 30});
-
-
-      // var polilyne =  aya.Component("polyline", {points: [100, 100, 150, 200, 300, 200, 400, 150]});
-
-      // var rec1 = aya.Component("rectangle", {x: 200, y: 500, width: 30, height: 60});
-      var rec2 = aya.Component("rectangle", {x: 330, y: 580, width: 30, height: 60});
-      var lk = aya.Link(cir.uuid, rec2.uuid, {end_dest: "triangle"});
-      var dk = aya.Link(rec2.uuid,cir.uuid, {altpath: true, end_dest: "triangle"});
-
-      lk.line.makeHiddenVertex();
-      dk.line.makeHiddenVertex();
-
-      cir.shape.makeHiddenCpoints();
-      cir.shape.makeHiddenVertex();
-
-      // rec1.shape.makeHiddenCpoints();
-      // rec1.shape.makeHiddenVertex();
-      
-      rec2.shape.makeHiddenCpoints();
-      rec2.shape.makeHiddenVertex();
-     }
-     catch(e){
-      console.log(e);
-     }
-      document.body.append(aya.svg);
+      var circle = a.circle(200, 200, 50);
+      document.body.append(a.svg);
    </script>
 </body>
 </html>

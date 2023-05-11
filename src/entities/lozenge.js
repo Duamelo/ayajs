@@ -1,15 +1,10 @@
-import { Shape } from "../abstraction/shape.js";
-import { Point } from "./point.js";
-import { _uuid } from "../uuid.js";
-import { config } from "../../config.js";
 import { Events } from "../events.js";
+import { Component } from "../component.js";
 
 /**
  * @class Lozenge
  */
-
-
-class Lozenge extends Shape{
+class Lozenge extends Component{
 
 /**
  * 
@@ -19,96 +14,23 @@ class Lozenge extends Shape{
  * @param {number} width 
  * @param {number} height 
  */
-  constructor(uuid, x = 0, y = 0, width = 10, height = 30,)
+  constructor(x = 0, y = 0, width = 10, height = 30, isdrawing = true, save = true, id = undefined, config)
   {
-      super();
+    super({uuid: id, isSave: save, config: config});
   
-      this.uuid = uuid;
-
       this.x = x;
       this.y = y;
 
       this.width = width;
       this.height =  height;
 
-      this.events = {};
-            
-      this.config = config;
-
-      this.c_svg = "";
-      this.svg = this.config.svg;
       this.box = "";
 
       this.type = "lozenge";
       this.p = "";
-
-      this.scaleX = 1;
-      this.scaleY = 1;
-
-      this.offsetX = 0;
-      this.offsetY = 0;
-  
-      this.angle = 0;
-
-      this.centerX = 0;
-      this.centerY = 0;
-
-      this.children = [];
-
-      this.c_points = [
-        new Point(this.uuid,0,0, 5),
-        new Point(this.uuid,0,0, 5),
-        new Point(this.uuid,0,0, 5),
-        new Point(this.uuid,0,0, 5),
-      ];
-
-      this.vertex = [
-        new Point(this.uuid, 0, 0, 5),
-        new Point(this.uuid, 0, 0, 5),
-        new Point(this.uuid, 0, 0, 5),
-        new Point(this.uuid, 0, 0, 5),
-      ];
-  }
-
-  setStyles(o){
-    if (o.fill)
-      this.c_svg.setAttribute("fill", o.fill);
-    if (o.stroke)
-      this.c_svg.setAttribute("stroke", o.stroke);
-    if (o.strokewidth)
-      this.c_svg.setAttribute("stroke-width", o.strokewidth);
-    if (o.fillopacity)
-      this.c_svg.setAttribute("fill-opacity", o.fillopacity);
-    if (o.strokeopacity)
-      this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-      if (o.strokedasharray)
-      this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
-    if (o.strokedashoffset)
-      this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
-  }
-
-  addEvent(event, callback){
-    this.c_svg.addEventListener(event, callback);
-    this.events[event] = callback;
-  }
-
-  deleteEvent(event){
-    var callback = this.events[event];
-    this.c_svg.removeEventListener(event, callback);
-    delete this.events[event];
-  }
-
-  deleteAllEvents(){
-    Object.keys(this.events).map((event) => {
-      this.deleteEvent(event);
-    });
-  }
-
-  removeChildren(){
-    this.children.map(({child}) => {
-        child.removeFromDOM();
-    });
-  }
+      if (isdrawing)
+        this.draw();
+}
 
   drawVertex(){
     if(this.vertex.length == 0)
@@ -188,63 +110,26 @@ class Lozenge extends Shape{
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", this.p);
-    this.c_svg.setAttribute("fill", this.config.form.fill);
-    this.c_svg.setAttributeNS(null, "stroke", this.config.form.stroke);
-      this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+    this.c_svg.setAttribute("fill", this.config.shape.fill);
+    this.c_svg.setAttributeNS(null, "stroke", this.config.shape.stroke);
+      this.c_svg.setAttributeNS(null, "stroke-width", this.config.shape.strokeWidth);
       
       this.addEvent("mousedown", (e) => {
-	  Events.mousedowncb(e)
+      Events.mousedowncb(e, this.config);
       });
       this.addEvent("mouseleave", (e) => {
-          Events.mouseleavecb(e);
+          Events.mouseleavecb(e, this.config);
       });
       this.addEvent("mouseover", (e) => {
-          Events.mouseovercb(e);
+          Events.mouseovercb(e, this.config);
       });
       this.svg.appendChild(this.c_svg);
       this.svg.appendChild(this.box);
   }
     
-  makeHiddenCpoints(){
-    this.c_points.map((pt) => {
-        pt.c_svg.setAttribute("fill", "none");
-    });
+  removeBoxFromDOM(){
+    this.svg.removeChild(this.box);
   }
-
-  makeVisibleCpoints(){
-    this.c_points.map((pt) => {
-        pt.c_svg.setAttribute("fill", "black");
-    });
-  }
-
-  makeHiddenVertex(){
-    this.vertex.map((vt) => {
-        vt.c_svg.setAttribute("fill", "none");
-    });
-  }
-
-  makeVisibleVertex(){
-    this.vertex.map((vt) => {
-        vt.c_svg.setAttribute("fill", "black");
-    });
-  }
-    
-    removeFromDOM(){    
-	this.c_points.map((pt)=>{
-	    pt.removeFromDOM();
-	});
-	this.vertex.map((vt)=>{
-	    vt.removeFromDOM();
-	});
-	this.children.map(({child}) => {
-	    child.removeFromDOM();
-	});
-	this.svg.removeChild(this.c_svg);  
-    }
-    
-    removeBoxFromDOM(){
-	this.svg.removeChild(this.box);
-    }
 
   redraw() {
     if(this.angle != 0){
@@ -327,11 +212,11 @@ class Lozenge extends Shape{
 
     }
 
-    if(this.width < this.config.form.limitWidth)
-      this.width = this.config.form.limitWidth;
+    if(this.width < this.config.shape.limitWidth)
+      this.width = this.config.shape.limitWidth;
 
-     if(this.height < this.config.form.limitHeight)
-      this.height = this.config.form.limitHeight;
+     if(this.height < this.config.shape.limitHeight)
+      this.height = this.config.shape.limitHeight;
 
 
     this.children.map(({child}) => {
@@ -370,47 +255,6 @@ class Lozenge extends Shape{
     this.children.map ( ({child}) => {
       child.shift(dx, dy);
     }); 
-  }
-
-  setRotateCenter(centerX, centerY){
-    this.centerX = centerX;
-    this.centerY = centerY;
-  }
-
-  setRotateAngle(angle){
-    this.angle = angle;
-  }
-
-  setOffsetX(x){
-    this.offsetX = x;
-  }
-
-  setOffsetY(y){
-    this.offsetY = y;
-  }
-
-  setScaleX(x){
-    this.scaleX = x;
-  }
-
-  setScaleY(y){
-    this.scaleY = y;
-  }
-
-  getOffsetX(){
-    return this.offsetX;
-  }
-
-  getOffsetY(){
-    return this.offsetY;
-  }
-
-  getScaleX(){
-    return this.scaleX;
-  }
-
-  getScaleY(){
-    return this.scaleY;
   }
 }
 

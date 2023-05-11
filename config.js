@@ -1,7 +1,7 @@
 var config =  {
     svg : null,
 
-    form : {
+    shape : {
         stroke : "black",
         fill : "white",
         strokeOpacity : "1",
@@ -76,8 +76,6 @@ var config =  {
 
         },
 	minspace: 10
-    },
-    linkcb: null
+    }
 }
-
 export {config};

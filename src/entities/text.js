@@ -1,4 +1,3 @@
-import { config } from "../../config";
 import { _uuid } from "../uuid";
 
 /**
@@ -8,12 +7,14 @@ import { _uuid } from "../uuid";
  * 
  */
 class Text{
-    constructor(uuid, x = 0, y = 0, text = "text", size = 0, dest_x, dest_y){
+    constructor(x = 0, y = 0, text = "text", size = 0, dest_x, dest_y, isdrawing = true, config){
 
-        this.uuid = uuid;
+        this.uuid = _uuid.generate();
 
         this.x = x;
         this.y = y;
+
+        this.config = config;
 
         if (dest_x && dest_y){
             this.dest_x = dest_x;
@@ -22,13 +23,13 @@ class Text{
         else if (size)
             this.size = size;
         else 
-            this.size = config.text.size;
+            this.size = this.config.text.size;
 
         this.text = text;
 
         this.type = 'text';
 
-        this.svg = config.svg;
+        this.svg = this.config.svg;
         
         
         this.events = {};
@@ -46,6 +47,8 @@ class Text{
         this.c_svg = null
         this.textPath = null;
         this.path_text = null;
+        if (isdrawing)
+            this.draw();
     };
 
     addEvent(event, callback){
@@ -114,16 +117,16 @@ class Text{
 
         this.c_svg = document.createElementNS(ns, "text");
         this.c_svg.setAttribute("id", _uuid.generate());
-        this.c_svg.setAttributeNS(null, "letter-spacing", config.text.letterspacing);
-        this.c_svg.setAttributeNS(null, "font-family", config.text.fontfamily);
-        this.c_svg.setAttributeNS(null, "font-size", config.text.fontsize);
-        this.c_svg.setAttributeNS(null, "font-style", config.text.fontstyle);
+        this.c_svg.setAttributeNS(null, "letter-spacing", this.config.text.letterspacing);
+        this.c_svg.setAttributeNS(null, "font-family", this.config.text.fontfamily);
+        this.c_svg.setAttributeNS(null, "font-size", this.config.text.fontsize);
+        this.c_svg.setAttributeNS(null, "font-style", this.config.text.fontstyle);
 
         this.textPath = document.createElementNS(ns, "textPath");
         this.textPath.setAttribute("id", _uuid.generate());
         this.textPath.setAttribute("href", "#" + this.path_text.getAttribute("id"));
-        this.textPath.setAttribute("startOffset", config.text.startoffset);
-        this.textPath.setAttribute("text-anchor", config.text.textanchor);
+        this.textPath.setAttribute("startOffset", this.config.text.startoffset);
+        this.textPath.setAttribute("text-anchor", this.config.text.textanchor);
         this.textPath.textContent = this.text;
 
         this.c_svg.appendChild(this.textPath);
@@ -160,24 +163,8 @@ class Text{
         this.textPath.remove();
     }
 
-    setOffsetX(x){
-        this.offsetX = x;
-    }
-
-    setOffsetY(y){
-        this.offsetY = y;
-    }
-
     setText(text){
         this.text = text;
-    }
-
-    getOffsetX(){
-        return this.offsetX;
-    }
-
-    getOffsetY(){
-        return this.offsetY;
     }
 }
 export {Text};

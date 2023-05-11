@@ -1,6 +1,5 @@
 import  {_uuid}  from "../uuid.js";
 import {_Register}  from "../register.js"
-import { config } from "../../config.js";
 import { Line } from "./line.js";
 import { Text } from "./text.js";
 
@@ -9,79 +8,84 @@ import { Text } from "./text.js";
  */
 class Link
 {
-    constructor(src_id, dest_id, userconfig = {})
+    constructor(src_id, dest_id, userconfig = {}, config)
     {
-	var obj = {};
+        this.config = config;
+
+        var obj = {};
         this.uuid = _uuid.generate();
 
         var src =  _Register.find(src_id);
         var dest =  _Register.find(dest_id);
 
-	if (!src || !dest)
+        if (!src || !dest)
             throw new Error("component is missing");
 
         this.type = "link";
 
-	this.src_end_csvg = null;
-	this.dest_end_csvg = null;
+        this.src_end_csvg = null;
+        this.dest_end_csvg = null;
 
-	if (userconfig.subtype)
-	    this.subtype = userconfig.subtype;
-	else
-	    this.subtype = config.link.type;
+        if (userconfig.subtype)
+            this.subtype = userconfig.subtype;
+        else
+            this.subtype = config.link.type;
 
-	if (userconfig.end_start)
-	    this.end_start = userconfig.end_start;
-	else
-	    this.end_start = config.link.end_start;
+        if (userconfig.end_start)
+            this.end_start = userconfig.end_start;
+        else
+            this.end_start = config.link.end_start;
 
-	if (userconfig.end_dest)
-	    this.end_dest = userconfig.end_dest;
-	else
-	    this.end_dest = config.link.end_dest;
+        if (userconfig.end_dest)
+            this.end_dest = userconfig.end_dest;
+        else
+            this.end_dest = config.link.end_dest;
 
-    this.altpath = userconfig.altpath ? true : false;
+        this.altpath = userconfig.altpath ? true : false;
 
-	if (this.subtype != "broke")
-	    obj = this.optimal(src, dest);
-	else
+        if (this.subtype != "broke")
+            obj = this.optimal(src, dest);
+        else
             obj = this.breakline(src, dest);
 
-	/* reference on connexion points*/
-        this.source = src.shape.c_points[obj.src];
-        this.destination = dest.shape.c_points[obj.dest];
+        /* reference on connexion points*/
+        this.source = src.c_points[obj.src];
+        this.destination = dest.c_points[obj.dest];
 
-	this.line = new Line(_uuid.generate(),
-			     this.source.x,
-			     this.source.y,
-			     this.destination.x,
-			     this.destination.y
-			    );
+        this.line = new Line(this.source.x,
+                        this.source.y,
+                        this.destination.x,
+                        this.destination.y,
+                        false,
+                        false,
+                        null,
+                        config
+                    );
 
-	if (this.subtype == "broke"){
-	    this.line.c1.x = obj.c1.x;
-            this.line.c1.y = obj.c1.y;
-            this.line.c2.x = obj.c2.x;
-            this.line.c2.y = obj.c2.y;
-	    this.line.setPath([this.line.c1, this.line.c2]);
-	}
-	this.line.draw();
-	this.line.setStyles({fill: "none"});
+        if (this.subtype == "broke"){
+            this.line.c1.x = obj.c1.x;
+                this.line.c1.y = obj.c1.y;
+                this.line.c2.x = obj.c2.x;
+                this.line.c2.y = obj.c2.y;
+            this.line.setPath([this.line.c1, this.line.c2]);
+        }
+        this.line.draw();
+        this.line.setStyles({fill: "none"});
 
-	if (this.end_start)
-	    this.addEnd(this.end_start, "source");
+        if (this.end_start)
+            this.addEnd(this.end_start, "source");
 
-	if (this.end_dest)
-	    this.addEnd(this.end_dest, "destination");
+        if (this.end_dest)
+            this.addEnd(this.end_dest, "destination");
 
-    this.text = null;
-    this.text_c_svg = null;
-	_Register.add(this);
+        this.text = null;
+        this.text_c_svg = null;
+        _Register.add(this);
     }
 
     addEnd(type, target){
         var x, y, line_x, line_y, line_dest_x, line_dest_y, obj = {}, angle, c_svg = null;
-        var r = config.ends.circle.r, h = config.ends.tri.h;	
+        var r = this.config.ends.circle.r, h = this.config.ends.tri.h;	
 
         const ns = "http://www.w3.org/2000/svg";
 
@@ -127,7 +131,7 @@ class Link
         if (type == "triangle"){
             var base, dxa, dya, dx, dy;
 
-            base = config.ends.tri.base;
+            base = this.config.ends.tri.base;
 
             if (line_y == line_dest_y){
                 if (line_x < line_dest_x){
@@ -230,9 +234,9 @@ class Link
             var p = "M " + obj.x1 +  "," + obj.y1 + " " + "L " + obj.x2 + "," + obj.y2 + " " + "L " + obj.x3 + "," + obj.y3 + " Z";
             c_svg.setAttribute("d", p);
             c_svg.setAttribute("id", _uuid.generate());
-            c_svg.setAttribute("fill", config.ends.tri.fill);
-            c_svg.setAttribute("stroke", config.ends.tri.stroke);
-            c_svg.setAttribute("stroke-width", config.ends.tri.strokeWidth);
+            c_svg.setAttribute("fill", this.config.ends.tri.fill);
+            c_svg.setAttribute("stroke", this.config.ends.tri.stroke);
+            c_svg.setAttribute("stroke-width", this.config.ends.tri.strokeWidth);
         }
         else if (type == "circle"){
 
@@ -283,13 +287,13 @@ class Link
             c_svg = document.createElementNS(ns, "circle");
             c_svg.setAttribute("cx", obj.x);
             c_svg.setAttribute("cy", obj.y);
-            c_svg.setAttribute("r", config.ends.circle.r);
-            c_svg.setAttribute("fill", config.ends.circle.fill);
-            c_svg.setAttribute("stroke", config.ends.circle.stroke);
-            c_svg.setAttribute("stroke-width", config.ends.circle.strokeWidth);
+            c_svg.setAttribute("r", this.config.ends.circle.r);
+            c_svg.setAttribute("fill", this.config.ends.circle.fill);
+            c_svg.setAttribute("stroke", this.config.ends.circle.stroke);
+            c_svg.setAttribute("stroke-width", this.config.ends.circle.strokeWidth);
             c_svg.setAttribute("id", _uuid.generate());
         }
-        config.svg.appendChild(c_svg);
+        this.config.svg.appendChild(c_svg);
         if (target == "source")
             this.src_end_csvg = c_svg;
         if (target == "destination")
@@ -376,9 +380,9 @@ class Link
     removeFromDOM(){
         this.line.removeFromDOM();
         if (this.src_end_csvg)
-            config.svg.removeChild(this.src_end_csvg);
+            this.config.svg.removeChild(this.src_end_csvg);
         if (this.dest_end_csvg)
-            config.svg.removeChild(this.dest_end_csvg);
+            this.config.svg.removeChild(this.dest_end_csvg);
         if (this.text)
             this.text_c_svg.removeFromDOM();
         var lk = _Register.find(this.uuid);
@@ -394,25 +398,25 @@ class Link
 	};
 	var inflexion = "horizontal";
 
-	if ((source.shape.c_points[1].y == destination.shape.c_points[3].y && (obj.src = 1) && (obj.dest = 3)) ||
-	    (source.shape.c_points[3].y == destination.shape.c_points[1].y && (obj.src = 3) && (obj.dest = 1)) ||
-	    (source.shape.c_points[0].x == destination.shape.c_points[2].x && (obj.src = 0) && (obj.dest = 2)) ||
-	    (source.shape.c_points[2].x == destination.shape.c_points[0].x && (obj.src = 2) && (obj.dest = 0)))
+	if ((source.c_points[1].y == destination.c_points[3].y && (obj.src = 1) && (obj.dest = 3)) ||
+	    (source.c_points[3].y == destination.c_points[1].y && (obj.src = 3) && (obj.dest = 1)) ||
+	    (source.c_points[0].x == destination.c_points[2].x && (obj.src = 0) && (obj.dest = 2)) ||
+	    (source.c_points[2].x == destination.c_points[0].x && (obj.src = 2) && (obj.dest = 0)))
 	    inflexion = false;
 	else{
-	    if (source.shape.c_points[obj.src].x > destination.shape.c_points[obj.dest].x){
+	    if (source.c_points[obj.src].x > destination.c_points[obj.dest].x){
 		obj.src = 3;
 		obj.dest = 1;
 	    }
-	    if (source.shape.c_points[obj.src].y > destination.shape.c_points[obj.dest].y){
-            if ((Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace)){
+	    if (source.c_points[obj.src].y > destination.c_points[obj.dest].y){
+            if ((Math.abs(destination.c_points[obj.dest].x - source.c_points[obj.src].x) <= 2 * this.config.ends.minspace)){
                 obj.src = 0;
                 obj.dest = 2;
                 inflexion = "vertical";
             }
         }
         else{
-            if (Math.abs(destination.shape.c_points[obj.dest].x - source.shape.c_points[obj.src].x) <= 2 * config.ends.minspace){
+            if (Math.abs(destination.c_points[obj.dest].x - source.c_points[obj.src].x) <= 2 * this.config.ends.minspace){
                 obj.src = 2;
                 obj.dest = 0;
                 inflexion = "vertical";
@@ -422,7 +426,7 @@ class Link
     if (this.altpath){
         if ((obj.src == 1 && obj.dest == 3) ||
             (obj.src == 3 && obj.dest == 1)){
-            if (source.shape.c_points[obj.src].y < destination.shape.c_points[obj.dest].y){
+            if (source.c_points[obj.src].y < destination.c_points[obj.dest].y){
                 obj.src = 2;
                 obj.dest = 2;
             }
@@ -439,42 +443,42 @@ class Link
         inflexion = "altpath";
     }
 	if (inflexion == "vertical"){
-            obj.c1.x = source.shape.c_points[obj.src].x;
-            obj.c1.y = (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
-            obj.c2.x = destination.shape.c_points[obj.dest].x;
-            obj.c2.y =  (source.shape.c_points[obj.src].y + destination.shape.c_points[obj.dest].y) / 2;
+            obj.c1.x = source.c_points[obj.src].x;
+            obj.c1.y = (source.c_points[obj.src].y + destination.c_points[obj.dest].y) / 2;
+            obj.c2.x = destination.c_points[obj.dest].x;
+            obj.c2.y =  (source.c_points[obj.src].y + destination.c_points[obj.dest].y) / 2;
         }
     else if (inflexion == "horizontal"){
-        obj.c1.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
-        obj.c1.y = source.shape.c_points[obj.src].y;
-        obj.c2.x =  (source.shape.c_points[obj.src].x + destination.shape.c_points[obj.dest].x) / 2;
-        obj.c2.y = destination.shape.c_points[obj.dest].y;
+        obj.c1.x =  (source.c_points[obj.src].x + destination.c_points[obj.dest].x) / 2;
+        obj.c1.y = source.c_points[obj.src].y;
+        obj.c2.x =  (source.c_points[obj.src].x + destination.c_points[obj.dest].x) / 2;
+        obj.c2.y = destination.c_points[obj.dest].y;
     }
     else if (inflexion == "altpath"){
         if(obj.src == 0){
-            obj.c1.x =  source.shape.c_points[obj.src].x;
-            obj.c1.y = destination.shape.c_points[obj.dest].y - 2 * config.ends.minspace;
-            obj.c2.x =  destination.shape.c_points[obj.dest].x;
-            obj.c2.y = destination.shape.c_points[obj.dest].y - 2 * config.ends.minspace;
+            obj.c1.x =  source.c_points[obj.src].x;
+            obj.c1.y = destination.c_points[obj.dest].y - 2 * this.config.ends.minspace;
+            obj.c2.x =  destination.c_points[obj.dest].x;
+            obj.c2.y = destination.c_points[obj.dest].y - 2 * this.config.ends.minspace;
         }
         else if (obj.src == 2){
-            obj.c1.x =  source.shape.c_points[obj.src].x;
-            obj.c1.y = destination.shape.c_points[obj.dest].y + 2 * config.ends.minspace;
-            obj.c2.x =  destination.shape.c_points[obj.dest].x;
-            obj.c2.y = destination.shape.c_points[obj.dest].y + 2 * config.ends.minspace;
+            obj.c1.x =  source.c_points[obj.src].x;
+            obj.c1.y = destination.c_points[obj.dest].y + 2 * this.config.ends.minspace;
+            obj.c2.x =  destination.c_points[obj.dest].x;
+            obj.c2.y = destination.c_points[obj.dest].y + 2 * this.config.ends.minspace;
         }
         else{
-            obj.c1.x =  source.shape.c_points[obj.src].x - 3 * config.ends.minspace;
-            obj.c1.y = source.shape.c_points[obj.src].y;
-            obj.c2.x =  source.shape.c_points[obj.src].x - 3 * config.ends.minspace;
-            obj.c2.y = destination.shape.c_points[obj.dest].y;
+            obj.c1.x =  source.c_points[obj.src].x - 3 * this.config.ends.minspace;
+            obj.c1.y = source.c_points[obj.src].y;
+            obj.c2.x =  source.c_points[obj.src].x - 3 * this.config.ends.minspace;
+            obj.c2.y = destination.c_points[obj.dest].y;
         }
     }
     else{
-        obj.c1.x = source.shape.c_points[obj.src].x;
-        obj.c1.y = source.shape.c_points[obj.src].y;
-        obj.c2.x = source.shape.c_points[obj.src].x;
-        obj.c2.y = source.shape.c_points[obj.src].y;
+        obj.c1.x = source.c_points[obj.src].x;
+        obj.c1.y = source.c_points[obj.src].y;
+        obj.c2.x = source.c_points[obj.src].x;
+        obj.c2.y = source.c_points[obj.src].y;
     }   
 	return obj;
     }
@@ -490,8 +494,8 @@ class Link
             obj = this.breakline(source, destination);
 
 	/* reference on connexion points*/
-        this.source = source.shape.c_points[obj.src];
-        this.destination = destination.shape.c_points[obj.dest];
+        this.source = source.c_points[obj.src];
+        this.destination = destination.c_points[obj.dest];
 
 	this.line.x = this.source.x;
         this.line.y = this.source.y;
@@ -534,10 +538,10 @@ class Link
 
         for (i = 0; i < 4; i++){
             for (j = 0; j < 4; j++){
-                d = (src.shape.c_points[i].x - dest.shape.c_points[j].x) * 
-                        (src.shape.c_points[i].x - dest.shape.c_points[j].x) + 
-                        (src.shape.c_points[i].y - dest.shape.c_points[j].y) * 
-                        (src.shape.c_points[i].y - dest.shape.c_points[j].y);
+                d = (src.c_points[i].x - dest.c_points[j].x) * 
+                        (src.c_points[i].x - dest.c_points[j].x) + 
+                        (src.c_points[i].y - dest.c_points[j].y) * 
+                        (src.c_points[i].y - dest.c_points[j].y);
                 if (!dmin || 
                     (d < dmin)){
                         obj.src = i;

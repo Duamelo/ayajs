@@ -1,11 +1,10 @@
-import { config } from "../../config";
-import { Events } from "../events";
+import { Component } from "../component";
 
-class Image{
-    constructor(uuid, x = 0, y = 0, width = 50, height = 50, path, name){
+class Image extends Component{
+    constructor(x = 0, y = 0, width = 50, height = 50, path, name, isdrawing = true, save = true, id = undefined, config){
        
-        this.uuid = uuid;
-       
+        super({uuid: id, isSave: save, config: config});
+
         this.width = width;
         this.height = height;
        
@@ -15,34 +14,9 @@ class Image{
         this.path = path;
         this.name = name;
 
-        this.c_svg = "";
-
-        this.offsetX = 0;
-        this.offsetY = 0;
-        
-        this.events = {};
-        
-        this.config = config;
-        
         this.type = 'image';
-        this.svg = this.config.svg;
-    }
-
-    addEvent(event, callback){
-        this.c_svg.addEventListener(event, callback);
-        this.events[event] = callback;
-    }
-    
-    deleteEvent(event){
-        var callback = this.events[event];
-        this.c_svg.removeEventListener(event, callback);
-        delete this.events[event];
-    }
-
-    deleteAllEvents(){
-        Object.keys(this.events).map((event) => {
-            this.deleteEvent(event);
-        });
+        if (isdrawing)
+            this.draw();
     }
 
     draw(){

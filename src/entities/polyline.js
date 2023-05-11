@@ -1,19 +1,13 @@
-import { _uuid } from "../uuid";
-import { _Register } from "../register";
 import { Point } from "./point";
-import { Shape } from "../abstraction/shape";
-import { config } from "../../config";
+import { Component } from "../component";
 
 /**
  * @class Polyline
  */
+class Polyline extends Component {
+    constructor(points = [], isdrawing = true, save = true, id = undefined, config){
 
-class Polyline extends Shape {
-    constructor(uuid, points = []){
-
-        super();
-
-        this.uuid = uuid;
+        super({uuid: id, isSave: save, config: config});
 
         this.x = points[0];
         this.y = points[1];
@@ -23,50 +17,18 @@ class Polyline extends Shape {
 
         this.points = points;
 
-        this.events = {};
-        
-        this.config = config;
-
-        this.c_svg = "";
-        this.svg = this.config.svg;
-
         this.type = "polyline";
 
-        this.offsetX = 0;
-        this.offsetY = 0;
-    
-        this.scaleX = 1;
-        this.scaleY = 1;
-    
-        this.angle = 0;
-
-        this.children = [];
-
         this.vertex = [
-            new Point(this.uuid, 0, 0, 5),
-            new Point(this.uuid, 0, 0, 5),
+            new Point(this.uuid, 0, 0, 5, config),
+            new Point(this.uuid, 0, 0, 5, config),
         ];
         this.c_points = [
-            new Point(this.uuid, 0, 0, 5),
-            new Point(this.uuid, 0, 0, 5),
+            new Point(this.uuid, 0, 0, 5, config),
+            new Point(this.uuid, 0, 0, 5, config),
         ];
-    }
-
-    addEvent(event, callback){
-        this.c_svg.addEventListener(event, callback);
-        this.events[event] = callback;
-    }
-    
-    deleteEvent(event){
-        var callback = this.events[event];
-        this.c_svg.removeEventListener(event, callback);
-        delete this.events[event];
-    }
-
-    deleteAllEvents(){
-        Object.keys(this.events).map((event) => {
-            this.deleteEvent(event);
-        });
+        if (isdrawing)
+            this.draw();
     }
 
     drawVertex(){
@@ -77,23 +39,6 @@ class Polyline extends Shape {
     drawConnector(){
         if(this.c_points.length == 0)
             return;
-    }
-
-    setStyles(o){
-        if (o.fill)
-          this.c_svg.setAttribute("fill", o.fill);
-        if (o.stroke)
-          this.c_svg.setAttribute("stroke", o.stroke);
-        if (o.strokewidth)
-          this.c_svg.setAttribute("stroke-width", o.strokewidth);
-        if (o.fillopacity)
-          this.c_svg.setAttribute("fill-opacity", o.fillopacity);
-        if (o.strokeopacity)
-          this.c_svg.setAttribute("stroke-opacity", o.strokeopacity);
-          if (o.strokedasharray)
-          this.c_svg.setAttribute("stroke-dasharray", o.strokedasharray);
-        if (o.strokedashoffset)
-          this.c_svg.setAttribute("stroke-dashoffset", o.strokedashoffset);
     }
 
     draw(){
@@ -108,9 +53,9 @@ class Polyline extends Shape {
                 path += this.points[i] + this.offsetY + " ";
         }
         this.c_svg.setAttribute("id", this.uuid);
-        this.c_svg.setAttribute("fill", this.config.form.fill);
-        this.c_svg.setAttribute("stroke", this.config.form.stroke);
-        this.c_svg.setAttributeNS(null, "stroke-width", this.config.form.strokeWidth);
+        this.c_svg.setAttribute("fill", this.config.shape.fill);
+        this.c_svg.setAttribute("stroke", this.config.shape.stroke);
+        this.c_svg.setAttributeNS(null, "stroke-width", this.config.shape.strokeWidth);
         this.c_svg.setAttribute("points", path);
 
         this.svg.appendChild(this.c_svg);
@@ -130,41 +75,13 @@ class Polyline extends Shape {
         });
     }
 
-    removeChildren(){
-        this.children.map(({child}) => {
-            child.removeFromDOM();
-        });
-    }
-    
-    removeFromDOM(){
-        this.c_points.map((pt)=>{
-            pt.removeFromDOM();
-        });        
-        this.vertex.map((vt)=>{
-            vt.removeFromDOM();
-        });
-        this.children.map(({child}) => {
-            child.removeFromDOM();
-        });
-        this.svg.removeChild(this.c_svg);
-    }
-
-
     shift(dx,dy){
-        console.log("sift de aya" + dx + " " + dy);
-        this.points.map(pt =>{
-            console.table(pt);
-        });
         for (var i = 0; i < this.points.length; i++){
             if (i%2 == 0)
                 this.points[i] += dx;
             else
                 this.points[i] += dy;
         }
-        console.log("after shifting in aya");
-        this.points.map(pt =>{
-            console.table(pt);
-        });
         this.children.map ( ({child}) => {
             child.shift(dx, dy);
         }); 
@@ -221,51 +138,6 @@ class Polyline extends Shape {
             child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
             child.redraw();
         });
-    }
-
-    setRotateCenter(centerX, centerY){
-        this.centerX = centerX;
-        this.centerY = centerY;
-    }
-    
-    setRotateAngle(angle){
-        this.angle = angle;
-    }
-
-    setOffsetX(x){
-        this.offsetX = x;
-    }
-
-    setOffsetY(y){
-        this.offsetY = y;
-    }
-
-    setScaleX(x){
-        this.scaleX = x;
-    }
-
-    setScaleY(y){
-        this.scaleY = y;
-    }
-
-    getRotateAngle(){
-       return  this.angle;
-    }
-
-    getOffsetX(){
-        return this.offsetX;
-    }
-
-    getOffsetY(){
-        return this.offsetY;
-    }
-
-    getScaleX(){
-        return this.scaleX;
-    }
-
-    getScaleY(){
-        return this.scaleY;
     }
 }
 export {Polyline}; 

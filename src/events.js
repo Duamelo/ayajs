@@ -1,6 +1,5 @@
 import { _Register } from "./register.js";
 import { _uuid } from "./uuid.js";
-import { Line } from "./entities/line.js";
 import { Link } from "./entities/link.js";
 
 class Events {
@@ -12,7 +11,7 @@ class Events {
   static dx = null;
   static dy = null;
 
-  static mousedowncb(e) {  
+  static mousedowncb(e, _config) {  
     var id, cp = null;
     id = e.srcElement.id;
 
@@ -34,7 +33,7 @@ class Events {
       Events.state = "moving";
     else {
       // Resizing is triggered when the mousedown takes place on one of the summits.
-      if ((Events.source.shape.vertex != undefined) && (Events.current_vertex = Events.source.shape.vertex.indexOf(cp)) >= 0) {
+      if ((Events.source.vertex != undefined) && (Events.current_vertex = Events.source.vertex.indexOf(cp)) >= 0) {
         Events.state = "resizing";
       }
       else{
@@ -46,22 +45,21 @@ class Events {
 
           Events.state = "drawing_link";
           Events.current_cpoint = {x: cp.x, y: cp.y};
-          Events.line = new Line(
-              _uuid.generate(),
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              Events.current_cpoint.x,
-              Events.current_cpoint.y,
-              );
-
-          Events.line.draw();
-          Events.line.makeHiddenVertex();
+          
+          Events.line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          Events.line.setAttribute("x1", Events.current_cpoint.x);
+          Events.line.setAttribute("y1", Events.current_cpoint.y);
+          Events.line.setAttribute("x2", Events.current_cpoint.x);
+          Events.line.setAttribute("y2", Events.current_cpoint.y);
+          Events.line.setAttribute("stroke", "black");
+          Events.line.setAttribute("id", _uuid.generate());
+          _config.svg.appendChild(Events.line);
       }
     }
     return Events.state;
   }
 
-  static mousemovecb(e) {
+  static mousemovecb(e, _config) {
     var deltaX = e.offsetX - Events.dx;
     var deltaY = e.offsetY - Events.dy;
 
@@ -73,9 +71,9 @@ class Events {
       var src, dest;
       lk = _Register.findAllLink(Events.source);
       // Ensure Events.source is a component
-      if(Events.source.shape != undefined){
+      if(Events.source != undefined){
         lk.map((link) => {
-          Events.source.shape.c_points.map( (point) => {
+          Events.source.c_points.map( (point) => {
             if(point == link.source)
               src = point;
             else if(point == link.destination)
@@ -92,65 +90,53 @@ class Events {
             link.redraw();
           }
         });
-        Events.source.shape.shift(deltaX, deltaY);
-        Events.source.shape.redraw();
+        Events.source.shift(deltaX, deltaY);
+        Events.source.redraw();
         lk.map((link) => {
           link.redraw();
         });
       }
     }
     else if (Events.state == "drawing_link") {
-      Events.line.dest_x = e.clientX;
-      Events.line.dest_y = e.clientY;
-      Events.line.redraw();
+      Events.line.setAttribute("x2", e.clientX);
+      Events.line.setAttribute("y2", e.clientY);
     }
     else if (Events.state == "resizing") {
       lk = _Register.findAllLink(Events.source);
-      Events.source.shape.resize(Events.current_vertex, deltaX, deltaY);
-      Events.source.shape.redraw();
+      Events.source.resize(Events.current_vertex, deltaX, deltaY);
+      Events.source.redraw();
 
-      lk.map((link ) => {
-        link.shape.redraw();
+      lk.map((link) => {
+        link.redraw();
       });
     }
   }
 
-  static mouseupcb(e) {
-      var id = e.srcElement.id;
-      if (Events.state == "drawing_link") {
-	  var pnt = _Register.find(id);
-
-	  if (pnt && pnt.ref == Events.source.uuid){
-        var ref = document.getElementById(Events.line.uuid);
-        ref.remove();
+  static mouseupcb(e, _config) {
+    var id = e.srcElement.id;
+    if (Events.state == "drawing_link") {
+      var pnt = _Register.find(id);
+	    if (pnt && pnt.ref == Events.source.uuid){
+        Events.line.remove();
         return;
       }
-	if (pnt && pnt.ref) {
-            Events.line.dest_x = pnt.x;
-            Events.line.dest_y = pnt.y;
-            var destination = _Register.find(pnt.ref);
-	    new Link(
-		Events.source.uuid,
-		destination.uuid,
-		{});
-            Events.line.removeFromDOM();
-            Events.line = null;
-            Events.source = null;
-	}
-	else{
-          var ref = document.getElementById(Events.line.uuid);
-          Events.line.children.map(({child}) => {
-              var rf = document.getElementById(child.uuid);
-              rf.remove();
-          });
-          Events.line.vertex.map((point) => {
-              var rf = document.getElementById(point.uuid);
-              rf.remove();
-          })
-          ref.remove();
+      if (pnt && pnt.ref) {
+        Events.line.setAttribute("x2", pnt.x);
+        Events.line.setAttribute("y2", pnt.y);
+  
+        var destination = _Register.find(pnt.ref);
+        new Link(
+          Events.source.uuid,
+          destination.uuid,
+          {},
+          _config
+        );
       }
+      Events.line.remove();
+      Events.line = null;
+      Events.source = null;
     }
-      Events.state = "";
+    Events.state = "";
   }
   static mouseovercb(e){
     var id = e.srcElement.id;
@@ -159,19 +145,19 @@ class Events {
 
     if(local_cp == undefined)
       return;
-    if(local_cp.shape.type == "line"){
-      local_cp.shape.c_svg.setAttribute("class", "move");
-      local_cp.shape.vertex.map((vt) =>{
+    if(local_cp.type == "line"){
+      local_cp.c_svg.setAttribute("class", "move");
+      local_cp.vertex.map((vt) =>{
         vt.c_svg.setAttribute("class", "default");
       });
     }
     else {
-      if(local_cp.shape != undefined){
-        local_cp.shape.c_svg.setAttribute("class", "move");
-        local_cp.shape.c_points.map( (point) => {
+      if(local_cp != undefined){
+        local_cp.c_svg.setAttribute("class", "move");
+        local_cp.c_points.map( (point) => {
           point.c_svg.setAttribute("class", "show_point");
         });
-        local_cp.shape.vertex.map( (vertex, index) => {
+        local_cp.vertex.map( (vertex, index) => {
           vertex.c_svg.setAttribute("class", "show_point");
           if(index == 0)
             vertex.c_svg.setAttribute("class", "resize_left_top");
@@ -185,16 +171,16 @@ class Events {
       }
     }
   }
-  static mouseleavecb(e){
+  static mouseleavecb(e, _config){
     var components = _Register.findAllComponents();
-    components.map( async (component) => {
-      component.shape.c_points.map( (point) => {
-        point.c_svg.setAttribute("class", "hidden_point");
-      });
-      component.shape.vertex.map( (vertex) => {
-        vertex.c_svg.setAttribute("class", "hidden_point");
-      });
-    })
+    // components.map( async (component) => {
+    //   component.c_points.map( (point) => {
+    //     point.c_svg.setAttribute("class", "hidden_point");
+    //   });
+    //   component.vertex.map( (vertex) => {
+    //     vertex.c_svg.setAttribute("class", "hidden_point");
+    //   });
+    // });
   }
 }
 export { Events };

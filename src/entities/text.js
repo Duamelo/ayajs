@@ -7,7 +7,7 @@ import { _uuid } from "../uuid";
  * 
  */
 class Text{
-    constructor(x = 0, y = 0, text = "text", size = 0, dest_x, dest_y, isdrawing = true, config){
+    constructor(x = 0, y = 0, text = "text", size = 300, dest_x, dest_y, isdrawing = true, config){
 
         this.uuid = _uuid.generate();
 

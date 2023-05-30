@@ -260,7 +260,7 @@ class Component
      * account its relative position and the center of rotation.
      */
     addChild(child, translate = null, rotate = null, drawing = true){
-        /* resizing and connection to child isn't possible */
+        /* resizing and connection to child are not possible */
         child.vertex = [];
         child.c_points = [];
 

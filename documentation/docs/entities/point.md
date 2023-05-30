@@ -1,4 +1,4 @@
-## aya.Point(x, y, r)
+## aya.point(x, y, r, is_drawing, isave, uuid);
 
 <style>
 .empty-space{
@@ -44,6 +44,21 @@
         <td>r</td>
         <td>The radius of the point</td>
     </tr>
+     <tr>
+        <td class="type_style">boolean</td>
+        <td>is_drawing</td>
+        <td>Tell to aya if the component should be drawn in the browser or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_save</td>
+        <td>Tell to aya if the component should be save or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">string</td>
+        <td>uuid</td>
+        <td>Specify a specific id to the component.</td>
+    </tr>
     </tbody>
 </table>
 </body>
@@ -51,12 +66,12 @@
 Here is an example of how you can create a point form.
 
 <strong>
-    This shape is specially designed to represent the vertexes, the connection points of known geometric shapes (rectangle, lozenge, triangle, line).
+    This shape is specially designed to represent vertexes and the connection points of defined components (rectangle, lozenge, triangle, line).
 </strong>
 
 ```js
 <script>
-    var pt = aya.Point(100, 150, 20);
-    pt.draw();
+    var pt = aya.point(100, 150, 20);
 </script>
 ```
+By default <strong>is_drawing</strong>, <strong>is_save</strong> parameters are true and <strong>uuid</strong> parameter is undefined.

@@ -1,4 +1,4 @@
-## aya.Lozenge(x, y, width, height)
+## aya.lozenge(x, y, width, height, is_drawing, is_save, uuid);
 
 <style>
 .empty-space{
@@ -14,7 +14,7 @@
 }
 </style>
 <body>
-<b>Specifications : </b>  aya.Lozenge is a method that takes foor (04) parameters as arguments like shown in this table :
+<b>Specifications : </b>  aya.lozenge is a method that takes seven (07) parameters as arguments (but only 04 are required) like shown in this table :
 <table class='table_1'>
     <thead>
     <tr class="thead-row">
@@ -37,24 +37,37 @@
      <tr>
         <td class="type_style">number</td>
         <td>width</td>
-        <td>The width of the diagonal parallel to the horizontal</td>
+        <td>The width of the diagonal parallel to the horizontal.</td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>height</td>
-        <td>The height of the diagonal parallel to the vertical</td>
+        <td>The height of the diagonal parallel to the vertical.</td>
+    </tr>
+     <tr>
+        <td class="type_style">boolean</td>
+        <td>is_drawing</td>
+        <td>Tell to aya if the component should be drawn in the browser or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_save</td>
+        <td>Tell to aya if the component should be save or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">string</td>
+        <td>uuid</td>
+        <td>Specify a specific id to the component.</td>
     </tr>
     </tbody>
 </table>
 
 </body>
 
-Here is an example of how you can create a lozenge form.
-<p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
-
+Here is an example of how you can create a lozenge component.
 ```js
 <script>
-   var los = aya.Lozenge(100, 100, 100, 100);
-   los.draw();
+   var los = aya.lozenge(100, 100, 100, 100);
 </script>
 ```
+By default <strong>is_drawing</strong>, <strong>is_save</strong> parameters are true and <strong>uuid</strong> parameter is undefined.

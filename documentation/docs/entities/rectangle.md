@@ -1,4 +1,4 @@
-## aya.Rectangle(x,y,width,height)
+## aya.rectangle(x, y, width, height, is_drawing, is_save, uuid);
 
 <style>
 .empty-space{
@@ -15,7 +15,7 @@
 }
 </style>
 <body>
-<b>Specifications : </b>  aya.Rectangle is a method that takes foor (04) parameters as arguments like shown in this table :
+<b>Specifications : </b>  aya.rectangle is a method that takes seven (07) parameters as arguments (but only 04 are required) like shown in this table :
 <table class='table_1'>
     <thead>
     <tr class="thead-row">
@@ -28,35 +28,48 @@
     <tr>
         <td class="type_style">number</td>
         <td>x</td>
-        <td>The abscissa of the beginning of the drawing of the shape, x pixels away from the upper left corner of the browser along the horizontal
+        <td>The abscissa of the beginning of the drawing of the shape, x pixels away from the upper left corner of the browser along the horizontal.
         </td>
     </tr>
     <tr>
         <td class="type_style">number</td>
         <td>y</td>
-        <td>The ordinate of the beginning of the drawing of the shape, distant by y pixel from the upper left corner of the browser along the vertical
+        <td>The ordinate of the beginning of the drawing of the shape, distant by y pixel from the upper left corner of the browser along the vertical.
         </td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>width</td>
-        <td>The width of the rectangular shape</td>
+        <td>The width of the rectangular shape.</td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>height</td>
-        <td>The height of the rectangular shape</td>
+        <td>The height of the rectangular shape.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_drawing</td>
+        <td>Tell to aya if the component should be drawn in the browser or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_save</td>
+        <td>Tell to aya if the component should be save or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">string</td>
+        <td>uuid</td>
+        <td>Specify a specific id to the component.</td>
     </tr>
     </tbody>
 </table>
 </body>
 
-Here is an example of how you can create a rectangle form.
-<p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
-
+Here is an example of how you can create a rectangle component.
 ```js
 <script>
-    var rect = aya.Rectangle(100, 150, 200, 120);
-    rect.draw();
+    var rect = aya.rectangle(100, 150, 200, 120);
 </script>
 ```
+By default <strong>is_drawing</strong>, <strong>is_save</strong> parameters are true and <strong>uuid</strong> parameter is undefined.

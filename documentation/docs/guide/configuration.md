@@ -2,19 +2,35 @@
 
 <p>
     Without any configuration, the aya svg is squared on 1343 times 1343.
-    You can change the size of the svg when calling the Init() constructor by passing the width and height of the svg.
+    You can change the size of the svg when calling the init() method by passing the width and height of the svg.
+    This method return an object in which we have the configuration of the current aya instance and details about the current svg.
 </p>
 
 ## modifying the size of the svg
 
 ```js
-    var aya = aya.Init(500, 500);
+var aya = aya.init(500, 500);
 ```
-##  removing the default grid from the svg
+
+##  adding the grid to the svg
 
 ```js
-  aya.grid.remove();
+aya.grid(aya.svg);
 ```
+
+
+##  removing the grid from the svg
+
+```js
+aya.grid.remove();
+```
+
+##  modifying the grid cells and others parameters
+
+```js
+aya.grid.setGridSize({cellw: 40, cellh: 40, subdx: 2, subdy: 2, bgc: "gray" , lc: 'yellow' , border: "2px"});
+```
+
 
 ## config file
 
@@ -107,8 +123,8 @@ export {config};
 ```
 
 <p>
-    If you want to change the basic configurations, as changing the ends of the line component, 
-you can do it by accessing the config property of the Init class in this way:
+    If you want to change the basic configurations, like changing the ends of the line component, 
+you can do it by accessing the config property of aya:
 </p>
 
 ```js
@@ -123,16 +139,15 @@ you can do it by accessing the config property of the Init class in this way:
 </head>
 <body>
     <script>
-        var aya = new aya.Init();
+        var aya =  aya.init();
 
        aya.config.link.end_start = "";
        aya.config.link.end_dest = "";
 
-       var line = aya.Component("line", {x: 100, y: 100, dest_x: 500, dest_y: 200});
+       var line = aya.line(100, 100, 500, 200);
       
        document.body.append(aya.svg);
     </script>
 </body>
 </html>
 ```
-

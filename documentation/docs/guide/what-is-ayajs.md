@@ -5,7 +5,7 @@
 ## Motivations
 <p>
     We were looking for a code base to easily integrate diagrams into existing applications. 
-    Existing solutions are either too heavy or difficult to use. So we wrote a low level library, which allows to build more complex applications like DSL, workflow editors, graphs (like petri network), diagrams (like UML's diagrams) and so on.
+    Existing solutions are either too heavy or difficult to use. So we wrote a low level library, which allows to build more complex applications like DSL, workflow editors, graphs (like petri network), diagrams (like UML's diagrams), library for data visualisation and so on.
     The goal here is to provide a minimal and flexible code base allowing any developer to easily find his way around and build whatever he wants from aya.
     <br/>
     It uses svg document under the hood.

@@ -1,4 +1,4 @@
-## aya.Image(x, y, width, height, path)
+## aya.image(x, y, width, height, path, name, is_drawing, is_save, uuid);
 
 <style>
 .empty-space{
@@ -15,7 +15,7 @@
 </style>
 
 <body>
-<b>Specifications : </b>  aya.Image is a method that takes six (05) parameters as arguments like shown in this table:
+<b>Specifications : </b>  aya.image is a method that takes nine (09) parameters as arguments (but only 06 are required) like shown in this table:
 <table class='table_1'>
     <thead>
     <tr class="thead-row">
@@ -28,36 +28,56 @@
     <tr>
         <td class="type_style">number</td>
         <td>x</td>
-        <td>The abscissa of the upper left corner of the image, x pixels away from the upper left corner of the browser along the horizontal</td>
+        <td>The abscissa of the upper left corner of the image, x pixels away from the upper left corner of the browser along the horizontal.</td>
     </tr>
     <tr>
         <td class="type_style">number</td>
         <td>y</td>
-        <td>The ordinate of the upper left corner of the image, y pixels away from the upper left corner of the browser along the horizontal</td>
+        <td>The ordinate of the upper left corner of the image, y pixels away from the upper left corner of the browser along the horizontal.</td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>width</td>
-        <td>The width of the image</td>
+        <td>The width of the image.</td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>height</td>
-        <td>The height of the image</td>
+        <td>The height of the image.</td>
     </tr>
      <tr>
         <td class="type_style">string</td>
         <td>path</td>
-        <td>The path to retrieve the image from the file system</td>
+        <td>The path to retrieve the image from the file system.</td>
+    </tr>
+    <tr>
+        <td class="type_style">string</td>
+        <td>name</td>
+        <td>The name of the image.</td>
+    </tr>
+    <tr>
+        <td class="type_style">boolean</td>
+        <td>is_drawing</td>
+        <td>Tell to aya if the component should be drawn in the browser or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_save</td>
+        <td>Tell to aya if the component should be save or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">string</td>
+        <td>uuid</td>
+        <td>Specify a specific id to the component.</td>
     </tr>
     </tbody>
 </table>
 </body>
 
-Here is an example of how you can create a image form.
+Here is an example of how you can create a image component.
 ```js
 <script>
-    var img = aya.Image(230, 245, 30,30, "icons/decorator.png");
-    img.draw();
+    var img = aya.image(230, 245, 30,30, "icons/decorator.png");
 </script>
 ```
+By default <strong>is_drawing</strong>, <strong>is_save</strong> parameters are true and <strong>uuid</strong> parameter is undefined.

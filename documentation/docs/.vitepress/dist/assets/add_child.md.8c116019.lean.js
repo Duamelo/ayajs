@@ -1,1 +1,0 @@
-import{_ as s,o as a,c as n,a as l}from"./app.d2bde3a2.js";const i=JSON.parse('{"title":"Build complex components","description":"","frontmatter":{},"headers":[],"relativePath":"add_child.md","lastUpdated":1674740894000}'),p={name:"add_child.md"},o=l("",8),e=[o];function t(c,r,F,D,y,C){return a(),n("div",null,e)}var d=s(p,[["render",t]]);export{i as __pageData,d as default};

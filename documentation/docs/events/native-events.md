@@ -3,9 +3,7 @@
 By default, aya registers all created components.
 This allows it to define events on them, such as mousedown, mousemove, mouseup, mouseleave, mouseover.
 
-These events are defined on all created components.
-
-Unlike simple shapes which cannot be moved, resized or linked to another shape.
+These events are defined on all created components, so they can be moved, resized or linked to each other.
 
 
 ## Add events
@@ -20,27 +18,14 @@ addEvent(event, callback){
     this.events[event] = callback;
 }
 ```
-For example I can define a mousedown event on a rectangle shape like this:
+For example I can define a mousedown event on a rectangle component like this:
 
 
 ```js
 <script>
-    var rec = aya.Rectangle(100, 130, 200, 200);
-    rec.draw();
+    var rec = aya.rectangle(100, 130, 200, 200);
 
     rec.addEvent("mousedown", ()=> {
-        console.log("this is the callback for mousedown event");
-    });
-</script>
-```
-With a component, it goes like this:
-
-
-```js
-<script>
-   var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
-
-    rec.shape.addEvent("mousedown", ()=> {
         console.log("this is the callback for mousedown event");
     });
 </script>
@@ -59,13 +44,12 @@ deleteEvent(event){
 }
 ```
 
-For example I can delete a mousedown event on a rectangle shape like this
+For example I can delete a mousedown event on a rectangle component like this:
 
 
 ```js
 <script>
-    var rec = aya.Rectangle(100, 130, 200, 200);
-    rec.draw();
+    var rec = aya.rectangle(100, 130, 200, 200);
 
     rec.addEvent("mousedown", ()=> {
         console.log("this is the callback for mousedown event");
@@ -74,21 +58,6 @@ For example I can delete a mousedown event on a rectangle shape like this
     rec.deleteEvent("mousedown");
 </script>
 ```
-With a component, it is like this:
-
-
-```js
-<script>
-   var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
-
-    rec.shape.addEvent("mousedown", ()=> {
-        console.log("this is the callback for mousedown event");
-    });
-
-    rec.shape.deleteEvent("mousedown");
-</script>
-```
-
 
 ## Delete all events
 
@@ -103,12 +72,12 @@ deleteAllEvents(){
 }
 ```
 
-For example I can delete all the event (mousedown, mousemove,mouseup, mouseleave) on a rectangle shape like this
+For example I can delete all the event (mousedown, mousemove,mouseup, mouseleave) on a rectangle component like this:
 
 ```js
 <script>
-    var rec = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+    var rec = aya.rectangle(500, 200, 200, 100);
 
-    rec.shape.deleteAllEvents();
+    rec.deleteAllEvents();
 </script>
 ```

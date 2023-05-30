@@ -1,82 +1,74 @@
-When you instantiate aya from the Init class, a set of useful attributes is made available to customize the use of the library.
+When you instantiate aya from the init method, a set of useful attributes is made available to customize the use of the library.
 The table below shows the main attributes: their names and descriptions.
-## aya.Init(width = 1000, height = 1000)
+## aya.init(width = 1000, height = 1000)
 
-<b>Specification : </b>  The init class is the entry point of aya. Its constructor takes two parameters: the width and height of the svg.
+<b>Specification : </b>  The init method is the entry point of aya. It takes two parameters: the width and height of the svg and return an object.
 
 
 | Attributes's name             | Description
 | :-------------:               |:-------------:|
-| uuid                          | Id of svg. |
-| width                         | Width of svg. |
-| height                        | Height of svg.     |
-| grid                          | Grid of svg.     |
-| svg                           | Represents the svg document in which we draw all the shapes created from the current instantiation of aya.|
+| uuid                          | svg id. |
+| svg                           | Represents the svg document in which we draw all the shapes created from the current instantiation.of aya.|
 | config                        | Allows you to access the basic configurations of aya.      |
 
 
-Below we have some functions available in the Init class.
+Below we have functions available after calling the init method.
 
 <!-- ## setlinkcb(cb)
 
 Set a callback that represente the instance of link just created. -->
 
-## setGridSize(object)
+## grid();
 
-    Update the svg grid according to the value of object attributes.
-   * @param { Object } object - { cellw, cellh, subdx, subdy, bgc, lc, border, width, height }.
+    draw the grid inside the svg.
 
+## id();
 
-## id()
-
-Return a unique string that can reprensent an id.
-
-## Component(type, props)
-
-Return a new component based on the type witch is directly drawn in the svg.
-
-## Rectangle(x, y, width, height)
-
-Return a new rectangular shape on parameters.
-
-## Lozenge(x, y, width, height)
-
-Return a new lozenge shape on parameters.
-
-## Triangle(x1, y1, x2, y2, x3, y3)
-
-Return a new triangular shape based on parameters.
-
-## Circle(x, y, r)
-
-Return a new circle shape based on parameters.
-
-## Text(x, y, text, size)
-
-Return a new text based on parameters.
-
-## Line(x, y, dest_x, dest_y)
-
-Return a new Line shape based on parameters.
+Return a unique string that can reprensent a unique key to find a component.
 
 
-## Link(src_id, dest_id, userconfig = {})
+## rectangle(x, y, width, height, is_drawing, is_save, uuid);
 
-Return a new Link object that abstractly représente the link materialised by the line's shape.
+Return a new rectangular shape.
 
-## Polyline(points=[])
+## lozenge(x, y, width, height, is_drawing, is_save, uuid);
 
-Return a new polyline shape based on the point's array.
+Return a new lozenge shape.
 
-## Point(x, y, r)
+## triangle(x1, y1, x2, y2, x3, y3, is_drawing, is_save, uuid);
 
-Return a new point shape based on parameters.
-It's mainly used to connection's points or vertex of the shapes.
+Return a new triangular shape.
 
-## Arc(x0, y0, x, y, angle, ratio)
+## circle(x, y, r, is_drawing, is_save, uuid);
 
-Return a new Arc shape based on parameters.
+Return a new circle shape.
 
-## Image(x, y, width, height, path, name)
+## text(x, y, text, size, dest_x, dest_y, is_drawing, is_save, uuid);
 
-Return a new image based on parameters.
+Return a new text.
+
+## line(x, y, dest_x, dest_y, is_drawing, is_save, uuid);
+
+Return a new line shape.
+
+
+## link(src_id, dest_id, userconfig = {});
+
+Return a new link object that abstractly representes the link materialised by a line.
+
+## Polyline(points=[], is_drawing, is_save, uuid);
+
+Return a new polyline shape.
+
+## Point(x, y, r, is_drawing, is_save, uuid);
+
+Return a new point shape.
+It's mainly used to connection's points or  shapes's vertexex.
+
+## arc(x0, y0, x, y, angle, ratio, is_drawing, is_save, uuid);
+
+Return a new arc shape.
+
+## image(x, y, width, height, path, name, is_drawing, is_save, uuid);
+
+Return a new image.

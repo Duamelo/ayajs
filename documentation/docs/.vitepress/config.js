@@ -9,21 +9,7 @@ const guideSidebar = [
     ]
   },
   {
-    text: 'Component classes',
-    collapsible: true,
-    items: [
-      { text: 'Arc', link: '../components/arc' },
-      { text: 'Circle', link: '../components/circle' },
-      { text: 'Line', link: '../components/line' },
-      { text: 'Lozenge', link: '../components/lozenge' },
-      { text: 'Polyline', link: '../components/polyline' },
-      { text: 'Rectangle', link: '../components/rectangle' },
-      { text: 'Triangle', link: '../components/triangle' },
-      { text: 'Text', link: '../components/text' }
-    ]
-  },
-  {
-    text: 'Simple shape classes',
+    text: 'Components',
     collapsible: true,
     items: [
       { text: 'Arc', link: '../entities/arc' },
@@ -58,24 +44,17 @@ const guideSidebar = [
 
 const apiSidebar = [
   {
-    text: 'Init',
+    text: 'init',
     collapsible: true,
     items: [
-      { text: 'Init class attributes', link: '../api/init' },
+      { text: 'init method', link: '../api/init' },
     ]
   },
   {
     text: 'Component',
     collapsible: true,
     items: [
-      { text: 'Component class', link: '../api/component-api' },
-    ]
-  },
-  {
-    text: 'Shape',
-    collapsible: true,
-    items: [
-      { text: 'abstract class Shape', link: '../api/basic-shapes' },
+      { text: 'shape', link: '../api/component' },
     ]
   },
 ];
@@ -104,7 +83,6 @@ export default {
           { text: 'Contributing', link: '/contributing' },
           { text: 'Community', link: '/community' },
           { text: 'Examples', link: '/example' },
-          // { text: 'Tutorials', link: '/tutorials/index' },
         ],
       socialLinks: [
         { icon: 'github', link: 'https://github.com/Duamelo/ayajs'},

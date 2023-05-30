@@ -1,4 +1,4 @@
-## aya.Line(x, y, dest_x, dest_y)
+## aya.line(x, y, dest_x, dest_y, is_drawing, is_save, uuid);
 
 <style>
 .empty-space{
@@ -14,7 +14,7 @@
 }
 </style>
 <body>
-<b>Specifications : </b>  aya.Line is a method that takes foor (04) parameters as arguments like shown in this table:
+<b>Specifications : </b>  aya.line is a method that takes seven (07) parameters as arguments (but only 04 are required) like shown in this table:
 
 <table class='table_1'>
     <thead>
@@ -28,7 +28,7 @@
     <tr>
         <td class="type_style">number</td>
         <td>x</td>
-        <td>The abscissa of the beginning of the line, x pixels away from the upper left corner of the browser along the horizontal
+        <td>The abscissa of the beginning of the line, x pixels away from the upper left corner of the browser along the horizontal.
         </td>
     </tr>
     <tr>
@@ -39,25 +39,38 @@
      <tr>
         <td class="type_style">number</td>
         <td>dest_x</td>
-        <td>The abscissa of the end of the line, dest_x pixels away from the upper left corner of the browser along the horizontal
+        <td>The abscissa of the end of the line, dest_x pixels away from the upper left corner of the browser along the horizontal.
         </td>
     </tr>
      <tr>
         <td class="type_style">number</td>
         <td>dest_y</td>
-        <td>The abscissa of the end of the line, dest_y pixels away from the upper left corner of the browser along the horizontal
+        <td>The abscissa of the end of the line, dest_y pixels away from the upper left corner of the browser along the horizontal.
         </td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_drawing</td>
+        <td>Tell to aya if the component should be drawn in the browser or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">boolean</td>
+        <td>is_save</td>
+        <td>Tell to aya if the component should be save or not.</td>
+    </tr>
+      <tr>
+        <td class="type_style">string</td>
+        <td>uuid</td>
+        <td>Specify a specific id to the component.</td>
     </tr>
     </tbody>
 </table>
 </body>
 
-Here is an example of how you can create a line form.
-<p>This kind of creation, doesn't draw immediately the corresponding form into the svg document unlike for calling the Component method of Init class.</p>
-
+Here is an example of how you can create a line component.
 ```js
 <script>
-    var line = aya.Line(50, 150, 150, 100);
-    line.draw();
+    var line = aya.line(50, 150, 150, 100);
 </script>
 ```
+By default <strong>is_drawing</strong>, <strong>is_save</strong> parameters are true and <strong>uuid</strong> parameter is undefined.

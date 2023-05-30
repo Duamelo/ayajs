@@ -1,4 +1,4 @@
-## aya.Link(src_id, dest_id, userconfig = {})
+## aya.link(src_id, dest_id, userconfig = {});
 
 <style>
 .empty-space{
@@ -14,7 +14,7 @@
 }
 </style>
 <body>
-<b>Specifications : </b>  aya.Link is a method that takes three (03) parameters as arguments like shown in this table:
+<b>Specifications : </b>  aya.link is a method that takes three (03) parameters as arguments like shown in this table:
 
 <table class='table_1'>
     <thead>
@@ -28,17 +28,17 @@
     <tr>
         <td class="type_style">String</td>
         <td>src_id</td>
-        <td>id of the source component</td>
+        <td>The id of the source component.</td>
     </tr>
     <tr>
         <td class="type_style">String</td>
         <td>dest_id</td>
-        <td>id of the source component</td>
+        <td>The id of the source component.</td>
     </tr>
      <tr>
         <td class="type_style">Object</td>
         <td>userconfig</td>
-        <td>local configuration of the link</td>
+        <td>Local configuration of the link.</td>
     </tr>
     </tbody>
 </table>
@@ -53,9 +53,9 @@ Here we specified the extremities of the link in the userconfig object.
 
 ```js
 <script>
-    var rec1 = aya.Component("rectangle", {x: 100, y: 100, width: 200, height: 100});
-    var rec2 = aya.Component("rectangle", {x: 500, y: 200, width: 200, height: 100});
+    var rec1 = aya.rectangle(100, 100, 200, 100);
+    var rec2 = aya.rectangle(500, 200, 200, 100);
 
-    var lk = aya.Link(rec1.shape.uuid, rec2.shape.uuid, {end_start: "triangle", end_dest: "triangle"});
+    var lk = aya.link(rec1.uuid, rec2.uuid, {end_start: "triangle", end_dest: "triangle"});
 </script>
 ```

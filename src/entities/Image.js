@@ -6,7 +6,7 @@ class Image extends Component {
         super({ uuid: id, isSave: save, config: config });
 
         if (c_svg != undefined)
-            this.c_svg = c_svg;
+            this.c_svg = this.stringToSvg(c_svg);
         this.width = width;
         this.height = height;
 
@@ -19,6 +19,13 @@ class Image extends Component {
         this.type = 'image';
         if (isdrawing)
             this.draw();
+    }
+
+    stringToSvg(c_svgString) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(c_svgString, 'image/svg+xml');
+        var c_svg = doc.documentElement;
+        return c_svg;
     }
 
     draw() {

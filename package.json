@@ -1,6 +1,6 @@
 {
   "name": "ayajs",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "A flexible JavaScript library for building any kind of diagrams quickly and in a programmatic way",
   "module": "build/aya.module.js",
   "type": "module",
@@ -15,12 +15,11 @@
     "aya",
     "ayajs"
   ],
-  "bug":{
+  "bug": {
     "url": "https://github.com/Duamelo/ayajs/issues"
   },
   "homepage": "https://ayajs.com",
   "author": "emack.io",
   "license": "ISC",
-  "dependencies": {
-  }
+  "dependencies": {}
 }

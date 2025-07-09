@@ -29,11 +29,13 @@ class Image extends Component {
     }
 
     draw() {
-        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        if (this.c_svg == undefined) {
+            this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
+        }
         this.c_svg.setAttributeNS(null, 'id', this.uuid);
         this.c_svg.setAttributeNS(null, 'height', this.height);
         this.c_svg.setAttributeNS(null, 'width', this.width);
-        this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
         this.c_svg.setAttributeNS(null, 'x', this.x + this.offsetX);
         this.c_svg.setAttributeNS(null, 'y', this.y + this.offsetY);
 

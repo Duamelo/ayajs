@@ -2719,7 +2719,7 @@
 	        super({ uuid: id, isSave: save, config: config });
 
 	        if (c_svg != undefined)
-	            this.c_svg = c_svg;
+	            this.c_svg = this.stringToSvg(c_svg);
 	        this.width = width;
 	        this.height = height;
 
@@ -2734,12 +2734,21 @@
 	            this.draw();
 	    }
 
+	    stringToSvg(c_svgString) {
+	        const parser = new DOMParser();
+	        const doc = parser.parseFromString(c_svgString, 'image/svg+xml');
+	        var c_svg = doc.documentElement;
+	        return c_svg;
+	    }
+
 	    draw() {
-	        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+	        if (this.c_svg == undefined) {
+	            this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+	            this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
+	        }
 	        this.c_svg.setAttributeNS(null, 'id', this.uuid);
 	        this.c_svg.setAttributeNS(null, 'height', this.height);
 	        this.c_svg.setAttributeNS(null, 'width', this.width);
-	        this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
 	        this.c_svg.setAttributeNS(null, 'x', this.x + this.offsetX);
 	        this.c_svg.setAttributeNS(null, 'y', this.y + this.offsetY);
 

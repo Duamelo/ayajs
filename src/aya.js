@@ -37,6 +37,13 @@ export let init = (width = 1343, height = 1343) => {
             uuid: uuid,
             svg: svg,
             config: _config,
+
+            getRegister: () => {
+                return _Register;
+            },
+            clearRegister: () => {
+                _Register.store = {};
+            },
             id: () => {
                 return _uuid.generate();
             },

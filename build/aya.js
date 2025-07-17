@@ -4,39 +4,38 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.aya = {}));
 })(this, (function (exports) { 'use strict';
 
-	class _Register
-	{
+	class _Register {
 	    static store = {};
 
 	    static add(object) {
 	        _Register.store[object.uuid] = object;
 	    }
 
-	    static find(uuid){
+	    static find(uuid) {
 	        return _Register.store[uuid];
 	    }
 
-	    static clear(uuid){
+	    static clear(uuid) {
 	        delete _Register.store[uuid];
 	    }
-	    
-	    static findAllLink(component){
+
+	    static findAllLink(component) {
 	        var result = [];
 	        Object.keys(_Register.store).map((id) => {
 	            var obj = _Register.find(id);
-	            if(obj.type == "link"){
-	                if(component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
+	            if (obj.type == "link") {
+	                if (component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
 	                    result.push(obj);
 	            }
 	        });
 	        return result;
 	    }
 
-	    static findAllComponents(){
+	    static findAllComponents() {
 	        var result = [];
 	        Object.keys(_Register.store).map((id) => {
 	            var obj = _Register.find(id);
-	            if(obj.type != 'point' && obj.type != 'link') // it means the obj is a component
+	            if (obj.type != 'point' && obj.type != 'link') // it means the obj is a component
 	                result.push(obj);
 	        });
 	        return result;
@@ -2448,12 +2447,8 @@
 	        this.type = "polyline";
 
 	        this.vertex = [
-	            new Point(this.uuid, 0, 0, 5, config),
-	            new Point(this.uuid, 0, 0, 5, config),
 	        ];
 	        this.c_points = [
-	            new Point(this.uuid, 0, 0, 5, config),
-	            new Point(this.uuid, 0, 0, 5, config),
 	        ];
 	        if (isdrawing)
 	            this.draw();
@@ -2517,7 +2512,7 @@
 
 	    redraw(){
 	        this.drawVertex();
-	        this.vertex.map( (vertex) => {
+	        this.vertex.map((vertex) => {
 	            vertex.redraw();
 	        });
 	        var path = "";
@@ -2527,10 +2522,9 @@
 	            else
 	                path += this.points[i] + this.offsetY + " ";
 	        }
-
 	        this.c_svg.setAttribute("points", path);
 
-	        this.children.map ( ({child}) => {
+	        this.children.map(({child}) => {
 	            child.redraw();
 	        });
 	    }
@@ -2563,7 +2557,7 @@
 	            this.dest_y += dy;
 	        }
 	        this.children.map ( ({child}) => {
-	            child.setRotateAngle((this.calculateAngle() + ( Math.PI * 90)/180));
+	            child = this.calculateAngle() + (Math.PI * 90)/180;
 	            child.redraw();
 	        });
 	    }
@@ -2718,17 +2712,19 @@
 	    }
 	}
 
-	class Image extends Component{
-	    constructor(x = 0, y = 0, width = 50, height = 50, path, name, isdrawing = true, save = true, id = undefined, config){
-	       
-	        super({uuid: id, isSave: save, config: config});
+	class Image extends Component {
+	    constructor(x = 0, y = 0, width = 50, height = 50, path, name, isdrawing = true, save = true, id = undefined, config, c_svg = undefined) {
 
+	        super({ uuid: id, isSave: save, config: config });
+
+	        if (c_svg != undefined)
+	            this.c_svg = this.stringToSvg(c_svg);
 	        this.width = width;
 	        this.height = height;
-	       
+
 	        this.x = x;
 	        this.y = y;
-	       
+
 	        this.path = path;
 	        this.name = name;
 
@@ -2737,29 +2733,38 @@
 	            this.draw();
 	    }
 
-	    draw(){
-	        this.c_svg = document.createElementNS('http://www.w3.org/2000/svg','image');
-	        this.c_svg.setAttributeNS(null,'id',this.uuid);
-	        this.c_svg.setAttributeNS(null,'height',this.height);
-	        this.c_svg.setAttributeNS(null,'width',this.width);
-	        this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.path);
-	        this.c_svg.setAttributeNS(null,'x',this.x + this.offsetX);
-	        this.c_svg.setAttributeNS(null,'y',this.y + this.offsetY);
+	    stringToSvg(c_svgString) {
+	        const parser = new DOMParser();
+	        const doc = parser.parseFromString(c_svgString, 'image/svg+xml');
+	        var c_svg = doc.documentElement;
+	        return c_svg;
+	    }
+
+	    draw() {
+	        if (this.c_svg == "" || this.c_svg == undefined) {
+	            this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+	            this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
+	        }
+	        this.c_svg.setAttributeNS(null, 'id', this.uuid);
+	        this.c_svg.setAttributeNS(null, 'height', this.height);
+	        this.c_svg.setAttributeNS(null, 'width', this.width);
+	        this.c_svg.setAttributeNS(null, 'x', this.x + this.offsetX);
+	        this.c_svg.setAttributeNS(null, 'y', this.y + this.offsetY);
 
 	        this.svg.append(this.c_svg);
 	    }
 
-	    shift(dx, dy){
+	    shift(dx, dy) {
 	        this.x += dx;
-	        this.y +=dy;
+	        this.y += dy;
 	    }
 
-	    redraw(){
-	        this.c_svg.setAttributeNS(null,'x',this.x + this.offsetX);
-	        this.c_svg.setAttributeNS(null,'y',this.y + this.offsetY);
+	    redraw() {
+	        this.c_svg.setAttributeNS(null, 'x', this.x + this.offsetX);
+	        this.c_svg.setAttributeNS(null, 'y', this.y + this.offsetY);
 	    }
 
-	    removeFromDOM(){
+	    removeFromDOM() {
 	        this.svg.removeChild(this.c_svg);
 	    }
 	}
@@ -2970,7 +2975,7 @@
 	let ayaconfig = config;
 
 	let init = (width = 1343, height = 1343) => {
-	    try{
+	    try {
 	        var uuid = _uuid.generate();
 
 	        var width = width;
@@ -2983,16 +2988,24 @@
 	        svg.setAttribute("id", uuid);
 	        var _config = structuredClone(config);
 	        _config.svg = svg;
-	        svg.addEventListener("mousemove", (e)=>{Events.mousemovecb(e, _config);});
-	        svg.addEventListener("mouseup", (e)=>{Events.mouseupcb(e, _config);});
+	        svg.addEventListener("mousemove", (e) => { Events.mousemovecb(e, _config); });
+	        svg.addEventListener("mouseup", (e) => { Events.mouseupcb(e, _config); });
 	        return {
 	            uuid: uuid,
 	            svg: svg,
 	            config: _config,
+
+	            getRegister: () => {
+	                return _Register;
+	            },
+	            clearRegister: () => {
+	                _Register.store = {};
+
+	            },
 	            id: () => {
 	                return _uuid.generate();
 	            },
-	            grid: (svg, cellW = 40, cellH = 40, subdx = 2, subdy = 4) =>{
+	            grid: (svg, cellW = 40, cellH = 40, subdx = 2, subdy = 4) => {
 	                return new Grid(svg, cellW, cellH, subdx, subdy);
 	            },
 	            rectangle: (x = 0, y = 0, width = 10, height = 10, isdrawing = true, save = true, uuid = undefined) => {
@@ -3004,16 +3017,16 @@
 	            triangle: (x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, isdrawing = true, save = true, uuid = undefined) => {
 	                return new Triangle(x1, y1, x2, y2, x3, y3, isdrawing, save, uuid, _config);
 	            },
-	            circle: ( x = 0, y = 0, r = 5, isdrawing = true, save = true, uuid = undefined) => {
+	            circle: (x = 0, y = 0, r = 5, isdrawing = true, save = true, uuid = undefined) => {
 	                return new Circle(x, y, r, isdrawing, save, uuid, _config);
 	            },
 	            text: (x = 0, y = 0, text = "text", size = 100, dest_x, dest_y, isdrawing = true) => {
 	                return new Text(x, y, text, size, dest_x, dest_y, isdrawing, _config);
 	            },
-	            line: (x=0, y=0, dest_x = x, dest_y = y, isdrawing = true, save = true, uuid = undefined) => {
+	            line: (x = 0, y = 0, dest_x = x, dest_y = y, isdrawing = true, save = true, uuid = undefined) => {
 	                return new Line(x, y, dest_x, dest_y, isdrawing, save, uuid, _config);
 	            },
-	            link: (src_id, dest_id, userconfig = {}) =>{
+	            link: (src_id, dest_id, userconfig = {}) => {
 	                return new Link(src_id, dest_id, userconfig, _config);
 	            },
 	            polyline: (points = [], isdrawing = true, save = true, uuid = undefined) => {
@@ -3022,15 +3035,15 @@
 	            point: (x = 0, y = 0, r = 5, isdrawing = true, save, uuid = undefined) => {
 	                return new Point(null, x, y, r, isdrawing, save, uuid, _config);
 	            },
-	            arc: (x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1/2, isdrawing = true, save = true, uuid = undefined) => {
+	            arc: (x0 = 0, y0 = 0, x = 100, y = 100, angle = 90, ratio = 1 / 2, isdrawing = true, save = true, uuid = undefined) => {
 	                return new Arc(x0, y0, x, y, angle, ratio, isdrawing, save, uuid, _config);
 	            },
-	            image: (x,y, width, height, path = "", name = "", isdrawing = true, save = true, uuid = undefined) => {
-	                return new Image(x, y, width, height, path, name, isdrawing, save, uuid, _config);
+	            image: (x, y, width, height, path = "", name = "", isdrawing = true, save = true, uuid = undefined, c_svg = undefined) => {
+	                return new Image(x, y, width, height, path, name, isdrawing, save, uuid, _config, c_svg);
 	            }
 	        }
 	    }
-	    catch(e){
+	    catch (e) {
 	        console.log(e);
 	    }
 	};

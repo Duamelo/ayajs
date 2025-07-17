@@ -43,6 +43,7 @@ export let init = (width = 1343, height = 1343) => {
             },
             clearRegister: () => {
                 _Register.store = {};
+
             },
             id: () => {
                 return _uuid.generate();

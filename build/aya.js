@@ -4,39 +4,38 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.aya = {}));
 })(this, (function (exports) { 'use strict';
 
-	class _Register
-	{
+	class _Register {
 	    static store = {};
 
 	    static add(object) {
 	        _Register.store[object.uuid] = object;
 	    }
 
-	    static find(uuid){
+	    static find(uuid) {
 	        return _Register.store[uuid];
 	    }
 
-	    static clear(uuid){
+	    static clear(uuid) {
 	        delete _Register.store[uuid];
 	    }
-	    
-	    static findAllLink(component){
+
+	    static findAllLink(component) {
 	        var result = [];
 	        Object.keys(_Register.store).map((id) => {
 	            var obj = _Register.find(id);
-	            if(obj.type == "link"){
-	                if(component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
+	            if (obj.type == "link") {
+	                if (component.uuid == obj.source.ref || component.uuid == obj.destination.ref)
 	                    result.push(obj);
 	            }
 	        });
 	        return result;
 	    }
 
-	    static findAllComponents(){
+	    static findAllComponents() {
 	        var result = [];
 	        Object.keys(_Register.store).map((id) => {
 	            var obj = _Register.find(id);
-	            if(obj.type != 'point' && obj.type != 'link') // it means the obj is a component
+	            if (obj.type != 'point' && obj.type != 'link') // it means the obj is a component
 	                result.push(obj);
 	        });
 	        return result;
@@ -2742,7 +2741,7 @@
 	    }
 
 	    draw() {
-	        if (this.c_svg == undefined) {
+	        if (this.c_svg == "" || this.c_svg == undefined) {
 	            this.c_svg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 	            this.c_svg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.path);
 	        }
@@ -2995,6 +2994,14 @@
 	            uuid: uuid,
 	            svg: svg,
 	            config: _config,
+
+	            getRegister: () => {
+	                return _Register;
+	            },
+	            clearRegister: () => {
+	                _Register.store = {};
+
+	            },
 	            id: () => {
 	                return _uuid.generate();
 	            },

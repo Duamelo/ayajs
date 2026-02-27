@@ -1,0 +1,10 @@
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    container_name: ayajs-docs
+    restart: unless-stopped
+
